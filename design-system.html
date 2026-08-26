@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Design system — France Immeuble</title>
+
+<!-- Google Tag Manager (CLAUDE.md §7) -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5KF68JV');</script>
+<!-- End Google Tag Manager -->
+
+<script>document.documentElement.className=document.documentElement.className.replace('no-js','js');</script>
+
+<!--
+  PAGE INTERNE — ne part JAMAIS dans WordPress.
+  Elle charge la feuille partagée via <link> pour servir de test en conditions
+  réelles du fichier source. Les pages destinées à WordPress, elles, inlinent
+  cette même CSS dans un <style> (contrainte d'autonomie, CLAUDE.md §1).
+-->
+<link rel="stylesheet" href="/assets/css/design-system.css">
+
+<style>
+  .sg-header{padding-block:var(--space-xl) var(--space-l);border-bottom:1px solid var(--color-ligne);}
+  .sg-block{padding-block:var(--space-xl);border-bottom:1px solid var(--color-ligne);}
+  .sg-block:last-child{border-bottom:0;}
+  .sg-block > .container > h2{margin-bottom:var(--space-l);}
+  .sg-label{
+    font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:0.15em;
+    text-transform:uppercase;color:var(--color-gris);margin-bottom:var(--space-xs);display:block;
+  }
+  .sg-row{margin-bottom:var(--space-l);}
+  .sg-row:last-child{margin-bottom:0;}
+
+  .swatches{display:grid;gap:var(--space-s);grid-template-columns:repeat(auto-fill,minmax(168px,1fr));}
+  .swatch__chip{height:88px;border-radius:var(--radius-sm);border:1px solid var(--color-ligne);}
+  .swatch__name{display:block;margin-top:10px;font-size:var(--fs-small);}
+  .swatch__hex{
+    display:block;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+    color:var(--color-gris);letter-spacing:0.08em;
+  }
+
+  .sg-panel{
+    background:var(--color-creme);color:var(--color-noir);
+    border-radius:var(--radius-card);padding:clamp(24px,3vw,40px);
+  }
+  .sg-panel .sg-label{color:var(--color-gris);color:color-mix(in srgb, var(--color-noir) 55%, var(--color-creme));}
+
+  .type-spec{
+    font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+    color:var(--color-gris);letter-spacing:0.08em;margin-top:6px;
+  }
+  .sg-note{
+    border-left:2px solid var(--color-bronze);padding-left:20px;
+    font-size:var(--fs-small);color:var(--color-gris);max-width:70ch;
+  }
+</style>
+</head>
+
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5KF68JV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<header class="sg-header">
+  <div class="container">
+    <p class="eyebrow">Milestone M1</p>
+    <h1>Design system</h1>
+    <p class="lead" style="margin-top:var(--space-s)">
+      Référence visuelle des tokens, de la typographie et des composants définis
+      dans <span class="mono">CLAUDE.md</span> §2 à §4. Page interne, en
+      <span class="mono">noindex</span>, jamais migrée vers WordPress.
+    </p>
+    <p style="margin-top:var(--space-m)">
+      <a class="link-arrow" href="/vendre-un-immeuble/">
+        Voir la page /vendre-un-immeuble/
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </p>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- COULEURS -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">§2</p>
+      <h2>Couleurs</h2>
+
+      <div class="sg-row">
+        <span class="sg-label">Fonds &amp; structure</span>
+        <div class="swatches">
+          <div><div class="swatch__chip" style="background:var(--color-noir)"></div><span class="swatch__name">--color-noir</span><span class="swatch__hex">#0A0A0A</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-noir-2)"></div><span class="swatch__name">--color-noir-2</span><span class="swatch__hex">#121110</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-noir-3)"></div><span class="swatch__name">--color-noir-3</span><span class="swatch__hex">#1B1917</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-ligne)"></div><span class="swatch__name">--color-ligne</span><span class="swatch__hex">#282522</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-gris)"></div><span class="swatch__name">--color-gris</span><span class="swatch__hex">#8E8A84</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-creme)"></div><span class="swatch__name">--color-creme</span><span class="swatch__hex">#EFE9DE</span></div>
+        </div>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">Accent bronze — couleur unique</span>
+        <div class="swatches">
+          <div><div class="swatch__chip" style="background:var(--color-bronze-clair)"></div><span class="swatch__name">--color-bronze-clair</span><span class="swatch__hex">#E6D4BD</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-bronze-clair-2)"></div><span class="swatch__name">--color-bronze-clair-2</span><span class="swatch__hex">#D4B894</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-bronze)"></div><span class="swatch__name">--color-bronze</span><span class="swatch__hex">#C19B6E</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-bronze-hover)"></div><span class="swatch__name">--color-bronze-hover</span><span class="swatch__hex">#9C7C54</span></div>
+          <div><div class="swatch__chip" style="background:var(--color-bronze-profond)"></div><span class="swatch__name">--color-bronze-profond</span><span class="swatch__hex">#7A5C3E</span></div>
+        </div>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">Relief — dégradé monochrome, jamais une 2<sup>e</sup> couleur</span>
+        <div class="swatch__chip" style="height:64px;background:linear-gradient(135deg, var(--color-bronze-clair) 0%, var(--color-bronze) 45%, var(--color-bronze-profond) 100%)"></div>
+      </div>
+
+      <p class="sg-note">
+        Couleurs mortes, à ne jamais réintroduire : #D9BF7D, #D98F7D, #0C2432,
+        #BD9091, #000000, #CCCCCC, #EFEFEF, #F8F8F8. Le blanc pur n'est admis que
+        comme couleur de texte sur bouton à fond sombre (§4).
+      </p>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHIE -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">§3</p>
+      <h2>Typographie</h2>
+
+      <div class="sg-row">
+        <span class="sg-label">Display — Archivo variable, wdth 118 / wght 900</span>
+        <h1>Immeuble de rapport</h1>
+        <p class="type-spec">h1 · clamp(2.5rem → 5.2rem) · font-variation-settings "wdth" 118</p>
+      </div>
+
+      <div class="sg-row">
+        <h2>Vente en bloc, off-market</h2>
+        <p class="type-spec">h2 · clamp(2rem → 3.5rem)</p>
+      </div>
+
+      <div class="sg-row">
+        <h3>Mandat semi-exclusif</h3>
+        <p class="type-spec">h3 · clamp(1.3rem → 1.85rem)</p>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">Body — Inter variable</span>
+        <p class="lead">
+          Accroche en <span class="mono">.lead</span> — clamp(1.1rem → 1.35rem),
+          couleur <span class="mono">--color-gris</span>.
+        </p>
+        <p style="margin-top:var(--space-s)">
+          Corps de texte courant. Nous présentons votre immeuble à un fichier
+          d'investisseurs déjà qualifiés, sans annonce publique ni visite de
+          curieux.
+        </p>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">Mono — JetBrains Mono</span>
+        <p class="mono">01 72 87 52 22 · 365 immeubles · 5 % · 4,9/5</p>
+      </div>
+
+      <p class="sg-note">
+        Contrôle visuel : si les titres ci-dessus s'affichent en largeur standard,
+        c'est que le woff2 variable Archivo n'est pas servi — ou qu'il a été
+        découpé par graisse, ce qui casse l'axe <span class="mono">wdth</span>.
+      </p>
+    </div>
+  </section>
+
+  <!-- BOUTONS -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">§4</p>
+      <h2>Boutons</h2>
+
+      <div class="sg-row">
+        <span class="sg-label">Sur fond sombre</span>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#0">
+            CTA principal
+            <svg class="btn__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a class="btn btn--outline" href="#0">CTA secondaire</a>
+          <a class="link-arrow" href="#0">
+            Lien fléché
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="sg-row sg-panel">
+        <span class="sg-label">Sur fond clair</span>
+        <div class="btn-row">
+          <a class="btn btn--light" href="#0">
+            CTA principal
+            <svg class="btn__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a class="btn btn--ghost-dark" href="#0">CTA secondaire</a>
+        </div>
+      </div>
+
+      <p class="sg-note">
+        Pilule stricte sur les 4 côtés, texte centré même avec icône, icône à
+        droite avec <span class="mono">gap: 10px</span>. Focus clavier :
+        <span class="mono">outline 2px --color-bronze-clair</span>, offset 3px —
+        naviguez à la touche Tab pour le vérifier.
+      </p>
+    </div>
+  </section>
+
+  <!-- SIGNATURE -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">§2</p>
+      <h2>Signature visuelle groupe</h2>
+
+      <div class="sg-row">
+        <span class="sg-label">Surtitre — mono, petites capitales, 0.15em, bronze</span>
+        <p class="eyebrow">Vente en bloc &middot; Off-market</p>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">Filet vertical bronze</span>
+        <div class="grid grid--3">
+          <div class="railed"><h3>.railed</h3><p class="muted small">Filet 2 px pleine hauteur.</p></div>
+          <div class="railed railed--thin"><h3>.railed--thin</h3><p class="muted small">Filet 1 px, blocs secondaires.</p></div>
+          <div class="railed--fade"><h3>.railed--fade</h3><p class="muted small">Filet dégradé bronze → transparent.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPOSANTS -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">Composants</p>
+      <h2>Cartes &amp; chiffres</h2>
+
+      <div class="sg-row">
+        <span class="sg-label">.card</span>
+        <div class="grid grid--3">
+          <article class="card"><span class="card__num">01</span><h3>Discrétion totale</h3><p>Aucune annonce, aucune pancarte.</p></article>
+          <article class="card"><span class="card__num">02</span><h3>Pas de décote</h3><p>L'immeuble n'a pas d'historique public.</p></article>
+          <article class="card"><span class="card__num">03</span><h3>Acheteurs réels</h3><p>Capacité de financement vérifiée.</p></article>
+        </div>
+      </div>
+
+      <div class="sg-row">
+        <span class="sg-label">.stat-number — dégradé bronze monochrome</span>
+        <div class="grid grid--4">
+          <div class="stat"><span class="stat-number">365</span><span class="stat-label">Immeubles traités</span></div>
+          <div class="stat"><span class="stat-number">1&nbsp;372</span><span class="stat-label">Investisseurs</span></div>
+          <div class="stat"><span class="stat-number">5&nbsp;%</span><span class="stat-label">D'honoraires</span></div>
+          <div class="stat"><span class="stat-number">4,9</span><span class="stat-label">Avis Google</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIONS -->
+  <section class="sg-block">
+    <div class="container">
+      <p class="eyebrow">Composants</p>
+      <h2>Fonds de section</h2>
+      <p class="lead" style="margin-bottom:var(--space-m)">
+        Les trois noirs permettent d'empiler des sections sombres successives sans
+        aplat plat. La section crème sert de respiration.
+      </p>
+    </div>
+    <div class="section section--noir" style="padding-block:var(--space-l)"><div class="container"><span class="mono small">.section--noir</span></div></div>
+    <div class="section section--noir-2" style="padding-block:var(--space-l)"><div class="container"><span class="mono small">.section--noir-2</span></div></div>
+    <div class="section section--noir-3" style="padding-block:var(--space-l)"><div class="container"><span class="mono small">.section--noir-3</span></div></div>
+    <div class="section section--creme" style="padding-block:var(--space-l)"><div class="container"><span class="mono small">.section--creme</span></div></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="margin-top:0;border-top:0;padding-top:0">
+      <span>France Immeuble — design system, milestone M1</span>
+      <span class="mono">CLAUDE.md §2 – §4</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
