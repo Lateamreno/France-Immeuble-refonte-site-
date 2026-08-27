@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
+import Image from "next/image";
 import { PREUVES, SITE, CALIBRE, nombre } from "@/lib/site";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /estimer-un-immeuble/ — le tunnel de qualification.
@@ -81,6 +83,15 @@ export default function Estimer() {
                 <span className="hero-proof__val">{nombre(PREUVES.investisseurs)}</span>
                 <span className="hero-proof__lbl">investisseurs en base</span>
               </div>
+            </div>
+
+            <div className="media-colonne" style={{ marginTop: "var(--space-l)" }}>
+              <Image
+                src={VISUELS.interieurToits.src}
+                alt={VISUELS.interieurToits.alt}
+                sizes="(max-width: 900px) 100vw, 480px"
+                placeholder="blur"
+              />
             </div>
 
             <p className="small muted" style={{ marginTop: "var(--space-m)" }}>

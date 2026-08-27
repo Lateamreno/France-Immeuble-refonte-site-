@@ -5,6 +5,8 @@ import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/Button";
 import { PREUVES, SITE, nombre } from "@/lib/site";
 import { REFERENCES, REFERENCES_STATS } from "@/lib/references";
+import { HeroMedia } from "@/components/HeroMedia";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /immeubles-vendus/ — la preuve.
@@ -27,8 +29,12 @@ export const metadata: Metadata = {
 export default function ImmeublesVendus() {
   return (
     <>
-      <section className="section section--noir" style={{ paddingBottom: "var(--space-l)" }}>
-        <div className="container">
+      <HeroMedia
+        className="section section--noir"
+        image={VISUELS.facadeCoucher.src}
+        alt={VISUELS.facadeCoucher.alt}
+      >
+        <>
           <Eyebrow>Nos biens &middot; transactions réalisées</Eyebrow>
           <h1 style={{ maxWidth: "16ch", marginBottom: "var(--space-m)" }}>
             {PREUVES.immeublesTraites} immeubles, et ce qu’ils nous ont appris
@@ -53,8 +59,8 @@ export default function ImmeublesVendus() {
               <span className="hero-proof__lbl">délai médian de vente</span>
             </div>
           </div>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       <section className="section section--noir-2" style={{ paddingTop: "var(--space-l)" }}>
         <div className="container">

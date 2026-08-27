@@ -3,6 +3,9 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { RechercheForm } from "@/components/RechercheForm";
 import { PREUVES, SITE, nombre } from "@/lib/site";
+import { HeroMedia } from "@/components/HeroMedia";
+import { BandeMedia } from "@/components/BandeMedia";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /acheter-un-immeuble/ — construction du fichier acquéreurs.
@@ -21,8 +24,12 @@ export const metadata: Metadata = {
 export default function Acheter() {
   return (
     <>
-      <section className="section section--noir" style={{ paddingBottom: "var(--space-l)" }}>
-        <div className="container">
+      <HeroMedia
+        className="section section--noir"
+        image={VISUELS.toursContrePlongee.src}
+        alt={VISUELS.toursContrePlongee.alt}
+      >
+        <>
           <Eyebrow>Accès investisseurs</Eyebrow>
           <h1 style={{ maxWidth: "17ch", marginBottom: "var(--space-m)" }}>
             Les immeubles que nous vendons ne sont annoncés{" "}
@@ -43,8 +50,8 @@ export default function Acheter() {
               <span className="hero-proof__lbl">immeubles traités depuis {PREUVES.depuis}</span>
             </div>
           </div>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       <section className="section section--noir-2">
         <div className="container">
@@ -84,6 +91,14 @@ export default function Acheter() {
           </div>
         </div>
       </section>
+
+      <BandeMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
+        <h2>Ce que vous ne verrez jamais sur un portail</h2>
+        <p>
+          Nos vendeurs viennent parce que rien ne sort. Vous en profitez de l’autre côté :
+          des dossiers que personne d’autre n’a encore vus.
+        </p>
+      </BandeMedia>
 
       <section className="section section--noir-3">
         <div className="container split">

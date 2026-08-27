@@ -6,6 +6,9 @@ import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
 import { organisation } from "@/lib/schema";
 import { PREUVES, SITE, CALIBRE, nombre } from "@/lib/site";
+import { HeroMedia } from "@/components/HeroMedia";
+import { BandeMedia } from "@/components/BandeMedia";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * Homepage — 16 % du trafic, 110 226 impressions/an à 0,92 % de CTR.
@@ -39,8 +42,12 @@ export default function Accueil() {
       <JsonLd data={organisation()} />
 
       {/* ===== HERO ===== */}
-      <section className="home-hero section--noir">
-        <div className="container">
+      <HeroMedia
+        className="home-hero section--noir"
+        image={VISUELS.toitsAeriens.src}
+        alt={VISUELS.toitsAeriens.alt}
+      >
+        <>
           <Eyebrow>Vente en bloc &middot; Off-market &middot; Depuis {PREUVES.depuis}</Eyebrow>
 
           <h1>
@@ -102,8 +109,8 @@ export default function Accueil() {
               </div>
             </Reveal>
           </div>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       {/* ===== POURQUOI L'OFF-MARKET ===== */}
       <section className="section section--noir-2">
@@ -184,6 +191,15 @@ export default function Accueil() {
           </Reveal>
         </div>
       </section>
+
+      {/* ===== RESPIRATION ===== */}
+      <BandeMedia image={VISUELS.skylineCrepuscule.src} alt={VISUELS.skylineCrepuscule.alt}>
+        <h2>{PREUVES.immeublesTraites} immeubles, et pas une seule annonce</h2>
+        <p>
+          Depuis {PREUVES.depuis}, chaque vente s’est faite sans vitrine, sans portail et sans
+          pancarte. C’est notre méthode, et c’est aussi ce qui explique nos délais.
+        </p>
+      </BandeMedia>
 
       {/* ===== LE GROUPE ===== */}
       <section className="section section--noir-3">

@@ -5,6 +5,9 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { Faq, type QuestionFaq } from "@/components/Faq";
 import { PREUVES, SITE, CALIBRE, nombre } from "@/lib/site";
+import { HeroMedia } from "@/components/HeroMedia";
+import { BandeMedia } from "@/components/BandeMedia";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /vendre-un-immeuble/ — page menu, TRANSFORMATION PURE.
@@ -129,8 +132,12 @@ export default function VendreUnImmeuble() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <section className="hero section--noir">
-        <div className="container">
+      <HeroMedia
+        className="hero section--noir"
+        image={VISUELS.facadeCoucher.src}
+        alt={VISUELS.facadeCoucher.alt}
+      >
+        <>
           <Eyebrow>Vente en bloc &middot; Off-market</Eyebrow>
 
           <h1>
@@ -167,8 +174,8 @@ export default function VendreUnImmeuble() {
               <span className="hero-proof__lbl">{PREUVES.nbAvis} avis Google</span>
             </div>
           </div>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       {/* ===== CHIFFRES ===== */}
       <section className="section section--noir-2">
@@ -402,6 +409,15 @@ export default function VendreUnImmeuble() {
           </Reveal>
         </div>
       </section>
+
+      {/* ===== RESPIRATION ===== */}
+      <BandeMedia image={VISUELS.interieurToits.src} alt={VISUELS.interieurToits.alt}>
+        <h2>Vos locataires l’apprendront à la signature, pas avant</h2>
+        <p>
+          Aucune annonce, aucune photo en ligne, aucune pancarte sur la façade. C’est la
+          première chose que nous promettons, et la dernière sur laquelle nous transigeons.
+        </p>
+      </BandeMedia>
 
       {/* ===== FAQ ===== */}
       <section className="section section--noir">

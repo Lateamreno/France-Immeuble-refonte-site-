@@ -6,6 +6,8 @@ import { Faq, type QuestionFaq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
 import { PREUVES, SITE } from "@/lib/site";
+import { HeroMedia } from "@/components/HeroMedia";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /vendre-a-la-decoupe/ — pilier SEO à forte valeur.
@@ -102,8 +104,12 @@ export default function Decoupe() {
         ]}
       />
 
-      <section className="section section--noir" style={{ paddingBottom: "var(--space-l)" }}>
-        <div className="container">
+      <HeroMedia
+        className="section section--noir"
+        image={VISUELS.fenetresHeureBleue.src}
+        alt={VISUELS.fenetresHeureBleue.alt}
+      >
+        <>
           <Eyebrow>Vente à la découpe</Eyebrow>
           <h1 style={{ maxWidth: "17ch", marginBottom: "var(--space-m)" }}>
             Vendre lot par lot vaut souvent{" "}
@@ -120,8 +126,8 @@ export default function Decoupe() {
               En parler &middot; {SITE.tel}
             </a>
           </div>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       <section className="section section--noir-2">
         <div className="container">

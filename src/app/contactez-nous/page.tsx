@@ -3,7 +3,9 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/Button";
 import { ContactForm } from "@/components/ContactForm";
+import Image from "next/image";
 import { SITE } from "@/lib/site";
+import { VISUELS } from "@/lib/visuels";
 
 /**
  * /contactez-nous/ — URL existante conservée (CLAUDE.md §10).
@@ -59,6 +61,15 @@ export default function Contact() {
               <h3 style={{ marginBottom: "var(--space-2xs)" }}>Horaires</h3>
               <p className="muted">Du lundi au vendredi, 9&nbsp;h – 19&nbsp;h.</p>
             </div>
+            <div className="media-colonne" style={{ marginBottom: "var(--space-l)" }}>
+              <Image
+                src={VISUELS.facadeCoucher.src}
+                alt={VISUELS.facadeCoucher.alt}
+                sizes="(max-width: 900px) 100vw, 480px"
+                placeholder="blur"
+              />
+            </div>
+
             <div className="railed railed--thin">
               <h3 style={{ marginBottom: "var(--space-2xs)" }}>Vous vendez&nbsp;?</h3>
               <p className="muted">
