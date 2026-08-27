@@ -1,0 +1,140 @@
+/* ==========================================================================
+   Spécifique à /vendre-un-immeuble/
+   ========================================================================== */
+
+/* --- HERO ----------------------------------------------------------------- */
+.hero{position:relative;padding-block:clamp(72px, 11vw, 150px) clamp(56px, 7vw, 96px);overflow:hidden;}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(60% 55% at 78% 12%, rgba(193,155,110,.16), transparent 62%),
+    radial-gradient(45% 45% at 8% 88%, rgba(122,92,62,.14), transparent 66%);
+}
+.hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--color-bronze-profond), transparent);
+  opacity:.5;
+}
+.hero > .container{position:relative;z-index:1;}
+.hero h1{max-width:17ch;margin-bottom:var(--space-m);}
+.hero .lead{max-width:56ch;margin-bottom:var(--space-l);}
+.hero .btn-row{margin-bottom:var(--space-xl);}
+.hero-proof{
+  display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-l);align-items:center;
+  padding-top:var(--space-m);border-top:1px solid var(--color-ligne);
+}
+.hero-proof__item{display:flex;align-items:baseline;gap:10px;}
+.hero-proof__val{font-family:var(--font-mono-site);font-size:1.02rem;color:var(--color-bronze-clair);font-weight:600;}
+.hero-proof__lbl{font-size:var(--fs-small);color:var(--color-gris);}
+
+/* --- BANDE DE CHIFFRES ---------------------------------------------------- */
+.stats-band{display:grid;gap:var(--space-l) var(--space-m);}
+@media (min-width:640px){.stats-band{grid-template-columns:repeat(2,1fr);}}
+@media (min-width:1000px){.stats-band{grid-template-columns:repeat(4,1fr);}}
+.stats-band .stat{padding-left:clamp(16px, 2vw, 24px);border-left:1px solid var(--color-ligne);}
+.stats-band .stat:first-child{border-left-color:var(--color-bronze);border-left-width:2px;}
+.stat-note{font-size:var(--fs-small);color:var(--color-gris);max-width:26ch;margin-top:6px;}
+
+/* --- MÉTHODE (timeline) --------------------------------------------------- */
+.steps{position:relative;display:grid;gap:var(--space-l);}
+.step{position:relative;padding-left:clamp(46px, 6vw, 72px);}
+.step::before{
+  content:"";position:absolute;left:9px;top:34px;bottom:calc(-1 * var(--space-l) - 6px);
+  width:1px;background:var(--color-ligne);
+}
+.step:last-child::before{display:none;}
+.step__dot{
+  position:absolute;left:0;top:8px;width:19px;height:19px;border-radius:50%;
+  background:var(--color-noir);border:1px solid var(--color-bronze-profond);
+  display:grid;place-items:center;
+}
+.step__dot::after{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:linear-gradient(135deg, var(--color-bronze-clair), var(--color-bronze-profond));
+}
+.step__num{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:0.15em;
+  color:var(--color-bronze);display:block;margin-bottom:var(--space-2xs);
+}
+.step h3{margin-bottom:var(--space-2xs);}
+.step p{color:var(--color-gris);}
+.step__meta{
+  display:inline-block;margin-top:var(--space-xs);
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--color-bronze-clair-2);
+  border:1px solid var(--color-ligne);border-radius:var(--radius-pill);padding:5px 14px;
+}
+
+/* --- HONORAIRES (section crème) ------------------------------------------- */
+.fee-panel{
+  background:var(--color-noir);color:var(--color-creme);
+  border-radius:var(--radius-card);padding:clamp(28px, 4vw, 48px);
+  box-shadow:0 24px 60px rgba(10,10,10,.18);
+}
+.fee-panel .stat-number{font-size:clamp(3rem, 2rem + 5vw, 5rem);}
+.fee-panel .stat-label{color:var(--color-gris);}
+.fee-list{margin-top:var(--space-m);display:grid;gap:var(--space-xs);}
+.fee-list li{
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:var(--fs-small);color:var(--color-gris);
+  padding-top:var(--space-xs);border-top:1px solid var(--color-ligne);
+}
+.fee-list li:first-child{border-top:0;padding-top:0;}
+.fee-list svg{flex:none;width:16px;height:16px;margin-top:4px;color:var(--color-bronze);}
+
+/* --- TÉMOIGNAGE ----------------------------------------------------------- */
+.quote{border-left:2px solid var(--color-bronze);padding-left:clamp(20px, 3vw, 36px);}
+.quote blockquote{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" 500;
+  font-size:clamp(1.25rem, 1rem + 1.1vw, 1.9rem);
+  line-height:1.28;letter-spacing:-0.01em;color:var(--color-creme);
+}
+.quote figcaption{margin-top:var(--space-s);font-size:var(--fs-small);color:var(--color-gris);}
+.rating{display:flex;align-items:center;gap:10px;margin-bottom:var(--space-m);}
+.rating__stars{display:flex;gap:3px;color:var(--color-bronze);}
+.rating__stars svg{width:15px;height:15px;}
+.rating__text{font-family:var(--font-mono-site);font-size:var(--fs-small);color:var(--color-gris);}
+
+/* --- FAQ ------------------------------------------------------------------ */
+.faq{display:grid;gap:0;}
+.faq__item{border-top:1px solid var(--color-ligne);}
+.faq__item:last-child{border-bottom:1px solid var(--color-ligne);}
+.faq__item summary{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-s);
+  padding-block:var(--space-s);cursor:pointer;list-style:none;
+  font-size:clamp(1.02rem, 0.95rem + 0.35vw, 1.2rem);font-weight:600;
+  color:var(--color-creme);transition:color var(--dur) var(--ease);
+}
+.faq__item summary::-webkit-details-marker{display:none;}
+.faq__item summary:hover{color:var(--color-bronze);}
+.faq__sign{flex:none;width:22px;height:22px;position:relative;margin-top:4px;}
+.faq__sign::before,.faq__sign::after{
+  content:"";position:absolute;left:50%;top:50%;background:var(--color-bronze);
+  transform:translate(-50%,-50%);transition:transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+.faq__sign::before{width:13px;height:1.5px;}
+.faq__sign::after{width:1.5px;height:13px;}
+.faq__item[open] .faq__sign::after{transform:translate(-50%,-50%) rotate(90deg);opacity:0;}
+.faq__answer{padding-bottom:var(--space-s);}
+.faq__answer p{color:var(--color-gris);max-width:70ch;}
+.faq__answer p + p{margin-top:var(--space-xs);}
+
+/* --- CTA FINAL ------------------------------------------------------------ */
+.cta-final{position:relative;overflow:hidden;}
+.cta-final::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(55% 70% at 50% 108%, rgba(193,155,110,.20), transparent 65%);
+}
+.cta-final > .container{position:relative;z-index:1;text-align:center;}
+.cta-final h2{max-width:20ch;margin-inline:auto;}
+.cta-final .lead{max-width:52ch;margin:var(--space-s) auto var(--space-l);}
+.cta-final .btn-row{justify-content:center;}
+.cta-final .eyebrow{justify-content:center;}
+.cta-contact{
+  margin-top:var(--space-xl);padding-top:var(--space-m);
+  border-top:1px solid var(--color-ligne);
+  display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-xl);justify-content:center;
+  font-size:var(--fs-small);color:var(--color-gris);
+}
+.cta-contact strong{display:block;font-family:var(--font-mono-site);color:var(--color-creme);font-weight:500;}
