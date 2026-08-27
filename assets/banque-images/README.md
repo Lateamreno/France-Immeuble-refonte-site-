@@ -1,7 +1,9 @@
 # Banque d'images — candidats refonte 2026
 
-20 photographies Unsplash, étalonnées « or » aux couleurs de la charte France Immeuble.
-Sélection à valider : ce dossier est une réserve de candidats, pas un jeu d'assets validé.
+29 photographies Unsplash — la totalité des candidats retenus au tri visuel — avec une
+correction couleur chaude légère aux tons de la charte France Immeuble.
+Réserve de candidats à sélectionner, pas un jeu d'assets validé : rien n'est câblé dans
+les pages à ce stade.
 
 ## Correction couleur appliquée
 
@@ -44,13 +46,19 @@ L'emplacement est une **proposition**, pas une affectation : une image nommée
 Suffisant pour un hero pleine largeur. Les sources Unsplash permettent de remonter
 plus haut si besoin — les identifiants sont conservés dans `SOURCES.txt`.
 
-## Réserves sur trois images
+## Réserves — à juger, pas à utiliser tel quel
 
-- `Nos biens - Section Preuve - remise des cles` — maison miniature + porte-clés :
-  cliché stock, calibre faible pour une agence d'immeubles à plusieurs M€.
+Quatre images sont nommées `Divers` : elles sont dans la banque parce qu'elles faisaient
+partie du tri, pas parce qu'elles ont un emplacement. Les deux `Hors sujet` (villas avec
+piscine) sont hors périmètre — l'agence vend des immeubles de rapport, pas du pavillon.
+
+Trois autres posent un problème de calibre plutôt que de couleur :
+
+- `Nos biens - Section Preuve - remise des cles` — maison miniature et porte-clés :
+  cliché stock, calibre faible pour des immeubles à plusieurs M€.
 - `Contact - Colonne - detail bureau lumiere` — l'enceinte au premier plan est hors sujet.
 - `Estimer - Section Confiance - reunion table longue` — lit plutôt « café / coworking »
-  que réunion d'arbitrage patrimonial.
+  qu'arbitrage patrimonial.
 
 ## Licence
 
