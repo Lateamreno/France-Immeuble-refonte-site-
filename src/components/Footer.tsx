@@ -32,21 +32,23 @@ export function Footer() {
           </div>
 
           <div className="footer-col">
-            <h4>Nos services</h4>
+            <h4>Vendre</h4>
             <ul>
               <li><Link href="/vendre-un-immeuble/">Vendre un immeuble</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
-              <li><Link href="/immeubles-vendus/">Immeubles vendus</Link></li>
-              <li><Link href="/contactez-nous/">Nous contacter</Link></li>
+              <li><Link href="/immeubles-vendus/">Nos biens vendus</Link></li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h4>Ressources</h4>
+            <h4>Acheter</h4>
             <ul>
-              <li><Link href="/blog/">Le blog</Link></li>
-              <li><Link href="/plan-du-site/">Plan du site</Link></li>
-              <li><Link href="/mentions-legales-2/">Mentions légales</Link></li>
+              <li><Link href="/acheter-un-immeuble/">Accès investisseurs</Link></li>
+              <li>
+                <a href={SITE.pleinbail} target="_blank" rel="noopener">
+                  PleinBail — biens loués
+                </a>
+              </li>
             </ul>
           </div>
         </div>

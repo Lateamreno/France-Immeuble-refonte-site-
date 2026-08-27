@@ -15,8 +15,11 @@ export const metadata: Metadata = {
 };
 
 const PAGES = [
-  { href: "/design-system/", label: "Design system", lot: "M1" },
-  { href: "/vendre-un-immeuble/", label: "/vendre-un-immeuble/", lot: "M1" },
+  { href: "/vendre-un-immeuble/", label: "Vendre un immeuble", lot: "Vendeur" },
+  { href: "/estimer-un-immeuble/", label: "Estimer un immeuble", lot: "Tunnel" },
+  { href: "/acheter-un-immeuble/", label: "Acheter un immeuble", lot: "Acquéreur" },
+  { href: "/immeubles-vendus/", label: "Nos biens vendus", lot: "Preuve" },
+  { href: "/design-system/", label: "Design system", lot: "Interne" },
 ];
 
 export default function StagingIndex() {

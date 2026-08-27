@@ -1,0 +1,37 @@
+/* ---- Références vendues — grille de preuve ---- */
+.refs{display:grid;gap:var(--space-s);}
+@media(min-width:640px){.refs{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1000px){.refs{grid-template-columns:repeat(3,1fr);}}
+
+.ref{
+  background:var(--color-noir-3);
+  border:1px solid var(--color-ligne);
+  border-radius:var(--radius-card);
+  padding:clamp(20px,2.4vw,28px);
+  display:flex;flex-direction:column;gap:var(--space-xs);
+  transition:border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.ref:hover{border-color:var(--color-bronze-profond);transform:translateY(-3px);}
+.ref__top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.ref__lieu{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:1.25rem;line-height:1.1;letter-spacing:-.015em;
+}
+.ref__annee{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+  letter-spacing:.14em;color:var(--color-gris);
+}
+.ref__ligne{
+  display:flex;justify-content:space-between;gap:12px;
+  padding-top:9px;border-top:1px solid var(--color-ligne);
+  font-size:var(--fs-small);
+}
+.ref__k{color:var(--color-gris);}
+.ref__v{font-family:var(--font-mono-site);color:var(--color-creme);font-variant-numeric:tabular-nums;}
+.ref__prix{color:var(--color-bronze-clair);}
+.ref__badge{
+  align-self:flex-start;
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--color-bronze);
+}

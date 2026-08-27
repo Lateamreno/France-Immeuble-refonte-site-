@@ -333,3 +333,119 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .js .reveal{opacity:0;transform:translateY(22px);}
 .js .reveal.is-in{opacity:1;transform:none;transition:opacity .7s var(--ease), transform .7s var(--ease);}
 @media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;}}
+
+/* ==========================================================================
+   11. FORMULAIRES — tunnels de qualification (estimation, recherche acquéreur)
+   ========================================================================== */
+.form-shell{
+  background:var(--color-noir-3);
+  border:1px solid var(--color-ligne);
+  border-radius:var(--radius-card);
+  padding:clamp(22px,3vw,38px);
+}
+.section--creme .form-shell{background:var(--color-noir);color:var(--color-creme);}
+
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:var(--space-m);}
+.progress__track{flex:1;height:2px;background:var(--color-ligne);border-radius:999px;overflow:hidden;}
+.progress__fill{
+  display:block;height:100%;
+  background:linear-gradient(90deg,var(--color-bronze-profond),var(--color-bronze));
+  transition:width .45s var(--ease);
+}
+.progress__label{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--color-gris);white-space:nowrap;
+}
+
+.step-head{margin-bottom:var(--space-m);}
+.step-head h3{margin-bottom:8px;}
+.step-head p{color:var(--color-gris);font-size:var(--fs-small);}
+
+.fields{display:grid;gap:var(--space-s);}
+@media(min-width:640px){.fields--2{grid-template-columns:repeat(2,1fr);}}
+.field{display:flex;flex-direction:column;gap:7px;}
+.field--full{grid-column:1/-1;}
+.field label{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--color-gris);
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--color-noir-2);
+  border:1px solid var(--color-ligne);
+  border-radius:10px;
+  padding:13px 15px;
+  color:var(--color-creme);
+  font-family:var(--font-body);
+  font-size:var(--fs-body);
+  transition:border-color var(--dur) var(--ease),background-color var(--dur) var(--ease);
+}
+.field textarea{min-height:110px;resize:vertical;}
+.field input::placeholder,.field textarea::placeholder{
+  /* dérivé des tokens, jamais un gris inventé (CLAUDE.md §3) */
+  color:var(--color-gris);
+  color:color-mix(in srgb, var(--color-gris) 62%, var(--color-noir-2));
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--color-bronze);background:var(--color-noir);outline:none;
+}
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{
+  outline:2px solid var(--color-bronze-clair);outline-offset:2px;
+}
+.field .hint{font-size:var(--fs-small);color:var(--color-gris);}
+.field .err{font-size:var(--fs-small);color:var(--color-bronze-clair);}
+
+.field-nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);margin-top:var(--space-m);align-items:center;}
+.btn--ghost{border-color:var(--color-ligne);color:var(--color-gris);}
+.btn--ghost:hover{border-color:var(--color-bronze);color:var(--color-bronze);}
+
+/* choix segmentés — remplacent les <select> quand les options sont courtes */
+.choices{display:flex;flex-wrap:wrap;gap:9px;}
+.choice{
+  border:1px solid var(--color-ligne);background:var(--color-noir-2);
+  color:var(--color-gris);border-radius:var(--radius-pill);
+  padding:10px 18px;font-size:var(--fs-small);cursor:pointer;
+  transition:border-color var(--dur) var(--ease),color var(--dur) var(--ease),background-color var(--dur) var(--ease);
+}
+.choice:hover{border-color:var(--color-bronze-profond);color:var(--color-creme);}
+.choice[aria-pressed="true"]{
+  border-color:var(--color-bronze);background:rgba(193,155,110,.12);color:var(--color-bronze-clair);
+}
+
+/* écran de résultat : le routage s'affiche comme une orientation, jamais un refus */
+.outcome{display:flex;flex-direction:column;gap:var(--space-s);}
+.outcome__badge{
+  align-self:flex-start;
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.14em;
+  text-transform:uppercase;padding:6px 14px;border-radius:var(--radius-pill);
+  border:1px solid var(--color-bronze);color:var(--color-bronze-clair);
+  background:rgba(193,155,110,.12);
+}
+.outcome__badge--autre{border-color:var(--color-ligne);color:var(--color-gris);background:transparent;}
+.outcome p{color:var(--color-gris);}
+
+/* bandeau de preuve — partagé par plusieurs pages */
+.hero-proof{
+  display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-l);align-items:center;
+  padding-top:var(--space-m);border-top:1px solid var(--color-ligne);
+}
+.hero-proof__item{display:flex;align-items:baseline;gap:10px;}
+.hero-proof__val{font-family:var(--font-mono-site);font-size:1.02rem;color:var(--color-bronze-clair);font-weight:600;}
+.hero-proof__lbl{font-size:var(--fs-small);color:var(--color-gris);}
+
+/* panneau sombre sur fond crème — partagé */
+.fee-panel{
+  background:var(--color-noir);color:var(--color-creme);
+  border-radius:var(--radius-card);padding:clamp(28px, 4vw, 48px);
+  box-shadow:0 24px 60px rgba(10,10,10,.18);
+}
+.fee-panel .stat-number{font-size:clamp(3rem, 2rem + 5vw, 5rem);}
+.fee-panel .stat-label{color:var(--color-gris);}
+.fee-list{margin-top:var(--space-m);display:grid;gap:var(--space-xs);}
+.fee-list li{
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:var(--fs-small);color:var(--color-gris);
+  padding-top:var(--space-xs);border-top:1px solid var(--color-ligne);
+}
+.fee-list li:first-child{border-top:0;padding-top:0;}
+.fee-list svg{flex:none;width:16px;height:16px;margin-top:4px;color:var(--color-bronze);}

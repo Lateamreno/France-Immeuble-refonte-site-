@@ -10,18 +10,13 @@ export const SITE = {
   adresse: "66 avenue des Champs-Élysées",
   codePostalVille: "75008 Paris",
   gtmId: "GTM-5KF68JV",
+  pleinbail: "https://www.pleinbail.fr",
 } as const;
 
 /**
- * Éléments de réassurance (CLAUDE.md §10).
- *
  * ⚠️ `investisseurs` : la meta de la homepage annonce « 1 500+ acheteurs »
- * alors que le §10 retient 1 372. Arbitrage en attente (CLAUDE.md §15) —
- * en attendant, 1 372 fait foi partout sur le site.
- *
- * Ces valeurs deviendront dynamiques en M2, alimentées par la projection
- * `web.stats` déposée par le BO (§2). Elles sont ici en dur à dessein :
- * le contrat de données n'est pas encore défini.
+ * alors que le §10 retient 1 372. Arbitrage en attente (CLAUDE.md §15).
+ * Ces valeurs deviendront dynamiques via la projection `web.stats` (§2).
  */
 export const PREUVES = {
   immeublesTraites: 365,
@@ -32,14 +27,31 @@ export const PREUVES = {
   honorairesPct: 5,
 } as const;
 
+/**
+ * Le calibre affiché est le premier filtre du site : il rassure le gros
+ * propriétaire et décourage le petit d'appeler. C'est délibéré.
+ */
+export const CALIBRE = {
+  ticketMin: 2_000_000,
+  ticketMinLabel: "2 M€",
+  rentabiliteProvinceMin: 10,
+} as const;
+
 export const NAV = [
   { href: "/vendre-un-immeuble/", label: "Vendre" },
   { href: "/estimer-un-immeuble/", label: "Estimer" },
-  { href: "/immeubles-vendus/", label: "Immeubles vendus" },
-  { href: "/contactez-nous/", label: "Contact" },
+  { href: "/acheter-un-immeuble/", label: "Acheter" },
+  { href: "/immeubles-vendus/", label: "Nos biens" },
 ] as const;
+
+/** Départements d'Île-de-France — sert au routage du tunnel d'estimation. */
+export const DEPTS_IDF = ["75", "77", "78", "91", "92", "93", "94", "95"] as const;
 
 /** Formate un entier à la française : 1372 → « 1 372 » (espace insécable). */
 export function nombre(n: number): string {
-  return n.toLocaleString("fr-FR").replace(/ |\s/g, " ");
+  return n.toLocaleString("fr-FR").replace(/ | |\s/g, " ");
+}
+
+export function millions(n: number): string {
+  return `${(n / 1_000_000).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} M€`;
 }

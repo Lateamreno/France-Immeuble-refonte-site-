@@ -19,13 +19,6 @@
 .hero h1{max-width:17ch;margin-bottom:var(--space-m);}
 .hero .lead{max-width:56ch;margin-bottom:var(--space-l);}
 .hero .btn-row{margin-bottom:var(--space-xl);}
-.hero-proof{
-  display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-l);align-items:center;
-  padding-top:var(--space-m);border-top:1px solid var(--color-ligne);
-}
-.hero-proof__item{display:flex;align-items:baseline;gap:10px;}
-.hero-proof__val{font-family:var(--font-mono-site);font-size:1.02rem;color:var(--color-bronze-clair);font-weight:600;}
-.hero-proof__lbl{font-size:var(--fs-small);color:var(--color-gris);}
 
 /* --- BANDE DE CHIFFRES ---------------------------------------------------- */
 .stats-band{display:grid;gap:var(--space-l) var(--space-m);}
@@ -66,21 +59,6 @@
 }
 
 /* --- HONORAIRES (section crème) ------------------------------------------- */
-.fee-panel{
-  background:var(--color-noir);color:var(--color-creme);
-  border-radius:var(--radius-card);padding:clamp(28px, 4vw, 48px);
-  box-shadow:0 24px 60px rgba(10,10,10,.18);
-}
-.fee-panel .stat-number{font-size:clamp(3rem, 2rem + 5vw, 5rem);}
-.fee-panel .stat-label{color:var(--color-gris);}
-.fee-list{margin-top:var(--space-m);display:grid;gap:var(--space-xs);}
-.fee-list li{
-  display:flex;gap:12px;align-items:flex-start;
-  font-size:var(--fs-small);color:var(--color-gris);
-  padding-top:var(--space-xs);border-top:1px solid var(--color-ligne);
-}
-.fee-list li:first-child{border-top:0;padding-top:0;}
-.fee-list svg{flex:none;width:16px;height:16px;margin-top:4px;color:var(--color-bronze);}
 
 /* --- TÉMOIGNAGE ----------------------------------------------------------- */
 .quote{border-left:2px solid var(--color-bronze);padding-left:clamp(20px, 3vw, 36px);}

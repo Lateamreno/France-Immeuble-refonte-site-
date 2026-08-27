@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { Faq, type QuestionFaq } from "@/components/Faq";
-import { PREUVES, SITE, nombre } from "@/lib/site";
+import { PREUVES, SITE, CALIBRE, nombre } from "@/lib/site";
 
 /**
  * /vendre-un-immeuble/ — page menu, TRANSFORMATION PURE.
@@ -181,6 +181,14 @@ export default function VendreUnImmeuble() {
               l’unité, pas de location : un fichier d’acquéreurs construit sur une seule typologie de
               bien.
             </p>
+            <div className="railed" style={{ marginTop: "var(--space-m)" }}>
+              <p className="muted">
+                Nous intervenons principalement sur des immeubles à partir de{" "}
+                <strong>{CALIBRE.ticketMinLabel}</strong> à Paris et en Île-de-France, et en province
+                au-delà de <strong>{CALIBRE.rentabiliteProvinceMin}&nbsp;%</strong> de rendement. En
+                dehors de ce calibre, nous vous orientons plutôt que de vous faire perdre du temps.
+              </p>
+            </div>
           </Reveal>
 
           <div className="stats-band">
