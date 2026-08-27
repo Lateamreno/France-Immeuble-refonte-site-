@@ -3,25 +3,33 @@
 20 photographies Unsplash, étalonnées « or » aux couleurs de la charte France Immeuble.
 Sélection à valider : ce dossier est une réserve de candidats, pas un jeu d'assets validé.
 
-## Étalonnage appliqué
+## Correction couleur appliquée
 
-Grade unique pour tout le jeu, afin que les pages restent cohérentes entre elles :
+**Correction légère, pas un étalonnage.** Les photos gardent leurs couleurs réelles — un
+ciel reste bleu, une chemise bleue reste bleue, la peau garde son ton. On ne fait que
+réchauffer légèrement le rendu, de sorte que le jeu s'accorde au bronze de la charte sans
+qu'on puisse dire qu'un filtre a été passé.
 
-- désaturation partielle (`saturation 0.66`) — atténue les bleus/verts qui concurrencent le bronze,
-  sans virer au monochrome (la photo reste une photo)
-- matrice de canaux à dominante chaude, canal bleu ramené à `0.58` — l'or se loge dans les
-  hautes lumières et le bleu ne revient pas quand on remonte le contraste
-- légère surexposition (`brightness 1.04`) et courbe par canal `[1.30, 1.20, 0.96]` — c'est
-  ce couple qui donne la matière ; le premier réglage assombrissait et rendait le jeu terne
-- halo `#E6C89A` en haut à droite, mode `overlay` 28 % — lumière rasante d'heure dorée
-- vignettage `#0A0A0A` 18 %, large — pose les bords sans éteindre l'image
+```
+.modulate({ saturation: 0.97 })
+.recomb([[1.030, 0.055, 0.000],
+         [0.010, 1.010, 0.000],
+         [0.000, 0.015, 0.915]])
+```
 
-**Deux écueils écartés en chemin**, à ne pas réintroduire : une matrice de canaux trop
-agressive donne un sépia uniforme qui lit comme un filtre daté ; et remonter la saturation
-globalement après le virage chaud ressuscite les bleus et vire au orange fluo. La richesse
-vient du contraste et de la luminosité, pas de la saturation.
+Pas de vignettage, pas de halo, pas de contraste ajouté.
 
-Reproductible via `/tmp/final-v3.cjs` (fonction `grade`, sharp `recomb` + `linear` + composite SVG).
+### Deux écueils écartés — ne pas les réintroduire
+
+1. **Le sépia.** Une matrice de canaux agressive (canal bleu sous 0.6, forte désaturation)
+   collapse l'image sur une seule teinte. Le résultat lit comme une vieille photo, pas
+   comme une marque.
+2. **L'orange fluo.** Remonter la saturation globale après un virage chaud ressuscite les
+   bleus et sature la peau. Ni l'un ni l'autre ne ressemble à ce que font les autres sites
+   du groupe, où la retouche est discrète.
+
+Trois intensités ont été comparées avant de retenir celle-ci ; la monter ou la baisser
+tient dans les trois coefficients ci-dessus.
 
 ## Nommage
 
