@@ -7,12 +7,19 @@ Sélection à valider : ce dossier est une réserve de candidats, pas un jeu d'a
 
 Grade unique pour tout le jeu, afin que les pages restent cohérentes entre elles :
 
-- désaturation partielle (`saturation 0.58`) — neutralise les bleus/verts qui concurrencent le bronze,
+- désaturation partielle (`saturation 0.66`) — atténue les bleus/verts qui concurrencent le bronze,
   sans virer au monochrome (la photo reste une photo)
-- matrice de canaux à dominante chaude — l'or se loge dans les hautes lumières
-- courbe par canal `[1.20, 1.12, 0.94]` — contraste + écrasement du bleu dans les ombres
-- halo bronze `#C19B6E` en haut à droite, mode `overlay` 34 % — lumière rasante d'heure dorée
-- vignettage `#0A0A0A` 40 % — les bords descendent vers le noir de la charte
+- matrice de canaux à dominante chaude, canal bleu ramené à `0.58` — l'or se loge dans les
+  hautes lumières et le bleu ne revient pas quand on remonte le contraste
+- légère surexposition (`brightness 1.04`) et courbe par canal `[1.30, 1.20, 0.96]` — c'est
+  ce couple qui donne la matière ; le premier réglage assombrissait et rendait le jeu terne
+- halo `#E6C89A` en haut à droite, mode `overlay` 28 % — lumière rasante d'heure dorée
+- vignettage `#0A0A0A` 18 %, large — pose les bords sans éteindre l'image
+
+**Deux écueils écartés en chemin**, à ne pas réintroduire : une matrice de canaux trop
+agressive donne un sépia uniforme qui lit comme un filtre daté ; et remonter la saturation
+globalement après le virage chaud ressuscite les bleus et vire au orange fluo. La richesse
+vient du contraste et de la luminosité, pas de la saturation.
 
 Reproductible via `/tmp/final-v3.cjs` (fonction `grade`, sharp `recomb` + `linear` + composite SVG).
 
