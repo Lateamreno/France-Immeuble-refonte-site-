@@ -42,6 +42,7 @@ export const NAV = [
   { href: "/estimer-un-immeuble/", label: "Estimer" },
   { href: "/acheter-un-immeuble/", label: "Acheter" },
   { href: "/immeubles-vendus/", label: "Nos biens" },
+  { href: "/contactez-nous/", label: "Contact" },
 ] as const;
 
 /** Départements d'Île-de-France — sert au routage du tunnel d'estimation. */

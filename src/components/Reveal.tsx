@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 /**
  * Révélation au scroll — amélioration progressive.
@@ -12,11 +12,13 @@ export function Reveal({
   as: Tag = "div",
   className = "",
   delayIndex = 0,
+  style,
 }: {
   children: ReactNode;
   as?: "div" | "article" | "figure" | "section";
   className?: string;
   delayIndex?: number;
+  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -40,14 +42,23 @@ export function Reveal({
       { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    // Filet de sécurité : la visibilité du contenu ne doit jamais dépendre
+    // d'un observateur qui se déclenche. Scroll très rapide, onglet en
+    // arrière-plan, throttling navigateur — dans le doute on révèle.
+    const filet = window.setTimeout(() => setVisible(true), 2500);
+
+    return () => {
+      io.disconnect();
+      window.clearTimeout(filet);
+    };
   }, []);
 
   return (
     <Tag
       ref={ref as never}
       className={`reveal ${visible ? "is-in" : ""} ${className}`.trim()}
-      style={{ transitionDelay: `${(delayIndex % 4) * 70}ms` }}
+      style={{ transitionDelay: `${(delayIndex % 4) * 70}ms`, ...style }}
     >
       {children}
     </Tag>

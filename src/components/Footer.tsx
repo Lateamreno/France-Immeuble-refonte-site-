@@ -35,6 +35,7 @@ export function Footer() {
             <h4>Vendre</h4>
             <ul>
               <li><Link href="/vendre-un-immeuble/">Vendre un immeuble</Link></li>
+              <li><Link href="/vendre-a-la-decoupe/">Vendre à la découpe</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
               <li><Link href="/immeubles-vendus/">Nos biens vendus</Link></li>
             </ul>
@@ -52,6 +53,14 @@ export function Footer() {
             </ul>
           </div>
         </div>
+
+        <div className="footer-col" style={{ gridColumn: "1 / -1", marginTop: "var(--space-m)" }}>
+            <ul style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-s)" }}>
+              <li><Link href="/contactez-nous/">Nous contacter</Link></li>
+              <li><Link href="/plan-du-site/">Plan du site</Link></li>
+              <li><Link href="/mentions-legales-2/">Mentions légales</Link></li>
+            </ul>
+          </div>
 
         <div className="footer-bottom">
           <span>&copy; 2026 {SITE.nom}</span>
