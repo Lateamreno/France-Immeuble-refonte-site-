@@ -51,7 +51,7 @@ export default function Accueil() {
           <Eyebrow>Vente en bloc &middot; Off-market &middot; Depuis {PREUVES.depuis}</Eyebrow>
 
           <h1>
-            L’agence dédiée aux <span className="bronze-grad">immeubles</span>
+            L’agence dédiée aux <span className="accent">immeubles</span>
           </h1>
 
           <p className="lead">

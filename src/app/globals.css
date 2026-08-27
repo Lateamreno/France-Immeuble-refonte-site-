@@ -164,10 +164,9 @@ strong,b{font-weight:600;color:var(--color-creme);}
   border-left:0;padding-left:clamp(18px, 3vw, 32px);
   background:linear-gradient(to bottom, var(--color-bronze), var(--color-bronze-profond) 70%, transparent) left / 2px 100% no-repeat;
 }
-.bronze-grad{
-  background:linear-gradient(135deg, var(--color-bronze-clair) 0%, var(--color-bronze) 45%, var(--color-bronze-profond) 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
+/* Accent de titrage : une seule couleur pleine, jamais de dégradé.
+   Le crème du titre fait le « blanc », le bronze fait la couleur. */
+.accent{color:var(--color-bronze-clair-2);}
 .bronze{color:var(--color-bronze);}
 .lead{font-size:var(--fs-lead);line-height:1.55;color:var(--color-gris);}
 .muted{color:var(--color-gris);}
@@ -242,8 +241,7 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .stat{display:flex;flex-direction:column;gap:6px;}
 .stat-number{
   font-size:var(--fs-stat);line-height:1;
-  background:linear-gradient(135deg, var(--color-bronze-clair) 0%, var(--color-bronze) 50%, var(--color-bronze-profond) 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
+  color:var(--color-bronze-clair-2);
 }
 .stat-label{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
@@ -539,12 +537,17 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .hero-media__voile{
   position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
+    /* Le voile est dense sur la colonne de texte puis s'ouvre franchement :
+       l'image reste lumineuse à droite sans jamais passer sous le seuil de
+       contraste là où il y a des lettres. Valeurs calées sur mesure du pire
+       pixel, pas à l'œil. */
     linear-gradient(100deg,
-      rgba(10,10,10,.96) 0%,
-      rgba(10,10,10,.88) 32%,
-      rgba(10,10,10,.58) 62%,
-      rgba(10,10,10,.42) 100%),
-    linear-gradient(to bottom, rgba(10,10,10,.55) 0%, transparent 28%, rgba(10,10,10,.75) 100%);
+      rgba(10,10,10,.93) 0%,
+      rgba(10,10,10,.90) 42%,
+      rgba(10,10,10,.62) 62%,
+      rgba(10,10,10,.26) 88%,
+      rgba(10,10,10,.18) 100%),
+    linear-gradient(to bottom, rgba(10,10,10,.40) 0%, transparent 32%, rgba(10,10,10,.52) 100%);
 }
 /* le bronze de la marque réchauffe l'image plutôt que de la laisser neutre */
 .hero-media__voile::after{
@@ -556,8 +559,27 @@ strong,b{font-weight:600;color:var(--color-creme);}
   /* sur mobile le texte occupe toute la largeur : voile plus couvrant */
   .hero-media__voile{
     background:
-      linear-gradient(to bottom, rgba(10,10,10,.88) 0%, rgba(10,10,10,.78) 45%, rgba(10,10,10,.92) 100%);
+      linear-gradient(to bottom, rgba(10,10,10,.84) 0%, rgba(10,10,10,.74) 45%, rgba(10,10,10,.88) 100%);
   }
+}
+
+/* Sur une image, le gris secondaire ne tient plus le contraste dès que le
+   voile s'allège : le texte d'accroche passe en crème légèrement atténuée. */
+.hero-media .lead,
+.hero-media .hero-proof__lbl,
+.hero-media .stat-note{
+  color:var(--color-creme);
+  opacity:.82;
+}
+.hero-media .eyebrow{color:var(--color-bronze-clair);}
+/* Ombre très diffuse : elle ne se voit pas comme une ombre, elle décolle
+   simplement les lettres du fond photographique. */
+.hero-media h1,
+.hero-media .lead,
+.hero-media .eyebrow,
+.hero-media .hero-proof__val,
+.hero-media .hero-proof__lbl{
+  text-shadow:0 2px 20px rgba(10,10,10,.55);
 }
 
 /* Bande pleine largeur en respiration entre deux sections */

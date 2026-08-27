@@ -142,7 +142,7 @@ export default function VendreUnImmeuble() {
 
           <h1>
             Vendre un immeuble de rapport,{" "}
-            <span className="bronze-grad">sans l’exposer au marché</span>
+            <span className="accent">sans l’exposer au marché</span>
           </h1>
 
           <p className="lead">

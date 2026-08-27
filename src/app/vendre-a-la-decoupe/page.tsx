@@ -113,7 +113,7 @@ export default function Decoupe() {
           <Eyebrow>Vente à la découpe</Eyebrow>
           <h1 style={{ maxWidth: "17ch", marginBottom: "var(--space-m)" }}>
             Vendre lot par lot vaut souvent{" "}
-            <span className="bronze-grad">plus cher qu’en bloc</span>
+            <span className="accent">plus cher qu’en bloc</span>
           </h1>
           <p className="lead" style={{ maxWidth: "58ch" }}>
             Un appartement vendu à l’unité se paie plus cher que sa quote-part dans un immeuble

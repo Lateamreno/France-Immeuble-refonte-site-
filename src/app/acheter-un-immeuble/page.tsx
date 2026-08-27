@@ -33,7 +33,7 @@ export default function Acheter() {
           <Eyebrow>Accès investisseurs</Eyebrow>
           <h1 style={{ maxWidth: "17ch", marginBottom: "var(--space-m)" }}>
             Les immeubles que nous vendons ne sont annoncés{" "}
-            <span className="bronze-grad">nulle part</span>
+            <span className="accent">nulle part</span>
           </h1>
           <p className="lead" style={{ maxWidth: "58ch" }}>
             C’est ce que nous promettons aux propriétaires, et c’est pour ça qu’ils nous confient
