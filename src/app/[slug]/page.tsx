@@ -137,6 +137,25 @@ export default async function ArticlePage({ params }: Params) {
               className="prose"
               dangerouslySetInnerHTML={{ __html: a.contenuHtml }}
             />
+
+            {/*
+              Les articles citent des chiffres et des seuils reglementaires
+              vrais a leur date : un reseau de 1 500 acheteurs en 2021, des
+              taux de 2023, des echeances DPE annoncees au futur et depuis
+              passees. Les reecrire trahirait le texte ; les laisser sans
+              reperes tromperait le lecteur. On date, c'est tout.
+
+              La date de modification WordPress n'est pas affichee : huit
+              articles portent la meme, celle d'une passe technique groupee,
+              et la presenter comme une revision editoriale serait faux.
+            */}
+            <p className="article__date-note">
+              Article publié le <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>.
+              Les chiffres, taux et références réglementaires qu’il cite sont ceux en vigueur
+              à cette date. Pour une lecture à jour de votre situation,{" "}
+              <Link href="/estimer-un-immeuble/">demandez une estimation</Link> ou
+              appelez-nous au <a href={SITE.telHref}>{SITE.tel}</a>.
+            </p>
           </div>
         </div>
 

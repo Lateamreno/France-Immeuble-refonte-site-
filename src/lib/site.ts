@@ -14,9 +14,21 @@ export const SITE = {
 } as const;
 
 /**
- * ⚠️ `investisseurs` : la meta de la homepage annonce « 1 500+ acheteurs »
- * alors que le §10 retient 1 372. Arbitrage en attente (CLAUDE.md §15).
- * Ces valeurs deviendront dynamiques via la projection `web.stats` (§2).
+ * `investisseurs` : 1 372, le décompte réel du fichier — pas les « 1 500+ »
+ * de la meta d'accueil.
+ *
+ * Un chiffre exact se défend, un chiffre rond s'invente : devant un
+ * propriétaire d'immeuble à plusieurs millions, 1 372 est plus crédible que
+ * 1 500+. Et c'est le seul des deux qu'une projection `web.stats` pourra
+ * alimenter automatiquement (§2) — un arrondi marketing ne se calcule pas.
+ *
+ * La meta de la homepage reste gelée à « 1 500+ » : la modifier est interdit
+ * (§16), et elle n'apparaît que dans les résultats de recherche, jamais sur
+ * la page. L'écart n'est donc jamais visible côté visiteur. À rouvrir au lot
+ * Homepage (M7), où le CTR est justement l'enjeu.
+ *
+ * Deux articles de 2021 et 2022 citent « 1 500 acheteurs » : ils gardent leur
+ * chiffre d'époque, et une note de datation en pied d'article le situe.
  */
 export const PREUVES = {
   immeublesTraites: 365,

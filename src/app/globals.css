@@ -723,6 +723,25 @@ strong,b{font-weight:600;color:var(--color-creme);}
 }
 .prose th{ font-weight:600; color:var(--color-noir); }
 
+/* Note de datation en pied d'article. Discrete : elle informe, elle ne
+   s'excuse pas. */
+.article__date-note{
+  max-width:68ch;
+  margin-inline:auto;
+  margin-top:0;
+  padding:18px 0 clamp(40px,6vw,72px);
+  border-top:1px solid color-mix(in srgb, var(--color-noir) 14%, transparent);
+  font-size:.875rem;
+  line-height:1.6;
+  color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));
+}
+.article__date-note a{
+  color:var(--color-bronze-hover);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.article__date-note a:hover{ color:var(--color-noir); }
+
 /* Image à la une : elle chevauche la bascule sombre → crème, ce qui coud
    les deux sections au lieu de les empiler. */
 .article__une{
