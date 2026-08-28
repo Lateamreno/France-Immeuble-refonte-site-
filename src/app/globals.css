@@ -650,13 +650,16 @@ strong,b{font-weight:600;color:var(--color-creme);}
 
 .prose strong{ color:var(--color-noir); font-weight:600; }
 
-.prose a{
+/* Les liens de maillage : bronze souligné, bien visibles dans le texte.
+   `:not(.btn)` est indispensable — sans lui, les CTA repris héritent du
+   soulignement et du bronze, donc du bronze sur fond bronze : illisibles. */
+.prose a:not(.btn){
   color:var(--color-bronze-hover);
   text-decoration:underline;
   text-underline-offset:3px;
   text-decoration-thickness:1px;
 }
-.prose a:hover{ color:var(--color-noir); }
+.prose a:not(.btn):hover{ color:var(--color-noir); }
 
 .prose ul,
 .prose ol{ padding-left:1.3em; }
@@ -673,6 +676,26 @@ strong,b{font-weight:600;color:var(--color-creme);}
   color:var(--color-noir);
 }
 .prose blockquote p + p{ margin-top:.7em; }
+
+/* CTA repris des articles. Ils portent une part réelle de la conversion :
+   ils gardent la pilule stricte du §5, jamais un lien souligné de plus. */
+.prose-cta{
+  margin-top:2em;
+  margin-bottom:2em;
+  text-align:center;
+}
+.prose-cta .btn{ max-width:100%; }
+.prose-cta + .prose-cta{ margin-top:-1.2em; }
+
+/* Le mot de liaison posé entre deux CTA (« ou »). */
+.prose-cta--liaison{
+  margin-block:-.6em;
+  font-family:var(--font-mono-site);
+  font-size:.8rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--color-gris);
+}
 
 .prose figure{ margin-inline:0; }
 .prose img{
@@ -699,6 +722,21 @@ strong,b{font-weight:600;color:var(--color-creme);}
   text-align:left;
 }
 .prose th{ font-weight:600; color:var(--color-noir); }
+
+/* Image à la une : elle chevauche la bascule sombre → crème, ce qui coud
+   les deux sections au lieu de les empiler. */
+.article__une{
+  background:linear-gradient(to bottom, var(--color-noir) 50%, var(--color-creme) 50%);
+}
+.article__une img{
+  display:block;
+  width:min(100% - 2*var(--space-m), 880px);
+  height:auto;
+  margin-inline:auto;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  border-radius:4px;
+}
 
 /* En-tête d'article */
 .article__meta{
@@ -747,6 +785,28 @@ strong,b{font-weight:600;color:var(--color-creme);}
   color:var(--color-bronze);
 }
 .liste-articles--compacte .liste-articles__titre{ font-size:1.05rem; }
+
+/* Listing illustré : le visuel passe au-dessus sur mobile, à gauche dès
+   qu'il y a la place. */
+.liste-articles--visuels a{ gap:16px; }
+.liste-articles__visuel{ display:block; }
+.liste-articles__visuel img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:3/2;
+  object-fit:cover;
+  border-radius:4px;
+}
+.liste-articles__texte{ display:grid; gap:8px; }
+
+@media (min-width:640px){
+  .liste-articles--visuels a{
+    grid-template-columns:220px 1fr;
+    align-items:start;
+    gap:22px;
+  }
+}
 
 /* Meme liste posee sur fond clair */
 .section--creme .liste-articles li + li{

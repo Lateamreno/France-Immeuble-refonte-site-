@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
@@ -64,16 +65,35 @@ export default function BlogPage() {
 
       <section className="section">
         <div className="container container--narrow">
-          <ul className="liste-articles">
-            {articles.map((a) => (
+          {/*
+            Chaque article porte son visuel : on comprend de quoi il parle
+            avant de lire le titre. `sizes` reste modeste — la vignette ne
+            dépasse jamais 380 px, inutile de servir du 1400.
+          */}
+          <ul className="liste-articles liste-articles--visuels">
+            {articles.map((a, i) => (
               <li key={a.slug}>
                 <Link href={a.chemin}>
-                  <span className="liste-articles__titre">{a.h1}</span>
-                  {a.seoDesc && <span className="liste-articles__resume">{a.seoDesc}</span>}
-                  <span className="liste-articles__date">
-                    <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
-                    <span aria-hidden="true"> · </span>
-                    {dureeLecture(a.contenuHtml)} min
+                  {a.imageUne && (
+                    <span className="liste-articles__visuel">
+                      <Image
+                        src={a.imageUne}
+                        alt={a.imageUneAlt ?? ""}
+                        width={380}
+                        height={254}
+                        sizes="(max-width: 720px) 100vw, 220px"
+                        priority={i < 2}
+                      />
+                    </span>
+                  )}
+                  <span className="liste-articles__texte">
+                    <span className="liste-articles__titre">{a.h1}</span>
+                    {a.seoDesc && <span className="liste-articles__resume">{a.seoDesc}</span>}
+                    <span className="liste-articles__date">
+                      <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
+                      <span aria-hidden="true"> · </span>
+                      {dureeLecture(a.contenuHtml)} min
+                    </span>
                   </span>
                 </Link>
               </li>

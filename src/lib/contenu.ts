@@ -23,6 +23,9 @@ export type Article = {
   seoDesc: string | null;
   canonical: string | null;
   ogImage: string | null;
+  /** Image à la une, reprise de WordPress. Sert d'accroche au listing. */
+  imageUne: string | null;
+  imageUneAlt: string | null;
   noindex: boolean;
   publishedAt: string;
   updatedAt: string;
