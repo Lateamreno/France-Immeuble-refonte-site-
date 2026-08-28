@@ -38,6 +38,7 @@ export function Footer() {
               <li><Link href="/vendre-a-la-decoupe/">Vendre à la découpe</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
               <li><Link href="/immeubles-vendus/">Nos biens vendus</Link></li>
+              <li><Link href="/blog/">Blog</Link></li>
             </ul>
           </div>
 

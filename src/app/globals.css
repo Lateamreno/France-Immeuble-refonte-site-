@@ -609,3 +609,152 @@ strong,b{font-weight:600;color:var(--color-creme);}
   content:"";position:absolute;inset:0;
   background:linear-gradient(to top, rgba(10,10,10,.72), transparent 55%);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   11. CONTENU ÉDITORIAL
+   Les articles repris du WordPress sont injectés en HTML brut : leur mise en
+   forme se joue donc ici, au sélecteur, et non par des classes posées balise
+   par balise. Portée volontairement limitée à `.prose`.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.prose{
+  max-width:68ch;
+  margin-inline:auto;
+  padding-block:clamp(40px,6vw,72px);
+  font-family:var(--font-body);
+  font-size:1.0625rem;
+  line-height:1.72;
+  color:color-mix(in srgb, var(--color-noir) 82%, var(--color-creme));
+}
+
+/* Filet de securite : une URL ou un mot tres long ne doit jamais pousser la
+   page a defiler horizontalement. */
+.prose{ overflow-wrap:anywhere; }
+.prose > * + *{ margin-top:1.35em; }
+
+/* Un tableau repris peut etre plus large que l'ecran : il defile seul. */
+.prose table{ display:block; width:max-content; max-width:100%; overflow-x:auto; }
+
+.prose h2,
+.prose h3{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing:-0.015em;
+  line-height:1.08;
+  color:var(--color-noir);
+  margin-top:2.2em;
+}
+.prose h2{ font-size:clamp(1.5rem,3.4vw,2rem); }
+.prose h3{ font-size:clamp(1.2rem,2.6vw,1.45rem); }
+.prose h2 + *, .prose h3 + *{ margin-top:.7em; }
+
+.prose strong{ color:var(--color-noir); font-weight:600; }
+
+.prose a{
+  color:var(--color-bronze-hover);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  text-decoration-thickness:1px;
+}
+.prose a:hover{ color:var(--color-noir); }
+
+.prose ul,
+.prose ol{ padding-left:1.3em; }
+.prose li + li{ margin-top:.5em; }
+.prose ul li::marker{ color:var(--color-bronze); }
+
+/* Le filet bronze à gauche : signature groupe (§3). */
+.prose blockquote{
+  margin-inline:0;
+  padding:.2em 0 .2em 1.4em;
+  border-left:2px solid var(--color-bronze);
+  font-size:1.1em;
+  line-height:1.55;
+  color:var(--color-noir);
+}
+.prose blockquote p + p{ margin-top:.7em; }
+
+.prose figure{ margin-inline:0; }
+.prose img{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:4px;
+}
+.prose figcaption{
+  margin-top:.7em;
+  font-family:var(--font-mono-site);
+  font-size:.8rem;
+  letter-spacing:.04em;
+  color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));
+}
+
+/* Les tableaux du contenu repris débordent sur mobile : ils défilent seuls,
+   la page ne défile jamais horizontalement. */
+.prose table{ width:100%; border-collapse:collapse; font-size:.95rem; }
+.prose figure:has(table){ overflow-x:auto; }
+.prose th, .prose td{
+  padding:.6em .8em;
+  border-bottom:1px solid color-mix(in srgb, var(--color-noir) 14%, transparent);
+  text-align:left;
+}
+.prose th{ font-weight:600; color:var(--color-noir); }
+
+/* En-tête d'article */
+.article__meta{
+  margin-top:14px;
+  font-family:var(--font-mono-site);
+  font-size:.8rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--color-gris);
+}
+.article__cta{ text-align:center; }
+.article__cta .btn-row{ justify-content:center; }
+
+/* Listing d'articles.
+   Le site est sombre par defaut : les couleurs de base sont donc celles du
+   fond noir, et c'est `.section--creme` qui les inverse — jamais l'inverse. */
+.liste-articles{ list-style:none; padding:0; margin:0; }
+.liste-articles li + li{ border-top:1px solid var(--color-ligne); }
+.liste-articles a{
+  display:grid;
+  gap:8px;
+  padding:26px 0;
+  text-decoration:none;
+  color:inherit;
+}
+.liste-articles__titre{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing:-0.015em;
+  line-height:1.1;
+  font-size:clamp(1.15rem,2.4vw,1.4rem);
+  color:var(--color-creme);
+  transition:color .2s ease;
+}
+.liste-articles a:hover .liste-articles__titre{ color:var(--color-bronze); }
+.liste-articles__resume{
+  font-size:.95rem;
+  line-height:1.6;
+  color:var(--color-gris);
+}
+.liste-articles__date{
+  font-family:var(--font-mono-site);
+  font-size:.75rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--color-bronze);
+}
+.liste-articles--compacte .liste-articles__titre{ font-size:1.05rem; }
+
+/* Meme liste posee sur fond clair */
+.section--creme .liste-articles li + li{
+  border-color:color-mix(in srgb, var(--color-noir) 12%, transparent);
+}
+.section--creme .liste-articles__titre{ color:var(--color-noir); }
+.section--creme .liste-articles a:hover .liste-articles__titre{ color:var(--color-bronze-hover); }
+.section--creme .liste-articles__resume{
+  color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));
+}
+.section--creme .liste-articles__date{ color:var(--color-bronze-profond); }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Eyebrow } from "@/components/Eyebrow";
+import { tousLesArticles } from "@/lib/contenu";
 
 /** /plan-du-site/ — URL existante conservée (CLAUDE.md §10). */
 export const metadata: Metadata = {
@@ -17,6 +18,10 @@ const SECTIONS = [
       { href: "/vendre-a-la-decoupe/", label: "Vendre à la découpe" },
       { href: "/estimer-un-immeuble/", label: "Estimer un immeuble" },
     ],
+  },
+  {
+    titre: "Blog",
+    liens: [{ href: "/blog/", label: "Tous les articles" }],
   },
   {
     titre: "Acheter",
@@ -53,11 +58,17 @@ export default function PlanDuSite() {
               </ul>
             </div>
           ))}
+          <div className="railed railed--thin">
+            <h3 style={{ marginBottom: "var(--space-xs)" }}>Articles</h3>
+            <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {tousLesArticles().map((a) => (
+                <li key={a.slug}>
+                  <Link className="link-arrow" href={a.chemin}>{a.h1}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
-        <p className="small muted" style={{ marginTop: "var(--space-xl)" }}>
-          Le blog et ses articles rejoindront ce plan une fois le pipeline de contenu en place.
-        </p>
       </div>
     </section>
   );
