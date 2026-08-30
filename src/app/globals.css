@@ -837,3 +837,169 @@ strong,b{font-weight:600;color:var(--color-creme);}
   color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));
 }
 .section--creme .liste-articles__date{ color:var(--color-bronze-profond); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   12. COMPARATIF BLOC / DÉCOUPE
+   Deux scénarios côte à côte, puis leur bilan chiffré. Le second panneau est
+   celui qu'on défend : filet bronze, pas de couleur supplémentaire.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.compare{display:grid;gap:var(--space-m);}
+@media (min-width:840px){ .compare{grid-template-columns:1fr 1fr;} }
+
+.compare__col{
+  border:1px solid var(--color-ligne);
+  border-radius:6px;
+  padding:clamp(20px,3vw,30px);
+  background:color-mix(in srgb, var(--color-noir-2) 70%, transparent);
+}
+.compare__col--retenu{
+  border-color:var(--color-bronze-profond);
+  border-left-width:2px;
+  background:color-mix(in srgb, var(--color-bronze) 6%, var(--color-noir-2));
+}
+.compare__eyebrow{
+  display:block;
+  font-family:var(--font-mono-site);
+  font-size:.72rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--color-bronze);
+  margin-bottom:10px;
+}
+.compare__prix{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing:-0.02em;
+  line-height:1;
+  font-size:clamp(2.4rem,6vw,3.4rem);
+  color:var(--color-creme);
+}
+.compare__col--retenu .compare__prix{ color:var(--color-bronze-clair-2); }
+
+.compare__lignes{list-style:none;padding:0;margin:var(--space-m) 0 0;display:grid;gap:0;}
+.compare__lignes li{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+  padding:11px 0;
+  border-top:1px solid var(--color-ligne);
+  font-size:.9rem;
+}
+.compare__lignes dt,.compare__lignes .k{color:var(--color-gris);}
+.compare__lignes .v{color:var(--color-creme);font-weight:500;text-align:right;}
+
+/* L'écart, en bandeau : c'est le chiffre que le lecteur doit retenir. */
+.ecart{
+  margin-top:var(--space-m);
+  border:1px solid var(--color-bronze-profond);
+  border-radius:6px;
+  background:color-mix(in srgb, var(--color-bronze) 12%, var(--color-noir));
+  padding:clamp(22px,3.5vw,32px);
+  text-align:center;
+}
+.ecart__val{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing:-0.02em;
+  line-height:1;
+  font-size:clamp(2.2rem,6vw,3.2rem);
+  color:var(--color-bronze-clair);
+}
+.ecart__lbl{
+  display:block;
+  margin-top:10px;
+  font-size:.9rem;
+  color:var(--color-gris);
+}
+
+/* Réservé aux lecteurs d'écran : la légende du tableau leur donne le
+   contexte que la mise en page donne à l'œil. */
+.sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0;
+}
+
+/* Tableau de bilan — il déborde sur mobile et défile seul. */
+.tableau-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tableau{
+  width:100%;
+  min-width:520px;
+  border-collapse:collapse;
+  font-size:.92rem;
+}
+.tableau th,.tableau td{
+  padding:13px 14px;
+  text-align:right;
+  border-bottom:1px solid var(--color-ligne);
+  white-space:nowrap;
+}
+.tableau th:first-child,.tableau td:first-child{text-align:left;white-space:normal;}
+.tableau thead th{
+  font-family:var(--font-mono-site);
+  font-size:.72rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--color-bronze);
+  font-weight:400;
+}
+.tableau td{color:var(--color-gris);}
+.tableau td:first-child{color:var(--color-creme);}
+.tableau .tableau__total td{
+  border-top:1px solid var(--color-bronze-profond);
+  border-bottom:0;
+  padding-top:16px;
+  color:var(--color-creme);
+  font-weight:600;
+}
+.tableau .tableau__total td:last-child{color:var(--color-bronze-clair-2);}
+.tableau__note{
+  margin-top:var(--space-s);
+  font-size:.82rem;
+  color:var(--color-gris);
+}
+
+/* Grille d'honoraires */
+.tarifs{list-style:none;padding:0;margin:0;display:grid;gap:0;}
+.tarifs li{
+  display:grid;
+  gap:4px 18px;
+  padding:16px 0;
+  border-top:1px solid var(--color-ligne);
+}
+@media (min-width:640px){
+  .tarifs li{grid-template-columns:1fr auto;align-items:baseline;}
+}
+.tarifs li:first-child{border-top:0;padding-top:0;}
+.tarifs__nom{color:var(--color-creme);font-weight:500;}
+.tarifs__val{
+  font-family:var(--font-mono-site);
+  font-size:.95rem;
+  color:var(--color-bronze-clair-2);
+}
+.tarifs__note{grid-column:1/-1;font-size:.85rem;color:var(--color-gris);}
+
+/* Le cadre légal : une liste de contraintes, pas des cartes. */
+.cadre{list-style:none;padding:0;margin:0;display:grid;gap:0;}
+.cadre li{
+  padding:14px 0 14px 22px;
+  border-top:1px solid var(--color-ligne);
+  position:relative;
+  font-size:.95rem;
+  color:var(--color-gris);
+}
+.cadre li:first-child{border-top:0;}
+.cadre li::before{
+  content:"";
+  position:absolute;
+  left:0;top:22px;
+  width:8px;height:1px;
+  background:var(--color-bronze);
+}
+.cadre strong{color:var(--color-creme);font-weight:600;}
