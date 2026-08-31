@@ -150,8 +150,8 @@ export default function ImmeublesVendus() {
               Le prochain sera peut-être le vôtre
             </h2>
             <p className="lead" style={{ maxWidth: "50ch", margin: "var(--space-s) auto var(--space-l)" }}>
-              Estimation sous 48&nbsp;h, sans engagement, et sans que votre immeuble apparaisse
-              nulle part.
+              Estimation sous 48&nbsp;h, sans engagement : rien n’est publié tant que vous ne
+              l’avez pas décidé.
             </p>
             <div className="btn-row" style={{ justifyContent: "center" }}>
               <Button href="/estimer-un-immeuble/" icone>Estimer mon immeuble</Button>

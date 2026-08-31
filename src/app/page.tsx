@@ -86,8 +86,9 @@ export default function Accueil() {
               <Eyebrow>Vous vendez</Eyebrow>
               <h2>Savoir ce que vaut votre immeuble, sans que personne ne l’apprenne</h2>
               <p>
-                Estimation sous 48&nbsp;h appuyée sur nos propres transactions. Aucune annonce,
-                aucune diffusion, aucune pancarte — rien ne sort tant que vous ne l’avez pas décidé.
+                Estimation sous 48&nbsp;h appuyée sur nos propres transactions. Votre dossier part
+                d’abord à notre fichier d’investisseurs, et rien ne sort tant que vous ne
+                l’avez pas décidé.
               </p>
               <div className="btn-row">
                 <Button href="/estimer-un-immeuble/" icone>Estimer mon immeuble</Button>
@@ -97,7 +98,7 @@ export default function Accueil() {
 
             <Reveal className="porte" delayIndex={1}>
               <Eyebrow>Vous achetez</Eyebrow>
-              <h2>Accéder aux immeubles qu’on ne trouve nulle part</h2>
+              <h2>Accéder aux immeubles avant qu’ils ne circulent</h2>
               <p>
                 Nos dossiers ne sont pas diffusés. Déposez vos critères et recevez ceux qui
                 correspondent, avant qu’ils ne soient présentés plus largement.
@@ -117,16 +118,17 @@ export default function Accueil() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Notre modèle</Eyebrow>
-            <h2>Une annonce publique coûte cher au&nbsp;vendeur</h2>
+            <h2>Commencer par le fichier, pas par le&nbsp;portail</h2>
             <p className="lead">
-              Un immeuble affiché sur les portails est vu par ses locataires, ses voisins et ses
-              concurrents. Et son prix baisse à mesure qu’il reste en ligne.
+              Un immeuble affiché d’emblée sur les portails est vu par ses locataires, ses voisins
+              et ses concurrents — et son prix baisse à mesure qu’il reste en ligne. Nous
+              présentons d’abord le dossier aux investisseurs qui l’attendent.
             </p>
           </Reveal>
 
           <div className="grid grid--3">
             {[
-              { n: "01", t: "Discrétion totale", p: "Aucune annonce, aucune photo en ligne. Vos locataires n’apprennent pas la vente par une vitrine." },
+              { n: "01", t: "Discrétion maîtrisée", p: "Le dossier circule auprès d’investisseurs identifiés, pas sur la place publique. Vos locataires n’apprennent pas la vente par une vitrine." },
               { n: "02", t: "Pas de décote de durée", p: "Un bien resté six mois en ligne se négocie à la baisse. En off-market, l’immeuble n’a pas d’historique public." },
               { n: "03", t: "Que des acheteurs réels", p: "Nous ne présentons le dossier qu’à des investisseurs dont nous connaissons la capacité de financement." },
             ].map((c, i) => (
@@ -194,10 +196,11 @@ export default function Accueil() {
 
       {/* ===== RESPIRATION ===== */}
       <BandeMedia image={VISUELS.skylineCrepuscule.src} alt={VISUELS.skylineCrepuscule.alt}>
-        <h2>{PREUVES.immeublesTraites} immeubles, et pas une seule annonce</h2>
+        <h2>{PREUVES.immeublesTraites} immeubles vendus de gré à&nbsp;gré</h2>
         <p>
-          Depuis {PREUVES.depuis}, chaque vente s’est faite sans vitrine, sans portail et sans
-          pancarte. C’est notre méthode, et c’est aussi ce qui explique nos délais.
+          Depuis {PREUVES.depuis}, nos ventes se font d’abord dans le fichier : le dossier part
+          aux investisseurs qui l’attendent avant d’aller où que ce soit d’autre. C’est notre
+          méthode, et c’est aussi ce qui explique nos délais.
         </p>
       </BandeMedia>
 
@@ -243,7 +246,7 @@ export default function Accueil() {
             <h2>Combien vaut votre immeuble aujourd’hui&nbsp;?</h2>
             <p className="lead">
               Quatre questions sur le bien, et nous revenons sous 48&nbsp;h avec une fourchette
-              argumentée. Sans engagement, et sans que votre immeuble apparaisse nulle part.
+              argumentée. Sans engagement : rien n’est publié tant que vous ne l’avez pas décidé.
             </p>
             <div className="btn-row">
               <Button href="/estimer-un-immeuble/" icone>Estimer mon immeuble</Button>

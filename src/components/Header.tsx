@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV, SITE } from "@/lib/site";
 import { Button } from "./Button";
+import { Logo } from "./Logo";
 
 export function Header() {
   const pathname = usePathname();
@@ -37,8 +38,10 @@ export function Header() {
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`.trim()}>
       <div className="container site-header__inner">
-        <Link className="brand" href="/">
-          France<span>&nbsp;Immeuble</span>
+        <Link className="brand" href="/" aria-label="France Immeuble — accueil">
+          {/* `titre={null}` : le nom accessible vient du lien, inutile de le
+              doubler dans le SVG (le lecteur d'écran l'annoncerait deux fois). */}
+          <Logo titre={null} />
         </Link>
 
         <nav

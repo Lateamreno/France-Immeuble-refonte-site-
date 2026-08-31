@@ -107,7 +107,7 @@ export default function BlogPage() {
           <h2>Une question sur votre immeuble&nbsp;?</h2>
           <p className="lead">
             Un échange de quinze minutes vaut mieux qu’un article. Estimation confidentielle
-            sous 48&nbsp;h, sans diffusion publique de votre bien.
+            sous 48&nbsp;h, et votre immeuble présenté d’abord à notre fichier d’investisseurs.
           </p>
           <div className="btn-row">
             <Button href="/estimer-un-immeuble/">Estimer mon immeuble</Button>

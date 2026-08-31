@@ -110,7 +110,7 @@ export default function DesignSystem() {
             </p>
             <p style={{ marginTop: "var(--space-s)" }}>
               Corps de texte courant. Nous présentons votre immeuble à un fichier d’investisseurs déjà
-              qualifiés, sans annonce publique ni visite de curieux.
+              qualifiés, avant toute diffusion publique.
             </p>
           </div>
           <div className="sg-row">
@@ -161,8 +161,8 @@ export default function DesignSystem() {
             <div className="grid grid--3">
               <article className="card">
                 <span className="card__num">01</span>
-                <h3>Discrétion totale</h3>
-                <p>Aucune annonce, aucune pancarte.</p>
+                <h3>Discrétion maîtrisée</h3>
+                <p>Le dossier circule auprès d’investisseurs identifiés.</p>
               </article>
               <article className="card">
                 <span className="card__num">02</span>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PREUVES, SITE, nombre } from "@/lib/site";
+import { Logo } from "./Logo";
 
 /**
  * Footer global.
@@ -15,8 +16,8 @@ export function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-col">
-            <Link className="brand" href="/">
-              France<span>&nbsp;Immeuble</span>
+            <Link className="brand" href="/" aria-label="France Immeuble — accueil">
+              <Logo titre={null} />
             </Link>
             <p className="small muted" style={{ marginTop: "var(--space-s)", maxWidth: "34ch" }}>
               Agence spécialisée dans la vente d&rsquo;immeubles de rapport en bloc.{" "}

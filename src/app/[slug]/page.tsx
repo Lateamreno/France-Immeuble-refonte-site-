@@ -164,7 +164,7 @@ export default async function ArticlePage({ params }: Params) {
             <h2>Vous avez un immeuble à vendre&nbsp;?</h2>
             <p className="lead">
               Estimation confidentielle sous 48&nbsp;h. Nous présentons votre bien à notre
-              fichier d’investisseurs sans jamais le diffuser publiquement.
+              fichier d’investisseurs avant toute diffusion publique.
             </p>
             <div className="btn-row">
               <Button href="/estimer-un-immeuble/">Estimer mon immeuble</Button>

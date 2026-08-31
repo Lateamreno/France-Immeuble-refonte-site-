@@ -259,12 +259,20 @@ strong,b{font-weight:600;color:var(--color-creme);}
 }
 .site-header.is-scrolled{background:rgba(10,10,10,.94);border-bottom-color:var(--color-ligne);}
 .site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-s);min-height:76px;}
+/* Le logo de charte, inline (composant Logo).
+   Le mot suit `currentColor` : creme sur fond sombre, noir sur fond clair,
+   sans second fichier. Seul le logogramme garde l'accent bronze. */
 .brand{
-  font-family:var(--font-display);
-  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
-  font-size:1.02rem;letter-spacing:-0.01em;color:var(--color-creme);text-transform:uppercase;
+  display:inline-flex;align-items:center;
+  color:var(--color-creme);
+  --logo-accent:var(--color-bronze);
 }
-.brand span{color:var(--color-bronze);}
+.brand svg{height:32px;width:auto;display:block;}
+.brand:hover{color:var(--color-creme);}
+.brand:hover svg{opacity:.85;}
+.brand svg,.brand:hover svg{transition:opacity var(--dur) var(--ease);}
+.section--creme .brand,.brand--sombre{color:var(--color-noir);}
+@media (max-width:520px){ .brand svg{height:26px;} }
 .nav{display:flex;align-items:center;gap:clamp(16px,2vw,30px);}
 .nav > .btn{display:none;}
 .nav a{white-space:nowrap;font-size:var(--fs-small);color:var(--color-gris);transition:color var(--dur) var(--ease);position:relative;padding-block:6px;}

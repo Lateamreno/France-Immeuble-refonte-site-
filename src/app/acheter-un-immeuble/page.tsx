@@ -17,7 +17,7 @@ import { VISUELS } from "@/lib/visuels";
 export const metadata: Metadata = {
   title: "Acheter un immeuble de rapport",
   description:
-    "Accédez aux immeubles de rapport que nous ne diffusons nulle part. Déposez votre recherche : vous recevez les dossiers correspondants avant toute présentation à d’autres acquéreurs.",
+    "Accédez aux immeubles de rapport avant leur diffusion. Déposez votre recherche : vous recevez les dossiers correspondants avant toute présentation à d’autres acquéreurs.",
   alternates: { canonical: "/acheter-un-immeuble/" },
 };
 
@@ -31,14 +31,14 @@ export default function Acheter() {
       >
         <>
           <Eyebrow>Accès investisseurs</Eyebrow>
-          <h1 style={{ maxWidth: "17ch", marginBottom: "var(--space-m)" }}>
-            Les immeubles que nous vendons ne sont annoncés{" "}
-            <span className="accent">nulle part</span>
+          <h1 style={{ maxWidth: "19ch", marginBottom: "var(--space-m)" }}>
+            Les meilleurs immeubles partent{" "}
+            <span className="accent">avant d’être annoncés</span>
           </h1>
           <p className="lead" style={{ maxWidth: "58ch" }}>
-            C’est ce que nous promettons aux propriétaires, et c’est pour ça qu’ils nous confient
-            leurs immeubles. Vous ne trouverez donc aucune annonce sur cette page — mais un accès
-            au fichier auquel ces dossiers sont présentés en premier.
+            C’est ce que nous promettons aux propriétaires : leur dossier est présenté à notre
+            fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page —
+            mais l’accès à ceux qui circulent en premier.
           </p>
           <div className="hero-proof" style={{ marginTop: "var(--space-l)" }}>
             <div className="hero-proof__item">
@@ -93,10 +93,11 @@ export default function Acheter() {
       </section>
 
       <BandeMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
-        <h2>Ce que vous ne verrez jamais sur un portail</h2>
+        <h2>Ce qu’un portail ne vous donnera pas</h2>
         <p>
-          Nos vendeurs viennent parce que rien ne sort. Vous en profitez de l’autre côté :
-          des dossiers que personne d’autre n’a encore vus.
+          Nos vendeurs viennent parce que leur dossier ne part pas d’emblée sur la place
+          publique. Vous en profitez de l’autre côté : des immeubles présentés au fichier
+          avant tout le monde, avec les baux et les comptes sur la table.
         </p>
       </BandeMedia>
 

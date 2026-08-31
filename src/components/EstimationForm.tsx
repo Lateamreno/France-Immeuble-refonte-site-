@@ -291,8 +291,7 @@ function Resultat({ verdict, prenom }: { verdict: Verdict; prenom: string }) {
         <p>Rendement brut calculé sur vos chiffres&nbsp;: <strong>{rdt.toFixed(1)} %</strong>.</p>
       )}
       <p>
-        Rien n’est diffusé, rien n’est publié. Votre immeuble n’apparaîtra nulle part tant que
-        vous ne l’aurez pas décidé.
+        Rien n’est diffusé, rien n’est publié tant que vous ne l’aurez pas décidé.
       </p>
       <div className="btn-row">
         <a className="btn btn--outline" href={SITE.telHref}>

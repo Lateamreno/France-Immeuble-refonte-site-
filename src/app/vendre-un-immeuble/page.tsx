@@ -76,6 +76,18 @@ const QUESTIONS: QuestionFaq[] = [
     ),
   },
   {
+    question: "Comment mes locataires vivent-ils la vente ?",
+    reponse: (
+      <p>
+        Généralement bien, parce qu’ils sont protégés. Le bail suit l’immeuble : le locataire garde
+        son logement, son loyer et son ancienneté, quel que soit l’acquéreur, et le changement de
+        propriétaire ne lui ouvre aucun risque de congé qui n’existait pas déjà. Nous restons
+        discrets pendant la commercialisation — pas de visites de curieux, pas de va-et-vient — et
+        nous nous chargeons de l’information au bon moment, dans les formes.
+      </p>
+    ),
+  },
+  {
     question: "Combien de temps prend une vente en bloc ?",
     reponse: (
       <p>
@@ -147,8 +159,8 @@ export default function VendreUnImmeuble() {
 
           <p className="lead">
             Nous présentons votre immeuble à un fichier de {nombre(PREUVES.investisseurs)}{" "}
-            investisseurs déjà qualifiés. Pas d’annonce publique, pas de visites de curieux : une
-            short-list d’acquéreurs solvables, et une offre écrite.
+            investisseurs déjà qualifiés, avant toute diffusion publique. Pas de visites de
+            curieux : une short-list d’acquéreurs solvables, et une offre écrite.
           </p>
 
           <div className="btn-row">
@@ -236,10 +248,11 @@ export default function VendreUnImmeuble() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Pourquoi l’off-market</Eyebrow>
-            <h2>Une annonce publique coûte cher au&nbsp;vendeur</h2>
+            <h2>Commencer par le fichier, pas par le&nbsp;portail</h2>
             <p className="lead">
-              Un immeuble affiché sur les portails est vu par tout le monde : vos locataires, vos
-              voisins, vos concurrents. Et son prix baisse à mesure qu’il reste en ligne.
+              Un immeuble affiché d’emblée sur les portails est vu par tout le monde : vos
+              locataires, vos voisins, vos concurrents. Et son prix baisse à mesure qu’il reste en
+              ligne. Nous présentons d’abord le dossier aux investisseurs qui l’attendent.
             </p>
           </Reveal>
 
@@ -247,13 +260,13 @@ export default function VendreUnImmeuble() {
             {[
               {
                 n: "01",
-                t: "Discrétion totale",
-                p: "Aucune annonce, aucune photo en ligne, aucune pancarte. Vos locataires n’apprennent pas la vente par une vitrine, et vos partenaires bancaires non plus.",
+                t: "Discrétion maîtrisée",
+                p: "Le dossier circule auprès d’investisseurs identifiés, pas sur la place publique. Vos locataires n’apprennent pas la vente par une vitrine, et vos partenaires bancaires non plus.",
               },
               {
                 n: "02",
                 t: "Pas de décote de durée",
-                p: "Un bien resté six mois sur un portail se négocie à la baisse : l’acquéreur sait qu’il n’est pas parti. En off-market, l’immeuble n’a pas d’historique public.",
+                p: "Un bien resté six mois sur un portail se négocie à la baisse : l’acquéreur sait qu’il n’est pas parti. Tant qu’il reste off-market, l’immeuble n’a pas d’historique public.",
               },
               {
                 n: "03",
@@ -412,10 +425,12 @@ export default function VendreUnImmeuble() {
 
       {/* ===== RESPIRATION ===== */}
       <BandeMedia image={VISUELS.interieurToits.src} alt={VISUELS.interieurToits.alt}>
-        <h2>Vos locataires l’apprendront à la signature, pas avant</h2>
+        <h2>Vendre avec vos locataires en place se passe bien</h2>
         <p>
-          Aucune annonce, aucune photo en ligne, aucune pancarte sur la façade. C’est la
-          première chose que nous promettons, et la dernière sur laquelle nous transigeons.
+          Le bail suit l’immeuble : vos locataires gardent leur logement, leur loyer et leur
+          ancienneté, quel que soit l’acquéreur. C’est la loi, pas une faveur — et c’est ce qui
+          rend ces ventes fluides. Nous restons discrets pendant la commercialisation, et nous
+          nous chargeons de les informer au bon moment, dans les formes.
         </p>
       </BandeMedia>
 
@@ -440,7 +455,7 @@ export default function VendreUnImmeuble() {
             <h2>Combien vaut votre immeuble aujourd’hui&nbsp;?</h2>
             <p className="lead">
               Quelques questions sur le bien, et nous revenons vers vous sous 48 h avec une fourchette
-              argumentée. Sans engagement, et sans que votre immeuble n’apparaisse nulle part.
+              argumentée. Sans engagement : rien n’est publié tant que vous ne l’avez pas décidé.
             </p>
             <div className="btn-row">
               <Button href="/estimer-un-immeuble/" icone>

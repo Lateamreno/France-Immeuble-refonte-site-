@@ -14,7 +14,7 @@ import { VISUELS } from "@/lib/visuels";
 export const metadata: Metadata = {
   title: "Estimer un immeuble de rapport",
   description:
-    "Estimation confidentielle d’immeuble de rapport sous 48 h, appuyée sur 365 transactions réelles. Sans engagement, sans diffusion, sans que votre immeuble n’apparaisse nulle part.",
+    "Estimation confidentielle d’immeuble de rapport sous 48 h, appuyée sur 365 transactions réelles. Sans engagement : rien ne sort tant que vous ne l’avez pas décidé.",
   alternates: { canonical: "/estimer-un-immeuble/" },
 };
 
@@ -45,8 +45,8 @@ export default function Estimer() {
             <div className="railed" style={{ marginBottom: "var(--space-l)" }}>
               <h3 style={{ marginBottom: "var(--space-2xs)" }}>Rien ne sort d’ici</h3>
               <p className="muted">
-                Pas d’annonce, pas de diffusion, pas de pancarte. Une estimation n’engage à rien
-                et votre immeuble n’apparaît nulle part tant que vous ne l’avez pas décidé.
+                Une estimation n’engage à rien : nous n’en tirons ni annonce, ni diffusion, ni
+                pancarte. Rien ne sort tant que vous ne l’avez pas décidé.
               </p>
             </div>
 
