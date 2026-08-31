@@ -343,6 +343,11 @@ strong,b{font-weight:600;color:var(--color-creme);}
 /* ==========================================================================
    11. FORMULAIRES — tunnels de qualification (estimation, recherche acquéreur)
    ========================================================================== */
+/* Cibles d'ancre : le header est collant sur 76 px, sans dégagement le titre
+   visé se retrouve dessous. Le défilement doux est déjà réglé au §2, réduction
+   d'animation comprise. */
+:target{scroll-margin-top:96px;}
+
 .form-shell{
   background:var(--color-noir-3);
   border:1px solid var(--color-ligne);
@@ -350,18 +355,6 @@ strong,b{font-weight:600;color:var(--color-creme);}
   padding:clamp(22px,3vw,38px);
 }
 .section--creme .form-shell{background:var(--color-noir);color:var(--color-creme);}
-
-.progress{display:flex;align-items:center;gap:12px;margin-bottom:var(--space-m);}
-.progress__track{flex:1;height:2px;background:var(--color-ligne);border-radius:999px;overflow:hidden;}
-.progress__fill{
-  display:block;height:100%;
-  background:linear-gradient(90deg,var(--color-bronze-profond),var(--color-bronze));
-  transition:width .45s var(--ease);
-}
-.progress__label{
-  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--color-gris);white-space:nowrap;
-}
 
 .step-head{margin-bottom:var(--space-m);}
 .step-head h3{margin-bottom:8px;}
@@ -430,6 +423,29 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .outcome__badge--autre{border-color:var(--color-ligne);color:var(--color-gris);background:transparent;}
 .outcome p{color:var(--color-gris);}
 
+/* Mention sous le bouton d'envoi — la promesse de discrétion, là où elle se lit. */
+.form-note{
+  margin-top:var(--space-s);font-size:var(--fs-small);color:var(--color-gris);
+  border-left:1px solid var(--color-bronze-profond);padding-left:12px;
+}
+
+/* Le complément facultatif, proposé APRÈS la confirmation d'envoi.
+   Le filet horizontal marque la rupture : ce qui précède est acquis,
+   ce qui suit est un bonus. */
+.complement{
+  margin-top:var(--space-m);padding-top:var(--space-m);
+  border-top:1px solid var(--color-ligne);
+}
+.complement__intro{margin-bottom:var(--space-m);}
+.complement__intro h4{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing:-0.015em;line-height:1.04;
+  font-size:1.15rem;margin-bottom:6px;color:var(--color-creme);
+}
+.complement__intro p{color:var(--color-gris);font-size:var(--fs-small);}
+.section--creme .complement__intro h4{color:var(--color-creme);}
+
 /* bandeau de preuve — partagé par plusieurs pages */
 .hero-proof{
   display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-l);align-items:center;
@@ -467,6 +483,13 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .cta-final .lead{max-width:52ch;margin:var(--space-s) auto var(--space-l);}
 .cta-final .btn-row{justify-content:center;}
 .cta-final .eyebrow{justify-content:center;}
+/* Variante « le CTA EST le formulaire » : deux colonnes, tout à gauche.
+   Un champ de saisie centré est illisible — l'œil perd le bord d'attaque. */
+.cta-final--form > .container{text-align:left;}
+.cta-final--form h2{margin-inline:0;}
+.cta-final--form .lead{margin-inline:0;}
+.cta-final--form .btn-row,
+.cta-final--form .eyebrow{justify-content:flex-start;}
 .cta-contact{
   margin-top:var(--space-xl);padding-top:var(--space-m);
   border-top:1px solid var(--color-ligne);

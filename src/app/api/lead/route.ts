@@ -53,7 +53,7 @@ export async function POST(req: Request) {
   if (!endpoint) {
     console.warn(
       "[lead] BO_LEAD_ENDPOINT absent — LEAD NON ENREGISTRÉ.",
-      JSON.stringify({ type: body.type, piste: verdict.piste }),
+      JSON.stringify({ type: body.type, etat: body.etat, ref: body.ref, piste: verdict.piste }),
     );
     return NextResponse.json({ ok: true, piste: verdict.piste, stocke: false });
   }

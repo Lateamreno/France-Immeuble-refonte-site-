@@ -24,7 +24,11 @@ export function Button({
   const classes = ["btn", `btn--${variant}`, wide ? "btn--wide" : ""]
     .filter(Boolean)
     .join(" ");
-  const externe = href.startsWith("tel:") || href.startsWith("mailto:") || href.startsWith("http");
+  // Une ancre de même page (#estimer) doit rester un <a> natif : la passer à
+  // Link déclencherait une navigation là où on veut un simple défilement.
+  const externe =
+    href.startsWith("tel:") || href.startsWith("mailto:") ||
+    href.startsWith("http") || href.startsWith("#");
   const contenu = (
     <>
       {children}

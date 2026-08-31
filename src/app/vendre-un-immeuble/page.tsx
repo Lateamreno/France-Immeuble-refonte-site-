@@ -7,6 +7,7 @@ import { Faq, type QuestionFaq } from "@/components/Faq";
 import { PREUVES, SITE, CALIBRE, nombre } from "@/lib/site";
 import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
+import { EstimationForm } from "@/components/EstimationForm";
 import { VISUELS } from "@/lib/visuels";
 
 /**
@@ -164,7 +165,7 @@ export default function VendreUnImmeuble() {
           </p>
 
           <div className="btn-row">
-            <Button href="/estimer-un-immeuble/" icone>
+            <Button href="#estimer" icone>
               Estimer mon immeuble
             </Button>
             <Button href={SITE.telHref} variant="outline">
@@ -295,7 +296,7 @@ export default function VendreUnImmeuble() {
               Vous savez à chaque étape où en est votre dossier.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/estimer-un-immeuble/" icone>
+              <Button href="#estimer" icone>
                 Démarrer par l’estimation
               </Button>
             </div>
@@ -327,7 +328,7 @@ export default function VendreUnImmeuble() {
               ne se vend pas.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/estimer-un-immeuble/" variant="light" icone>
+              <Button href="#estimer" variant="light" icone>
                 Estimer mon immeuble
               </Button>
               <Button href="/contactez-nous/" variant="ghost-dark">
@@ -447,9 +448,15 @@ export default function VendreUnImmeuble() {
         </div>
       </section>
 
-      {/* ===== CTA FINAL ===== */}
-      <section className="section cta-final section--noir-3">
-        <div className="container">
+      {/*
+        ===== ESTIMATION =====
+        Le formulaire est ICI, pas derrière un lien vers /estimer-un-immeuble/.
+        Renvoyer un vendeur convaincu sur une autre page pour qu'il recommence
+        à lire, c'est perdre la moitié du chemin parcouru. C'est le même
+        composant que sur la page Estimer, donc le même dossier arrive au BO.
+      */}
+      <section id="estimer" className="section cta-final cta-final--form section--noir-3">
+        <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
             <h2>Combien vaut votre immeuble aujourd’hui&nbsp;?</h2>
@@ -458,11 +465,8 @@ export default function VendreUnImmeuble() {
               argumentée. Sans engagement : rien n’est publié tant que vous ne l’avez pas décidé.
             </p>
             <div className="btn-row">
-              <Button href="/estimer-un-immeuble/" icone>
-                Estimer mon immeuble
-              </Button>
               <Button href={SITE.telHref} variant="outline">
-                {SITE.tel}
+                Préférer le téléphone · {SITE.tel}
               </Button>
             </div>
             <div className="cta-contact">
@@ -475,6 +479,11 @@ export default function VendreUnImmeuble() {
               </p>
             </div>
           </Reveal>
+
+          {/* Volontairement HORS <Reveal> : le formulaire est le canal
+              d'acquisition n°1, sa visibilité ne doit dépendre d'aucun
+              observateur de défilement. */}
+          <EstimationForm />
         </div>
       </section>
     </>
