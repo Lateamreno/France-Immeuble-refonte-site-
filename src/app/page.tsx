@@ -10,7 +10,8 @@ import { Picto } from "@/components/Picto";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { AVIS, BIENS_VENDUS, RECHERCHES } from "@/lib/accueil";
+import { BIENS_VENDUS, RECHERCHES } from "@/lib/accueil";
+import { Avis } from "@/components/Avis";
 
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
@@ -168,34 +169,13 @@ export default function Accueil() {
         </div>
       </section>
 
-      <section className="section section--creme">
-        <div className="container">
-          <Reveal className="section__head">
-            <Eyebrow>Ils nous font confiance</Eyebrow>
-            <h2>Témoignages</h2>
-            <p className="lead">
-              Ils ont choisi France Immeuble pour acheter ou vendre leurs immeubles, retrouvez tous
-              leurs avis et découvrez pourquoi ils nous font confiance.
-            </p>
-            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="#estimer" icone>Estimez mon immeuble</Button>
-            </div>
-          </Reveal>
-
-          <div className="avis">
-            {AVIS.map((a, i) => (
-              <Reveal key={a.nom} as="article" className="avis__item" delayIndex={i}>
-                <span className="avis__etoiles" aria-label="5 étoiles sur 5">★★★★★</span>
-                <p>{a.texte}</p>
-                <footer>
-                  <span className="avis__nom">{a.nom}</span>
-                  <span className="avis__date">{a.date}</span>
-                </footer>
-              </Reveal>
-            ))}
-          </div>
+      <Avis
+        intro="Ils ont choisi France Immeuble pour acheter ou vendre leurs immeubles, retrouvez tous leurs avis et découvrez pourquoi ils nous font confiance."
+      >
+        <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+          <Button href="#estimer" icone>Estimez mon immeuble</Button>
         </div>
-      </section>
+      </Avis>
 
       <section className="section section--noir-3">
         <div className="container split">

@@ -3,6 +3,7 @@ import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
+import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
 import { ContactForm } from "@/components/ContactForm";
@@ -202,6 +203,16 @@ export default function VendreUnImmeuble() {
           </div>
         </div>
       </section>
+
+      {/* Les avis arrivent juste avant le formulaire : c'est le moment ou le
+          vendeur hesite, pas en bas de page une fois decide. Trois suffisent,
+          la page d'accueil porte les douze. */}
+      <Avis
+        titre="Ce qu'en disent les vendeurs"
+        compact
+        fond="noir-2"
+        intro="28 avis Google, 4,9/5 de moyenne. Des propriétaires qui nous ont confié un immeuble entier."
+      />
 
       <section id="estimer" className="section section--noir">
         <div className="container split">

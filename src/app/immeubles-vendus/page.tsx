@@ -3,6 +3,7 @@ import Image from "next/image";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
+import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { Picto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
@@ -145,6 +146,10 @@ export default function ImmeublesVendus() {
           </ul>
         </div>
       </section>
+
+      {/* Apres la preuve chiffree : les 44 ventes disent ce qu'on a fait, les
+          avis disent comment ca s'est passe. */}
+      <Avis titre="Ce qu'en disent ceux qui ont signé" compact fond="creme" />
 
       <section className="section section--noir">
         <div className="container" style={{ textAlign: "center" }}>
