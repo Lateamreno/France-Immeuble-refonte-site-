@@ -1,6 +1,6 @@
 -- ============================================================================
 -- À COLLER EN UNE FOIS dans l'éditeur SQL du projet « France Immeuble site ».
--- les migrations 0002, 0003, 0004, puis les 44 ventes. Rejouable sans risque : si une version précédente a
+-- les migrations 0002, 0003, 0004, 0005, puis les 44 ventes. Rejouable sans risque : si une version précédente a
 -- déjà été collée, recoller celle-ci ne casse ni ne duplique rien.
 -- Fichier généré par scripts/graine-ventes.mjs — ne pas l'éditer à la main.
 -- ============================================================================
@@ -352,6 +352,101 @@ begin
 end $$;
 revoke all on function public.remplacer_offmarket(jsonb) from public, anon, authenticated;
 
+-- 0005 — Retours de MAV du 21/10/2026 sur les biens vendus.
+--
+-- 1. Aucune date de vente affichée, URL comprise : le slug d'une vente ne porte
+--    plus l'année (immeuble-de-rapport-<commune>, puis -2, -3…). Les 44 fiches
+--    de départ changent d'adresse une seule fois, le jour de leur mise en ligne,
+--    avant toute indexation (noindex, hors sitemap) ; l'ancienne adresse
+--    redirige vers la nouvelle (src/lib/biens.ts, `ancienSlug`).
+-- 2. Trois faits de plus par vente, déposés par le BO :
+--    • loyer_potentiel : loyer annuel HC potentiel, en euros ;
+--    • ecart_estimation : écart entre le prix de vente et l'estimation, en %
+--      (+3 = vendu 3 % au-dessus de l'estimation) ;
+--    • delai_offre_jours : jours entre la mise en commercialisation (statut
+--      Commercialisé A/B/C/D) et la réception de l'offre retenue.
+--
+-- Rejouable sans risque.
+
+alter table public.ventes
+  add column if not exists loyer_potentiel   numeric check (loyer_potentiel is null or loyer_potentiel > 0),
+  add column if not exists ecart_estimation  numeric check (ecart_estimation is null or ecart_estimation between -100 and 100),
+  add column if not exists delai_offre_jours integer check (delai_offre_jours is null or delai_offre_jours between 0 and 1825);
+
+create or replace function public.ventes_slug()
+returns trigger language plpgsql set search_path = '' as $$
+declare
+  base text;
+  n integer := 1;
+begin
+  if tg_op = 'UPDATE' and old.slug is not null then
+    new.slug := old.slug;          -- une URL publiée ne change plus
+    return new;
+  end if;
+  if new.slug is null or new.slug = '' then
+    base := 'immeuble-de-rapport-' || public.slugifier(new.ville);
+    new.slug := base;
+    while exists (select 1 from public.ventes where slug = new.slug and id <> new.id) loop
+      n := n + 1;
+      new.slug := base || '-' || n;
+    end loop;
+  end if;
+  return new;
+end $$;
+
+-- Les 44 fiches de départ : nouvelle adresse, une fois. Le déclencheur fige les
+-- slugs ; il est suspendu le temps de ce seul changement.
+alter table public.ventes disable trigger ventes_slug;
+update public.ventes v set slug = n.slug
+from (values
+  ('1770399214615x503126108178184600', 'immeuble-de-rapport-drancy'),
+  ('1759415257565x773122913575258200', 'immeuble-de-rapport-marseille'),
+  ('1728482821456x180769683730137800', 'immeuble-de-rapport-thourotte'),
+  ('1714127809491x692275012323336600', 'immeuble-de-rapport-soisy-sous-montmorency'),
+  ('1711556920318x713984127115866900', 'immeuble-de-rapport-la-ferte-sous-jouarre'),
+  ('1702370829846x541047242733592640', 'immeuble-de-rapport-paris-4'),
+  ('1698394747161x661699532477846900', 'immeuble-de-rapport-caen'),
+  ('1685957192123x986641831410547000', 'immeuble-de-rapport-hagondange'),
+  ('1680105387909x809076517670156700', 'immeuble-de-rapport-cormeilles-en-parisis'),
+  ('1678328218598x686360348083279400', 'immeuble-de-rapport-paris-3'),
+  ('1678328220775x397464235204552100', 'immeuble-de-rapport-les-mureaux'),
+  ('1678328208630x406181873818593400', 'immeuble-de-rapport-tourcoing'),
+  ('1678328156558x217930356502384670', 'immeuble-de-rapport-pontoise'),
+  ('1678328210694x433456060422805250', 'immeuble-de-rapport-lille'),
+  ('1678328216615x397498683920769700', 'immeuble-de-rapport-cognac'),
+  ('1678328196542x189886248738439600', 'immeuble-de-rapport-conflans-sainte-honorine'),
+  ('1678328214676x307064430920134460', 'immeuble-de-rapport-marmande'),
+  ('1678328212633x941845906701144400', 'immeuble-de-rapport-bruyeres-sur-oise'),
+  ('1678328204638x982944469461879400', 'immeuble-de-rapport-juziers'),
+  ('1678328222800x146136227420650370', 'immeuble-de-rapport-pierrelatte'),
+  ('1678328206613x368151229353391300', 'immeuble-de-rapport-orsay'),
+  ('1678328200550x820712182429036000', 'immeuble-de-rapport-draveil'),
+  ('1678328194517x780244101241242900', 'immeuble-de-rapport-migennes-2'),
+  ('1678328180422x141215125878339180', 'immeuble-de-rapport-noisy-le-sec'),
+  ('1678328202592x757546018338103600', 'immeuble-de-rapport-bordeaux-2'),
+  ('1678328192498x544452858062463000', 'immeuble-de-rapport-vaux-sur-seine'),
+  ('1678328198556x862913882393084700', 'immeuble-de-rapport-antibes'),
+  ('1678328184432x692143576041660500', 'immeuble-de-rapport-asnieres-sur-seine'),
+  ('1678328188472x905252191757168300', 'immeuble-de-rapport-migennes'),
+  ('1678328182476x572217439368344600', 'immeuble-de-rapport-chateau-renard-2'),
+  ('1678328176461x529546113349445700', 'immeuble-de-rapport-gisors'),
+  ('1678328190479x429071181429240260', 'immeuble-de-rapport-chambly-2'),
+  ('1678328166905x557672446525689500', 'immeuble-de-rapport-chambly'),
+  ('1678328168648x348511001410339650', 'immeuble-de-rapport-bordeaux'),
+  ('1678328174569x462154276188006200', 'immeuble-de-rapport-paris-2'),
+  ('1678328178447x303953828907493250', 'immeuble-de-rapport-paris'),
+  ('1678328172464x163864905569869760', 'immeuble-de-rapport-chateau-renard'),
+  ('1678328170488x579271156054734300', 'immeuble-de-rapport-laroche-saint-cydroine'),
+  ('1678328186419x967772389178094200', 'immeuble-de-rapport-massy'),
+  ('1678328155594x968843847922484800', 'immeuble-de-rapport-spicheren'),
+  ('1678328164576x723007967804778600', 'immeuble-de-rapport-pantin'),
+  ('1678328158503x904799243512276900', 'immeuble-de-rapport-thiais'),
+  ('1678328162582x655370553263949600', 'immeuble-de-rapport-melun'),
+  ('1678328160664x627874502867022700', 'immeuble-de-rapport-nevers')
+) as n(id, slug)
+where v.id = n.id and v.slug is distinct from n.slug;
+alter table public.ventes enable trigger ventes_slug;
+
 -- Graine : les 44 ventes publiées, déposées une fois à la main.
 --
 -- Générée par `scripts/graine-ventes.mjs` depuis `content/ventes.json`, lui-même
@@ -362,50 +457,50 @@ revoke all on function public.remplacer_offmarket(jsonb) from public, anon, auth
 -- dupliqué, et son slug ne bouge pas (déclencheur `ventes_slug`). Les faits et
 -- les récits, eux, viendront du BO : la graine ne les touche pas.
 insert into public.ventes (id, slug, ville, dept, prix, date, region, image) values
-  ('1770399214615x503126108178184600', 'immeuble-de-rapport-drancy-2026', 'Drancy', '93', 1830000, '2026-01-29', 'idf', null),
-  ('1759415257565x773122913575258200', 'immeuble-de-rapport-marseille-2025', 'Marseille', '13', 725000, '2025-09-02', 'autre', null),
-  ('1728482821456x180769683730137800', 'immeuble-de-rapport-thourotte-2024', 'Thourotte', '60', 464000, '2024-10-03', 'autre', null),
-  ('1714127809491x692275012323336600', 'immeuble-de-rapport-soisy-sous-montmorency-2024', 'Soisy-sous-Montmorency', '95', 1900000, '2024-04-25', 'idf', '/media/ventes/soisy-sous-montmorency-2024-04.webp'),
-  ('1711556920318x713984127115866900', 'immeuble-de-rapport-la-ferte-sous-jouarre-2024', 'La Ferté-sous-Jouarre', '77', 295000, '2024-03-21', 'idf', '/media/ventes/la-ferte-sous-jouarre-2024-05.webp'),
-  ('1702370829846x541047242733592640', 'immeuble-de-rapport-paris-2023-2', 'Paris', '75', 1178000, '2023-11-26', 'idf', '/media/ventes/paris-2023-06.webp'),
-  ('1698394747161x661699532477846900', 'immeuble-de-rapport-caen-2023', 'Caen', '14', 550000, '2023-10-22', 'autre', '/media/ventes/caen-2023-07.webp'),
-  ('1685957192123x986641831410547000', 'immeuble-de-rapport-hagondange-2023', 'Hagondange', '57', 2250000, '2023-06-01', 'autre', '/media/ventes/hagondange-2023-08.webp'),
-  ('1680105387909x809076517670156700', 'immeuble-de-rapport-cormeilles-en-parisis-2023', 'Cormeilles-en-Parisis', '95', 1235000, '2023-03-23', 'idf', '/media/ventes/cormeilles-en-parisis-2023-09.webp'),
-  ('1678328218598x686360348083279400', 'immeuble-de-rapport-paris-2023', 'Paris', '75', 2310000, '2023-01-22', 'idf', '/media/ventes/paris-2023-10.webp'),
-  ('1678328220775x397464235204552100', 'immeuble-de-rapport-les-mureaux-2023', 'Les Mureaux', '78', 1430000, '2023-01-18', 'idf', '/media/ventes/les-mureaux-2023-11.webp'),
-  ('1678328208630x406181873818593400', 'immeuble-de-rapport-tourcoing-2023', 'Tourcoing', '59', 200000, '2023-01-15', 'autre', '/media/ventes/tourcoing-2023-12.webp'),
-  ('1678328156558x217930356502384670', 'immeuble-de-rapport-pontoise-2023', 'Pontoise', '95', 865000, '2023-01-15', 'idf', '/media/ventes/pontoise-2023-13.webp'),
-  ('1678328210694x433456060422805250', 'immeuble-de-rapport-lille-2023', 'Lille', '59', 240000, '2023-01-15', 'autre', '/media/ventes/lille-2023-14.webp'),
-  ('1678328216615x397498683920769700', 'immeuble-de-rapport-cognac-2023', 'Cognac', '16', 332000, '2023-01-11', 'sud-ouest', '/media/ventes/cognac-2023-15.webp'),
-  ('1678328196542x189886248738439600', 'immeuble-de-rapport-conflans-sainte-honorine-2023', 'Conflans-Sainte-Honorine', '78', 1975000, '2023-01-04', 'idf', '/media/ventes/conflans-sainte-honorine-2023-16.webp'),
-  ('1678328214676x307064430920134460', 'immeuble-de-rapport-marmande-2022', 'Marmande', '47', 1600000, '2022-12-11', 'sud-ouest', '/media/ventes/marmande-2022-17.webp'),
-  ('1678328212633x941845906701144400', 'immeuble-de-rapport-bruyeres-sur-oise-2022', 'Bruyères-sur-Oise', '95', 3015000, '2022-11-29', 'idf', '/media/ventes/bruyeres-sur-oise-2022-18.webp'),
-  ('1678328204638x982944469461879400', 'immeuble-de-rapport-juziers-2022', 'Juziers', '78', 830000, '2022-11-14', 'idf', '/media/ventes/juziers-2022-19.webp'),
-  ('1678328222800x146136227420650370', 'immeuble-de-rapport-pierrelatte-2022', 'Pierrelatte', '26', 710000, '2022-10-26', 'autre', '/media/ventes/pierrelatte-2022-20.webp'),
-  ('1678328206613x368151229353391300', 'immeuble-de-rapport-orsay-2022', 'Orsay', '91', 1580000, '2022-07-11', 'idf', '/media/ventes/orsay-2022-21.webp'),
-  ('1678328200550x820712182429036000', 'immeuble-de-rapport-draveil-2022', 'Draveil', '91', 720000, '2022-06-29', 'idf', '/media/ventes/draveil-2022-22.webp'),
-  ('1678328194517x780244101241242900', 'immeuble-de-rapport-migennes-2022', 'Migennes', '89', 285000, '2022-06-02', 'autre', '/media/ventes/migennes-2022-23.webp'),
-  ('1678328180422x141215125878339180', 'immeuble-de-rapport-noisy-le-sec-2022', 'Noisy-le-Sec', '93', 709000, '2022-05-09', 'idf', '/media/ventes/noisy-le-sec-2022-24.webp'),
-  ('1678328202592x757546018338103600', 'immeuble-de-rapport-bordeaux-2021-2', 'Bordeaux', '33', 1570000, '2021-12-30', 'sud-ouest', '/media/ventes/bordeaux-2021-25.webp'),
-  ('1678328192498x544452858062463000', 'immeuble-de-rapport-vaux-sur-seine-2021', 'Vaux-sur-Seine', '78', 755000, '2021-12-13', 'idf', '/media/ventes/vaux-sur-seine-2021-26.webp'),
-  ('1678328198556x862913882393084700', 'immeuble-de-rapport-antibes-2021', 'Antibes', '06', 1004000, '2021-11-25', 'autre', '/media/ventes/antibes-2021-27.webp'),
-  ('1678328184432x692143576041660500', 'immeuble-de-rapport-asnieres-sur-seine-2021', 'Asnières-sur-Seine', '92', 1417500, '2021-11-04', 'idf', '/media/ventes/asnieres-sur-seine-2021-28.webp'),
-  ('1678328188472x905252191757168300', 'immeuble-de-rapport-migennes-2021', 'Migennes', '89', 280000, '2021-09-07', 'autre', '/media/ventes/migennes-2021-29.webp'),
-  ('1678328182476x572217439368344600', 'immeuble-de-rapport-chateau-renard-2021', 'Château-Renard', '45', 352500, '2021-06-24', 'autre', '/media/ventes/chateau-renard-2021-30.webp'),
-  ('1678328176461x529546113349445700', 'immeuble-de-rapport-gisors-2021', 'Gisors', '27', 555000, '2021-06-02', 'autre', '/media/ventes/gisors-2021-31.webp'),
-  ('1678328190479x429071181429240260', 'immeuble-de-rapport-chambly-2021-2', 'Chambly', '60', 619355, '2021-04-25', 'autre', '/media/ventes/chambly-2021-32.webp'),
-  ('1678328166905x557672446525689500', 'immeuble-de-rapport-chambly-2021', 'Chambly', '60', 980645, '2021-04-25', 'autre', '/media/ventes/chambly-2021-33.webp'),
-  ('1678328168648x348511001410339650', 'immeuble-de-rapport-bordeaux-2021', 'Bordeaux', '33', 745000, '2021-02-18', 'sud-ouest', '/media/ventes/bordeaux-2021-34.webp'),
-  ('1678328174569x462154276188006200', 'immeuble-de-rapport-paris-2020-2', 'Paris', '75', 2750000, '2020-12-17', 'idf', '/media/ventes/paris-2020-35.webp'),
-  ('1678328178447x303953828907493250', 'immeuble-de-rapport-paris-2020', 'Paris', '75', 6400000, '2020-12-15', 'idf', '/media/ventes/paris-2020-36.webp'),
-  ('1678328172464x163864905569869760', 'immeuble-de-rapport-chateau-renard-2020', 'Château-Renard', '45', 110000, '2020-12-10', 'autre', '/media/ventes/chateau-renard-2020-37.webp'),
-  ('1678328170488x579271156054734300', 'immeuble-de-rapport-laroche-saint-cydroine-2020', 'Laroche-Saint-Cydroine', '89', 350000, '2020-11-30', 'autre', '/media/ventes/laroche-saint-cydroine-2020-38.webp'),
-  ('1678328186419x967772389178094200', 'immeuble-de-rapport-massy-2020', 'Massy', '91', 1960000, '2020-07-30', 'idf', '/media/ventes/massy-2020-39.webp'),
-  ('1678328155594x968843847922484800', 'immeuble-de-rapport-spicheren-2020', 'Spicheren', '57', 560000, '2020-07-26', 'autre', '/media/ventes/spicheren-2020-40.webp'),
-  ('1678328164576x723007967804778600', 'immeuble-de-rapport-pantin-2019', 'Pantin', '93', 2625000, '2019-10-22', 'idf', '/media/ventes/pantin-2019-41.webp'),
-  ('1678328158503x904799243512276900', 'immeuble-de-rapport-thiais-2019', 'Thiais', '94', 550000, '2019-09-19', 'idf', '/media/ventes/thiais-2019-42.webp'),
-  ('1678328162582x655370553263949600', 'immeuble-de-rapport-melun-2019', 'Melun', '77', 530000, '2019-09-18', 'idf', '/media/ventes/melun-2019-43.webp'),
-  ('1678328160664x627874502867022700', 'immeuble-de-rapport-nevers-2019', 'Nevers', '58', 273000, '2019-09-18', 'autre', '/media/ventes/nevers-2019-44.webp')
+  ('1770399214615x503126108178184600', 'immeuble-de-rapport-drancy', 'Drancy', '93', 1830000, '2026-01-29', 'idf', null),
+  ('1759415257565x773122913575258200', 'immeuble-de-rapport-marseille', 'Marseille', '13', 725000, '2025-09-02', 'autre', null),
+  ('1728482821456x180769683730137800', 'immeuble-de-rapport-thourotte', 'Thourotte', '60', 464000, '2024-10-03', 'autre', null),
+  ('1714127809491x692275012323336600', 'immeuble-de-rapport-soisy-sous-montmorency', 'Soisy-sous-Montmorency', '95', 1900000, '2024-04-25', 'idf', '/media/ventes/soisy-sous-montmorency-2024-04.webp'),
+  ('1711556920318x713984127115866900', 'immeuble-de-rapport-la-ferte-sous-jouarre', 'La Ferté-sous-Jouarre', '77', 295000, '2024-03-21', 'idf', '/media/ventes/la-ferte-sous-jouarre-2024-05.webp'),
+  ('1702370829846x541047242733592640', 'immeuble-de-rapport-paris-4', 'Paris', '75', 1178000, '2023-11-26', 'idf', '/media/ventes/paris-2023-06.webp'),
+  ('1698394747161x661699532477846900', 'immeuble-de-rapport-caen', 'Caen', '14', 550000, '2023-10-22', 'autre', '/media/ventes/caen-2023-07.webp'),
+  ('1685957192123x986641831410547000', 'immeuble-de-rapport-hagondange', 'Hagondange', '57', 2250000, '2023-06-01', 'autre', '/media/ventes/hagondange-2023-08.webp'),
+  ('1680105387909x809076517670156700', 'immeuble-de-rapport-cormeilles-en-parisis', 'Cormeilles-en-Parisis', '95', 1235000, '2023-03-23', 'idf', '/media/ventes/cormeilles-en-parisis-2023-09.webp'),
+  ('1678328218598x686360348083279400', 'immeuble-de-rapport-paris-3', 'Paris', '75', 2310000, '2023-01-22', 'idf', '/media/ventes/paris-2023-10.webp'),
+  ('1678328220775x397464235204552100', 'immeuble-de-rapport-les-mureaux', 'Les Mureaux', '78', 1430000, '2023-01-18', 'idf', '/media/ventes/les-mureaux-2023-11.webp'),
+  ('1678328208630x406181873818593400', 'immeuble-de-rapport-tourcoing', 'Tourcoing', '59', 200000, '2023-01-15', 'autre', '/media/ventes/tourcoing-2023-12.webp'),
+  ('1678328156558x217930356502384670', 'immeuble-de-rapport-pontoise', 'Pontoise', '95', 865000, '2023-01-15', 'idf', '/media/ventes/pontoise-2023-13.webp'),
+  ('1678328210694x433456060422805250', 'immeuble-de-rapport-lille', 'Lille', '59', 240000, '2023-01-15', 'autre', '/media/ventes/lille-2023-14.webp'),
+  ('1678328216615x397498683920769700', 'immeuble-de-rapport-cognac', 'Cognac', '16', 332000, '2023-01-11', 'sud-ouest', '/media/ventes/cognac-2023-15.webp'),
+  ('1678328196542x189886248738439600', 'immeuble-de-rapport-conflans-sainte-honorine', 'Conflans-Sainte-Honorine', '78', 1975000, '2023-01-04', 'idf', '/media/ventes/conflans-sainte-honorine-2023-16.webp'),
+  ('1678328214676x307064430920134460', 'immeuble-de-rapport-marmande', 'Marmande', '47', 1600000, '2022-12-11', 'sud-ouest', '/media/ventes/marmande-2022-17.webp'),
+  ('1678328212633x941845906701144400', 'immeuble-de-rapport-bruyeres-sur-oise', 'Bruyères-sur-Oise', '95', 3015000, '2022-11-29', 'idf', '/media/ventes/bruyeres-sur-oise-2022-18.webp'),
+  ('1678328204638x982944469461879400', 'immeuble-de-rapport-juziers', 'Juziers', '78', 830000, '2022-11-14', 'idf', '/media/ventes/juziers-2022-19.webp'),
+  ('1678328222800x146136227420650370', 'immeuble-de-rapport-pierrelatte', 'Pierrelatte', '26', 710000, '2022-10-26', 'autre', '/media/ventes/pierrelatte-2022-20.webp'),
+  ('1678328206613x368151229353391300', 'immeuble-de-rapport-orsay', 'Orsay', '91', 1580000, '2022-07-11', 'idf', '/media/ventes/orsay-2022-21.webp'),
+  ('1678328200550x820712182429036000', 'immeuble-de-rapport-draveil', 'Draveil', '91', 720000, '2022-06-29', 'idf', '/media/ventes/draveil-2022-22.webp'),
+  ('1678328194517x780244101241242900', 'immeuble-de-rapport-migennes-2', 'Migennes', '89', 285000, '2022-06-02', 'autre', '/media/ventes/migennes-2022-23.webp'),
+  ('1678328180422x141215125878339180', 'immeuble-de-rapport-noisy-le-sec', 'Noisy-le-Sec', '93', 709000, '2022-05-09', 'idf', '/media/ventes/noisy-le-sec-2022-24.webp'),
+  ('1678328202592x757546018338103600', 'immeuble-de-rapport-bordeaux-2', 'Bordeaux', '33', 1570000, '2021-12-30', 'sud-ouest', '/media/ventes/bordeaux-2021-25.webp'),
+  ('1678328192498x544452858062463000', 'immeuble-de-rapport-vaux-sur-seine', 'Vaux-sur-Seine', '78', 755000, '2021-12-13', 'idf', '/media/ventes/vaux-sur-seine-2021-26.webp'),
+  ('1678328198556x862913882393084700', 'immeuble-de-rapport-antibes', 'Antibes', '06', 1004000, '2021-11-25', 'autre', '/media/ventes/antibes-2021-27.webp'),
+  ('1678328184432x692143576041660500', 'immeuble-de-rapport-asnieres-sur-seine', 'Asnières-sur-Seine', '92', 1417500, '2021-11-04', 'idf', '/media/ventes/asnieres-sur-seine-2021-28.webp'),
+  ('1678328188472x905252191757168300', 'immeuble-de-rapport-migennes', 'Migennes', '89', 280000, '2021-09-07', 'autre', '/media/ventes/migennes-2021-29.webp'),
+  ('1678328182476x572217439368344600', 'immeuble-de-rapport-chateau-renard-2', 'Château-Renard', '45', 352500, '2021-06-24', 'autre', '/media/ventes/chateau-renard-2021-30.webp'),
+  ('1678328176461x529546113349445700', 'immeuble-de-rapport-gisors', 'Gisors', '27', 555000, '2021-06-02', 'autre', '/media/ventes/gisors-2021-31.webp'),
+  ('1678328190479x429071181429240260', 'immeuble-de-rapport-chambly-2', 'Chambly', '60', 619355, '2021-04-25', 'autre', '/media/ventes/chambly-2021-32.webp'),
+  ('1678328166905x557672446525689500', 'immeuble-de-rapport-chambly', 'Chambly', '60', 980645, '2021-04-25', 'autre', '/media/ventes/chambly-2021-33.webp'),
+  ('1678328168648x348511001410339650', 'immeuble-de-rapport-bordeaux', 'Bordeaux', '33', 745000, '2021-02-18', 'sud-ouest', '/media/ventes/bordeaux-2021-34.webp'),
+  ('1678328174569x462154276188006200', 'immeuble-de-rapport-paris-2', 'Paris', '75', 2750000, '2020-12-17', 'idf', '/media/ventes/paris-2020-35.webp'),
+  ('1678328178447x303953828907493250', 'immeuble-de-rapport-paris', 'Paris', '75', 6400000, '2020-12-15', 'idf', '/media/ventes/paris-2020-36.webp'),
+  ('1678328172464x163864905569869760', 'immeuble-de-rapport-chateau-renard', 'Château-Renard', '45', 110000, '2020-12-10', 'autre', '/media/ventes/chateau-renard-2020-37.webp'),
+  ('1678328170488x579271156054734300', 'immeuble-de-rapport-laroche-saint-cydroine', 'Laroche-Saint-Cydroine', '89', 350000, '2020-11-30', 'autre', '/media/ventes/laroche-saint-cydroine-2020-38.webp'),
+  ('1678328186419x967772389178094200', 'immeuble-de-rapport-massy', 'Massy', '91', 1960000, '2020-07-30', 'idf', '/media/ventes/massy-2020-39.webp'),
+  ('1678328155594x968843847922484800', 'immeuble-de-rapport-spicheren', 'Spicheren', '57', 560000, '2020-07-26', 'autre', '/media/ventes/spicheren-2020-40.webp'),
+  ('1678328164576x723007967804778600', 'immeuble-de-rapport-pantin', 'Pantin', '93', 2625000, '2019-10-22', 'idf', '/media/ventes/pantin-2019-41.webp'),
+  ('1678328158503x904799243512276900', 'immeuble-de-rapport-thiais', 'Thiais', '94', 550000, '2019-09-19', 'idf', '/media/ventes/thiais-2019-42.webp'),
+  ('1678328162582x655370553263949600', 'immeuble-de-rapport-melun', 'Melun', '77', 530000, '2019-09-18', 'idf', '/media/ventes/melun-2019-43.webp'),
+  ('1678328160664x627874502867022700', 'immeuble-de-rapport-nevers', 'Nevers', '58', 273000, '2019-09-18', 'autre', '/media/ventes/nevers-2019-44.webp')
 on conflict (id) do update set
   slug = excluded.slug, ville = excluded.ville, dept = excluded.dept, prix = excluded.prix,
   date = excluded.date, region = excluded.region, image = excluded.image,

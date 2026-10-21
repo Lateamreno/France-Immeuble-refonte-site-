@@ -7,8 +7,11 @@
    3. Assemble `supabase/A-COLLER-SITE.sql` : migrations 0002 et suivantes,
       puis la graine. Tout est rejouable.
 
-   Règle de slug, identique au déclencheur `ventes_slug` de la migration 0003 :
-   immeuble-de-rapport-<commune>-<année>, puis -2, -3… par ordre chronologique.
+   Règle de slug, identique au déclencheur `ventes_slug` (migration 0005) :
+   immeuble-de-rapport-<commune>, puis -2, -3… par ordre chronologique. Pas
+   d'année : MAV ne veut aucune date de vente affichée, URL comprise
+   (retour du 21/10/2026). `ancienSlug` garde l'adresse à l'année des 44
+   premières fiches, redirigée vers la nouvelle.
 
    Usage : node scripts/graine-ventes.mjs */
 import fs from 'node:fs/promises';
@@ -24,7 +27,7 @@ const pris = new Set(ventes.filter((v) => v.slug).map((v) => v.slug));
 const chrono = ventes.slice().sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
 for (const v of chrono) {
   if (v.slug) continue;
-  const base = `immeuble-de-rapport-${slugifier(v.ville)}-${v.annee}`;
+  const base = `immeuble-de-rapport-${slugifier(v.ville)}`;
   let s = base, n = 1;
   while (pris.has(s)) s = `${base}-${++n}`;
   v.slug = s;

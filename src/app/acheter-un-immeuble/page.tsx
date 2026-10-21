@@ -48,10 +48,8 @@ export default async function Acheter() {
               <span className="hero-proof__lbl">investisseurs déjà dans le fichier</span>
             </div>
             <div className="hero-proof__item">
-              <span className="hero-proof__val">{stats.total}</span>
-              <span className="hero-proof__lbl">
-                immeubles vendus depuis {stats.premiereAnnee}
-              </span>
+              <span className="hero-proof__val">{stats.villes}</span>
+              <span className="hero-proof__lbl">communes où nous avons vendu</span>
             </div>
           </div>
         </>

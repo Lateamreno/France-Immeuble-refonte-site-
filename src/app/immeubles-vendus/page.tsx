@@ -10,7 +10,8 @@ import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { ventesEtStats, villesFrequentes, volume } from "@/lib/biens";
+import { CarteRegion, nomRegion } from "@/components/CarteRegion";
+import { ventesEtStats, villesFrequentes, volume, groupesVentes, NOMS_DEPTS_IDF } from "@/lib/biens";
 
 /**
  * /immeubles-vendus/ — les ventes réalisées, servies depuis nos données.
@@ -22,7 +23,8 @@ import { ventesEtStats, villesFrequentes, volume } from "@/lib/biens";
  * Chaque vente mène à sa fiche, /immeubles-vendus/<slug>/, où le BO dépose les
  * faits de la vente et un récit relu par MAV.
  *
- * Ce qui est publié : commune, département, rue sans numéro, prix, année.
+ * Ce qui est publié : commune, département, rue sans numéro, prix. Aucune
+ * date de vente, tri par région puis par prix (retours de MAV, 21/10/2026).
  * Jamais le numéro, jamais un nom — on ne peut pas promettre la discrétion
  * off-market en page Vendre et publier l'adresse exacte ici (§2).
  *
@@ -38,6 +40,7 @@ export const revalidate = 600;
 export default async function ImmeublesVendus() {
   const { ventes, stats } = await ventesEtStats();
   const villes = villesFrequentes(ventes, 10);
+  const groupes = groupesVentes(ventes);
 
   return (
     <>
@@ -53,15 +56,15 @@ export default async function ImmeublesVendus() {
           <Eyebrow>Nos biens · vendus</Eyebrow>
           <h1>Les immeubles que nous avons vendus</h1>
           <p className="lead">
-            Chaque ligne est un acte signé. Commune, rue, année et prix réel&nbsp;— jamais le
-            numéro, jamais un nom.
+            Immeubles de rapport vendus en bloc à Paris, en Île-de-France et en région. Voici une
+            sélection de nos dernières ventes, avec la commune, la rue et le prix de vente.
           </p>
+          {/* MAV, 21/10/2026 : ces chiffres décrivent l'échantillon affiché, pas
+              l'ensemble de nos ventes. Les libellés le disent. */}
           <div className="hero-proof">
             <span className="hero-proof__item">
               <span className="hero-proof__val">{stats.total}</span>
-              <span className="hero-proof__lbl">
-                immeubles vendus depuis {stats.premiereAnnee}
-              </span>
+              <span className="hero-proof__lbl">ventes présentées</span>
             </span>
             <span className="hero-proof__item">
               <span className="hero-proof__val">{stats.villes}</span>
@@ -69,7 +72,7 @@ export default async function ImmeublesVendus() {
             </span>
             <span className="hero-proof__item">
               <span className="hero-proof__val">{volume(stats.volume)}</span>
-              <span className="hero-proof__lbl">de transactions</span>
+              <span className="hero-proof__lbl">de ventes dans cette sélection</span>
             </span>
           </div>
         </>
@@ -79,24 +82,42 @@ export default async function ImmeublesVendus() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Les ventes</Eyebrow>
-            <h2>
-              {stats.total} actes signés entre {stats.premiereAnnee} et{" "}
-              {stats.derniereAnnee}
-            </h2>
+            <h2>Un échantillon de nos dernières ventes</h2>
             <p className="lead">
-              {stats.partIdf}&nbsp;% en Île-de-France, le reste réparti sur{" "}
-              {stats.departements} départements. Les montants sont les prix de vente
-              honoraires inclus.
+              Classées par région, l’Île-de-France département par département, puis du prix le
+              plus élevé au plus modeste. Les montants sont des prix de vente honoraires inclus.
             </p>
           </Reveal>
 
-          <ul className="ventes">
-            {ventes.map((v, i) => (
-              <Reveal key={v.id} as="li" className="vente" delayIndex={i % 6}>
-                <CarteVente v={v} />
-              </Reveal>
-            ))}
-          </ul>
+          {groupes.map((g) => (
+            <section key={g.region} className="region-ventes" aria-labelledby={`region-${g.region}`}>
+              <header className="region-ventes__tete">
+                <div>
+                  <h2 id={`region-${g.region}`}>{nomRegion(g.region)}</h2>
+                  <p className="region-ventes__n">
+                    {g.total} vente{g.total > 1 ? "s" : ""} présentée{g.total > 1 ? "s" : ""}
+                  </p>
+                </div>
+                <CarteRegion region={g.region} className="region-ventes__carte" />
+              </header>
+              {g.departements.map((d) => (
+                <div key={d.dept ?? "tous"} className="region-ventes__dept">
+                  {d.dept && (
+                    <h3>
+                      {NOMS_DEPTS_IDF[d.dept]} <span>({d.dept})</span>
+                    </h3>
+                  )}
+                  <ul className="ventes">
+                    {d.ventes.map((v, i) => (
+                      <Reveal key={v.id} as="li" className="vente" delayIndex={i % 6}>
+                        <CarteVente v={v} />
+                      </Reveal>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </section>
+          ))}
         </div>
       </section>
 
@@ -105,10 +126,7 @@ export default async function ImmeublesVendus() {
           <Reveal className="section__head">
             <Eyebrow>Couverture</Eyebrow>
             <h2>Où nous vendons</h2>
-            <p className="lead">
-              Les communes où nous avons signé plus d’une fois. Le reste se répartit sur{" "}
-              {stats.villes - villes.filter((v) => v.n > 1).length} autres communes.
-            </p>
+            <p className="lead">Les communes qui reviennent le plus souvent dans cette sélection.</p>
           </Reveal>
           <ul className="villes">
             {villes.map((v) => (

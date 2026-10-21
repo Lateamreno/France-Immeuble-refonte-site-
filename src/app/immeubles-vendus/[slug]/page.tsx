@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { Picto } from "@/components/Picto";
-import { CarteVente } from "@/components/CarteVente";
+import { CarteVente, surfaceVente, delaiOffre } from "@/components/CarteVente";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { SITE } from "@/lib/site";
-import { prix, ventes, venteParSlug, venteIndexable, type Vente } from "@/lib/biens";
+import { prix, ventes, venteParSlug, nouveauSlugVente, venteIndexable, type Vente } from "@/lib/biens";
 
 /**
  * Fiche d'une vente réalisée — un cas pratique.
@@ -29,8 +29,6 @@ export const revalidate = 600;
 type Params = { params: Promise<{ slug: string }> };
 
 const pct = (n: number) => `${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
-const mois = (d: string) =>
-  new Date(`${d}T12:00:00Z`).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
 const ACQUEREURS: Record<string, string> = {
   Investisseur: "Investisseur",
@@ -60,7 +58,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     v.seoDesc ??
     v.chapo ??
     [
-      `${v.type ?? "Immeuble de rapport"} vendu ${prix(v.prix)} à ${v.ville} (${v.dept}) en ${mois(v.date)}`,
+      `${v.type ?? "Immeuble de rapport"} vendu ${prix(v.prix)} à ${v.ville} (${v.dept})`,
       v.lots ? `${v.lots} lots` : null,
       v.rendement !== null && v.rendement !== undefined ? `rendement brut ${pct(v.rendement)}` : null,
     ]
@@ -72,7 +70,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: {
       absolute:
         v.seoTitle ??
-        `${v.type ?? "Immeuble de rapport"} vendu à ${v.ville} (${v.dept}) en ${v.annee} | France Immeuble`,
+        `${v.type ?? "Immeuble de rapport"} vendu à ${v.ville} (${v.dept}) | France Immeuble`,
     },
     description: desc,
     alternates: { canonical: `${SITE.url}/immeubles-vendus/${v.slug}/` },
@@ -119,11 +117,17 @@ const rempli = <T,>(x: T | null | undefined): x is T => x !== null && x !== unde
 export default async function FicheVente({ params }: Params) {
   const { slug } = await params;
   const [v, toutes] = await Promise.all([venteParSlug(slug), ventes()]);
-  if (!v) notFound();
+  if (!v) {
+    // Ancienne adresse à l'année (« …-pantin-2019 ») : redirection définitive.
+    const nouveau = await nouveauSlugVente(slug);
+    if (nouveau) permanentRedirect(`/immeubles-vendus/${nouveau}/`);
+    notFound();
+  }
 
-  /* Maillage : les ventes du même département, à défaut les plus récentes.
+  /* Maillage : les ventes du même département, à défaut les autres, du prix
+     le plus élevé au plus modeste (pas de tri par date : MAV, 21/10/2026).
      Chaque fiche relie ainsi les autres, et Google les découvre toutes. */
-  const ailleurs = toutes.filter((x) => x.id !== v.id);
+  const ailleurs = toutes.filter((x) => x.id !== v.id).sort((a, b) => b.prix - a.prix);
   const voisines = ailleurs.filter((x) => x.dept === v.dept);
   const autres = (voisines.length > 0 ? voisines : ailleurs).slice(0, 3);
 
@@ -133,18 +137,20 @@ export default async function FicheVente({ params }: Params) {
     rempli(v.arrondissement) && ["Secteur", v.arrondissement],
     ["Type", v.type ?? "Immeuble de rapport"],
     rempli(v.lots) && ["Lots", String(v.lots)],
-    rempli(v.surfaceMin) && rempli(v.surfaceMax) && [
-      "Surface",
-      `${v.surfaceMin.toLocaleString("fr-FR")} à ${v.surfaceMax.toLocaleString("fr-FR")} m²`,
-    ],
+    rempli(surfaceVente(v)) && ["Surface", surfaceVente(v)],
     rempli(v.epoque) && ["Époque", v.epoque],
     rempli(v.occupation) && ["Occupation", pct(v.occupation)],
+    rempli(v.loyerPotentiel) && ["Loyer potentiel", `${prix(v.loyerPotentiel)}/an`],
     rempli(v.rendement) && ["Rendement brut", pct(v.rendement)],
     rempli(v.dpe) && ["DPE", v.dpe],
   ];
   const vente: ([string, ReactNode] | null | false)[] = [
-    ["Acte signé", mois(v.date)],
     ["Prix de vente", prix(v.prix)],
+    rempli(v.ecartEstimation) && [
+      "Écart avec l’estimation",
+      `${v.ecartEstimation > 0 ? "+" : ""}${pct(v.ecartEstimation)}`,
+    ],
+    rempli(v.delaiOffreJours) && ["De la mise en vente à l’offre", delaiOffre(v.delaiOffreJours)],
     rempli(v.modeCommercialisation) && ["Commercialisation", MODES[v.modeCommercialisation]],
     rempli(v.delaiSemaines) && [
       "Du mandat au compromis",
@@ -191,12 +197,12 @@ export default async function FicheVente({ params }: Params) {
         <div className="container fiche-vente__haut">
           <div className="fiche-bien__tete">
             <Eyebrow>
-              Vendu · {v.ville} ({v.dept}) · {v.annee}
+              Vendu · {v.ville} ({v.dept})
             </Eyebrow>
             <h1>{titre}</h1>
             <p className="fiche-bien__prix">
               {prix(v.prix)}
-              <span> honoraires inclus · acte signé en {mois(v.date)}</span>
+              <span> honoraires inclus</span>
             </p>
             {v.chapo && <p className="lead fiche-vente__chapo">{v.chapo}</p>}
           </div>
@@ -246,13 +252,13 @@ export default async function FicheVente({ params }: Params) {
                 <Eyebrow>Cette vente</Eyebrow>
                 <p>
                   {v.type ?? "Immeuble de rapport"} vendu {prix(v.prix)} honoraires inclus à{" "}
-                  {v.ville}, acte signé en {mois(v.date)}.
+                  {v.ville}
+                  {v.rue ? `, ${v.rue}` : ""}.
                 </p>
               </Reveal>
             )}
             <p className="fiche-bien__adresse">
-              Nous ne publions ni le numéro de rue, ni le nom du vendeur, ni celui de
-              l’acquéreur.
+              Le numéro de rue et le nom des parties restent confidentiels.
               {rempli(v.surfaceMin) && " La surface est donnée par tranche."}
             </p>
           </div>

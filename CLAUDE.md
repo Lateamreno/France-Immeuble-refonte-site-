@@ -497,6 +497,17 @@ période de test interne 2-4 semaines.
 
 Coordonnées : 01 72 87 52 22 · 66 avenue des Champs-Élysées, 75008 Paris.
 
+### Style d'écriture — retour de MAV du 21/10/2026
+
+Deux tics d'écriture automatique à proscrire dans tout texte visible du site :
+
+- le **tiret cadratin « — » à la place d'une virgule** ou d'un deux-points ;
+- les formules en **« jamais X, jamais Y »** (« jamais l'adresse, jamais un nom »).
+
+Écrire des phrases simples, avec la ponctuation ordinaire. Préférer une phrase utile au
+référencement (« Immeubles de rapport vendus en bloc à Paris, en Île-de-France et en
+région ») à une formule.
+
 ---
 
 ## 11. Tracking

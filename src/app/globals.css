@@ -1567,8 +1567,8 @@ strong,b{font-weight:600;color:var(--color-creme);}
    ========================================================================== */
 
 /* --- Les ventes réalisées -------------------------------------------------
-   Trois colonnes qui retombent en deux puis en une. La vignette porte l'année
-   en pastille : c'est la donnée qui situe, et elle doit tenir sur l'image. */
+   Trois colonnes qui retombent en deux puis en une. Aucune date de vente
+   (retour de MAV du 21/10/2026). */
 .ventes{
   list-style:none;padding:0;margin:0;
   display:grid;gap:var(--space-m);
@@ -1594,14 +1594,7 @@ strong,b{font-weight:600;color:var(--color-creme);}
   color:var(--color-bronze-profond);
   background:color-mix(in srgb, var(--color-bronze) 10%, var(--color-creme));
 }
-.vente__annee{
-  position:absolute;left:12px;bottom:12px;
-  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);font-weight:600;
-  letter-spacing:.08em;
-  background:rgba(10,10,10,.82);color:var(--color-creme);
-  padding:5px 10px;border-radius:var(--radius-pill);
-}
-.vente__corps{display:flex;flex-direction:column;gap:3px;padding:var(--space-s);}
+.vente__corps{display:flex;flex-direction:column;gap:4px;padding:var(--space-s);flex:1;}
 .vente__ville{
   font-family:var(--font-display);
   font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
@@ -1613,10 +1606,39 @@ strong,b{font-weight:600;color:var(--color-creme);}
   font-family:var(--font-mono-site);font-size:1rem;font-weight:600;
   color:var(--color-bronze-profond);
 }
-.vente__region{
+.vente__faits,.vente__suite{
   font-size:var(--fs-small);
-  color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));
+  color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));
 }
+.vente__pied{
+  display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-xs);flex-wrap:wrap;
+  margin-top:auto;padding-top:var(--space-xs);
+  border-top:1px solid color-mix(in srgb, var(--color-noir) 10%, transparent);
+}
+.vente__rdt{font-family:var(--font-mono-site);font-weight:600;font-size:var(--fs-small);color:var(--color-bronze-profond);}
+.vente__suite{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.02em;}
+
+/* --- Groupes par région --------------------------------------------------
+   La France en filigrane dans l'en-tête de chaque groupe, la région éclairée
+   en bronze. Dans l'en-tête et non derrière les vignettes : derrière, les
+   cartes la recouvraient presque entièrement. */
+.region-ventes{padding-top:var(--space-l);margin-top:var(--space-l);border-top:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);}
+.region-ventes:first-of-type{border-top:0;margin-top:var(--space-m);}
+.region-ventes__tete{display:flex;justify-content:space-between;align-items:center;gap:var(--space-m);margin-bottom:var(--space-m);}
+.region-ventes__tete h2{font-size:clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);}
+.region-ventes__n{margin-top:6px;font-family:var(--font-mono-site);font-size:var(--fs-small);color:var(--color-bronze-profond);}
+.region-ventes__carte{flex:none;width:clamp(110px, 18vw, 220px);height:auto;pointer-events:none;}
+.region-ventes__carte path{
+  fill:color-mix(in srgb, var(--color-noir) 5%, transparent);
+  stroke:color-mix(in srgb, var(--color-noir) 16%, transparent);stroke-width:2;
+}
+.region-ventes__carte path.carte-region__active{
+  fill:color-mix(in srgb, var(--color-bronze) 55%, transparent);
+  stroke:var(--color-bronze-profond);
+}
+.region-ventes__dept + .region-ventes__dept{margin-top:var(--space-m);}
+.region-ventes__dept h3{font-size:1.2rem;margin-bottom:var(--space-s);}
+.region-ventes__dept h3 span{font-family:var(--font-body);font-variation-settings:normal;font-weight:400;font-size:.8em;color:color-mix(in srgb, var(--color-noir) 52%, var(--color-creme));}
 
 /* --- Couverture par commune ----------------------------------------------- */
 .villes{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px;}

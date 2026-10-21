@@ -176,10 +176,8 @@ export default async function ImmeublesOffMarket() {
                 <span className="hero-proof__lbl">acquéreurs dans le fichier</span>
               </span>
               <span className="hero-proof__item">
-                <span className="hero-proof__val">{stats.total}</span>
-                <span className="hero-proof__lbl">
-                  immeubles vendus depuis {stats.premiereAnnee}
-                </span>
+                <span className="hero-proof__val">{stats.villes}</span>
+                <span className="hero-proof__lbl">communes où nous avons vendu</span>
               </span>
             </div>
           </Reveal>

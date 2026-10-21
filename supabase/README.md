@@ -77,7 +77,11 @@ Buckets : `bo-files` (privé, captures de recette), `ventes` et `biens`
   « 92100 Boulogne » est refusé (§2).
 - Le slug d'une vente, et depuis 0004 celui d'un bien à vendre, est généré par
   la base et ne change plus une fois posé : une URL indexée ne bouge pas (§10).
-- `ventes.rue` refuse tout chiffre : la rue s'affiche, jamais le numéro (0004).
+- `ventes.rue` refuse tout chiffre : la rue s'affiche sans le numéro (0004).
+- 0005 : slugs de vente sans année (`immeuble-de-rapport-<commune>`), et trois
+  faits de plus déposés par le BO : `loyer_potentiel` (€/an), `ecart_estimation`
+  (% du prix de vente par rapport à l'estimation, de -100 à 100) et
+  `delai_offre_jours` (mise en commercialisation → offre retenue).
 
 Testé le 21/10/2026 sur un Postgres 16 local : fichier rejoué deux fois, rejoué
 par-dessus l'ancienne version, et chacun des refus ci-dessus vérifié.

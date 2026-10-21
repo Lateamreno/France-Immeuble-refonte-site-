@@ -46,6 +46,14 @@ export type Vente = {
  * courte, non indexée. Fourchettes et profils, jamais d'adresse ni de nom (§2).
  */
 export type FaitsVente = {
+  /** Ancienne adresse de fiche, à l'année (44 ventes de départ) : redirigée. */
+  ancienSlug?: string | null;
+  /** Loyer annuel HC potentiel, en euros. */
+  loyerPotentiel?: number | null;
+  /** Prix de vente comparé à l'estimation, en % : +3 = 3 % au-dessus. */
+  ecartEstimation?: number | null;
+  /** Jours entre la mise en commercialisation et l'offre retenue. */
+  delaiOffreJours?: number | null;
   /** « rue des Bas-Fossés » — jamais de numéro : la base refuse tout chiffre. */
   rue?: string | null;
   titre?: string | null;
@@ -92,6 +100,8 @@ type LigneVente = {
   visites?: number | null; offres?: number | null;
   chapo?: string | null; recit?: string | null;
   seo_title?: string | null; seo_desc?: string | null; recit_valide_le?: string | null;
+  loyer_potentiel?: number | string | null; ecart_estimation?: number | string | null;
+  delai_offre_jours?: number | null;
 };
 
 const nombre = (x: number | string | null | undefined) =>
@@ -126,6 +136,7 @@ export async function ventes(): Promise<Vente[]> {
     const lignes = (await res.json()) as LigneVente[];
     if (lignes.length === 0) return VENTES_DEPOSEES;
     const parId = new Map(VENTES_DEPOSEES.map((v) => [v.id, v.slug]));
+    const ancien = new Map(VENTES_DEPOSEES.map((v) => [v.id, v.ancienSlug ?? null]));
     return lignes.map((l) => ({
       id: l.id,
       // Slug absent si la base date d'avant 0003 : celui de la graine, identique.
@@ -144,6 +155,9 @@ export async function ventes(): Promise<Vente[]> {
       chapo: l.chapo, recit: l.recit, seoTitle: l.seo_title, seoDesc: l.seo_desc,
       // La base refuse un récit sans validation ; le site vérifie quand même.
       recitValideLe: l.recit_valide_le,
+      loyerPotentiel: nombre(l.loyer_potentiel), ecartEstimation: nombre(l.ecart_estimation),
+      delaiOffreJours: l.delai_offre_jours ?? null,
+      ancienSlug: ancien.get(l.id) ?? null,
     }));
   } catch {
     return VENTES_DEPOSEES;
@@ -153,6 +167,16 @@ export async function ventes(): Promise<Vente[]> {
 export async function venteParSlug(slug: string): Promise<Vente | null> {
   const toutes = await ventes();
   return toutes.find((v) => v.slug === slug) ?? null;
+}
+
+/**
+ * Les 44 fiches de départ ont porté l'année dans leur adresse quelques heures
+ * (« …-pantin-2019 »). MAV ne veut aucune date de vente à l'écran, URL
+ * comprise : l'ancienne adresse renvoie vers la nouvelle.
+ */
+export async function nouveauSlugVente(ancienSlug: string): Promise<string | null> {
+  const toutes = await ventes();
+  return toutes.find((v) => v.ancienSlug === ancienSlug)?.slug ?? null;
 }
 
 /**
@@ -180,11 +204,78 @@ export function statsVentes(v: Vente[]) {
     total: v.length,
     villes: new Set(v.map((x) => x.ville)).size,
     departements: new Set(v.map((x) => x.dept)).size,
-    premiereAnnee: Math.min(...v.map((x) => x.annee)),
-    derniereAnnee: Math.max(...v.map((x) => x.annee)),
     volume: v.reduce((s, x) => s + x.prix, 0),
     partIdf: Math.round((v.filter((x) => x.region === "idf").length / v.length) * 100),
   };
+}
+
+/**
+ * Régions et départements, pour classer les ventes (retour de MAV du
+ * 21/10/2026) : l'Île-de-France d'abord, département par département dans cet
+ * ordre, puis les autres régions, de la plus représentée à la moins.
+ * Codes de région INSEE, ceux de `REGIONS_FR` (carte-france.ts).
+ */
+const REGION_DES_DEPTS: Record<string, string> = {};
+const DEPTS_PAR_REGION: Record<string, string[]> = {
+  "11": ["75", "77", "78", "91", "92", "93", "94", "95"],
+  "24": ["18", "28", "36", "37", "41", "45"],
+  "27": ["21", "25", "39", "58", "70", "71", "89", "90"],
+  "28": ["14", "27", "50", "61", "76"],
+  "32": ["02", "59", "60", "62", "80"],
+  "44": ["08", "10", "51", "52", "54", "55", "57", "67", "68", "88"],
+  "52": ["44", "49", "53", "72", "85"],
+  "53": ["22", "29", "35", "56"],
+  "75": ["16", "17", "19", "23", "24", "33", "40", "47", "64", "79", "86", "87"],
+  "76": ["09", "11", "12", "30", "31", "32", "34", "46", "48", "65", "66", "81", "82"],
+  "84": ["01", "03", "07", "15", "26", "38", "42", "43", "63", "69", "73", "74"],
+  "93": ["04", "05", "06", "13", "83", "84"],
+  "94": ["2A", "2B", "20"],
+};
+for (const [r, ds] of Object.entries(DEPTS_PAR_REGION)) for (const d of ds) REGION_DES_DEPTS[d] = r;
+
+/** L'ordre voulu par MAV pour l'Île-de-France. */
+export const ORDRE_IDF = ["75", "92", "94", "93", "91", "78", "95", "77"];
+export const NOMS_DEPTS_IDF: Record<string, string> = {
+  "75": "Paris", "92": "Hauts-de-Seine", "94": "Val-de-Marne", "93": "Seine-Saint-Denis",
+  "91": "Essonne", "78": "Yvelines", "95": "Val-d’Oise", "77": "Seine-et-Marne",
+};
+
+export function regionDuDept(dept: string): string | null {
+  return REGION_DES_DEPTS[dept.toUpperCase().padStart(2, "0")] ?? null;
+}
+
+export type GroupeVentes = {
+  region: string;            // code INSEE, ou "?" si inconnu
+  departements: { dept: string | null; ventes: Vente[] }[];
+  total: number;
+};
+
+/** Du plus cher au moins cher : MAV veut le tri par prix, pas par date. */
+const parPrix = (a: Vente, b: Vente) => b.prix - a.prix;
+
+export function groupesVentes(v: Vente[]): GroupeVentes[] {
+  const parRegion = new Map<string, Vente[]>();
+  for (const x of v) {
+    const r = regionDuDept(x.dept) ?? "?";
+    parRegion.set(r, [...(parRegion.get(r) ?? []), x]);
+  }
+  const groupes: GroupeVentes[] = [...parRegion.entries()].map(([region, liste]) => {
+    if (region !== "11") {
+      return { region, departements: [{ dept: null, ventes: liste.sort(parPrix) }], total: liste.length };
+    }
+    const departements = ORDRE_IDF.map((d) => ({
+      dept: d,
+      ventes: liste.filter((x) => x.dept === d).sort(parPrix),
+    })).filter((g) => g.ventes.length > 0);
+    return { region, departements, total: liste.length };
+  });
+  return groupes.sort(
+    (a, b) =>
+      Number(b.region === "11") - Number(a.region === "11") ||
+      Number(a.region === "?") - Number(b.region === "?") ||
+      b.total - a.total ||
+      a.region.localeCompare(b.region),
+  );
 }
 
 export async function ventesEtStats() {

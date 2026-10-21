@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ventesEtStats } from "@/lib/biens";
 import { PREUVES, SITE, nombre } from "@/lib/site";
 import { Logo } from "./Logo";
 
@@ -12,7 +11,6 @@ import { Logo } from "./Logo";
  *  - la colonne « Vendre par ville » arrivera en M6, avec les pages.
  */
 export async function Footer() {
-  const { stats } = await ventesEtStats();
   return (
     <footer className="site-footer">
       <div className="container">
@@ -22,8 +20,8 @@ export async function Footer() {
               <Logo titre={null} />
             </Link>
             <p className="small muted" style={{ marginTop: "var(--space-s)", maxWidth: "34ch" }}>
-              Agence spécialisée dans la vente d&rsquo;immeubles de rapport en bloc.{" "}
-              {stats.total} immeubles vendus depuis {stats.premiereAnnee}.
+              Agence spécialisée dans la vente d&rsquo;immeubles de rapport en bloc, à Paris, en
+              Île-de-France et en région.
             </p>
             <p className="small mono" style={{ marginTop: "var(--space-s)" }}>
               <a href={SITE.telHref}>{SITE.tel}</a>

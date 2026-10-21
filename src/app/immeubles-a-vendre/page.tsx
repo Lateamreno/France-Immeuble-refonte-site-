@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { biensAVendre, ventesEtStats } from "@/lib/biens";
+import { biensAVendre } from "@/lib/biens";
 
 /**
  * /immeubles-a-vendre/ — les immeubles que l'agence diffuse.
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 export default async function ImmeublesAVendre() {
-  const [biens, { stats }] = await Promise.all([biensAVendre(), ventesEtStats()]);
+  const biens = await biensAVendre();
   const enVente = biens.filter((b) => b.statut === "en_vente").length;
 
   return (
@@ -94,7 +94,7 @@ export default async function ImmeublesAVendre() {
                   Déposer ma recherche
                 </Button>
                 <Button href="/immeubles-vendus/" variant="ghost-dark">
-                  Voir les {stats.total} immeubles vendus
+                  Voir nos dernières ventes
                 </Button>
               </div>
             </Reveal>
