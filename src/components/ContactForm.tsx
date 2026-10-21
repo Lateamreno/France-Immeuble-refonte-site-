@@ -21,10 +21,15 @@ const PROJETS = [
   "Je souhaite travailler en interagence",
 ] as const;
 
-export function ContactForm() {
+/**
+ * `bien` : posé depuis une fiche « à vendre ». Le projet est pré-rempli et la
+ * référence du bien part avec le lead — l'agent sait de quel immeuble on parle
+ * sans avoir à le demander.
+ */
+export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } = {}) {
   const uid = useId();
   const [telephone, setTelephone] = useState("");
-  const [projet, setProjet] = useState("");
+  const [projet, setProjet] = useState<string>(bien ? PROJETS[0] : "");
   const [message, setMessage] = useState("");
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [envoi, setEnvoi] = useState(false);
@@ -46,7 +51,13 @@ export function ContactForm() {
       await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ type: "contact", telephone, projet, message }),
+        body: JSON.stringify({
+          type: "contact",
+          telephone,
+          projet,
+          message,
+          ...(bien ? { bien: bien.ref, bienTitre: bien.titre } : {}),
+        }),
       });
     } catch {
       // Jamais d'échec affiché : le handler serveur trace et alerte.

@@ -32,27 +32,44 @@ create table if not exists public.ventes (
 create index if not exists ventes_date_idx on public.ventes (date desc);
 
 -- ---------------------------------------------------------------------------
--- Biens à vendre. Seules les annonces dont la diffusion « France Immeuble » est
--- cochée dans le BO. Jeu d'informations de PleinBail, SANS l'adresse.
+-- Biens à vendre. Le BO y dépose EXACTEMENT ce que son pont envoie déjà à
+-- PleinBail — les fiches `bo_immeuble` au statut « 6 - Commercialisé (all) »
+-- retenues par ce pont — sauf si la case « France Immeuble » est décochée.
+-- Même jeu d'informations que PleinBail, et comme PleinBail : PAS d'adresse,
+-- PAS de coordonnées GPS.
 -- ---------------------------------------------------------------------------
 create table if not exists public.biens_a_vendre (
-  id              text primary key,          -- _id de bo_annonce
-  slug            text not null unique,
-  titre           text not null,
-  ville           text not null,
-  dept            text not null,
-  type            text not null,
-  surface_carrez  numeric,
-  lots            integer,
-  loyer_hc_an     numeric,
-  prix_hai        numeric not null check (prix_hai > 0),
-  rendement       numeric,
-  occupation      numeric check (occupation is null or occupation between 0 and 100),
-  prix_m2         numeric,
-  travaux         boolean not null default false,
-  images          text[] not null default '{}',
-  publie_le       timestamptz not null default now()
+  id                  text primary key,      -- _id de bo_immeuble (le pont PleinBail
+                                             -- l'envoie sous la forme « FI:<id> »)
+  slug                text not null unique,
+  statut              text not null default 'en_vente'
+                      check (statut in ('en_vente', 'sous_offre')),
+  titre               text not null,
+  description         text,
+  ville               text not null,
+  dept                text not null,
+  type                text not null default 'Immeuble de rapport',
+  surface             numeric,               -- m², comme sur PleinBail
+  lots                integer,
+  annee_construction  integer,
+  loyer_hc_an         numeric,
+  prix_hai            numeric not null check (prix_hai > 0),
+  -- POURCENTAGES, pas fractions : 8,98 et non 0,0898 ; 100 et non 1.
+  -- PleinBail stocke des fractions. Un rendement brut d'immeuble de rapport
+  -- sous 1 % n'existe pas : la contrainte rejette donc bruyamment un dépôt
+  -- resté en fraction, au lieu de laisser afficher « 0,09 % brut ».
+  rendement           numeric check (rendement is null or rendement between 1 and 40),
+  occupation          numeric check (occupation is null or occupation between 0 and 100),
+  prix_m2             numeric,
+  dpe                 text check (dpe is null or dpe in ('A','B','C','D','E','F','G')),
+  travaux             text,                  -- travaux à prévoir, texte libre
+  -- Chemins dans le bucket public `biens` de CE projet. Les noms de fichier
+  -- sont neutres : ceux d'origine portent parfois l'adresse.
+  images              text[] not null default '{}',
+  publie_le           timestamptz not null default now(),
+  maj_le              timestamptz not null default now()
 );
+create index if not exists biens_a_vendre_publie_idx on public.biens_a_vendre (publie_le desc);
 
 -- ---------------------------------------------------------------------------
 -- RLS : lecture publique des deux projections, et RIEN d'autre.
@@ -90,9 +107,11 @@ create index if not exists leads_outbox_essai_idx on public.leads_outbox (procha
 alter table public.leads_outbox enable row level security;
 
 -- ---------------------------------------------------------------------------
--- Coffre des photos de ventes. PUBLIC en lecture : ces images sont affichées
--- sur le site. Les captures de recette restent dans `bo-files`, privé.
+-- Coffres des photos : `ventes` (biens vendus) et `biens` (biens à vendre).
+-- PUBLICS en lecture : ces images sont affichées sur le site, servies par
+-- /_next/image sur notre domaine. Les captures de recette restent dans
+-- `bo-files`, privé.
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
-values ('ventes', 'ventes', true)
+values ('ventes', 'ventes', true), ('biens', 'biens', true)
 on conflict (id) do nothing;

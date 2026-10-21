@@ -1683,3 +1683,99 @@ strong,b{font-weight:600;color:var(--color-creme);}
 }
 .vide .lead{margin-top:var(--space-s);}
 .vide .lead + .lead{margin-top:var(--space-xs);}
+
+/* ==========================================================================
+   19. BIENS À VENDRE — liste et fiche
+   ========================================================================== */
+.biens-liste{
+  list-style:none;padding:0;margin:0;
+  display:grid;gap:var(--space-m);
+  grid-template-columns:repeat(auto-fill, minmax(290px, 1fr));
+}
+.biens-liste > li{display:flex;}
+.bien-carte{
+  display:flex;flex-direction:column;width:100%;
+  border:1px solid color-mix(in srgb, var(--color-noir) 14%, transparent);
+  border-radius:var(--radius-card);overflow:hidden;color:inherit;
+  transition:border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.bien-carte:hover{border-color:var(--color-bronze-profond);transform:translateY(-3px);box-shadow:0 14px 34px rgba(10,10,10,.10);}
+.bien-carte__visuel{position:relative;display:block;aspect-ratio:4/3;background:var(--color-noir-3);}
+.bien-carte__img{object-fit:cover;}
+.bien-carte__sansphoto{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--color-bronze-profond);background:color-mix(in srgb, var(--color-bronze) 10%, var(--color-creme));}
+.bien-carte__badges{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;}
+.badge{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);font-weight:600;letter-spacing:.06em;
+  padding:5px 10px;border-radius:var(--radius-pill);
+  background:var(--color-bronze);color:var(--color-noir);
+}
+.badge--sombre{background:rgba(10,10,10,.82);color:var(--color-creme);}
+.badge--offre{background:var(--color-noir);color:var(--color-bronze-clair);}
+.bien-carte__corps{display:flex;flex-direction:column;gap:4px;padding:var(--space-s);flex:1;}
+.bien-carte__ou{font-size:var(--fs-small);color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));}
+.bien-carte__ou span{opacity:.8;}
+.bien-carte__dept{font-family:var(--font-body);font-weight:400;font-size:.8em;letter-spacing:0;color:color-mix(in srgb, var(--color-noir) 52%, var(--color-creme));font-variation-settings:normal;}
+.bien-carte__titre{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:1.25rem;letter-spacing:-.015em;line-height:1.18;color:var(--color-noir);
+}
+.bien-carte__faits,.bien-carte__loyer{font-size:var(--fs-small);color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));}
+.bien-carte__pied{
+  display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-xs);flex-wrap:wrap;
+  margin-top:auto;padding-top:var(--space-xs);
+  border-top:1px solid color-mix(in srgb, var(--color-noir) 10%, transparent);
+}
+.bien-carte__prix{font-family:var(--font-mono-site);font-weight:600;font-size:1.05rem;color:var(--color-noir);}
+.bien-carte__rdt{font-family:var(--font-mono-site);font-weight:600;font-size:var(--fs-small);color:var(--color-bronze-profond);}
+.bien-carte__pm2{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);color:color-mix(in srgb, var(--color-noir) 52%, var(--color-creme));}
+
+/* --- Fiche ------------------------------------------------------------------ */
+.fiche-bien{padding-top:var(--space-l);}
+.fiche-bien__tete{margin-bottom:var(--space-m);}
+.fiche-bien__tete h1{font-size:clamp(1.9rem, 1.3rem + 2.6vw, 3.4rem);max-width:22ch;text-wrap:balance;}
+.fiche-bien__prix{
+  margin-top:var(--space-xs);
+  font-family:var(--font-mono-site);font-weight:600;font-size:clamp(1.25rem,1rem + 1vw,1.7rem);color:var(--color-bronze);
+}
+.fiche-bien__prix span{font-family:var(--font-body);font-weight:400;font-size:var(--fs-small);color:var(--color-gris);margin-left:8px;}
+
+/* Galerie : une grande à gauche, jusqu'à quatre petites à droite. Une seule
+   photo occupe tout. Sous 760 px, la grande passe au-dessus. */
+.galerie{display:grid;gap:8px;border-radius:var(--radius-card);overflow:hidden;}
+.galerie__case{position:relative;display:block;background:var(--color-noir-3);min-height:0;}
+.galerie__img{object-fit:cover;}
+.galerie--1{grid-template-columns:1fr;aspect-ratio:16/9;}
+.galerie--2{grid-template-columns:2fr 1fr;aspect-ratio:16/8;}
+.galerie--3,.galerie--4,.galerie--5{grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;aspect-ratio:16/8;}
+.galerie--3 .galerie__case:first-child,
+.galerie--4 .galerie__case:first-child,
+.galerie--5 .galerie__case:first-child{grid-row:1 / span 2;}
+.galerie--3 .galerie__case:nth-child(2){grid-column:2 / span 2;}
+.galerie--4 .galerie__case:nth-child(4){grid-column:2 / span 2;}
+.galerie--vide{aspect-ratio:16/8;display:flex;align-items:center;justify-content:center;background:var(--color-noir-3);color:var(--color-bronze);}
+@media (max-width:760px){
+  .galerie--2,.galerie--3,.galerie--4,.galerie--5{
+    grid-template-columns:1fr 1fr;grid-template-rows:auto;aspect-ratio:auto;
+  }
+  .galerie .galerie__case{aspect-ratio:4/3;grid-row:auto !important;grid-column:auto !important;}
+  .galerie .galerie__case:first-child{grid-column:1 / -1 !important;aspect-ratio:16/10;}
+  .galerie--1 .galerie__case{aspect-ratio:16/10;}
+}
+
+.faits{margin:var(--space-s) 0 0;}
+.faits > div{
+  display:flex;justify-content:space-between;gap:var(--space-s);
+  padding-block:11px;border-bottom:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);
+}
+.faits dt{color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));font-size:var(--fs-small);}
+.faits dd{margin:0;text-align:right;font-family:var(--font-mono-site);font-weight:600;color:var(--color-noir);}
+.faits__note{margin-top:var(--space-s);font-size:var(--fs-small);color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));}
+.faits__note strong{color:var(--color-noir);}
+.fiche-bien__texte p{margin-top:var(--space-s);max-width:68ch;color:color-mix(in srgb, var(--color-noir) 78%, var(--color-creme));}
+.fiche-bien__adresse{
+  margin-top:var(--space-m);padding:var(--space-s) var(--space-m);
+  border-left:2px solid var(--color-bronze-profond);
+  background:color-mix(in srgb, var(--color-bronze) 8%, transparent);
+  font-size:var(--fs-small);max-width:68ch;
+}

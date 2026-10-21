@@ -11,7 +11,7 @@ import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { VENTES, VENTES_STATS, villesFrequentes, prix, volume } from "@/lib/biens";
+import { ventesEtStats, villesFrequentes, prix, volume } from "@/lib/biens";
 
 /**
  * /immeubles-vendus/ — les ventes réalisées, servies depuis nos données.
@@ -36,8 +36,12 @@ const REGIONS: Record<string, string> = {
   autre: "Régions",
 };
 
-export default function ImmeublesVendus() {
-  const villes = villesFrequentes(10);
+/** Une vente publiée par le BO apparaît sous 10 minutes, sans redéploiement. */
+export const revalidate = 600;
+
+export default async function ImmeublesVendus() {
+  const { ventes, stats } = await ventesEtStats();
+  const villes = villesFrequentes(ventes, 10);
 
   return (
     <>
@@ -58,17 +62,17 @@ export default function ImmeublesVendus() {
           </p>
           <div className="hero-proof">
             <span className="hero-proof__item">
-              <span className="hero-proof__val">{VENTES_STATS.total}</span>
+              <span className="hero-proof__val">{stats.total}</span>
               <span className="hero-proof__lbl">
-                immeubles vendus depuis {VENTES_STATS.premiereAnnee}
+                immeubles vendus depuis {stats.premiereAnnee}
               </span>
             </span>
             <span className="hero-proof__item">
-              <span className="hero-proof__val">{VENTES_STATS.villes}</span>
+              <span className="hero-proof__val">{stats.villes}</span>
               <span className="hero-proof__lbl">communes</span>
             </span>
             <span className="hero-proof__item">
-              <span className="hero-proof__val">{volume(VENTES_STATS.volume)}</span>
+              <span className="hero-proof__val">{volume(stats.volume)}</span>
               <span className="hero-proof__lbl">de transactions</span>
             </span>
           </div>
@@ -80,18 +84,18 @@ export default function ImmeublesVendus() {
           <Reveal className="section__head">
             <Eyebrow>Les ventes</Eyebrow>
             <h2>
-              {VENTES_STATS.total} actes signés entre {VENTES_STATS.premiereAnnee} et{" "}
-              {VENTES_STATS.derniereAnnee}
+              {stats.total} actes signés entre {stats.premiereAnnee} et{" "}
+              {stats.derniereAnnee}
             </h2>
             <p className="lead">
-              {VENTES_STATS.partIdf}&nbsp;% en Île-de-France, le reste réparti sur{" "}
-              {VENTES_STATS.departements} départements. Les montants sont les prix de vente
+              {stats.partIdf}&nbsp;% en Île-de-France, le reste réparti sur{" "}
+              {stats.departements} départements. Les montants sont les prix de vente
               honoraires inclus.
             </p>
           </Reveal>
 
           <ul className="ventes">
-            {VENTES.map((v, i) => (
+            {ventes.map((v, i) => (
               <Reveal key={v.id} as="li" className="vente" delayIndex={i % 6}>
                 <span className="vente__visuel">
                   {v.image ? (
@@ -133,7 +137,7 @@ export default function ImmeublesVendus() {
             <h2>Où nous vendons</h2>
             <p className="lead">
               Les communes où nous avons signé plus d’une fois. Le reste se répartit sur{" "}
-              {VENTES_STATS.villes - villes.filter((v) => v.n > 1).length} autres communes.
+              {stats.villes - villes.filter((v) => v.n > 1).length} autres communes.
             </p>
           </Reveal>
           <ul className="villes">

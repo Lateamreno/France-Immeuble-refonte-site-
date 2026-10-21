@@ -36,7 +36,7 @@ export const PREUVES = {
   /**
    * ⚠️ Ne plus écrire de chiffre de ventes ici. Le nombre d'immeubles vendus,
    * les communes couvertes et les années se CALCULENT dans `lib/biens.ts` à
-   * partir des ventes déposées par le BO (`VENTES_STATS`).
+   * partir des ventes déposées par le BO (`ventesEtStats()`).
    *
    * Le site annonçait « 365 immeubles » : aucune table du CRM ne produit ce
    * nombre — 274 mandats, 211 commercialisations, 875 estimations, 44 ventes.

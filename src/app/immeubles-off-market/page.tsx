@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
-import { VENTES_STATS } from "@/lib/biens";
+import { ventesEtStats } from "@/lib/biens";
 
 /**
  * /immeubles-off-market/ — ce qu'est l'off-market, et comment y accéder.
@@ -87,7 +87,8 @@ const EXEMPLES = [
   },
 ];
 
-export default function ImmeublesOffMarket() {
+export default async function ImmeublesOffMarket() {
+  const { stats } = await ventesEtStats();
   return (
     <>
       <JsonLd
@@ -218,9 +219,9 @@ export default function ImmeublesOffMarket() {
                 <span className="hero-proof__lbl">acquéreurs dans le fichier</span>
               </span>
               <span className="hero-proof__item">
-                <span className="hero-proof__val">{VENTES_STATS.total}</span>
+                <span className="hero-proof__val">{stats.total}</span>
                 <span className="hero-proof__lbl">
-                  immeubles vendus depuis {VENTES_STATS.premiereAnnee}
+                  immeubles vendus depuis {stats.premiereAnnee}
                 </span>
               </span>
             </div>

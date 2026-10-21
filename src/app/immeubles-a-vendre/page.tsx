@@ -4,32 +4,33 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { Picto } from "@/components/Picto";
+import { CarteBien } from "@/components/CarteBien";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { BIENS_A_VENDRE, VENTES_STATS, prix } from "@/lib/biens";
+import { biensAVendre, ventesEtStats } from "@/lib/biens";
 
 /**
- * /immeubles-a-vendre/ — les immeubles effectivement diffusés par l'agence.
+ * /immeubles-a-vendre/ — les immeubles que l'agence diffuse.
  *
- * La liste vient de la projection déposée par le BO, pour les seules annonces
- * dont la diffusion « France Immeuble » est cochée. Rien ne s'affiche tant que
- * cette case n'est pas cochée : le site ne décide pas de ce qui est public, le
- * BO le décide, annonce par annonce.
- *
- * Jeu d'informations calqué sur PleinBail, à une exception près : pas
- * d'adresse. Commune et département situent, la rue identifie le vendeur (§2).
+ * Tout part du BO : le même envoi que celui qui alimente PleinBail dépose ces
+ * biens dans la base du site, que cette page lit. Rien n'est saisi ici.
+ * Jeu d'informations de PleinBail, sans l'adresse (§2).
  */
 export const metadata: Metadata = {
   title: "Immeubles de rapport à vendre | France Immeuble",
   description:
-    "Les immeubles de rapport que nous diffusons publiquement : surface, lots, loyers, rendement et prix. Le reste de nos mandats part sans annonce, à notre fichier d’acquéreurs.",
+    "Les immeubles de rapport que nous commercialisons : surface, lots, loyers, rendement et prix. D’autres mandats partent sans annonce, à notre fichier d’acquéreurs.",
   alternates: { canonical: `${SITE.url}/immeubles-a-vendre/` },
 };
 
-export default function ImmeublesAVendre() {
-  const biens = BIENS_A_VENDRE;
+/** La liste change quand le BO dépose : revalidée toutes les 10 minutes. */
+export const revalidate = 600;
+
+export default async function ImmeublesAVendre() {
+  const [biens, { stats }] = await Promise.all([biensAVendre(), ventesEtStats()]);
+  const enVente = biens.filter((b) => b.statut === "en_vente").length;
 
   return (
     <>
@@ -43,68 +44,47 @@ export default function ImmeublesAVendre() {
       <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt}>
         <>
           <Eyebrow>Nos biens · à vendre</Eyebrow>
-          <h1>Les immeubles que nous diffusons</h1>
+          <h1>Les immeubles que nous commercialisons</h1>
           <p className="lead">
             Surface, lots, loyers, rendement et prix. Tout ce qu’il faut pour décider s’il vaut
-            le déplacement&nbsp;— sauf l’adresse, qui appartient au vendeur jusqu’à la visite.
+            le déplacement&nbsp;— sauf l’adresse, communiquée à la demande.
           </p>
-          <div className="btn-row">
-            <Button href="/immeubles-off-market/" icone>
-              Accéder aussi à l’off-market
-            </Button>
-            <Button href={SITE.telHref} variant="outline">
-              Être rappelé.e
-            </Button>
-          </div>
+          {biens.length > 0 && (
+            <div className="hero-proof">
+              <span className="hero-proof__item">
+                <span className="hero-proof__val">{enVente}</span>
+                <span className="hero-proof__lbl">
+                  immeuble{enVente > 1 ? "s" : ""} en vente
+                </span>
+              </span>
+            </div>
+          )}
         </>
       </HeroMedia>
 
       <section className="section section--creme">
         <div className="container">
           {biens.length > 0 ? (
-            <>
-              <Reveal className="section__head">
-                <Eyebrow>En diffusion</Eyebrow>
-                <h2>
-                  {biens.length} immeuble{biens.length > 1 ? "s" : ""} actuellement en ligne
-                </h2>
-              </Reveal>
-              <ul className="annonces">
-                {biens.map((b, i) => (
-                  <Reveal key={b.id} as="li" className="annonce" delayIndex={i % 6}>
-                    <h3>{b.titre}</h3>
-                    <p className="annonce__ou">
-                      {b.ville} <span>({b.dept})</span>
-                    </p>
-                    <p className="annonce__faits">
-                      {b.type} · {b.surfaceCarrez} m² · {b.lots} lots
-                    </p>
-                    <p className="annonce__prix">{prix(b.prixHai)}</p>
-                    {b.rendement !== null && (
-                      <p className="annonce__rdt">{b.rendement} % brut</p>
-                    )}
-                  </Reveal>
-                ))}
-              </ul>
-            </>
+            <ul className="biens-liste">
+              {biens.map((b, i) => (
+                <Reveal key={b.id} as="li" delayIndex={i % 6}>
+                  <CarteBien b={b} rang={i} />
+                </Reveal>
+              ))}
+            </ul>
           ) : (
-            /* État vide ASSUMÉ, et non un accident. Sur 30 immeubles en
-               commercialisation aujourd'hui, aucun n'a d'annonce diffusée sur
-               le site : c'est le modèle de l'agence, pas une page en panne. On
-               le dit, et on envoie vers la seule porte qui ouvre vraiment. */
+            /* N'apparaît que si la base est vide ou injoignable. Le texte ne
+               prétend rien sur les raisons : il dit ce qui est vrai à tout
+               moment, et ouvre les deux portes utiles. */
             <Reveal className="vide">
               <span className="vide__picto" aria-hidden="true">
                 <Picto nom="immeubles" taille={44} />
               </span>
-              <h2>Aucun immeuble en diffusion publique en ce moment</h2>
+              <h2>Aucun immeuble affiché pour le moment</h2>
               <p className="lead">
-                Ce n’est pas une page en construction. Nous commercialisons la quasi-totalité de
-                nos mandats <strong>sans annonce</strong>, directement auprès des acquéreurs dont
-                la recherche correspond. Un immeuble n’apparaît ici que si son propriétaire
-                accepte qu’il soit diffusé publiquement&nbsp;— et c’est rare.
-              </p>
-              <p className="lead">
-                Pour voir ce qui circule réellement, il faut être dans le fichier.
+                Nos annonces se mettent à jour plusieurs fois par jour. Une partie de nos mandats
+                part par ailleurs <strong>sans annonce</strong>, directement aux acquéreurs dont
+                la recherche correspond.
               </p>
               <div
                 className="btn-row"
@@ -114,7 +94,7 @@ export default function ImmeublesAVendre() {
                   Déposer ma recherche
                 </Button>
                 <Button href="/immeubles-vendus/" variant="ghost-dark">
-                  Voir les {VENTES_STATS.total} immeubles vendus
+                  Voir les {stats.total} immeubles vendus
                 </Button>
               </div>
             </Reveal>
@@ -125,16 +105,19 @@ export default function ImmeublesAVendre() {
       <section className="section section--noir-2">
         <div className="container">
           <Reveal className="section__head">
-            <Eyebrow>Pourquoi si peu</Eyebrow>
-            <h2>Diffuser publiquement est l’exception, pas la règle</h2>
+            <Eyebrow>Et ce qui n’est pas en ligne</Eyebrow>
+            <h2>Une partie de nos mandats ne sont jamais diffusés</h2>
             <p className="lead">
-              Un immeuble mis en ligne, ce sont des locataires qui l’apprennent par une annonce,
-              un voisinage et des confrères qui le savent, et un bien qui s’use en vitrine. La
-              plupart de nos vendeurs refusent&nbsp;— et nous vendons quand même.
+              Certains propriétaires préfèrent que leurs locataires, leurs voisins et le marché
+              n’apprennent pas la vente par une annonce. Ces immeubles partent directement aux
+              acquéreurs inscrits dont la recherche correspond.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
               <Button href="/immeubles-off-market/" variant="outline">
-                Comment marche l’off-market
+                Accéder à l’off-market
+              </Button>
+              <Button href={SITE.telHref} variant="outline">
+                Être rappelé.e
               </Button>
             </div>
           </Reveal>
