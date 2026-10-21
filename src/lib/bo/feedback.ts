@@ -4,14 +4,12 @@
 // Stockage dans le projet Supabase DU SITE (table bo_feedback + bucket bo-files).
 //
 // ⚠️ CLAUDE.md §2 et §16 : aucune clé du BO ne doit se trouver dans
-// l'environnement du site, même en lecture seule. Le prompt de méthode livre
-// une valeur de repli pointant sur le projet du BO (`sojtmhdrzmdbtqborxsi`) :
-// elle est VOLONTAIREMENT retirée ici. Sans `SUPABASE_URL`, l'outil se tait
-// plutôt que d'aller écrire dans le CRM.
+// l'environnement du site, même en lecture seule. La configuration passe par
+// `configSite()`, qui lit des variables préfixées `SITE_` et refuse toute URL
+// du projet du BO. Sans configuration, l'outil se tait plutôt que d'aller
+// écrire ailleurs.
 import { revalidatePath } from "next/cache";
-
-const SB_URL = process.env.SUPABASE_URL;
-const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+import { configSite } from "@/lib/supabase-site";
 
 export type Feedback = {
   id: number;
@@ -59,17 +57,18 @@ async function tenter(travail: () => Promise<void>): Promise<Resultat> {
 }
 
 async function sb(path: string, init?: RequestInit) {
-  if (!SB_URL || !SB_KEY) {
+  const cfg = configSite();
+  if (!cfg) {
     throw new Error(
       "Le projet Supabase du site n'est pas encore branché : votre retour n'a pas été enregistré. " +
         "Gardez-le sous les yeux le temps qu'on branche la base.",
     );
   }
-  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+  const res = await fetch(`${cfg.url}/rest/v1/${path}`, {
     ...init,
     headers: {
-      apikey: SB_KEY,
-      Authorization: `Bearer ${SB_KEY}`,
+      apikey: cfg.cle,
+      Authorization: `Bearer ${cfg.cle}`,
       "Content-Type": "application/json",
       ...(init?.headers ?? {}),
     },
@@ -84,10 +83,13 @@ async function deposerCapture(f: File): Promise<string> {
   if (f.size > 10 * 1024 * 1024) throw new Error(`« ${f.name || "capture"} » dépasse 10 Mo.`);
   const ext = (f.type.split("/")[1] || "png").replace(/[^a-z0-9]/gi, "") || "png";
   const chemin = `feedback/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const up = await fetch(`${SB_URL}/storage/v1/object/bo-files/${chemin}`, {
+  const cfg = configSite();
+  if (!cfg) throw new Error("Stockage des captures indisponible.");
+  const up = await fetch(`${cfg.url}/storage/v1/object/bo-files/${chemin}`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${SB_KEY}`,
+      Authorization: `Bearer ${cfg.cle}`,
+      apikey: cfg.cle,
       "Content-Type": f.type || "image/png",
       "x-upsert": "true",
     },
@@ -148,7 +150,7 @@ async function ecrireFeedback(fd: FormData) {
 
 /** Liste les retours (tous, ou d'une page). */
 export async function listFeedback(url?: string): Promise<Feedback[]> {
-  if (!SB_URL || !SB_KEY) return [];
+  if (!configSite()) return [];
   const q = new URLSearchParams({ select: "*", order: "created_at.desc", limit: "500" });
   if (url) q.append("url", `eq.${url}`);
   const res = await sb(`bo_feedback?${q}`).catch(() => null);
@@ -164,7 +166,7 @@ export async function listFeedback(url?: string): Promise<Feedback[]> {
  * dessine.
  */
 export async function listFeedbackOuverts(): Promise<Feedback[]> {
-  if (!SB_URL || !SB_KEY) return [];
+  if (!configSite()) return [];
   const q = new URLSearchParams({
     select: "id,url,statut,gravite,commentaire,x_pct,y_pct,w_pct,h_pct",
     statut: "eq.ouvert",

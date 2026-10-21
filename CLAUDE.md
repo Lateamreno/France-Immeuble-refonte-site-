@@ -523,6 +523,18 @@ de `<body>`. C'était absent de certaines pages du site actuel : ne jamais l'oub
 
 **Jamais de mise en production sans validation humaine explicite.**
 
+### Rapport de fin de lot — OBLIGATOIRE, sans attendre qu'on le demande
+
+Chaque lot livré se termine par un **artefact avant/après** publié (outil Artifact), lien donné
+dans la réponse. MAV l'a rappelé le 21/10/2026 : « il faut que tu le fasses systématiquement ».
+
+- **Avant/après réels** : les deux versions construites et servies côte à côte (worktree sur le
+  commit d'avant), capturées aux mêmes formats. Jamais de maquette, jamais de souvenir.
+- **Mesures, pas impressions** : hauteurs, contrastes, nombre de mots indexables, compteurs —
+  relevés par script sur les pages servies.
+- **Ce qui reste à trancher** en fin de document, explicitement.
+- Une page neuve n'a pas d'« avant » : le dire, et montrer l'état réel, y compris vide.
+
 ---
 
 ## 14. Milestones

@@ -69,15 +69,20 @@ rester possible en un clic.
 
 ---
 
-## Chantier 2 — La projection `web.biens_a_vendre`
+## Chantier 2 — La projection `public.biens_a_vendre`
 
-Le BO écrit dans la base Supabase **du site**, schéma `web`. Le site lit cette
-table et rien d'autre.
+Le BO écrit dans la base Supabase **du site** — projet « France Immeuble site »,
+`omtkttpvfjsbnqsajcsp`, table `public.biens_a_vendre`. **La table existe déjà**
+(migration `0002`, dans le repo du site) : le BO ne la crée pas, il y dépose. Un
+seul repo possède les migrations d'une base, sinon c'est la panne garantie.
 
-### Le contrat
+Le BO a besoin pour cela de la clé secrète du projet **du site**. C'est le sens
+autorisé : le BO connaît le site, le site ne connaît pas le BO.
+
+### Le contrat (déjà en place, pour référence)
 
 ```sql
-create table if not exists web.biens_a_vendre (
+create table if not exists public.biens_a_vendre (
   id              text primary key,   -- _id de bo_annonce
   slug            text not null unique,
   titre           text not null,
@@ -95,7 +100,8 @@ create table if not exists web.biens_a_vendre (
   images          text[] not null default '{}',
   publie_le       timestamptz not null default now()
 );
-alter table web.biens_a_vendre enable row level security;
+alter table public.biens_a_vendre enable row level security;
+-- lecture publique, aucune policy d'écriture : seule la clé secrète écrit
 ```
 
 ### Ce qui ne traverse JAMAIS la frontière
@@ -203,7 +209,7 @@ disent la même chose du statut D.
 
 ### 3.4 — File d'attente côté site
 
-Si le BO ne répond pas, le lead part dans `web.leads_outbox` côté site, avec
+Si le BO ne répond pas, le lead part dans `public.leads_outbox` côté site, avec
 alerte et réessai, purgée dès transmission. **On ne perd jamais un lead** —
 c'est le canal d'acquisition n°1. L'endpoint doit donc être **idempotent sur
 `ref`** : un réessai ne doit pas créer un second prospect.
@@ -233,7 +239,7 @@ chiffre le plus défendable serait **1 203 acquéreurs distincts porteurs d'une
 recherche**, ou **1 968 recherches**.
 
 Si MAV veut que ces compteurs vivent, il faut une projection
-`web.stats_recherches` (quatre entiers, aucune donnée nominative). Tant qu'il
+`public.stats_recherches` (quatre entiers, aucune donnée nominative). Tant qu'il
 n'a pas tranché, je n'ai touché à aucun de ces trois chiffres sur le site.
 
 ---
@@ -249,5 +255,6 @@ n'a pas tranché, je n'ai touché à aucun de ces trois chiffres sur le site.
 
 ## Prérequis
 
-Le projet Supabase **du site** n'existe pas encore. Les chantiers 2 et 3.4 en
-dépendent ; 1, 3.1, 3.2 et 3.3 peuvent démarrer sans lui.
+Le projet Supabase **du site** existe depuis le 21/10 (`omtkttpvfjsbnqsajcsp`),
+et ses tables sont définies dans le repo du site. Tous les chantiers peuvent
+démarrer.

@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
+import { configSite } from "@/lib/supabase-site";
 
 /**
  * Sert les captures du coffre privé des retours de recette.
  *
- * ⚠️ CLAUDE.md §2 : pas de valeur de repli vers le projet du BO. Sans
- * `SUPABASE_URL`, la route répond 503 plutôt que d'aller chercher un fichier
- * dans le CRM.
+ * ⚠️ CLAUDE.md §2 : la configuration passe par `configSite()`, qui refuse
+ * toute URL du projet du BO. Sans configuration, la route répond 503 plutôt
+ * que d'aller chercher un fichier ailleurs.
  */
-const SB_URL = process.env.SUPABASE_URL;
 
 /** Pixel transparent : une image source cassée ne doit pas casser la page. */
 const PIXEL = Buffer.from(
@@ -24,10 +24,10 @@ export async function GET(req: NextRequest) {
   const s = req.nextUrl.searchParams.get("s");
   if (!s) return new Response("missing s", { status: 400 });
   if (s.includes("..")) return new Response("bad path", { status: 400 });
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key || !SB_URL) return new Response("storage indisponible", { status: 503 });
-  const upstream = await fetch(`${SB_URL}/storage/v1/object/bo-files/${s}`, {
-    headers: { Authorization: `Bearer ${key}` },
+  const cfg = configSite();
+  if (!cfg) return new Response("storage indisponible", { status: 503 });
+  const upstream = await fetch(`${cfg.url}/storage/v1/object/bo-files/${s}`, {
+    headers: { Authorization: `Bearer ${cfg.cle}`, apikey: cfg.cle },
     next: { revalidate: 86400 },
   });
   if (!upstream.ok) return pixel();

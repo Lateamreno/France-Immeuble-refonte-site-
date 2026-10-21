@@ -9,32 +9,50 @@ Ce dossier porte les migrations du projet Supabase **du site**, et de lui seul.
 
 ## Mise en place
 
-1. Créer le projet `france-immeuble-site` dans l'organisation **La Team Reno**,
-   région `eu-west-1` (la même que les autres, pour la latence et le RGPD).
-2. Jouer les migrations de `migrations/`, dans l'ordre des numéros, depuis
-   l'éditeur SQL du tableau de bord.
-3. Poser dans Vercel, sur le projet `france-immeuble-refonte-site` :
+Projet : **France Immeuble site** — `omtkttpvfjsbnqsajcsp`, créé le 21/10/2026.
 
-   | Variable | Valeur | Environnements |
+1. ✅ `0001_revue_feedback.sql` — appliquée.
+2. ⏳ `A-COLLER-0002-et-ventes.sql` — à coller une fois dans l'éditeur SQL : les
+   tables des projections, puis les 44 ventes. Rejouable sans risque.
+3. Variables Vercel, projet `france-immeuble-refonte-site` :
+
+   | Variable | Environnements | État |
    |---|---|---|
-   | `SUPABASE_URL` | `https://<ref>.supabase.co` | Preview + Development |
-   | `SUPABASE_SERVICE_ROLE_KEY` | la clé `service_role` du projet | Preview + Development |
+   | `SITE_SUPABASE_URL` | Production, Preview, Development | ✅ posée |
+   | `SITE_SUPABASE_PUBLISHABLE_KEY` | Production, Preview, Development | ✅ posée |
+   | `SITE_SUPABASE_SECRET_KEY` | **Preview, Development** — type *Sensitive* | ⏳ à poser |
 
-   **Pas en Production.** L'outil de recette ne s'affiche que hors production
-   (`VERCEL_ENV !== "production"`) : la clé n'a donc rien à faire dans le
-   runtime du site public. Moins elle est déployée, moins elle fuit.
+### Pourquoi le préfixe `SITE_`
 
-   La clé `service_role` contourne la RLS. Elle ne doit jamais apparaître dans
-   une variable `NEXT_PUBLIC_*`, ni être lue côté navigateur.
+Le 21/10/2026, la session de développement contenait `SUPABASE_URL` et
+`SUPABASE_SERVICE_ROLE_KEY` pointant sur **le projet du BO**, et le code du site
+lisait des variables de même nom : un test local a écrit deux lignes dans le
+CRM. Avec un préfixe distinct, une clé du BO présente dans l'environnement ne
+peut plus être ramassée par erreur. Et `src/lib/supabase-site.ts` refuse en
+plus toute URL contenant la référence du projet du BO — vérifié le jour même :
+URL du BO dans `SITE_SUPABASE_URL` → 503 et refus journalisé.
+
+### Pourquoi la clé secrète n'est pas en Production
+
+Aujourd'hui, seul l'outil de recette en a besoin, et il ne s'affiche que hors
+production. Les projections publiques se lisent avec la clé publiable. Elle
+entrera en Production avec la file d'attente des leads, et pas avant : moins
+une clé est déployée, moins elle fuit.
 
 ## Ce que contient la base aujourd'hui
 
-| Table | Rôle |
-|---|---|
-| `bo_feedback` | Retours de recette posés sur les écrans (Mode Revue) |
+| Table | Rôle | RLS |
+|---|---|---|
+| `bo_feedback` | Retours de recette (Mode Revue) | aucune policy : clé secrète seule |
+| `ventes` | Ventes réalisées, déposées par le BO | lecture publique, écriture interdite |
+| `biens_a_vendre` | Annonces cochées « France Immeuble » | lecture publique, écriture interdite |
+| `leads_outbox` | Leads en attente si le BO ne répond pas | aucune policy : clé secrète seule |
 
-RLS activée, aucune policy : seule la clé `service_role`, utilisée dans les
-route handlers serveur, écrit et lit.
+Buckets : `bo-files` (privé, captures de recette), `ventes` (public, photos).
+
+Schéma `public` et non `web` comme l'écrit le §2 : servir un second schéma par
+l'API demande un réglage manuel du tableau de bord, qu'aucune migration ne
+versionne. Les noms de table portent le rôle à la place du préfixe.
 
 ## À venir (feuille de route §14)
 
