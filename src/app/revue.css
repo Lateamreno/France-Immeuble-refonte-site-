@@ -20,8 +20,12 @@
 
 /* --- Mode Revue (retours de recette posés sur les écrans) --- */
 body.rv-armed, body.rv-armed * { cursor: crosshair !important; user-select: none !important; }
+/* Au doigt, le navigateur fait defiler la page des le premier mouvement et le
+   geste de trace n'arrive jamais jusqu'a nous. `touch-action:none` lui rend la
+   main le temps du trace, et seulement pendant le mode Revue. */
+body.rv-armed, body.rv-armed * { touch-action: none !important; }
 body.rv-armed::after {
-  content: "Mode Revue — entourez la zone concernée en glissant la souris, ou cliquez pour une épingle (Échap pour annuler)";
+  content: "Mode Revue — entourez la zone concernée, ou touchez un point pour une épingle (Échap pour annuler)";
   position: fixed; inset: 0 0 auto 0; z-index: 998;
   background: rgba(214, 0, 0, .92); color: #fff;
   font-family: var(--rv-titre); font-size: 12.5px; font-weight: 600;
@@ -59,8 +63,11 @@ body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
 }
 .rv-pin.draft { background: var(--red); z-index: 1001; }
 
+/* Au-dessus du cadre en cours de saisie (z-index 1001). Sur telephone le
+   panneau est centre a l'ecran : le rectangle rouge se peignait par-dessus les
+   boutons de gravite, qui devenaient illisibles. */
 .rv-panel {
-  position: fixed; right: 16px; bottom: calc(var(--bottbar-h) + 60px); z-index: 1000;
+  position: fixed; right: 16px; bottom: calc(var(--bottbar-h) + 60px); z-index: 1002;
   width: 380px; max-width: calc(100vw - 32px);
   background: #fff; border: 1px solid var(--line); border-radius: 8px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
@@ -132,7 +139,13 @@ body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
   z-index: 1001; border-color: var(--red); background: rgba(214, 0, 0, .10);
   pointer-events: none;
 }
-.rv-zone.trace b, .rv-zone.draft b { background: var(--red); white-space: nowrap; }
+.rv-zone.trace b, .rv-zone.draft b {
+  background: var(--red); white-space: nowrap;
+  /* La regle generale `.rv-zone b { pointer-events:auto }` rendait cette
+     etiquette visable : `elementFromPoint` renvoyait « 0 x 0 » au lieu de
+     l'element de la page. Un trace en cours ne se survole pas. */
+  pointer-events: none;
+}
 
 /* ===================== La page /revue ===================== */
 .lst-page {
@@ -205,3 +218,11 @@ body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
 .qst-m { font-size: 14px; color: var(--slate); line-height: 1.5; white-space: pre-line; }
 .qst-i { display: block; width: 100%; box-sizing: border-box; margin-top: 12px; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; font: inherit; font-size: 14px; background: #fff; color: var(--slate); }
 .qst-i:focus { outline: none; border-color: var(--gold-bo); }
+
+/* Message d'echec d'une action sur un retour deja enregistre. */
+.fbk-err {
+  margin-top: 8px; padding: 8px 10px;
+  border: 1px solid var(--red); border-left-width: 3px; border-radius: 4px;
+  background: #fff6f5; color: var(--red);
+  font-size: 13px; line-height: 1.45;
+}

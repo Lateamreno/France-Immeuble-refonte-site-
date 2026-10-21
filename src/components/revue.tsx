@@ -77,9 +77,12 @@ export function RevueButton({ pins }: { pins: Feedback[] }) {
   const depart = useRef<{ x: number; y: number } | null>(null);
   const [trace, setTrace] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
+  /* Evenements POINTEUR et non souris : au doigt, aucun `mousedown` n'arrive
+     pendant le geste. iOS n'en synthetise qu'apres le relache, a un seul point
+     — on ne pouvait donc jamais entourer une zone sur telephone. */
   const onDown = useCallback(
-    (e: MouseEvent) => {
-      if (!actif || e.button !== 0) return;
+    (e: PointerEvent) => {
+      if (!actif || (e.pointerType === "mouse" && e.button !== 0)) return;
       const t = e.target as Element | null;
       if (!t || t.closest(".rv-panel, .rv-fab, .rv-pin, .rv-zone")) return;
       e.preventDefault();
@@ -90,7 +93,7 @@ export function RevueButton({ pins }: { pins: Feedback[] }) {
     [actif],
   );
 
-  const onMove = useCallback((e: MouseEvent) => {
+  const onMove = useCallback((e: PointerEvent) => {
     const d = depart.current;
     if (!d) return;
     e.preventDefault();
@@ -103,7 +106,7 @@ export function RevueButton({ pins }: { pins: Feedback[] }) {
   }, []);
 
   const onUp = useCallback(
-    (e: MouseEvent) => {
+    (e: PointerEvent) => {
       const d = depart.current;
       if (!d) return;
       e.preventDefault();
@@ -121,9 +124,20 @@ export function RevueButton({ pins }: { pins: Feedback[] }) {
       // L'élément décrit est celui du centre de la zone (ou du point cliqué).
       const cx = rectangle ? x + w / 2 : e.pageX;
       const cy = rectangle ? y + h / 2 : e.pageY;
-      const cible =
-        document.elementFromPoint(cx - window.scrollX, cy - window.scrollY) ??
-        (e.target as Element | null);
+      /* `elementFromPoint` renvoyait l'etiquette « 0 x 0 » du trace en cours :
+         React n'a pas encore retire l'overlay quand on mesure. On remonte donc
+         jusqu'au premier element qui n'appartient pas a l'outil. */
+      let cible = document.elementFromPoint(cx - window.scrollX, cy - window.scrollY);
+      while (cible && cible.closest(".rv-zone, .rv-pin, .rv-fab, .rv-panel")) {
+        const dessous = cible.closest(".rv-zone, .rv-pin, .rv-fab, .rv-panel") as HTMLElement;
+        const memoire = dessous.style.display;
+        dessous.style.display = "none";
+        const suivant = document.elementFromPoint(cx - window.scrollX, cy - window.scrollY);
+        dessous.style.display = memoire;
+        if (!suivant || suivant === cible) { cible = null; break; }
+        cible = suivant;
+      }
+      cible = cible ?? (e.target as Element | null);
 
       setDraft({
         xPct: ((rectangle ? x : e.pageX) / doc.scrollWidth) * 100,
@@ -144,20 +158,22 @@ export function RevueButton({ pins }: { pins: Feedback[] }) {
 
   useEffect(() => {
     // Le clic est avalé pour que la page ne réagisse pas au tracé.
-    const avale = (e: MouseEvent) => {
+    const avale = (e: Event) => {
       const t = e.target as Element | null;
       if (!actif || t?.closest(".rv-panel, .rv-fab, .rv-pin, .rv-zone")) return;
       e.preventDefault();
       e.stopPropagation();
     };
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("mousemove", onMove, true);
-    document.addEventListener("mouseup", onUp, true);
+    document.addEventListener("pointerdown", onDown, true);
+    document.addEventListener("pointermove", onMove, true);
+    document.addEventListener("pointerup", onUp, true);
+    document.addEventListener("pointercancel", onUp, true);
     document.addEventListener("click", avale, true);
     return () => {
-      document.removeEventListener("mousedown", onDown, true);
-      document.removeEventListener("mousemove", onMove, true);
-      document.removeEventListener("mouseup", onUp, true);
+      document.removeEventListener("pointerdown", onDown, true);
+      document.removeEventListener("pointermove", onMove, true);
+      document.removeEventListener("pointerup", onUp, true);
+      document.removeEventListener("pointercancel", onUp, true);
       document.removeEventListener("click", avale, true);
     };
   }, [actif, onDown, onMove, onUp]);
@@ -285,7 +301,8 @@ function RevuePanel({
         fd.set("gravite", gravite);
         fd.set("commentaire", commentaire);
         for (const c of captures) fd.append("capture", c.f);
-        await addFeedback(fd);
+        const r = await addFeedback(fd);
+        if (!r.ok) { setErr(r.message); return; }
         setOk(true);
         setTimeout(onClose, 900);
       } catch (e) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { deleteFeedback, modifierFeedback, setFeedbackStatut } from "@/lib/bo/feedback";
+import { deleteFeedback, modifierFeedback, setFeedbackStatut, type Resultat } from "@/lib/bo/feedback";
 import { useQuestion } from "@/components/modale";
 
 const GRAVITES = [
@@ -22,20 +22,31 @@ export function FeedbackActions({ id, statut, commentaire, gravite }: {
   const [texte, setTexte] = useState(commentaire ?? "");
   const [grav, setGrav] = useState(gravite ?? "ecart");
   const [ajouts, setAjouts] = useState<File[]>([]);
+  /* Les actions rendent un resultat au lieu de lancer : un echec doit se lire
+     ici, pas seulement dans la console du navigateur. */
+  const [erreur, setErreur] = useState<string | null>(null);
   const zone = useRef<HTMLTextAreaElement>(null);
   const { confirmer, saisir, question } = useQuestion();
 
-  const enregistrer = () =>
+  /** Joue une action et affiche son message si elle echoue. */
+  const agir = (action: () => Promise<Resultat>, apres?: () => void) =>
     start(async () => {
-      const fd = new FormData();
-      fd.set("id", String(id));
-      fd.set("commentaire", texte);
-      fd.set("gravite", grav);
-      for (const f of ajouts) fd.append("capture", f);
-      await modifierFeedback(fd);
-      setAjouts([]);
-      setEdite(false);
+      setErreur(null);
+      const r = await action();
+      if (!r.ok) { setErreur(r.message); return; }
+      apres?.();
     });
+
+  const enregistrer = () => {
+    const fd = new FormData();
+    fd.set("id", String(id));
+    fd.set("commentaire", texte);
+    fd.set("gravite", grav);
+    for (const f of ajouts) fd.append("capture", f);
+    agir(() => modifierFeedback(fd), () => { setAjouts([]); setEdite(false); });
+  };
+
+  const avis = erreur ? <div className="fbk-err" role="status">{erreur}</div> : null;
 
   if (edite) {
     return (
@@ -63,6 +74,7 @@ export function FeedbackActions({ id, statut, commentaire, gravite }: {
             {ajouts.length} image{ajouts.length > 1 ? "s" : ""} à ajouter — les captures déjà là sont conservées.
           </div>
         )}
+        {avis}
         <div className="mrow" style={{ gap: 5, marginTop: 8 }}>
           <button className="fadd" type="button" disabled={pending} onClick={() => setEdite(false)}>
             Annuler
@@ -88,7 +100,7 @@ export function FeedbackActions({ id, statut, commentaire, gravite }: {
       </button>
       {statut !== "corrige" && (
         <button className="fadd" type="button" disabled={pending}
-          onClick={() => start(() => setFeedbackStatut(id, "corrige"))}>
+          onClick={() => agir(() => setFeedbackStatut(id, "corrige"))}>
           Marquer corrigé
         </button>
       )}
@@ -98,22 +110,23 @@ export function FeedbackActions({ id, statut, commentaire, gravite }: {
             /* Comme avec l'ancien `prompt()` : annuler la question n'annule pas
                l'écart, il part simplement sans motif. */
             const r = (await saisir("Pourquoi écarter ce retour ? (optionnel)", { oui: "Écarter" })) ?? undefined;
-            start(() => setFeedbackStatut(id, "ecarte", r));
+            agir(() => setFeedbackStatut(id, "ecarte", r));
           }}>
           Écarter
         </button>
       )}
       {statut !== "ouvert" && (
         <button className="fadd" type="button" disabled={pending}
-          onClick={() => start(() => setFeedbackStatut(id, "ouvert"))}>
+          onClick={() => agir(() => setFeedbackStatut(id, "ouvert"))}>
           Rouvrir
         </button>
       )}
       <button className="xdel" type="button" disabled={pending} title="Supprimer"
         onClick={async () => {
           if (!(await confirmer("Supprimer ce retour ?", { danger: true, oui: "Supprimer" }))) return;
-          start(() => deleteFeedback(id));
+          agir(() => deleteFeedback(id));
         }}>✕</button>
+      {avis}
       {question}
     </div>
   );

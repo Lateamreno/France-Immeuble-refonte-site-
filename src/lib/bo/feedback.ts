@@ -36,9 +36,34 @@ export type Feedback = {
   reponse: string | null;
 };
 
+/**
+ * Resultat d'une ecriture.
+ *
+ * Les actions ne LANCENT plus : en production, Next.js masque le message d'une
+ * erreur d'action serveur et le client ne recoit qu'un code React minifie
+ * (#441). MAV voyait « Minified React error #441 » la ou il aurait du lire
+ * « Stockage des retours indisponible ». L'erreur est donc attrapee ici et
+ * rendue comme une valeur, qui traverse la frontiere serveur/client intacte.
+ */
+export type Resultat = { ok: true } | { ok: false; message: string };
+
+async function tenter(travail: () => Promise<void>): Promise<Resultat> {
+  try {
+    await travail();
+    return { ok: true };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("[revue]", message);
+    return { ok: false, message };
+  }
+}
+
 async function sb(path: string, init?: RequestInit) {
   if (!SB_URL || !SB_KEY) {
-    throw new Error("Stockage des retours indisponible (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY absentes).");
+    throw new Error(
+      "Le projet Supabase du site n'est pas encore branché : votre retour n'a pas été enregistré. " +
+        "Gardez-le sous les yeux le temps qu'on branche la base.",
+    );
   }
   const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
     ...init,
@@ -80,7 +105,11 @@ async function deposerCapture(f: File): Promise<string> {
  * `capture_path` reste renseigné avec la première : les retours déjà
  * enregistrés continuent de s'afficher sans reprise.
  */
-export async function addFeedback(fd: FormData) {
+export async function addFeedback(fd: FormData): Promise<Resultat> {
+  return tenter(() => ecrireFeedback(fd));
+}
+
+async function ecrireFeedback(fd: FormData) {
   const fichiers = fd.getAll("capture").filter((c): c is File => c instanceof File && c.size > 0);
   // Déposées ensemble : trois captures ne doivent pas coûter trois attentes.
   const captures = await Promise.all(fichiers.map(deposerCapture));
@@ -151,16 +180,18 @@ export async function setFeedbackStatut(
   id: number,
   statut: "ouvert" | "corrige" | "ecarte",
   reponse?: string,
-) {
-  await sb(`bo_feedback?id=eq.${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({
-      statut,
-      reponse: reponse ?? null,
-      traite_at: statut === "ouvert" ? null : new Date().toISOString(),
-    }),
+): Promise<Resultat> {
+  return tenter(async () => {
+    await sb(`bo_feedback?id=eq.${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        statut,
+        reponse: reponse ?? null,
+        traite_at: statut === "ouvert" ? null : new Date().toISOString(),
+      }),
+    });
+    revalidatePath("/revue");
   });
-  revalidatePath("/revue");
 }
 
 /**
@@ -171,7 +202,11 @@ export async function setFeedbackStatut(
  * on retrouve la capture qui manquait. Les captures s'AJOUTENT : celles déjà
  * déposées ne sont jamais remplacées à l'aveugle.
  */
-export async function modifierFeedback(fd: FormData) {
+export async function modifierFeedback(fd: FormData): Promise<Resultat> {
+  return tenter(() => ecrireModification(fd));
+}
+
+async function ecrireModification(fd: FormData) {
   const id = Number(fd.get("id"));
   if (!Number.isFinite(id)) throw new Error("Retour introuvable.");
 
@@ -199,7 +234,9 @@ export async function modifierFeedback(fd: FormData) {
 }
 
 /** Supprime un retour (erreur de saisie). */
-export async function deleteFeedback(id: number) {
-  await sb(`bo_feedback?id=eq.${id}`, { method: "DELETE" });
-  revalidatePath("/revue");
+export async function deleteFeedback(id: number): Promise<Resultat> {
+  return tenter(async () => {
+    await sb(`bo_feedback?id=eq.${id}`, { method: "DELETE" });
+    revalidatePath("/revue");
+  });
 }
