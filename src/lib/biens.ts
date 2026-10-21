@@ -17,7 +17,8 @@ import { configSitePublique } from "./supabase-site";
  * Ce qui traverse la frontière, et rien d'autre :
  *   commune, département, prix, date, photo ; pour la fiche, des fourchettes,
  *   des profils et un récit validé (migration 0003).
- * Jamais la rue, jamais le numéro, jamais un nom. Les fichiers photo d'origine
+ * Jamais le numéro, jamais un nom. La rue, sans numéro, s'affiche depuis le
+ * 21/10/2026 (décision de MAV) — dans son propre champ, jamais dans un texte. Les fichiers photo d'origine
  * portaient parfois l'adresse dans leur nom (« Immeuble 47 rue des bas
  * Fossés… ») : `scripts/import-ventes.mjs` les renomme sur un identifiant neutre.
  */
@@ -45,6 +46,8 @@ export type Vente = {
  * courte, non indexée. Fourchettes et profils, jamais d'adresse ni de nom (§2).
  */
 export type FaitsVente = {
+  /** « rue des Bas-Fossés » — jamais de numéro : la base refuse tout chiffre. */
+  rue?: string | null;
   titre?: string | null;
   type?: string | null;
   arrondissement?: string | null;
@@ -78,6 +81,7 @@ const VENTES_DEPOSEES: Vente[] = (ventesJson as Vente[])
 type LigneVente = {
   id: string; slug: string | null; ville: string; dept: string; prix: number;
   date: string; region: Vente["region"]; image: string | null;
+  rue?: string | null;
   titre?: string | null; type?: string | null; arrondissement?: string | null;
   lots?: number | null; composition?: string | null;
   surface_min?: number | null; surface_max?: number | null; epoque?: string | null;
@@ -129,7 +133,7 @@ export async function ventes(): Promise<Vente[]> {
       ville: l.ville, dept: l.dept, prix: Number(l.prix),
       date: l.date, annee: Number(l.date.slice(0, 4)), region: l.region,
       image: imageVente(l.image, cfg.url),
-      titre: l.titre, type: l.type, arrondissement: l.arrondissement,
+      rue: l.rue, titre: l.titre, type: l.type, arrondissement: l.arrondissement,
       lots: l.lots, composition: l.composition,
       surfaceMin: l.surface_min, surfaceMax: l.surface_max, epoque: l.epoque, dpe: l.dpe,
       occupation: nombre(l.occupation), rendement: nombre(l.rendement),
@@ -295,6 +299,56 @@ export async function biensAVendre(): Promise<BienAVendre[]> {
 export async function bienAVendre(slug: string): Promise<BienAVendre | null> {
   const tous = await biensAVendre();
   return tous.find((b) => b.slug === slug) ?? null;
+}
+
+/**
+ * Off-market : combien d'immeubles circulent, commune par commune.
+ *
+ * Le BO remplace la table `offmarket` en entier à 9 h et 19 h. Elle ne porte
+ * que la commune, le département, l'arrondissement (Paris, Lyon, Marseille) et
+ * un nombre — ni type, ni lots, ni prix : un immeuble off-market décrit en
+ * public ne l'est plus. Ne lance jamais : base injoignable → liste vide.
+ */
+export type CommuneOffMarket = {
+  commune: string;
+  dept: string;
+  arrondissement: string | null;
+  nombre: number;
+  majLe: string;
+};
+
+export async function offMarket(): Promise<CommuneOffMarket[]> {
+  const cfg = configSitePublique();
+  if (!cfg) return [];
+  try {
+    const res = await fetch(
+      `${cfg.url}/rest/v1/offmarket?select=commune,dept,arrondissement,nombre,maj_le&order=nombre.desc,commune.asc`,
+      {
+        headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
+        next: { revalidate: 600, tags: ["offmarket"] },
+      },
+    );
+    if (!res.ok) return [];
+    const lignes = (await res.json()) as {
+      commune: string; dept: string; arrondissement: string | null; nombre: number; maj_le: string;
+    }[];
+    return lignes
+      .filter((l) => Number(l.nombre) > 0)
+      .map((l) => ({
+        commune: l.commune, dept: l.dept, arrondissement: l.arrondissement,
+        nombre: Number(l.nombre), majLe: l.maj_le,
+      }))
+      .sort((a, b) => b.nombre - a.nombre || a.commune.localeCompare(b.commune, "fr"));
+  } catch {
+    return [];
+  }
+}
+
+/** « Paris 18e » pour un arrondissement, la commune seule sinon. */
+export function lieuOffMarket(c: CommuneOffMarket): string {
+  if (!c.arrondissement) return c.commune;
+  const court = c.arrondissement.replace(/\s*arrondissement\s*$/i, "").trim();
+  return `${c.commune} ${court}`;
 }
 
 /**

@@ -457,6 +457,8 @@ strong,b{font-weight:600;color:var(--color-creme);}
 @media(min-width:640px){.fields--2{grid-template-columns:repeat(2,1fr);}}
 .field{display:flex;flex-direction:column;gap:7px;}
 .field--full{grid-column:1/-1;}
+/* Adresse découpée comme le BO la range : numéro étroit, rue large. */
+.fields-adresse{display:grid;grid-template-columns:minmax(64px,1fr) 4fr;gap:var(--space-s);}
 .field label{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.13em;
   text-transform:uppercase;color:var(--color-gris);
@@ -503,6 +505,24 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .choice[aria-pressed="true"]{
   border-color:var(--color-bronze);background:rgba(193,155,110,.12);color:var(--color-bronze-clair);
 }
+
+/* Recherche acquéreur : une ou plusieurs recherches, chacune dans son cadre. */
+.recherche{border:0;padding:0;margin:0 0 var(--space-m);min-width:0;}
+.recherche + .recherche{padding-top:var(--space-m);border-top:1px solid var(--color-ligne);}
+.recherche__titre{
+  display:flex;justify-content:space-between;align-items:center;gap:var(--space-s);width:100%;
+  margin-bottom:var(--space-s);padding:0;
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--color-bronze);
+}
+.recherche__retirer{
+  background:none;border:0;padding:6px 0;cursor:pointer;
+  font-family:var(--font-body);font-size:var(--fs-small);letter-spacing:0;text-transform:none;
+  color:var(--color-gris);text-decoration:underline;text-underline-offset:3px;
+}
+.recherche__retirer:hover{color:var(--color-bronze-clair);}
+.recherche__retirer:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.recherche__ajouter{margin:0 0 var(--space-m);}
 
 /* écran de résultat : le routage s'affiche comme une orientation, jamais un refus */
 .outcome{display:flex;flex-direction:column;gap:var(--space-s);}
@@ -1588,6 +1608,7 @@ strong,b{font-weight:600;color:var(--color-creme);}
   font-size:1.12rem;letter-spacing:-.015em;line-height:1.15;color:var(--color-noir);
 }
 .vente__dept{color:color-mix(in srgb, var(--color-noir) 52%, var(--color-creme));font-weight:400;}
+.vente__rue{font-size:var(--fs-small);color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));}
 .vente__prix{
   font-family:var(--font-mono-site);font-size:1rem;font-weight:600;
   color:var(--color-bronze-profond);
@@ -1607,53 +1628,26 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .ville__nom{font-size:var(--fs-small);color:var(--color-creme);}
 .ville__n{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);color:var(--color-bronze);}
 
-/* --- Avertissement « ce sont des exemples » -------------------------------
-   Visible AVANT les cartes, pas en note de bas de page : un visiteur qui ne
-   lit que les cartes doit le savoir avant de les lire. */
-.avertissement{
-  display:block;margin-bottom:var(--space-m);
-  border-left:2px solid var(--color-bronze);
-  padding:var(--space-s) var(--space-m);
-  background:rgba(193,155,110,.08);
-  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
-  color:var(--color-creme);font-size:var(--fs-small);max-width:76ch;
+/* --- Off-market : ce qui circule, commune par commune -------------------
+   Une carte par commune, le nombre en chiffre display. Rien d'autre : ni type,
+   ni lots, ni prix (contrat BO du 21/10/2026). Filet bronze à gauche,
+   signature du groupe. */
+.om-liste{
+  list-style:none;padding:0;margin:0;
+  display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 220px), 1fr));
 }
-.avertissement strong{color:var(--color-bronze-clair);}
-.section--creme .avertissement{color:var(--color-noir);}
-.section--creme .avertissement strong{color:var(--color-bronze-profond);}
-
-/* --- Fiche d'exemple off-market ------------------------------------------- */
-.exemple{
-  position:relative;
+.om-commune{
+  display:flex;flex-direction:column;gap:4px;
   background:var(--color-noir-3);
-  border:1px dashed var(--color-ligne);
+  border:1px solid var(--color-ligne);border-left:2px solid var(--color-bronze);
   border-radius:var(--radius-card);
-  padding:clamp(22px, 2.6vw, 32px);
+  padding:18px 20px;
 }
-/* Bordure en pointillé et étiquette : deux signaux pour dire « ceci n'est pas
-   un bien réel », l'un lisible à l'œil, l'autre à la lecture. */
-.exemple__tag{
-  display:inline-block;margin-bottom:var(--space-s);
-  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);font-weight:600;
-  letter-spacing:.15em;text-transform:uppercase;
-  color:var(--color-bronze);
-  border:1px solid var(--color-bronze-profond);border-radius:var(--radius-pill);
-  padding:4px 12px;
-}
-.exemple h3{margin-bottom:var(--space-s);}
-.exemple__faits{display:flex;flex-direction:column;gap:0;margin:0;}
-.exemple__faits > div{
-  display:flex;justify-content:space-between;gap:var(--space-s);
-  padding-block:9px;border-bottom:1px solid var(--color-ligne);
-}
-.exemple__faits > div:last-child{border-bottom:0;}
-.exemple__faits dt{
-  font-size:var(--fs-small);color:var(--color-gris);flex:none;
-}
-.exemple__faits dd{
-  margin:0;text-align:right;min-width:0;
-  font-size:var(--fs-small);color:var(--color-creme);
-}
+.om-commune__nom{color:var(--color-creme);font-weight:600;line-height:1.3;}
+.om-commune__dept{color:var(--color-gris);font-weight:400;}
+.om-commune__n{font-family:var(--font-mono-site);font-size:var(--fs-small);color:var(--color-bronze);}
+.om-maj{margin-top:var(--space-s);font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);color:var(--color-gris);letter-spacing:.06em;}
 
 /* --- Annonces en diffusion ------------------------------------------------ */
 .annonces{

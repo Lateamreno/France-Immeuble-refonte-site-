@@ -110,6 +110,11 @@ Vendre et publier le détail en page Références.
 
 **Règle** : arrondissement et non rue, fourchettes et non montants exacts, jamais de nom.
 
+> **Décision MAV du 21/10/2026 (contrat BO, `docs/CONTRAT-SITE.md` du dépôt BO)** : pour les
+> ventes réalisées, la **rue sans numéro** est affichée (« rue des Bas-Fossés »), dans son
+> propre champ `ventes.rue`, jamais dans un texte. La base refuse une rue qui contient un
+> chiffre. Le numéro, les noms et l'adresse dans les récits restent interdits.
+
 ### Le sens difficile : les leads (site → BO)
 
 C'est le seul flux où de la donnée personnelle circule vers le BO.

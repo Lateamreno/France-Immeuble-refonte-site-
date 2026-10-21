@@ -1,3 +1,9 @@
+> ⚠️ **Remplacé en partie le 21/10/2026.** Le contrat validé par MAV est versionné
+> dans le dépôt du BO, `docs/CONTRAT-SITE.md`. Il fait foi là où ce document
+> diverge : mise en ligne toujours décidée à la main, statut 7 en ligne
+> seulement si déjà publié, statuts 8 à 10 retirés, rue sans numéro affichée
+> pour les ventes, table `offmarket`, champs des formulaires.
+
 # Prompt à coller dans la session Claude Code du BO — récit des ventes
 
 > Tout ce qui suit la ligne ci-dessous est destiné à la session qui travaille

@@ -4,8 +4,8 @@
       fiche, /immeubles-vendus/<slug>/. Un slug déjà attribué n'est JAMAIS
       recalculé : une URL indexée ne change plus (CLAUDE.md §10).
    2. Régénère `supabase/seed/ventes.sql`.
-   3. Assemble `supabase/A-COLLER-SITE.sql` : migrations 0002 et 0003, puis la
-      graine. Tout est rejouable.
+   3. Assemble `supabase/A-COLLER-SITE.sql` : migrations 0002 et suivantes,
+      puis la graine. Tout est rejouable.
 
    Règle de slug, identique au déclencheur `ventes_slug` de la migration 0003 :
    immeuble-de-rapport-<commune>-<année>, puis -2, -3… par ordre chronologique.
@@ -54,19 +54,17 @@ on conflict (id) do update set
 `;
 await fs.writeFile('supabase/seed/ventes.sql', graine);
 
-const m2 = await fs.readFile('supabase/migrations/0002_projections.sql', 'utf8');
-const m3 = await fs.readFile('supabase/migrations/0003_recits_ventes.sql', 'utf8');
+// Toutes les migrations à partir de 0002 (0001 est appliquée à part).
+const noms = (await fs.readdir('supabase/migrations')).filter((f) => /^\d{4}_.*\.sql$/.test(f) && f >= '0002').sort();
+const migrations = await Promise.all(noms.map((f) => fs.readFile(`supabase/migrations/${f}`, 'utf8')));
 const coller = `-- ============================================================================
 -- À COLLER EN UNE FOIS dans l'éditeur SQL du projet « France Immeuble site ».
--- 1) les tables (0002), 2) les fiches de vente et leurs récits (0003),
--- 3) les ${ventes.length} ventes. Rejouable sans risque : si une version précédente a
+-- les migrations ${noms.map((f) => f.slice(0, 4)).join(', ')}, puis les ${ventes.length} ventes. Rejouable sans risque : si une version précédente a
 -- déjà été collée, recoller celle-ci ne casse ni ne duplique rien.
 -- Fichier généré par scripts/graine-ventes.mjs — ne pas l'éditer à la main.
 -- ============================================================================
 
-${m2.trim()}
-
-${m3.trim()}
+${migrations.map((m) => m.trim()).join('\n\n')}
 
 ${graine.trim()}
 `;

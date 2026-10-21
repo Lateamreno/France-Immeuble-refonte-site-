@@ -20,8 +20,9 @@ import { prix, ventes, venteParSlug, venteIndexable, type Vente } from "@/lib/bi
  * relit et valide avant tout dépôt (§8). Sans récit validé, la fiche reste
  * consultable mais n'est pas indexée (voir `venteIndexable`).
  *
- * Commune, arrondissement, fourchettes, profils : jamais la rue, jamais un nom.
- * La base refuse d'ailleurs un texte qui contient une adresse (migration 0003).
+ * Commune, rue sans numéro, fourchettes, profils : jamais le numéro, jamais un
+ * nom. La rue vit dans son propre champ (décision de MAV, 21/10/2026) ; la base
+ * refuse un texte qui contient une adresse (0003) et une rue avec un chiffre (0004).
  */
 export const revalidate = 600;
 
@@ -128,6 +129,7 @@ export default async function FicheVente({ params }: Params) {
 
   const immeuble: ([string, ReactNode] | null | false)[] = [
     ["Commune", `${v.ville} (${v.dept})`],
+    rempli(v.rue) && ["Rue", v.rue],
     rempli(v.arrondissement) && ["Secteur", v.arrondissement],
     ["Type", v.type ?? "Immeuble de rapport"],
     rempli(v.lots) && ["Lots", String(v.lots)],
@@ -249,7 +251,8 @@ export default async function FicheVente({ params }: Params) {
               </Reveal>
             )}
             <p className="fiche-bien__adresse">
-              Nous ne publions ni l’adresse, ni le nom du vendeur, ni celui de l’acquéreur.
+              Nous ne publions ni le numéro de rue, ni le nom du vendeur, ni celui de
+              l’acquéreur.
               {rempli(v.surfaceMin) && " La surface est donnée par tranche."}
             </p>
           </div>

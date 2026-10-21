@@ -9,17 +9,16 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
-import { ventesEtStats } from "@/lib/biens";
+import { ventesEtStats, offMarket, lieuOffMarket } from "@/lib/biens";
 
 /**
  * /immeubles-off-market/ — ce qu'est l'off-market, et comment y accéder.
  *
- * ⚠️ Cette page ne liste AUCUN bien réel, et ce n'est pas une limite technique
- * : c'est le sujet. Un immeuble off-market publié n'est plus off-market, et
- * c'est l'argument que l'agence tient devant chaque vendeur. Les fiches
- * ci-dessous sont des EXEMPLES — inventés, étiquetés comme tels à l'écran, et
- * jamais présentés comme disponibles. Elles montrent le genre de dossier, pas
- * un dossier.
+ * ⚠️ Cette page ne décrit AUCUN bien, et ce n'est pas une limite technique :
+ * c'est le sujet. Un immeuble off-market décrit en public n'est plus
+ * off-market. Elle montre seulement COMBIEN d'immeubles circulent, et OÙ, à la
+ * commune près (table `offmarket`, déposée par le BO deux fois par jour). Ni
+ * type, ni lots, ni prix.
  */
 export const metadata: Metadata = {
   title: { absolute: "Immeubles off-market | France Immeuble" },
@@ -50,45 +49,20 @@ const RAISONS: { picto: NomPicto; titre: string; texte: string }[] = [
   },
 ];
 
-/**
- * Exemples de dossiers. Fictifs, et dits tels quels à l'écran.
- *
- * Écrits à partir des ordres de grandeur réels du fichier — calibre, typologies
- * et rendements constatés — pour que l'exemple soit représentatif. Aucun ne
- * correspond à un immeuble existant, et aucun ne porte d'adresse.
- */
-const EXEMPLES = [
-  {
-    secteur: "Paris 18e",
-    type: "Immeuble de rapport",
-    surface: "520 m² Carrez",
-    lots: "9 lots d’habitation",
-    occupation: "Occupé à 100 %",
-    rendement: "4,1 % brut",
-    calibre: "3 – 4 M€",
-  },
-  {
-    secteur: "Hauts-de-Seine",
-    type: "Immeuble mixte",
-    surface: "740 m² Carrez",
-    lots: "11 lots, dont 2 commerces",
-    occupation: "Occupé à 82 %",
-    rendement: "5,3 % brut",
-    calibre: "4 – 6 M€",
-  },
-  {
-    secteur: "Métropole régionale",
-    type: "Immeuble de rapport",
-    surface: "1 100 m² Carrez",
-    lots: "16 lots d’habitation",
-    occupation: "Libre à la vente",
-    rendement: "9,8 % brut",
-    calibre: "2 – 3 M€",
-  },
-];
+/** Le BO dépose à 9 h et 19 h ; relire toutes les 10 minutes suffit. */
+export const revalidate = 600;
+
+const heure = (iso: string) =>
+  new Date(iso).toLocaleString("fr-FR", {
+    day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris",
+  });
 
 export default async function ImmeublesOffMarket() {
-  const { stats } = await ventesEtStats();
+  const [{ stats }, communes] = await Promise.all([ventesEtStats(), offMarket()]);
+  const total = communes.reduce((s, c) => s + c.nombre, 0);
+  // Paris 8e et Paris 18e sont deux cartes, mais une seule commune.
+  const nbCommunes = new Set(communes.map((c) => `${c.dept}|${c.commune}`)).size;
+  const majLe = communes.reduce((m, c) => (c.majLe > m ? c.majLe : m), "");
   return (
     <>
       <JsonLd
@@ -146,63 +120,46 @@ export default async function ImmeublesOffMarket() {
         </div>
       </section>
 
-      <section className="section section--noir-2">
-        <div className="container">
-          <Reveal className="section__head">
-            <Eyebrow>Le genre de dossiers</Eyebrow>
-            <h2>À quoi ressemble ce que vous recevriez</h2>
-            <p className="lead">
-              Nous ne publions pas les immeubles en cours de commercialisation&nbsp;: ce serait
-              rompre l’engagement pris avec leur propriétaire. Voici en revanche le calibre, la
-              typologie et les rendements de ce qui circule dans le fichier.
-            </p>
-          </Reveal>
+      {/* Ce qui circule en ce moment : un nombre et des communes, rien d'autre.
+          Sans dépôt du BO (base vide ou injoignable), la section ne s'affiche
+          pas : aucun chiffre plutôt qu'un chiffre faux. */}
+      {total > 0 && (
+        <section className="section section--noir-2">
+          <div className="container">
+            <Reveal className="section__head">
+              <Eyebrow>En ce moment</Eyebrow>
+              <h2>
+                {total} immeuble{total > 1 ? "s" : ""} actuellement off-market
+              </h2>
+              <p className="lead">
+                {nbCommunes > 1 ? `Dans ${nbCommunes} communes. ` : ""}Le type, les lots
+                et le prix ne sont communiqués qu’aux acquéreurs inscrits dont la recherche
+                correspond&nbsp;: les publier ici reviendrait à rompre l’engagement pris avec
+                leur propriétaire.
+              </p>
+            </Reveal>
 
-          {/* L'avertissement est AU-DESSUS des cartes, pas en note de bas de
-              page : un visiteur qui ne lit que les cartes doit savoir avant de
-              les lire qu'elles sont des exemples. */}
-          <p className="avertissement" role="note">
-            <strong>Exemples, pas des biens disponibles.</strong> Les trois fiches ci-dessous sont
-            construites à partir des ordres de grandeur réels du fichier. Aucune ne correspond à un
-            immeuble existant, et aucune n’est à vendre.
-          </p>
-
-          <div className="grid grid--3">
-            {EXEMPLES.map((e, i) => (
-              <Reveal key={e.secteur} as="article" className="exemple" delayIndex={i}>
-                <span className="exemple__tag">Exemple</span>
-                <h3>{e.secteur}</h3>
-                <dl className="exemple__faits">
-                  <div>
-                    <dt>Type</dt>
-                    <dd>{e.type}</dd>
-                  </div>
-                  <div>
-                    <dt>Surface</dt>
-                    <dd>{e.surface}</dd>
-                  </div>
-                  <div>
-                    <dt>Lots</dt>
-                    <dd>{e.lots}</dd>
-                  </div>
-                  <div>
-                    <dt>Occupation</dt>
-                    <dd>{e.occupation}</dd>
-                  </div>
-                  <div>
-                    <dt>Rendement</dt>
-                    <dd>{e.rendement}</dd>
-                  </div>
-                  <div>
-                    <dt>Calibre</dt>
-                    <dd>{e.calibre}</dd>
-                  </div>
-                </dl>
-              </Reveal>
-            ))}
+            <ul className="om-liste">
+              {communes.map((c, i) => (
+                <Reveal
+                  key={`${c.dept}-${c.commune}-${c.arrondissement ?? ""}`}
+                  as="li"
+                  className="om-commune"
+                  delayIndex={i % 6}
+                >
+                  <span className="om-commune__nom">
+                    {lieuOffMarket(c)} <span className="om-commune__dept">({c.dept})</span>
+                  </span>
+                  <span className="om-commune__n">
+                    {c.nombre} immeuble{c.nombre > 1 ? "s" : ""}
+                  </span>
+                </Reveal>
+              ))}
+            </ul>
+            {majLe && <p className="om-maj">Mis à jour le {heure(majLe)}</p>}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section id="deposer" className="section section--noir">
         <div className="container split">

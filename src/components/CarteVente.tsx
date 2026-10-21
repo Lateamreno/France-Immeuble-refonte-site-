@@ -41,6 +41,7 @@ export function CarteVente({ v }: { v: Vente }) {
         <span className="vente__ville">
           {v.ville} <span className="vente__dept">({v.dept})</span>
         </span>
+        {v.rue && <span className="vente__rue">{v.rue}</span>}
         <span className="vente__prix">{prix(v.prix)}</span>
         <span className="vente__region">
           {[v.lots ? `${v.lots} lots` : null, REGIONS[v.region]].filter(Boolean).join(" · ")}

@@ -1,22 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { router, type Dossier } from "@/lib/routage";
+import { deposerLead, relancerFile } from "@/lib/leads";
 
 /**
- * Réception des leads — CLAUDE.md §2 et §9.
+ * Réception des leads — CLAUDE.md §2 et §9, contrat BO du 21/10/2026.
  *
- * Le navigateur n'écrit jamais directement : il poste ici, et c'est ce
- * handler serveur qui relaie vers l'endpoint du BO. Le site ne détient aucune
- * clé de lecture vers le BO — cet endpoint ne sait qu'écrire.
+ * Le navigateur n'écrit jamais directement : il poste ici, et ce handler
+ * serveur dépose au BO (`BO_LEAD_ENDPOINT`, qui ne sait qu'enregistrer). Si le
+ * BO ne répond pas 200, le lead attend dans `leads_outbox` et il est réessayé :
+ * on ne perd jamais un lead. Voir `src/lib/leads.ts`.
  *
- * ⚠️ TANT QUE `BO_LEAD_ENDPOINT` N'EST PAS CONFIGURÉ, AUCUN LEAD N'EST STOCKÉ.
- * Le handler le signale explicitement dans sa réponse et dans les logs serveur.
- * À câbler impérativement avant toute mise en production : c'est le canal
- * d'acquisition n°1.
+ * Réponse au navigateur : 200 dès que le lead est quelque part (au BO ou en
+ * file) ; 503 seulement s'il n'est nulle part — le formulaire invite alors à
+ * appeler, plutôt que d'afficher un faux « c'est envoyé ».
  */
 
 export const runtime = "nodejs";
 
 type Payload = Record<string, unknown> & Partial<Dossier> & { type?: string };
+
+const TYPES = new Set(["estimation", "recherche_acquereur", "contact"]);
 
 function nombreOuNull(v: unknown): number | null {
   if (v === null || v === undefined || v === "") return null;
@@ -31,6 +34,12 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ ok: false, erreur: "Requête illisible." }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || !TYPES.has(String(body.type))) {
+    return NextResponse.json({ ok: false, erreur: "Type de formulaire inconnu." }, { status: 400 });
+  }
+  if (JSON.stringify(body).length > 20_000) {
+    return NextResponse.json({ ok: false, erreur: "Requête trop volumineuse." }, { status: 413 });
+  }
 
   const email = String(body.email ?? "").trim();
   const telephone = String(body.telephone ?? "").trim();
@@ -41,38 +50,33 @@ export async function POST(req: Request) {
     );
   }
 
+  // Le BO est idempotent sur `ref` : un lead sans ref en reçoit un ici.
+  const ref = typeof body.ref === "string" && body.ref ? body.ref : crypto.randomUUID();
+
   const verdict = router({
     codePostal: String(body.codePostal ?? ""),
     valeurEstimee: nombreOuNull(body.valeurEstimee),
     loyerAnnuel: nombreOuNull(body.loyerAnnuel),
   });
 
-  const lead = { ...body, verdict, recuLe: new Date().toISOString() };
-  const endpoint = process.env.BO_LEAD_ENDPOINT;
+  const lead = { ...body, ref, verdict, recuLe: new Date().toISOString() };
+  const issue = await deposerLead(lead);
 
-  if (!endpoint) {
-    console.warn(
-      "[lead] BO_LEAD_ENDPOINT absent — LEAD NON ENREGISTRÉ.",
-      JSON.stringify({ type: body.type, etat: body.etat, ref: body.ref, piste: verdict.piste }),
-    );
-    return NextResponse.json({ ok: true, piste: verdict.piste, stocke: false });
-  }
-
-  try {
-    const r = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(process.env.BO_LEAD_TOKEN ? { authorization: `Bearer ${process.env.BO_LEAD_TOKEN}` } : {}),
-      },
-      body: JSON.stringify(lead),
+  // Chaque lead qui arrive est l'occasion de vider la file : si le BO vient de
+  // répondre, ceux qui attendaient partent aussi. Après la réponse, pour ne pas
+  // faire attendre le visiteur.
+  if (issue === "bo") {
+    after(async () => {
+      try {
+        await relancerFile(10);
+      } catch (e) {
+        console.error("[lead] relance de la file impossible —", e);
+      }
     });
-    if (!r.ok) throw new Error(`BO a répondu ${r.status}`);
-    return NextResponse.json({ ok: true, piste: verdict.piste, stocke: true });
-  } catch (e) {
-    // Le BO ne répond pas : on ne perd pas le lead, on le signale bruyamment.
-    // La file d'attente `web.leads_outbox` du §2 se branchera ici.
-    console.error("[lead] transmission au BO impossible —", e, JSON.stringify(lead));
-    return NextResponse.json({ ok: true, piste: verdict.piste, stocke: false });
   }
+
+  if (issue === "perdu") {
+    return NextResponse.json({ ok: false, piste: verdict.piste, stocke: false }, { status: 503 });
+  }
+  return NextResponse.json({ ok: true, piste: verdict.piste, stocke: issue });
 }

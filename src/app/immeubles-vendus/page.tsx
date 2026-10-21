@@ -22,9 +22,9 @@ import { ventesEtStats, villesFrequentes, volume } from "@/lib/biens";
  * Chaque vente mène à sa fiche, /immeubles-vendus/<slug>/, où le BO dépose les
  * faits de la vente et un récit relu par MAV.
  *
- * Ce qui est publié : commune, département, prix, année. Jamais la rue, jamais
- * un nom — on ne peut pas promettre la discrétion off-market en page Vendre et
- * publier l'adresse ici (§2).
+ * Ce qui est publié : commune, département, rue sans numéro, prix, année.
+ * Jamais le numéro, jamais un nom — on ne peut pas promettre la discrétion
+ * off-market en page Vendre et publier l'adresse exacte ici (§2).
  *
  * Title, meta et canonical restent repris au caractère près (§10).
  */
@@ -53,8 +53,8 @@ export default async function ImmeublesVendus() {
           <Eyebrow>Nos biens · vendus</Eyebrow>
           <h1>Les immeubles que nous avons vendus</h1>
           <p className="lead">
-            Chaque ligne est un acte signé. Commune, année et prix réel&nbsp;— jamais l’adresse,
-            jamais un nom.
+            Chaque ligne est un acte signé. Commune, rue, année et prix réel&nbsp;— jamais le
+            numéro, jamais un nom.
           </p>
           <div className="hero-proof">
             <span className="hero-proof__item">

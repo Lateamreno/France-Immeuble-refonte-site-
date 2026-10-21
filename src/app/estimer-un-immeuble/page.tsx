@@ -127,7 +127,7 @@ export default function EstimerUnImmeuble() {
 
           {/* Hors <Reveal> : le formulaire est le canal d'acquisition n°1, sa
               visibilité ne dépend d'aucun observateur de défilement. */}
-          <EstimationForm />
+          <EstimationForm formulaire="estimer" />
         </div>
       </section>
 

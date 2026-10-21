@@ -229,7 +229,7 @@ export default function VendreUnImmeuble() {
               </Button>
             </div>
           </Reveal>
-          <EstimationForm />
+          <EstimationForm formulaire="vendre" />
         </div>
       </section>
 

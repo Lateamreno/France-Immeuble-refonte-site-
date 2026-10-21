@@ -46,7 +46,7 @@ export function ContenuWP({ page }: { page: PageWP }) {
               s.type === "html" ? (
                 <div key={i} dangerouslySetInnerHTML={{ __html: s.valeur }} />
               ) : s.type === "estimation" ? (
-                <EstimationForm key={i} />
+                <EstimationForm key={i} formulaire="estimer" />
               ) : (
                 <ContactForm key={i} />
               ),

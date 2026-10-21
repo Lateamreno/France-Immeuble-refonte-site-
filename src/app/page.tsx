@@ -105,7 +105,7 @@ export default function Accueil() {
               mesure de prendre en charge les immeubles de province hors préfectures.
             </p>
           </Reveal>
-          <EstimationForm />
+          <EstimationForm formulaire="estimer" />
         </div>
       </section>
 
