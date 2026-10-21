@@ -329,3 +329,45 @@
   font-size: var(--fs-eyebrow); letter-spacing: .1em; color: var(--color-bronze-profond);
 }
 .prose .testimonial-quote:empty, .prose figure.google:empty { display: none; }
+
+/* ==========================================================================
+   13. L'IFRAME DE LA PAGE RÉFÉRENCES
+   ==========================================================================
+   Le bloc Bubble repris porte `position:fixed;width:100%` dans son attribut
+   `style`. En `fixed`, un pourcentage se résout sur le VIEWPORT et non sur
+   le conteneur : l'iframe mesurait donc 100 vw en partant du retrait de la
+   colonne — 20 px en 320, 416 px en 1920. Autant de sa propre largeur rognée
+   hors de l'écran, et un cadre qui ne défilait pas avec la page. La page ne
+   débordait pas, mais la fin du listing était invisible à tous les formats.
+   Ces deux déclarations inline n'ont pas de `!important` : une règle
+   importante d'auteur les bat. Celle de `margin-top`, si, et aucun important
+   d'auteur ne passe devant un important inline — on rend donc les 80 px au
+   conteneur au lieu de les combattre.
+   ========================================================================== */
+.page-wp .prose iframe {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100%;
+  height: min(calc(100vh - 76px), 900px) !important;
+  padding-bottom: 0 !important;
+  display: block;
+  border: 0;
+  border-radius: var(--radius-card);
+}
+.page-wp .prose div:has(> iframe) { padding-top: 80px; }
+
+/* ==========================================================================
+   14. CIBLES TACTILES DES LISTES DE LIENS
+   ==========================================================================
+   Le plan du site est une liste de 18 liens d'une seule ligne : 20 px de
+   haut, très en dessous des 44 px tenables au doigt. On épaissit la cible
+   sans toucher au texte, et on reprend l'interligne de liste en compensation
+   pour que la densité visuelle ne change presque pas (pas de 38 px → 52 px).
+   Restreint à `:only-child` : un lien au fil d'un paragraphe reste inline.
+   ========================================================================== */
+.page-wp .prose li > a:only-child {
+  display: block;
+  padding-block: 12px;
+  min-height: 44px;
+}
+.page-wp .prose li:has(> a:only-child) + li { margin-top: 0; }

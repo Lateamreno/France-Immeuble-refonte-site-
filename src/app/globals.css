@@ -1171,3 +1171,21 @@ strong,b{font-weight:600;color:var(--color-creme);}
   .biens{grid-template-columns:1fr 1fr;gap:12px;}
   .bien__ville{font-size:1.05rem;}
 }
+
+/* --- 15. CORRECTIONS DE CONTRASTE (audit QA) ------------------------------ */
+
+/* Le CTA du tiroir de navigation mobile était ILLISIBLE : `.nav a` (0,1,1)
+   bat `.btn--primary{color:noir}` (0,1,0) et lui imposait --color-gris sur
+   fond bronze, soit 1,34:1. Sur les neuf pages, sous 980 px, c'est-à-dire
+   sur le canal d'acquisition principal. */
+.nav > .btn--primary{color:var(--color-noir);}
+.nav > .btn--primary:hover{color:var(--color-noir);}
+
+/* `strong,b{color:creme}` est le défaut global, pensé pour les sections
+   sombres. `.prose :is(strong,b)` le rattrapait — mais les pages recomposées
+   n'ont plus de `.prose`, et le <strong> de l'accueil se retrouvait crème sur
+   crème : 1:1, une bande blanche à la place du texte. */
+.section--creme :is(strong, b){color:var(--color-noir);}
+
+/* Les libellés des fiches de biens tombaient à 9,5 px. */
+.bien__infos dt{font-size:10.5px;}
