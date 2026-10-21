@@ -1,131 +1,331 @@
 /* ==========================================================================
-   REPRISE DU MARKUP WORDPRESS
+   REPRISE DU MARKUP WORDPRESS — mise en page
    ==========================================================================
    Le contenu des 8 pages est repris au caractère près de l'ancien site. Son
    markup Gutenberg a perdu ses classes `wp-block-*` à la migration : il ne
-   reste qu'un empilement de <div> sans nom. Cette feuille rend cette
-   structure lisible dans la charte 2026, SANS toucher au HTML lui-même.
+   reste qu'un empilement de <div> anonymes. Cette feuille lui rend une mise
+   en page dans la charte 2026, SANS toucher au HTML ni à un seul mot.
 
-   On cible donc par la forme (`:has()`), pas par des classes qui n'existent
-   plus. Chaque règle dit quel bloc d'origine elle reconstitue.
+   On cible donc par la FORME (`:has()`), pas par des classes disparues.
+   Le piège principal, qui annulait toute la version précédente de ce
+   fichier : la profondeur réelle est
+       A (grille) > B (wrapper) > C (carte) > h6
+   et non A > B > h6. Les sélecteurs visaient un cran trop haut, chaque carte
+   devenait sa propre grille à une colonne, et tout s'empilait.
    ========================================================================== */
 
+/* --- 0. Le gabarit -------------------------------------------------------
+   `.container--narrow` + `.prose{max-width:68ch}` enfermaient ces pages dans
+   une colonne de 680 px au milieu de 1280 : la mise en page d'un article
+   appliquée à des pages de conversion. Les grilles n'avaient nulle part où
+   aller. La mesure de lecture est réimposée sur le texte seul. */
+.page-wp .prose { max-width: none; }
+.page-wp .prose :is(p, li) { max-width: 68ch; }
+
+.page-wp__tete { padding-block: clamp(56px, 8vw, 104px); }
 .page-wp__tete h1 { max-width: 18ch; }
 
-/* --- Images -------------------------------------------------------------
-   Sans contrainte, une illustration de 1400 px s'affiche pleine largeur et
-   la page d'accueil atteignait 49 000 px de haut. On plafonne par la
-   hauteur : le cadrage d'origine est conservé, l'échelle redevient sensée. */
-.prose figure { margin: var(--space-m) 0; text-align: center; }
-.prose figure img { max-height: 460px; width: auto; margin-inline: auto; border-radius: var(--radius-sm); }
-.prose figcaption {
-  font-family: var(--font-mono-site); font-size: var(--fs-eyebrow);
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--color-bronze-hover); margin-top: var(--space-2xs);
+/* --- 1. Rythme -----------------------------------------------------------
+   `.prose > * + *` ne touche que les enfants directs, or le contenu repris
+   est enfoui de plusieurs niveaux : il n'y avait AUCUN espacement entre les
+   paragraphes. */
+.prose :is(p, ul, ol, figure, blockquote, table) + :is(p, ul, ol, figure, blockquote, table) {
+  margin-top: 1.05em;
 }
 
-/* Les pictogrammes de la charte (70 px d'origine) ne sont pas des photos :
-   ils gardent leur taille et ne prennent ni cadre ni arrondi. */
-.prose figure img[src$=".svg"] { max-height: 70px; border-radius: 0; }
+/* Les cales Gutenberg deviennent les marqueurs de section, au lieu d'être
+   douze trous arbitraires dans le flux. */
+.prose div[aria-hidden="true"][style*="height:1"],
+.prose div[aria-hidden="true"][style*="height:9"],
+.prose div[aria-hidden="true"][style*="height:6"] {
+  height: 0 !important; margin-block: clamp(52px, 7vw, 92px);
+}
+.prose div[aria-hidden="true"][style*="height:5px"],
+.prose div[aria-hidden="true"][style*="height:10px"] {
+  height: 0 !important; margin-block: var(--space-xs);
+}
 
-/* --- Boutons ------------------------------------------------------------
-   Deux CTA voisins étaient côte à côte dans une grille Gutenberg. Sans ses
-   classes, chacun tombait sur sa propre ligne. */
+/* --- 2. Texte effacé -----------------------------------------------------
+   `strong,b{color:var(--color-creme)}` est global ; le correctif `.prose
+   strong` ne couvrait pas `<b>`. Les quatre arguments en gras de la page
+   d'accueil s'affichaient crème sur crème : du texte SEO littéralement
+   invisible. */
+.prose :is(strong, b) { color: var(--color-noir); font-weight: 600; }
+.section--noir .prose :is(strong, b) { color: var(--color-creme); }
+
+/* --- 3. Images -----------------------------------------------------------
+   Garde-fou d'abord : un pictogramme SVG hors <figure> héritait de
+   `.prose img{width:100%}` et s'affichait à 700 px de large — la page
+   Contact entière était occupée par une épingle de carte. */
+/* Garde-fou général. Le reset pose `max-width:100%`, mais un item flex ou
+   grid sans `min-width:0` refuse de se rétracter sous la taille de son
+   contenu : l'image gardait alors ses 1400 px natifs et débordait la page. */
+.prose img { max-width: 100%; height: auto; }
+.prose :is(div, figure) { min-width: 0; }
+
+.prose img[src$=".svg"] { width: auto; max-width: 40px; max-height: 40px; }
+
+.prose figure { margin: clamp(36px, 5vw, 64px) 0; text-align: left; }
+.prose figure > img {
+  width: 100%; height: auto; max-height: none;
+  border-radius: var(--radius-sm);
+}
+.prose figcaption {
+  border-left: 1px solid var(--color-bronze-profond); padding-left: 12px;
+  font-family: var(--font-mono-site); font-size: var(--fs-eyebrow);
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--color-bronze-profond); margin-top: var(--space-xs); text-align: left;
+}
+/* Les mock-ups produit ont un fond blanc qui dessinait un rectangle plus
+   clair sur le crème. On assume le cadre au lieu de feindre un détourage. */
+.prose figure:has(img[src*="Notebook"]),
+.prose figure:has(img[src*="img-estimation"]),
+.prose figure:has(img[src*="img-offres"]) {
+  background: var(--color-noir-2); border-radius: var(--radius-card);
+  padding: clamp(20px, 3.5vw, 40px);
+}
+
+/* --- 4. Colonnes ---------------------------------------------------------
+   Deux signaux ont survécu à la perte des classes : le `flex-basis` inline,
+   et le motif « bloc de texte + bloc ne contenant qu'une figure ». */
+@media (min-width: 880px) {
+  .prose div:has(> div[style*="flex-basis"]) {
+    display: flex; flex-wrap: wrap; gap: var(--space-l); align-items: flex-start;
+  }
+  .prose div:has(> div:last-child > figure:only-child):has(> div:first-child h2) {
+    display: grid; grid-template-columns: 1.05fr .95fr;
+    gap: var(--space-xl); align-items: center;
+  }
+  .prose div:has(> div:last-child > figure:only-child):has(> div:first-child h2) figure {
+    margin: 0;
+  }
+}
+/* Une colonne vide mangerait une part de la grille. */
+.prose div[style*="flex-basis"]:empty { display: none; }
+
+/* --- 5. Listes de critères ----------------------------------------------
+   « Analyses comprises dans l'estimation » (5), « Pourquoi vendre avec
+   France Immeuble » (6). Picto centré / titre centré / phrase centrée, c'est
+   le gabarit « features » de 2016 et c'est ce qui fait le plus daté. Ce sont
+   des critères d'analyse : une liste à filets, ferrée à gauche, lit comme un
+   document professionnel. */
+.prose div:has(> div > div > h6) {
+  display: grid; gap: 0 var(--space-xl); margin-block: var(--space-l);
+}
+@media (min-width: 900px) {
+  .prose div:has(> div > div > h6) { grid-template-columns: 1fr 1fr; }
+}
+.prose div:has(> div > h6) { display: contents; }
+.prose div:has(> h6) {
+  display: grid; grid-template-columns: 34px 1fr; gap: 2px 18px;
+  align-items: start; text-align: left; padding: 20px 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);
+}
+.prose div:has(> h6) > div:first-child { grid-row: span 2; }
+.prose div:has(> h6) figure { margin: 0; }
+.prose div:has(> h6) h6 {
+  grid-column: 2; margin: 0; align-self: center;
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing: -0.01em; font-size: 1.05rem; color: var(--color-noir);
+}
+.prose div:has(> h6) p { grid-column: 2; margin: 0; font-size: var(--fs-small); max-width: 52ch; }
+
+/* --- 6. Boutons ----------------------------------------------------------
+   Le markup repris porte `btn btn--primary` en dur. Or le §5 impose, sur
+   fond clair : fond noir, texte blanc. Du bronze #C19B6E sur du crème
+   #EFE9DE donne 2,1:1 — le bouton se dissout dans le fond. L'arbitrage se
+   fait au sélecteur, sans toucher au HTML. */
+.section--creme .prose .btn--primary {
+  background: var(--color-noir); color: #FFF; box-shadow: var(--btn-shadow);
+}
+.section--creme .prose .btn--primary:hover { background: var(--color-bronze-hover); color: #FFF; }
+/* Deux CTA du même poids, c'est aucun CTA : le second redevient secondaire. */
+.prose div:has(> div > p.prose-cta) > div:nth-child(n+2) .btn--primary {
+  background: transparent; color: var(--color-noir);
+  border-color: rgba(10, 10, 10, .28); box-shadow: none;
+}
 .prose div:has(> div > p.prose-cta) {
   display: flex; flex-wrap: wrap; gap: var(--space-xs);
   align-items: center; margin-block: var(--space-m);
 }
 .prose div:has(> div > p.prose-cta) > div { margin: 0; }
-.prose p.prose-cta { margin: 0; }
+.page-wp .prose p.prose-cta { margin: 0; text-align: left; }
 
-/* --- Grilles de cartes --------------------------------------------------
-   Le bloc « Analyses comprises dans l'estimation » et ses équivalents :
-   une suite de picto + <h6> + description, en colonnes à l'origine. */
-.prose div:has(> div > h6) {
-  display: grid; gap: var(--space-m);
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  margin-block: var(--space-m);
+/* --- 7. Typographie du contenu repris ------------------------------------
+   WordPress a laissé des `style="font-size:14px"` inline sur des h3/h4 :
+   inline, ils gagnent, et sortaient en Archivo 900 à 14 px — une barre noire
+   compacte qui ressemble à une erreur de rendu. Ces titres-là étaient des
+   surtitres : on leur rend ce rôle avec la signature groupe du §3. */
+.prose h3[style*="font-size"], .prose h4[style*="font-size"] { font-size: inherit !important; }
+.prose p[style*="line-height"] { line-height: 1.62 !important; }
+
+.prose h2 { max-width: 20ch; text-wrap: balance; }
+/* Les <br> forcés dans les titres WordPress (« Notre réseau <br>d'acheteurs »)
+   cassent le titre en lignes courtes sur desktop. On les neutralise, mais
+   PAS en `display:none` : les mots se colleraient (« votreestimation »).
+   En `inline` le <br> ne rompt plus la ligne, et le ::before rend l'espace. */
+@media (min-width: 720px) {
+  .prose :is(h1, h2, h3) br { display: inline; }
+  .prose :is(h1, h2, h3) br::before { content: " "; white-space: pre; }
 }
-.prose div:has(> div > h6) > div { text-align: center; }
-.prose h6 {
-  font-family: var(--font-display);
-  font-variation-settings: "wdth" var(--display-wdth), "wght" var(--display-wght);
-  letter-spacing: -0.01em; font-size: 1.05rem;
-  margin: var(--space-2xs) 0 6px;
+
+/* Un h3 juste sous un h2, tous deux en Archivo 900 : on lisait deux titres
+   au lieu d'un titre et d'une accroche. */
+.prose h2 + h3, .prose h3[style*="font-size"] {
+  font-family: var(--font-body); font-variation-settings: normal;
+  font-weight: 500; font-size: var(--fs-lead); line-height: 1.45;
+  letter-spacing: 0; max-width: 46ch;
+  color: color-mix(in srgb, var(--color-noir) 72%, var(--color-creme));
+  margin-top: .35em;
 }
-.prose div:has(> div > h6) figure { margin: 0 0 var(--space-2xs); }
+.prose h4 {
+  font-family: var(--font-mono-site); font-variation-settings: normal;
+  font-size: var(--fs-eyebrow); font-weight: 500;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--color-bronze-profond); margin-top: 0;
+}
+/* Le <h1> du corps de la page Contact retombait sur le h1 global, à 67 px. */
+.prose h1 { font-size: var(--fs-h2); max-width: 20ch; }
 
-/* --- Blocs de chiffres --------------------------------------------------
-   « 365 / 1372 / 359 » sur la page d'accueil : des <h2> isolés qui sont en
-   réalité des compteurs. On les traite comme les statistiques du site. */
-.prose div:has(> div > h2 + p):not(:has(h3, h4, ul, figure)) { margin-block: var(--space-m); }
+/* --- 8. Les trois chiffres clés ------------------------------------------
+   365 / 1372 / 359 : la preuve propriétaire du site, rendue en sous-titres
+   empilés sur trois écrans. */
+.prose div:has(> div > div > h2 + h4) {
+  display: grid; gap: var(--space-l);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin-block: var(--space-l);
+}
+.prose div:has(> div > h2 + h4) { display: contents; }
+.prose div:has(> h2 + h4) { text-align: left; }
+.prose div:has(> h2 + h4) > h2 {
+  font-size: var(--fs-stat); line-height: 1; margin-top: 0;
+  color: var(--color-noir); font-variant-numeric: tabular-nums;
+}
+.prose div:has(> h2 + h4) figure { margin: 0 0 var(--space-xs); }
 
-/* --- Reliquats de mise en page ------------------------------------------
-   Les cales de hauteur Gutenberg (<div style="height:62px">) sont conservées
-   mais plafonnées : elles creusaient des trous sur mobile. */
-.prose div[aria-hidden="true"][style*="height"] { max-height: 34px; }
+/* --- 9. Contraste sur crème ----------------------------------------------
+   Sur #EFE9DE : bronze 2,12:1, bronze-hover 3,20:1, bronze-clair-2 1,57:1.
+   Seul bronze-profond passe (5,07:1). C'est la seule valeur bronze utilisable
+   en TEXTE sur crème — le bronze plein reste admis en filet ou en surface. */
+.section--creme .prose a:not(.btn),
+.section--creme .prose figcaption,
+.section--creme .eyebrow { color: var(--color-bronze-profond); }
+.section--creme .prose ul li::marker { color: var(--color-bronze-profond); }
 
-/* Les icônes FontAwesome du carrousel d'avis n'ont plus leur police. */
+/* --- 10. Reliquats de thème ---------------------------------------------- */
 .prose i.fas, .prose i.fa-star { display: none; }
+.prose .hono-offres-fi .controls, .prose .reveal-hono { display: none; }
+.prose .hono-contact-bullet-points { display: grid; gap: var(--space-m); margin-block: var(--space-m); }
+.prose .hono-contact-bullet-points > div {
+  display: grid; grid-template-columns: 30px 1fr; gap: 4px 16px; align-items: center;
+}
+.prose .hono-contact-bullet-points .icon { grid-row: span 2; }
+.prose .hono-contact-bullet-points .icon img { width: 26px; max-width: 26px; }
+.prose .hono-contact-bullet-points h2 {
+  grid-column: 2; margin: 0;
+  font-family: var(--font-mono-site); font-variation-settings: normal;
+  font-size: var(--fs-eyebrow); letter-spacing: .15em; text-transform: uppercase;
+  color: var(--color-bronze-profond);
+}
+.prose .hono-contact-bullet-points a,
+.prose .hono-contact-bullet-points .content > :not(h2) { grid-column: 2; }
+.prose .hono-ressources .logos { display: flex; flex-wrap: wrap; gap: var(--space-m); align-items: center; }
+.prose .hono-ressources .logos img { height: 26px; width: auto; max-width: 150px; }
+.prose .hono-ressources .logos .item:empty { display: none; }
 
-/* --- Formulaires montés dans le flux ------------------------------------ */
+/* --- 11. Formulaires montés dans le flux --------------------------------- */
 .prose .form-shell { margin-block: var(--space-l); color: var(--color-creme); }
-.prose .form-shell h3, .prose .form-shell h4, .prose .form-shell label { color: var(--color-creme); }
+.prose .form-shell :is(h3, h4, label) { color: var(--color-creme); }
 .prose .form-shell p { color: var(--color-gris); }
-.prose .form-shell a:not(.btn) { color: var(--color-bronze-clair); }
+/* bronze-clair sur crème = 1,4:1 : les liens disparaissaient. */
+.prose .form-shell a:not(.btn) { color: var(--color-bronze-clair-2); }
 
-@media (max-width: 640px) {
-  .prose figure img { max-height: 300px; }
+/* --- 12. Mobile ---------------------------------------------------------- */
+@media (max-width: 600px) {
+  .prose div:has(> div > p.prose-cta) { flex-direction: column; align-items: stretch; }
+  .prose .btn { width: 100%; }
+  .prose div:has(> h6) { grid-template-columns: 30px 1fr; padding: 16px 0; }
+  .prose figure { margin: var(--space-m) 0; }
 }
 
 /* ==========================================================================
    CARROUSEL « IMMEUBLES VENDUS » DE LA PAGE D'ACCUEIL
    ==========================================================================
-   Ces blocs-là ont GARDÉ leurs classes de thème (`hono-biens*`). Le JS qui
-   les faisait défiler n'existe plus : empilés, les dix fiches faisaient à
-   elles seules l'essentiel des 44 000 px de la page. On les présente en
-   grille — tout est visible d'un coup, sans dépendre d'un slider.
+   Ces blocs-là ont GARDÉ leurs classes de thème. Le JS qui les faisait
+   défiler n'existe plus : empilés, les dix fiches portaient à elles seules
+   l'essentiel des 49 000 px de la page.
    ========================================================================== */
 .prose .hono-biens-slider {
   display: grid; gap: var(--space-s);
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   margin-block: var(--space-m);
 }
 .prose .hono-biens-container {
-  position: relative; min-height: 310px;
+  position: relative; aspect-ratio: 4 / 5;
   background-size: cover; background-position: center;
   border-radius: var(--radius-card); overflow: hidden;
-  border: 1px solid var(--color-ligne);
+  border: 1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);
 }
-/* Voile sombre : sans lui le texte crème passe sur des façades claires. */
 .prose .hono-biens-container .overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(10,10,10,.35) 0%, rgba(10,10,10,.88) 62%);
-  display: flex; align-items: flex-end;
-  padding: var(--space-s);
+  background: linear-gradient(180deg, rgba(10,10,10,.28) 0%, rgba(10,10,10,.90) 64%);
+  display: flex; align-items: flex-end; padding: var(--space-s);
 }
-.prose .hono-carousel-content { width: 100%; color: var(--color-creme); }
+.prose .hono-carousel-content { width: 100%; color: var(--color-creme); display: flex; flex-direction: column; }
 .prose .hono-carousel-content br { display: none; }
+/* Hiérarchie inversée : « Immeubles vendus par France Immeuble » est
+   identique sur les dix fiches et occupait la ligne forte ; la ville, elle,
+   était en gris secondaire. On permute les rôles — le texte ne bouge pas. */
 .prose .hono-carousel-content h3 {
-  font-family: var(--font-mono-site); font-size: var(--fs-eyebrow);
-  font-variation-settings: normal; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--color-bronze); margin-bottom: 4px;
+  order: 1; font-family: var(--font-mono-site); font-variation-settings: normal;
+  font-size: var(--fs-eyebrow); letter-spacing: .15em; text-transform: uppercase;
+  color: var(--color-bronze); margin: 0 0 6px;
 }
-.prose .hono-carousel-content h2 { font-size: 1.15rem; color: var(--color-creme); margin-bottom: 2px; }
 .prose .hono-carousel-content > span {
-  display: block; font-family: var(--font-mono-site);
-  font-size: var(--fs-small); color: var(--color-gris); margin-bottom: var(--space-xs);
+  order: 2; display: block;
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size: 1.45rem; line-height: 1.05; letter-spacing: -0.015em;
+  color: var(--color-creme); margin-bottom: 4px;
 }
-
-.prose .infos-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.prose .info-immeuble { display: flex; align-items: center; gap: 9px; }
-.prose .info-immeuble img { width: 20px; height: 20px; max-height: 20px; margin: 0; flex: none; }
-/* icon-zone-noir est un PNG noir : invisible sur le voile sombre. */
-.prose .info-immeuble img[src*="noir"] { filter: invert(1) brightness(1.6); }
+.prose .hono-carousel-content h2 {
+  order: 3; font-family: var(--font-mono-site); font-variation-settings: normal;
+  font-size: .66rem; font-weight: 400; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--color-gris); margin: 0 0 var(--space-xs); max-width: none;
+}
+.prose .infos-container { order: 4; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.prose .info-immeuble { display: flex; align-items: center; }
+/* L'icône était l'élément le plus lourd de la ligne, et `icon-zone-noir`
+   devait être rattrapée par un filter : l'asset était faux, pas la CSS.
+   Un label mono + une valeur se lisent sans béquille. */
+.prose .info-immeuble img { display: none; }
 .prose .info-immeuble .content { display: flex; flex-direction: column; line-height: 1.25; }
 .prose .info-immeuble .intitule {
-  font-family: var(--font-mono-site); font-size: 10px;
+  font-family: var(--font-mono-site); font-size: 9.5px;
   letter-spacing: .1em; text-transform: uppercase; color: var(--color-gris);
 }
-.prose .info-immeuble .valeur { font-size: var(--fs-small); color: var(--color-creme); font-weight: 600; }
-.prose .hono-biens .anchor { display: none; }
+.prose .info-immeuble .valeur {
+  font-family: var(--font-mono-site); font-size: var(--fs-small);
+  color: var(--color-creme); font-weight: 600; letter-spacing: .02em;
+}
+.prose .hono-biens .anchor, .prose .hono-biens .item-dots { display: none; }
+
+/* --- Avis clients --------------------------------------------------------
+   28 avis à 4,9/5 est la réassurance n°1 face à un propriétaire qui confie
+   2 M€, et les douze verbatims s'empilaient sur 3 000 px en texte gris. */
+.prose .hono-avis-slider, .prose .testimonials-slider {
+  display: grid; gap: var(--space-s);
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  margin-block: var(--space-m);
+}
+.prose :is(.hono-avis-slider, .testimonials-slider) > * {
+  border: 1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);
+  border-radius: var(--radius-card); padding: var(--space-s);
+}
+.prose .name { display: block; font-weight: 600; color: var(--color-noir); margin-top: var(--space-xs); }
+.prose .time {
+  display: block; font-family: var(--font-mono-site);
+  font-size: var(--fs-eyebrow); letter-spacing: .1em; color: var(--color-bronze-profond);
+}
+.prose .testimonial-quote:empty, .prose figure.google:empty { display: none; }

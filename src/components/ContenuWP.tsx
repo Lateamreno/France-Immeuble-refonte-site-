@@ -22,7 +22,7 @@ export function ContenuWP({ page }: { page: PageWP }) {
   return (
     <article className="page-wp">
       <header className="section section--noir page-wp__tete">
-        <div className="container container--narrow">
+        <div className="container">
           <h1>{page.h1}</h1>
         </div>
       </header>
@@ -32,8 +32,15 @@ export function ContenuWP({ page }: { page: PageWP }) {
         en clair sur sombre. Même rythme que les articles (hero sombre → corps
         clair) pour que la reprise ne jure pas avec le reste du site.
       */}
+      {/*
+        `.container` et non `.container--narrow` : ces pages ne sont pas des
+        articles. Avec narrow (820px) + `.prose{max-width:68ch}`, tout tenait
+        dans 680px au milieu de 1280 — les grilles n'avaient nulle part où
+        aller, d'où l'empilement vertical. La mesure de lecture est réimposée
+        sur les paragraphes seuls (page-wp.css §0).
+      */}
       <div className="section--creme">
-        <div className="container container--narrow">
+        <div className="container">
           <div className="prose">
             {segments.map((s, i) =>
               s.type === "html" ? (
