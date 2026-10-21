@@ -12,10 +12,21 @@ Ce dossier porte les migrations du projet Supabase **du site**, et de lui seul.
 Projet : **France Immeuble site** — `omtkttpvfjsbnqsajcsp`, créé le 21/10/2026.
 
 1. ✅ `0001_revue_feedback.sql` — appliquée.
-2. ⏳ `A-COLLER-SITE.sql` — à coller dans l'éditeur SQL : les tables des
-   projections (0002), les fiches de vente et leurs récits (0003), puis les 44
-   ventes. Rejouable sans risque, y compris par-dessus une version antérieure.
-   Généré par `node scripts/graine-ventes.mjs` : ne pas l'éditer à la main.
+2. ✅ `0002_projections.sql`, `0003_recits_ventes.sql` et la graine des 44
+   ventes — appliquées le 21/10/2026 par le connecteur Supabase.
+   `A-COLLER-SITE.sql` réunit les trois, rejouable sans risque : il sert à
+   reconstruire la base, ou si le connecteur est indisponible. Généré par
+   `node scripts/graine-ventes.mjs` : ne pas l'éditer à la main.
+
+   ⚠️ Par le connecteur, `apply_migration` et toute requête contenant un
+   `drop` expirent sans rien appliquer. `execute_sql` en petits morceaux, sans
+   `drop`, passe. Conséquence : ces migrations n'apparaissent pas dans
+   l'historique `supabase_migrations` (seule 0001 y figure).
+
+   Vérifié après application : 44 ventes, 44 slugs ; avec la clé publiable,
+   lecture des ventes et des biens OK, écriture et suppression refusées,
+   `leads_outbox` et `bo_feedback` illisibles. Conseiller sécurité Supabase :
+   aucune alerte hors « RLS sans policy » sur ces deux tables, voulu.
 3. Variables Vercel, projet `france-immeuble-refonte-site` :
 
    | Variable | Environnements | État |

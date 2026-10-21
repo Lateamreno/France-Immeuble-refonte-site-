@@ -75,7 +75,7 @@ end $$;
 -- « une place de parking » ou « 48 000 € de loyer » passent.
 -- ---------------------------------------------------------------------------
 create or replace function public.texte_sans_adresse(t text)
-returns boolean language sql immutable as $$
+returns boolean language sql immutable set search_path = '' as $$
   select t is null or not (
     t ~ '(^|[^[:alpha:]])([Rr]ue|[Aa]venue|[Bb]oulevard|[Bb]d|[Ii]mpasse|[Aa]ll[ée]e|[Pp]lace|[Qq]uai|[Cc]hemin|[Cc]ours|[Pp]assage|[Ss]quare|[Vv]illa|[Rr]oute|[Ss]entier|[Cc]it[ée])\s+(de\s+la\s+|de\s+l[''’]|du\s+|des\s+|de\s+|d[''’])?[[:upper:]][[:lower:]]'
     or t ~ '(^|[^0-9])[0-9]{5}\s+[[:upper:]]'
@@ -101,7 +101,7 @@ end $$;
 -- même règle que le repli du site (src/lib/biens.ts).
 -- ---------------------------------------------------------------------------
 create or replace function public.slugifier(t text)
-returns text language sql immutable as $$
+returns text language sql immutable set search_path = '' as $$
   select trim(both '-' from regexp_replace(
     lower(translate(t,
       'ÀÁÂÃÄÅàáâãäåÇçÈÉÊËèéêëÌÍÎÏìíîïÑñÒÓÔÕÖòóôõöÙÚÛÜùúûüÝýÿŒœÆæ',
@@ -110,7 +110,7 @@ returns text language sql immutable as $$
 $$;
 
 create or replace function public.ventes_slug()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql set search_path = '' as $$
 declare
   base text;
   n integer := 1;
