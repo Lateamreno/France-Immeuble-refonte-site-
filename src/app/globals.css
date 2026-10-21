@@ -1308,3 +1308,51 @@ strong,b{font-weight:600;color:var(--color-creme);}
      bureau (bascule à 980 px) mais elle se touche au doigt. */
   .nav a{padding-block:13px;}
 }
+
+/* --- 17. HERO PLEIN ÉCRAN SUR TÉLÉPHONE ----------------------------------
+   Le hero mesurait 481 à 525 px sur des écrans de 800 à 932 : il s'arrêtait
+   au tiers de la hauteur et laissait une bande crème vide sous lui. Le
+   premier écran doit être le premier écran.
+
+   `svh` et non `dvh` : la barre d'URL des navigateurs mobiles se rétracte au
+   défilement, et `dvh` ferait sauter la mise en page à chaque fois. `svh`
+   correspond au viewport barre visible — le plus petit, donc celui qui
+   garantit que tout le contenu tient sans être coupé. Les 77 px du header
+   collant sont déduits : il occupe sa place dans le flux, au-dessus. */
+@media (max-width:760px){
+  .hero-media{
+    min-height:calc(100svh - 77px);
+    display:flex;align-items:center;
+  }
+  /* `100vh` en repli pour les navigateurs sans unités de viewport modernes. */
+  @supports not (height: 100svh){
+    .hero-media{min-height:calc(100vh - 77px);}
+  }
+  .hero-media > .container{width:100%;padding-block:var(--space-l);}
+
+  /* Les trois compteurs passent en colonne : à 390 px, trois paires
+     « nombre + libellé » sur une ligne se chevauchaient. */
+  .hero-media .hero-proof{gap:var(--space-xs) var(--space-s);}
+  .hero-media .hero-proof__item{flex:1 1 100%;}
+
+  /* Le hero est la seule section où le titre doit tenir sans défiler : on lui
+     laisse l'échelle, on resserre ce qui l'entoure. */
+  .hero-media .lead{margin-top:var(--space-xs);}
+  .hero-media .btn-row{margin-top:var(--space-m);}
+}
+
+/* Très petits écrans : à 320×568 il ne reste que 491 px utiles pour le
+   surtitre, le titre, l'accroche, deux boutons et trois compteurs. On rend
+   de la place sans descendre sous les seuils de lisibilité. */
+@media (max-width:400px) and (max-height:720px){
+  .hero-media h1{font-size:clamp(1.9rem, 1.3rem + 5vw, 2.6rem);}
+  .hero-media .hero-proof{padding-top:var(--space-s);}
+}
+
+/* Tablette : sans la règle mobile, le hero retombait à 308 px de haut — un
+   bandeau, pas une ouverture. On lui donne une hauteur tenable sans aller
+   jusqu'au plein écran, qui n'a de sens qu'au format portrait du téléphone. */
+@media (min-width:761px) and (max-width:1100px){
+  .hero-media{min-height:min(74svh, 620px);display:flex;align-items:center;}
+  .hero-media > .container{width:100%;}
+}

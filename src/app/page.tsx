@@ -25,7 +25,7 @@ export default function Accueil() {
     <>
       <HeroMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
         <>
-          <Eyebrow>Vente en bloc &middot; Off-market &middot; Depuis 2018</Eyebrow>
+          <Eyebrow>Vente en bloc &middot; Off-market</Eyebrow>
           {/* H1 gelé au caractère près — §10. */}
           <h1>L’agence dédiée aux immeubles</h1>
           <p className="lead">
