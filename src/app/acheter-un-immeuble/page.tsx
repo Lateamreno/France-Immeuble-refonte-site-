@@ -40,7 +40,7 @@ export default function Acheter() {
             fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page —
             mais l’accès à ceux qui circulent en premier.
           </p>
-          <div className="hero-proof" style={{ marginTop: "var(--space-l)" }}>
+          <div className="hero-proof">
             <div className="hero-proof__item">
               <span className="hero-proof__val">{nombre(PREUVES.investisseurs)}</span>
               <span className="hero-proof__lbl">investisseurs déjà dans le fichier</span>

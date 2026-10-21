@@ -70,10 +70,11 @@ export default function EstimerUnImmeuble() {
               en surtitre, et le titre visuel prend la place qui est la sienne. */}
           <Eyebrow>Estimer un immeuble</Eyebrow>
           <h1>Découvrez tout le potentiel de votre immeuble</h1>
+          {/* Les deux textes d'origine étaient fusionnés ici : sept lignes
+              d'accroche dans un hero. Le second descend d'une section, là où
+              il a la place d'être lu. Rien n'est retiré. */}
           <p className="lead">
-            La seule estimation conçue spécifiquement pour les immeubles. Bénéficiez d’une
-            estimation se basant sur l’aspect général, géographique et locatif de votre immeuble
-            ainsi que sur son caractère constructible pour une valorisation optimale.
+            La seule estimation conçue spécifiquement pour les immeubles.
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>
@@ -87,6 +88,11 @@ export default function EstimerUnImmeuble() {
           <Reveal className="section__head">
             <Eyebrow>Estimation</Eyebrow>
             <h2>Analyses comprises dans l’estimation gratuite</h2>
+            <p className="lead">
+              Bénéficiez d’une estimation se basant sur l’aspect général, géographique et locatif
+              de votre immeuble ainsi que sur son caractère constructible pour une valorisation
+              optimale.
+            </p>
           </Reveal>
 
           <div className="grid grid--3">

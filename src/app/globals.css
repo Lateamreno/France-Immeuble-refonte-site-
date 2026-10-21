@@ -453,6 +453,11 @@ strong,b{font-weight:600;color:var(--color-creme);}
   padding-top:var(--space-m);border-top:1px solid var(--color-ligne);
 }
 .hero-proof__item{display:flex;align-items:baseline;gap:10px;}
+/* L'espacement sous l'accroche appartient à la feuille, pas au JSX. Trois
+   pages le portaient en `style={{marginTop}}` en ligne : aucune media query
+   ne pouvait le reprendre, et le premier écran débordait sur téléphone. */
+.hero-media .btn-row,
+.hero-media .hero-proof{margin-top:var(--space-l);}
 .hero-proof__val{font-family:var(--font-mono-site);font-size:1.02rem;color:var(--color-bronze-clair);font-weight:600;}
 .hero-proof__lbl{font-size:var(--fs-small);color:var(--color-gris);}
 
@@ -1338,15 +1343,25 @@ strong,b{font-weight:600;color:var(--color-creme);}
   /* Le hero est la seule section où le titre doit tenir sans défiler : on lui
      laisse l'échelle, on resserre ce qui l'entoure. */
   .hero-media .lead{margin-top:var(--space-xs);}
-  .hero-media .btn-row{margin-top:var(--space-m);}
+  .hero-media .btn-row,
+  .hero-media .hero-proof{margin-top:var(--space-m);}
 }
 
 /* Très petits écrans : à 320×568 il ne reste que 491 px utiles pour le
    surtitre, le titre, l'accroche, deux boutons et trois compteurs. On rend
    de la place sans descendre sous les seuils de lisibilité. */
 @media (max-width:400px) and (max-height:720px){
-  .hero-media h1{font-size:clamp(1.9rem, 1.3rem + 5vw, 2.6rem);}
+  /* Mesuré sur 320x568 : le hero réclamait 617 px pour 491 px utiles — le CTA
+     principal tombait sous la ligne de flottaison. On reprend les 126 px là où
+     ils ne coûtent rien à la lecture : la respiration autour du bloc, l'échelle
+     du titre et l'écart avant les boutons. Les corps de texte ne bougent pas. */
+  .hero-media > .container{padding-block:var(--space-m);}
+  .hero-media h1{font-size:1.85rem;}
+  .hero-media .lead{font-size:1rem;}
+  .hero-media .btn-row,
+  .hero-media .hero-proof{margin-top:var(--space-s);gap:var(--space-xs);}
   .hero-media .hero-proof{padding-top:var(--space-s);}
+  .hero-media .btn{padding:15px 26px;}
 }
 
 /* Tablette : sans la règle mobile, le hero retombait à 308 px de haut — un

@@ -216,7 +216,7 @@ export default function Decoupe() {
             copropriété, négocie les départs, rénove, revend lot par lot — et garde l’écart. Nous
             faisons ce travail pour vous, et l’écart vous revient.
           </p>
-          <div className="btn-row" style={{ marginTop: "var(--space-l)" }}>
+          <div className="btn-row">
             <Button href="/estimer-un-immeuble/" icone>
               Chiffrer les deux scénarios
             </Button>

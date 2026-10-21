@@ -128,7 +128,7 @@ export default function Accueil() {
             ))}
           </div>
 
-          <div className="btn-row" style={{ marginTop: "var(--space-l)" }}>
+          <div className="btn-row">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
         </div>
