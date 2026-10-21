@@ -12,8 +12,10 @@ Ce dossier porte les migrations du projet Supabase **du site**, et de lui seul.
 Projet : **France Immeuble site** — `omtkttpvfjsbnqsajcsp`, créé le 21/10/2026.
 
 1. ✅ `0001_revue_feedback.sql` — appliquée.
-2. ⏳ `A-COLLER-0002-et-ventes.sql` — à coller une fois dans l'éditeur SQL : les
-   tables des projections, puis les 44 ventes. Rejouable sans risque.
+2. ⏳ `A-COLLER-SITE.sql` — à coller dans l'éditeur SQL : les tables des
+   projections (0002), les fiches de vente et leurs récits (0003), puis les 44
+   ventes. Rejouable sans risque, y compris par-dessus une version antérieure.
+   Généré par `node scripts/graine-ventes.mjs` : ne pas l'éditer à la main.
 3. Variables Vercel, projet `france-immeuble-refonte-site` :
 
    | Variable | Environnements | État |
@@ -44,11 +46,24 @@ une clé est déployée, moins elle fuit.
 | Table | Rôle | RLS |
 |---|---|---|
 | `bo_feedback` | Retours de recette (Mode Revue) | aucune policy : clé secrète seule |
-| `ventes` | Ventes réalisées, déposées par le BO | lecture publique, écriture interdite |
+| `ventes` | Ventes réalisées, faits et récits validés, déposés par le BO | lecture publique, écriture interdite |
 | `biens_a_vendre` | Annonces cochées « France Immeuble » | lecture publique, écriture interdite |
 | `leads_outbox` | Leads en attente si le BO ne répond pas | aucune policy : clé secrète seule |
 
-Buckets : `bo-files` (privé, captures de recette), `ventes` (public, photos).
+Buckets : `bo-files` (privé, captures de recette), `ventes` et `biens`
+(publics, photos).
+
+### Garde-fous portés par la base (0003)
+
+- Un récit sans `recit_valide_le` est refusé : pas de publication sans
+  relecture humaine (CLAUDE.md §8).
+- Un titre, chapô, composition ou récit contenant « rue Victor-Hugo » ou
+  « 92100 Boulogne » est refusé (§2).
+- Le slug d'une vente est généré par la base et ne change plus une fois posé :
+  une URL indexée ne bouge pas (§10).
+
+Testé le 21/10/2026 sur un Postgres 16 local : fichier rejoué deux fois, rejoué
+par-dessus l'ancienne version, et chacun des refus ci-dessus vérifié.
 
 Schéma `public` et non `web` comme l'écrit le §2 : servir un second schéma par
 l'API demande un réglage manuel du tableau de bord, qu'aucune migration ne

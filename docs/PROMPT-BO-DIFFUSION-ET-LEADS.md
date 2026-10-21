@@ -17,7 +17,7 @@ Le site publie quatre choses, toutes déposées par le BO :
 |---|---|---|
 | Biens à vendre | fiches immeuble diffusées | table `biens_a_vendre` |
 | Vignettes « Sous offre » | mêmes fiches, statut avancé | table `biens_a_vendre`, `statut = 'sous_offre'` |
-| Biens vendus | fiches passées au statut vendu | table `ventes` |
+| Biens vendus | fiches passées au statut vendu, **après validation de MAV** | table `ventes` (voir `PROMPT-BO-RECIT-VENTE.md`) |
 | Retraits | retrait, archivage, case décochée | suppression dans `biens_a_vendre` |
 
 **Le site ne lit jamais le BO.** C'est le BO qui écrit dans la base du site.
@@ -61,7 +61,7 @@ sont trois informations distinctes.
 |---|---|---|
 | 6 - Commercialisé (all), retenu par le pont | oui | upsert `biens_a_vendre`, `statut = 'en_vente'` |
 | 7 Sous offre · 8 Compromis programmé · 9 Sous compromis · 10 Acte programmé | oui | upsert `biens_a_vendre`, `statut = 'sous_offre'` |
-| 11 - VENDU | — | **supprimer** de `biens_a_vendre` **et** upsert dans `ventes` |
+| 11 - VENDU | — | **supprimer** de `biens_a_vendre` ; l'upsert dans `ventes` attend la validation de MAV (`PROMPT-BO-RECIT-VENTE.md`) |
 | 5 - Commercialisé (A/B) — off-market | — | supprimer de `biens_a_vendre` |
 | 0 - RETIRé, archivé, ou case décochée | — | supprimer de `biens_a_vendre` |
 
@@ -117,7 +117,7 @@ du site rejette tout rendement hors de 1 à 40 % : un dépôt resté en fraction
 
 | Colonne | Source |
 |---|---|
-| `id` | `_id` de la vente (`bo_vente`) ou de la fiche immeuble |
+| `id` | `_id` de la vente (`bo_vente`) — la clé des 44 ventes déjà chargées |
 | `ville`, `dept` | adresse |
 | `prix` | prix de vente honoraires inclus, euros |
 | `date` | date de l'acte, `AAAA-MM-JJ` |
@@ -125,7 +125,9 @@ du site rejette tout rendement hors de 1 à 40 % : un dépôt resté en fraction
 | `image` | chemin dans le coffre `ventes` (voir §6) |
 
 Les 44 ventes actuelles y sont déjà chargées. Un upsert sur `id` ne crée pas de
-doublon.
+doublon. Chaque vente a sa page sur le site : les faits et le récit qui la
+remplissent, et l'écran où MAV les valide, sont décrits dans
+`PROMPT-BO-RECIT-VENTE.md`. Ne pas envoyer de `slug` : la base le génère.
 
 ## 6 — Ce qui ne traverse JAMAIS
 
@@ -162,7 +164,8 @@ Supprimer les photos du coffre quand le bien est retiré.
 2. Le passer en statut 7 : sa vignette porte « Sous offre ».
 3. Décocher « Site France Immeuble » : il disparaît du site, et reste sur
    PleinBail.
-4. Le passer en statut 11 : il disparaît des biens à vendre et apparaît dans
+4. Le passer en statut 11 : il disparaît des biens à vendre, et une tâche
+   « Vente à publier » attend MAV. Après sa validation, il apparaît dans
    `/immeubles-vendus/`.
 5. Rejouer le dépôt deux fois : aucun doublon.
 6. Ouvrir le coffre `biens` : aucun nom de fichier ne contient de rue.

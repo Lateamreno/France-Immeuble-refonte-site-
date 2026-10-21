@@ -7,7 +7,8 @@
     "date": "2026-01-29",
     "annee": 2026,
     "region": "idf",
-    "image": null
+    "image": null,
+    "slug": "immeuble-de-rapport-drancy-2026"
   },
   {
     "id": "1759415257565x773122913575258200",
@@ -17,7 +18,8 @@
     "date": "2025-09-02",
     "annee": 2025,
     "region": "autre",
-    "image": null
+    "image": null,
+    "slug": "immeuble-de-rapport-marseille-2025"
   },
   {
     "id": "1728482821456x180769683730137800",
@@ -27,7 +29,8 @@
     "date": "2024-10-03",
     "annee": 2024,
     "region": "autre",
-    "image": null
+    "image": null,
+    "slug": "immeuble-de-rapport-thourotte-2024"
   },
   {
     "id": "1714127809491x692275012323336600",
@@ -37,7 +40,8 @@
     "date": "2024-04-25",
     "annee": 2024,
     "region": "idf",
-    "image": "/media/ventes/soisy-sous-montmorency-2024-04.webp"
+    "image": "/media/ventes/soisy-sous-montmorency-2024-04.webp",
+    "slug": "immeuble-de-rapport-soisy-sous-montmorency-2024"
   },
   {
     "id": "1711556920318x713984127115866900",
@@ -47,7 +51,8 @@
     "date": "2024-03-21",
     "annee": 2024,
     "region": "idf",
-    "image": "/media/ventes/la-ferte-sous-jouarre-2024-05.webp"
+    "image": "/media/ventes/la-ferte-sous-jouarre-2024-05.webp",
+    "slug": "immeuble-de-rapport-la-ferte-sous-jouarre-2024"
   },
   {
     "id": "1702370829846x541047242733592640",
@@ -57,7 +62,8 @@
     "date": "2023-11-26",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/paris-2023-06.webp"
+    "image": "/media/ventes/paris-2023-06.webp",
+    "slug": "immeuble-de-rapport-paris-2023-2"
   },
   {
     "id": "1698394747161x661699532477846900",
@@ -67,7 +73,8 @@
     "date": "2023-10-22",
     "annee": 2023,
     "region": "autre",
-    "image": "/media/ventes/caen-2023-07.webp"
+    "image": "/media/ventes/caen-2023-07.webp",
+    "slug": "immeuble-de-rapport-caen-2023"
   },
   {
     "id": "1685957192123x986641831410547000",
@@ -77,7 +84,8 @@
     "date": "2023-06-01",
     "annee": 2023,
     "region": "autre",
-    "image": "/media/ventes/hagondange-2023-08.webp"
+    "image": "/media/ventes/hagondange-2023-08.webp",
+    "slug": "immeuble-de-rapport-hagondange-2023"
   },
   {
     "id": "1680105387909x809076517670156700",
@@ -87,7 +95,8 @@
     "date": "2023-03-23",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/cormeilles-en-parisis-2023-09.webp"
+    "image": "/media/ventes/cormeilles-en-parisis-2023-09.webp",
+    "slug": "immeuble-de-rapport-cormeilles-en-parisis-2023"
   },
   {
     "id": "1678328218598x686360348083279400",
@@ -97,7 +106,8 @@
     "date": "2023-01-22",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/paris-2023-10.webp"
+    "image": "/media/ventes/paris-2023-10.webp",
+    "slug": "immeuble-de-rapport-paris-2023"
   },
   {
     "id": "1678328220775x397464235204552100",
@@ -107,7 +117,8 @@
     "date": "2023-01-18",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/les-mureaux-2023-11.webp"
+    "image": "/media/ventes/les-mureaux-2023-11.webp",
+    "slug": "immeuble-de-rapport-les-mureaux-2023"
   },
   {
     "id": "1678328208630x406181873818593400",
@@ -117,7 +128,8 @@
     "date": "2023-01-15",
     "annee": 2023,
     "region": "autre",
-    "image": "/media/ventes/tourcoing-2023-12.webp"
+    "image": "/media/ventes/tourcoing-2023-12.webp",
+    "slug": "immeuble-de-rapport-tourcoing-2023"
   },
   {
     "id": "1678328156558x217930356502384670",
@@ -127,7 +139,8 @@
     "date": "2023-01-15",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/pontoise-2023-13.webp"
+    "image": "/media/ventes/pontoise-2023-13.webp",
+    "slug": "immeuble-de-rapport-pontoise-2023"
   },
   {
     "id": "1678328210694x433456060422805250",
@@ -137,7 +150,8 @@
     "date": "2023-01-15",
     "annee": 2023,
     "region": "autre",
-    "image": "/media/ventes/lille-2023-14.webp"
+    "image": "/media/ventes/lille-2023-14.webp",
+    "slug": "immeuble-de-rapport-lille-2023"
   },
   {
     "id": "1678328216615x397498683920769700",
@@ -147,7 +161,8 @@
     "date": "2023-01-11",
     "annee": 2023,
     "region": "sud-ouest",
-    "image": "/media/ventes/cognac-2023-15.webp"
+    "image": "/media/ventes/cognac-2023-15.webp",
+    "slug": "immeuble-de-rapport-cognac-2023"
   },
   {
     "id": "1678328196542x189886248738439600",
@@ -157,7 +172,8 @@
     "date": "2023-01-04",
     "annee": 2023,
     "region": "idf",
-    "image": "/media/ventes/conflans-sainte-honorine-2023-16.webp"
+    "image": "/media/ventes/conflans-sainte-honorine-2023-16.webp",
+    "slug": "immeuble-de-rapport-conflans-sainte-honorine-2023"
   },
   {
     "id": "1678328214676x307064430920134460",
@@ -167,7 +183,8 @@
     "date": "2022-12-11",
     "annee": 2022,
     "region": "sud-ouest",
-    "image": "/media/ventes/marmande-2022-17.webp"
+    "image": "/media/ventes/marmande-2022-17.webp",
+    "slug": "immeuble-de-rapport-marmande-2022"
   },
   {
     "id": "1678328212633x941845906701144400",
@@ -177,7 +194,8 @@
     "date": "2022-11-29",
     "annee": 2022,
     "region": "idf",
-    "image": "/media/ventes/bruyeres-sur-oise-2022-18.webp"
+    "image": "/media/ventes/bruyeres-sur-oise-2022-18.webp",
+    "slug": "immeuble-de-rapport-bruyeres-sur-oise-2022"
   },
   {
     "id": "1678328204638x982944469461879400",
@@ -187,7 +205,8 @@
     "date": "2022-11-14",
     "annee": 2022,
     "region": "idf",
-    "image": "/media/ventes/juziers-2022-19.webp"
+    "image": "/media/ventes/juziers-2022-19.webp",
+    "slug": "immeuble-de-rapport-juziers-2022"
   },
   {
     "id": "1678328222800x146136227420650370",
@@ -197,7 +216,8 @@
     "date": "2022-10-26",
     "annee": 2022,
     "region": "autre",
-    "image": "/media/ventes/pierrelatte-2022-20.webp"
+    "image": "/media/ventes/pierrelatte-2022-20.webp",
+    "slug": "immeuble-de-rapport-pierrelatte-2022"
   },
   {
     "id": "1678328206613x368151229353391300",
@@ -207,7 +227,8 @@
     "date": "2022-07-11",
     "annee": 2022,
     "region": "idf",
-    "image": "/media/ventes/orsay-2022-21.webp"
+    "image": "/media/ventes/orsay-2022-21.webp",
+    "slug": "immeuble-de-rapport-orsay-2022"
   },
   {
     "id": "1678328200550x820712182429036000",
@@ -217,7 +238,8 @@
     "date": "2022-06-29",
     "annee": 2022,
     "region": "idf",
-    "image": "/media/ventes/draveil-2022-22.webp"
+    "image": "/media/ventes/draveil-2022-22.webp",
+    "slug": "immeuble-de-rapport-draveil-2022"
   },
   {
     "id": "1678328194517x780244101241242900",
@@ -227,7 +249,8 @@
     "date": "2022-06-02",
     "annee": 2022,
     "region": "autre",
-    "image": "/media/ventes/migennes-2022-23.webp"
+    "image": "/media/ventes/migennes-2022-23.webp",
+    "slug": "immeuble-de-rapport-migennes-2022"
   },
   {
     "id": "1678328180422x141215125878339180",
@@ -237,7 +260,8 @@
     "date": "2022-05-09",
     "annee": 2022,
     "region": "idf",
-    "image": "/media/ventes/noisy-le-sec-2022-24.webp"
+    "image": "/media/ventes/noisy-le-sec-2022-24.webp",
+    "slug": "immeuble-de-rapport-noisy-le-sec-2022"
   },
   {
     "id": "1678328202592x757546018338103600",
@@ -247,7 +271,8 @@
     "date": "2021-12-30",
     "annee": 2021,
     "region": "sud-ouest",
-    "image": "/media/ventes/bordeaux-2021-25.webp"
+    "image": "/media/ventes/bordeaux-2021-25.webp",
+    "slug": "immeuble-de-rapport-bordeaux-2021-2"
   },
   {
     "id": "1678328192498x544452858062463000",
@@ -257,7 +282,8 @@
     "date": "2021-12-13",
     "annee": 2021,
     "region": "idf",
-    "image": "/media/ventes/vaux-sur-seine-2021-26.webp"
+    "image": "/media/ventes/vaux-sur-seine-2021-26.webp",
+    "slug": "immeuble-de-rapport-vaux-sur-seine-2021"
   },
   {
     "id": "1678328198556x862913882393084700",
@@ -267,7 +293,8 @@
     "date": "2021-11-25",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/antibes-2021-27.webp"
+    "image": "/media/ventes/antibes-2021-27.webp",
+    "slug": "immeuble-de-rapport-antibes-2021"
   },
   {
     "id": "1678328184432x692143576041660500",
@@ -277,7 +304,8 @@
     "date": "2021-11-04",
     "annee": 2021,
     "region": "idf",
-    "image": "/media/ventes/asnieres-sur-seine-2021-28.webp"
+    "image": "/media/ventes/asnieres-sur-seine-2021-28.webp",
+    "slug": "immeuble-de-rapport-asnieres-sur-seine-2021"
   },
   {
     "id": "1678328188472x905252191757168300",
@@ -287,7 +315,8 @@
     "date": "2021-09-07",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/migennes-2021-29.webp"
+    "image": "/media/ventes/migennes-2021-29.webp",
+    "slug": "immeuble-de-rapport-migennes-2021"
   },
   {
     "id": "1678328182476x572217439368344600",
@@ -297,7 +326,8 @@
     "date": "2021-06-24",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/chateau-renard-2021-30.webp"
+    "image": "/media/ventes/chateau-renard-2021-30.webp",
+    "slug": "immeuble-de-rapport-chateau-renard-2021"
   },
   {
     "id": "1678328176461x529546113349445700",
@@ -307,7 +337,8 @@
     "date": "2021-06-02",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/gisors-2021-31.webp"
+    "image": "/media/ventes/gisors-2021-31.webp",
+    "slug": "immeuble-de-rapport-gisors-2021"
   },
   {
     "id": "1678328190479x429071181429240260",
@@ -317,7 +348,8 @@
     "date": "2021-04-25",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/chambly-2021-32.webp"
+    "image": "/media/ventes/chambly-2021-32.webp",
+    "slug": "immeuble-de-rapport-chambly-2021-2"
   },
   {
     "id": "1678328166905x557672446525689500",
@@ -327,7 +359,8 @@
     "date": "2021-04-25",
     "annee": 2021,
     "region": "autre",
-    "image": "/media/ventes/chambly-2021-33.webp"
+    "image": "/media/ventes/chambly-2021-33.webp",
+    "slug": "immeuble-de-rapport-chambly-2021"
   },
   {
     "id": "1678328168648x348511001410339650",
@@ -337,7 +370,8 @@
     "date": "2021-02-18",
     "annee": 2021,
     "region": "sud-ouest",
-    "image": "/media/ventes/bordeaux-2021-34.webp"
+    "image": "/media/ventes/bordeaux-2021-34.webp",
+    "slug": "immeuble-de-rapport-bordeaux-2021"
   },
   {
     "id": "1678328174569x462154276188006200",
@@ -347,7 +381,8 @@
     "date": "2020-12-17",
     "annee": 2020,
     "region": "idf",
-    "image": "/media/ventes/paris-2020-35.webp"
+    "image": "/media/ventes/paris-2020-35.webp",
+    "slug": "immeuble-de-rapport-paris-2020-2"
   },
   {
     "id": "1678328178447x303953828907493250",
@@ -357,7 +392,8 @@
     "date": "2020-12-15",
     "annee": 2020,
     "region": "idf",
-    "image": "/media/ventes/paris-2020-36.webp"
+    "image": "/media/ventes/paris-2020-36.webp",
+    "slug": "immeuble-de-rapport-paris-2020"
   },
   {
     "id": "1678328172464x163864905569869760",
@@ -367,7 +403,8 @@
     "date": "2020-12-10",
     "annee": 2020,
     "region": "autre",
-    "image": "/media/ventes/chateau-renard-2020-37.webp"
+    "image": "/media/ventes/chateau-renard-2020-37.webp",
+    "slug": "immeuble-de-rapport-chateau-renard-2020"
   },
   {
     "id": "1678328170488x579271156054734300",
@@ -377,7 +414,8 @@
     "date": "2020-11-30",
     "annee": 2020,
     "region": "autre",
-    "image": "/media/ventes/laroche-saint-cydroine-2020-38.webp"
+    "image": "/media/ventes/laroche-saint-cydroine-2020-38.webp",
+    "slug": "immeuble-de-rapport-laroche-saint-cydroine-2020"
   },
   {
     "id": "1678328186419x967772389178094200",
@@ -387,7 +425,8 @@
     "date": "2020-07-30",
     "annee": 2020,
     "region": "idf",
-    "image": "/media/ventes/massy-2020-39.webp"
+    "image": "/media/ventes/massy-2020-39.webp",
+    "slug": "immeuble-de-rapport-massy-2020"
   },
   {
     "id": "1678328155594x968843847922484800",
@@ -397,7 +436,8 @@
     "date": "2020-07-26",
     "annee": 2020,
     "region": "autre",
-    "image": "/media/ventes/spicheren-2020-40.webp"
+    "image": "/media/ventes/spicheren-2020-40.webp",
+    "slug": "immeuble-de-rapport-spicheren-2020"
   },
   {
     "id": "1678328164576x723007967804778600",
@@ -407,7 +447,8 @@
     "date": "2019-10-22",
     "annee": 2019,
     "region": "idf",
-    "image": "/media/ventes/pantin-2019-41.webp"
+    "image": "/media/ventes/pantin-2019-41.webp",
+    "slug": "immeuble-de-rapport-pantin-2019"
   },
   {
     "id": "1678328158503x904799243512276900",
@@ -417,7 +458,8 @@
     "date": "2019-09-19",
     "annee": 2019,
     "region": "idf",
-    "image": "/media/ventes/thiais-2019-42.webp"
+    "image": "/media/ventes/thiais-2019-42.webp",
+    "slug": "immeuble-de-rapport-thiais-2019"
   },
   {
     "id": "1678328162582x655370553263949600",
@@ -427,7 +469,8 @@
     "date": "2019-09-18",
     "annee": 2019,
     "region": "idf",
-    "image": "/media/ventes/melun-2019-43.webp"
+    "image": "/media/ventes/melun-2019-43.webp",
+    "slug": "immeuble-de-rapport-melun-2019"
   },
   {
     "id": "1678328160664x627874502867022700",
@@ -437,6 +480,7 @@
     "date": "2019-09-18",
     "annee": 2019,
     "region": "autre",
-    "image": "/media/ventes/nevers-2019-44.webp"
+    "image": "/media/ventes/nevers-2019-44.webp",
+    "slug": "immeuble-de-rapport-nevers-2019"
   }
 ]

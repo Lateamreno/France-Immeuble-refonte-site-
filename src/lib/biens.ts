@@ -15,7 +15,8 @@ import { configSitePublique } from "./supabase-site";
  * forme des données ci-dessous est déjà celle du contrat.
  *
  * Ce qui traverse la frontière, et rien d'autre :
- *   commune, département, prix, date, photo.
+ *   commune, département, prix, date, photo ; pour la fiche, des fourchettes,
+ *   des profils et un récit validé (migration 0003).
  * Jamais la rue, jamais le numéro, jamais un nom. Les fichiers photo d'origine
  * portaient parfois l'adresse dans leur nom (« Immeuble 47 rue des bas
  * Fossés… ») : `scripts/import-ventes.mjs` les renomme sur un identifiant neutre.
@@ -23,6 +24,8 @@ import { configSitePublique } from "./supabase-site";
 
 export type Vente = {
   id: string;
+  /** L'URL de la fiche : /immeubles-vendus/<slug>/. Figé une fois publié. */
+  slug: string;
   ville: string;
   /** Département sur deux caractères — « 75 », « 06 ». */
   dept: string;
@@ -34,6 +37,37 @@ export type Vente = {
   region: "idf" | "sud-ouest" | "autre";
   /** Chemin servi depuis notre domaine, ou null si la photo n'a pas pu être reprise. */
   image: string | null;
+} & FaitsVente;
+
+/**
+ * Ce que le BO dépose en plus pour la fiche de la vente (migration 0003).
+ * Tout est facultatif : une vente sans faits reste une carte et une fiche
+ * courte, non indexée. Fourchettes et profils, jamais d'adresse ni de nom (§2).
+ */
+export type FaitsVente = {
+  titre?: string | null;
+  type?: string | null;
+  arrondissement?: string | null;
+  lots?: number | null;
+  composition?: string | null;
+  surfaceMin?: number | null;
+  surfaceMax?: number | null;
+  epoque?: string | null;
+  dpe?: string | null;
+  occupation?: number | null;
+  rendement?: number | null;
+  profilAcquereur?: string | null;
+  profilVendeur?: string | null;
+  modeCommercialisation?: "off_market" | "diffusion" | "mixte" | null;
+  delaiSemaines?: number | null;
+  acquereursSollicites?: number | null;
+  visites?: number | null;
+  offres?: number | null;
+  chapo?: string | null;
+  recit?: string | null;
+  seoTitle?: string | null;
+  seoDesc?: string | null;
+  recitValideLe?: string | null;
 };
 
 /** Les ventes du fichier déposé à la main — repli si la base ne répond pas. */
@@ -42,9 +76,22 @@ const VENTES_DEPOSEES: Vente[] = (ventesJson as Vente[])
   .sort((a, b) => b.date.localeCompare(a.date));
 
 type LigneVente = {
-  id: string; ville: string; dept: string; prix: number;
+  id: string; slug: string | null; ville: string; dept: string; prix: number;
   date: string; region: Vente["region"]; image: string | null;
+  titre?: string | null; type?: string | null; arrondissement?: string | null;
+  lots?: number | null; composition?: string | null;
+  surface_min?: number | null; surface_max?: number | null; epoque?: string | null;
+  dpe?: string | null; occupation?: number | string | null; rendement?: number | string | null;
+  profil_acquereur?: string | null; profil_vendeur?: string | null;
+  mode_commercialisation?: FaitsVente["modeCommercialisation"];
+  delai_semaines?: number | null; acquereurs_sollicites?: number | null;
+  visites?: number | null; offres?: number | null;
+  chapo?: string | null; recit?: string | null;
+  seo_title?: string | null; seo_desc?: string | null; recit_valide_le?: string | null;
 };
+
+const nombre = (x: number | string | null | undefined) =>
+  x === null || x === undefined ? null : Number(x);
 
 /** Une image de vente : fichier local (« /media/… »), URL complète, ou chemin du coffre `ventes`. */
 function imageVente(i: string | null, base: string): string | null {
@@ -63,7 +110,9 @@ export async function ventes(): Promise<Vente[]> {
   if (!cfg) return VENTES_DEPOSEES;
   try {
     const res = await fetch(
-      `${cfg.url}/rest/v1/ventes?select=id,ville,dept,prix,date,region,image&order=date.desc`,
+      // `*` et non une liste : une base où la migration 0003 n'est pas encore
+      // passée répond quand même, sans les colonnes des fiches.
+      `${cfg.url}/rest/v1/ventes?select=*&order=date.desc`,
       {
         headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
         next: { revalidate: 600, tags: ["ventes"] },
@@ -72,14 +121,46 @@ export async function ventes(): Promise<Vente[]> {
     if (!res.ok) return VENTES_DEPOSEES;
     const lignes = (await res.json()) as LigneVente[];
     if (lignes.length === 0) return VENTES_DEPOSEES;
+    const parId = new Map(VENTES_DEPOSEES.map((v) => [v.id, v.slug]));
     return lignes.map((l) => ({
-      id: l.id, ville: l.ville, dept: l.dept, prix: Number(l.prix),
+      id: l.id,
+      // Slug absent si la base date d'avant 0003 : celui de la graine, identique.
+      slug: l.slug ?? parId.get(l.id) ?? l.id,
+      ville: l.ville, dept: l.dept, prix: Number(l.prix),
       date: l.date, annee: Number(l.date.slice(0, 4)), region: l.region,
       image: imageVente(l.image, cfg.url),
+      titre: l.titre, type: l.type, arrondissement: l.arrondissement,
+      lots: l.lots, composition: l.composition,
+      surfaceMin: l.surface_min, surfaceMax: l.surface_max, epoque: l.epoque, dpe: l.dpe,
+      occupation: nombre(l.occupation), rendement: nombre(l.rendement),
+      profilAcquereur: l.profil_acquereur, profilVendeur: l.profil_vendeur,
+      modeCommercialisation: l.mode_commercialisation,
+      delaiSemaines: l.delai_semaines, acquereursSollicites: l.acquereurs_sollicites,
+      visites: l.visites, offres: l.offres,
+      chapo: l.chapo, recit: l.recit, seoTitle: l.seo_title, seoDesc: l.seo_desc,
+      // La base refuse un récit sans validation ; le site vérifie quand même.
+      recitValideLe: l.recit_valide_le,
     }));
   } catch {
     return VENTES_DEPOSEES;
   }
+}
+
+export async function venteParSlug(slug: string): Promise<Vente | null> {
+  const toutes = await ventes();
+  return toutes.find((v) => v.slug === slug) ?? null;
+}
+
+/**
+ * Une fiche de vente n'est indexée que si elle a un récit relu et validé.
+ *
+ * Sans récit, la fiche tient en quatre lignes (commune, année, prix, photo) :
+ * quarante pages de ce genre, identiques à un nom près, sont exactement ce que
+ * Google traite en contenu mince. Elles restent consultables, et `follow` laisse
+ * passer les liens, mais elles ne sont ni indexées ni dans le sitemap.
+ */
+export function venteIndexable(v: Vente): boolean {
+  return Boolean(v.recit && v.recitValideLe && v.recit.trim().split(/\s+/).length >= 250);
 }
 
 /**

@@ -1560,7 +1560,13 @@ strong,b{font-weight:600;color:var(--color-creme);}
   display:flex;flex-direction:column;
   transition:border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
-.vente:hover{border-color:var(--color-bronze-profond);transform:translateY(-3px);}
+.vente:hover,.vente:has(.vente__lien:focus-visible){border-color:var(--color-bronze-profond);transform:translateY(-3px);}
+/* Toute la carte est le lien de la fiche. Le focus se dessine sur la carte :
+   dessiné sur le lien, il serait rogné par son overflow:hidden. */
+.vente__lien{display:flex;flex-direction:column;flex:1;color:inherit;text-decoration:none;}
+.vente__lien:focus-visible{outline:none;}
+.vente:has(.vente__lien:focus-visible){outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.vente:hover .vente__ville{color:var(--color-bronze-profond);}
 .vente__visuel{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:var(--color-noir-3);}
 .vente__img{width:100%;height:100%;object-fit:cover;display:block;}
 .vente__sansphoto{
@@ -1779,3 +1785,18 @@ strong,b{font-weight:600;color:var(--color-creme);}
   background:color-mix(in srgb, var(--color-bronze) 8%, transparent);
   font-size:var(--fs-small);max-width:68ch;
 }
+
+/* --- Fiche d'une vente ------------------------------------------------------ */
+.fiche-vente__photo.galerie--1,.fiche-vente__photo.galerie--vide{aspect-ratio:4/3;}
+/* Le prix seul sur sa ligne, la date en dessous : en ligne, la mention
+   retombait sous le prix avec l'interligne du gros chiffre. */
+.fiche-vente__haut .fiche-bien__prix span{display:block;margin:6px 0 0;line-height:1.4;}
+@media (min-width:900px){
+  .fiche-vente__haut{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--space-l);align-items:center;}
+  .fiche-vente__haut .fiche-bien__tete{margin-bottom:0;}
+  .fiche-vente__haut h1{font-size:clamp(1.9rem, 1.2rem + 1.9vw, 3rem);}
+}
+.fiche-vente__chapo{margin-top:var(--space-s);max-width:60ch;color:color-mix(in srgb, var(--color-creme) 86%, var(--color-noir));}
+.fiche-vente__recit h2{font-size:clamp(1.35rem, 1.1rem + 1vw, 1.8rem);margin-top:var(--space-m);max-width:30ch;text-wrap:balance;}
+.fiche-vente__recit h2:first-child{margin-top:0;}
+.fiche-vente__recit h3{font-size:1.15rem;margin-top:var(--space-s);}

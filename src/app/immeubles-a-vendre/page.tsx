@@ -19,7 +19,7 @@ import { biensAVendre, ventesEtStats } from "@/lib/biens";
  * Jeu d'informations de PleinBail, sans l'adresse (§2).
  */
 export const metadata: Metadata = {
-  title: "Immeubles de rapport à vendre | France Immeuble",
+  title: { absolute: "Immeubles de rapport à vendre | France Immeuble" },
   description:
     "Les immeubles de rapport que nous commercialisons : surface, lots, loyers, rendement et prix. D’autres mandats partent sans annonce, à notre fichier d’acquéreurs.",
   alternates: { canonical: `${SITE.url}/immeubles-a-vendre/` },

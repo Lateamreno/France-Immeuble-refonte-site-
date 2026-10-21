@@ -22,7 +22,7 @@ import { ventesEtStats } from "@/lib/biens";
  * un dossier.
  */
 export const metadata: Metadata = {
-  title: "Immeubles off-market | France Immeuble",
+  title: { absolute: "Immeubles off-market | France Immeuble" },
   description:
     "Nous commercialisons la plupart de nos immeubles sans annonce publique, directement auprès de notre fichier d’acquéreurs. Déposez votre recherche pour y accéder.",
   alternates: { canonical: `${SITE.url}/immeubles-off-market/` },

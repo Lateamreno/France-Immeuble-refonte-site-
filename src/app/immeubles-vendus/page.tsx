@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
-import { Picto } from "@/components/Picto";
+import { CarteVente } from "@/components/CarteVente";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { ventesEtStats, villesFrequentes, prix, volume } from "@/lib/biens";
+import { ventesEtStats, villesFrequentes, volume } from "@/lib/biens";
 
 /**
  * /immeubles-vendus/ — les ventes réalisées, servies depuis nos données.
@@ -19,6 +18,9 @@ import { ventesEtStats, villesFrequentes, prix, volume } from "@/lib/biens";
  * Remplace l'iframe Bubble, qui n'exposait aucun contenu indexable : 44 ventes
  * étaient affichées dans un cadre que Google ne lit pas. Les mêmes ventes sont
  * désormais du HTML, avec leurs photos servies depuis notre domaine (§16).
+ *
+ * Chaque vente mène à sa fiche, /immeubles-vendus/<slug>/, où le BO dépose les
+ * faits de la vente et un récit relu par MAV.
  *
  * Ce qui est publié : commune, département, prix, année. Jamais la rue, jamais
  * un nom — on ne peut pas promettre la discrétion off-market en page Vendre et
@@ -29,12 +31,6 @@ import { ventesEtStats, villesFrequentes, prix, volume } from "@/lib/biens";
 const CHEMIN = "/immeubles-vendus/";
 
 export const metadata: Metadata = metadonneesWP(CHEMIN);
-
-const REGIONS: Record<string, string> = {
-  idf: "Île-de-France",
-  "sud-ouest": "Sud-Ouest",
-  autre: "Régions",
-};
 
 /** Une vente publiée par le BO apparaît sous 10 minutes, sans redéploiement. */
 export const revalidate = 600;
@@ -97,33 +93,7 @@ export default async function ImmeublesVendus() {
           <ul className="ventes">
             {ventes.map((v, i) => (
               <Reveal key={v.id} as="li" className="vente" delayIndex={i % 6}>
-                <span className="vente__visuel">
-                  {v.image ? (
-                    <Image
-                      src={v.image}
-                      alt={`Immeuble vendu à ${v.ville}`}
-                      width={1200}
-                      height={900}
-                      sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                      className="vente__img"
-                    />
-                  ) : (
-                    /* Trois photos n'ont pas pu être reprises de l'ancien outil
-                       (son serveur répond 401 depuis la coupure). La carte reste
-                       complète : le picto tient la place, rien ne se casse. */
-                    <span className="vente__sansphoto" aria-hidden="true">
-                      <Picto nom="immeubles" taille={40} />
-                    </span>
-                  )}
-                  <span className="vente__annee">{v.annee}</span>
-                </span>
-                <span className="vente__corps">
-                  <span className="vente__ville">
-                    {v.ville} <span className="vente__dept">({v.dept})</span>
-                  </span>
-                  <span className="vente__prix">{prix(v.prix)}</span>
-                  <span className="vente__region">{REGIONS[v.region]}</span>
-                </span>
+                <CarteVente v={v} />
               </Reveal>
             ))}
           </ul>

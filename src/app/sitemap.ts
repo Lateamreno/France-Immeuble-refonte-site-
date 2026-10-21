@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 import { tousLesArticles } from "@/lib/contenu";
+import { biensAVendre, ventes, venteIndexable } from "@/lib/biens";
 
 /**
  * Sitemap.
@@ -24,7 +25,10 @@ const PAGES: Entree[] = [
   { chemin: "/blog/", priorite: 0.6, frequence: "weekly" },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/** Les fiches arrivent du BO : le sitemap se régénère avec elles. */
+export const revalidate = 600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const maintenant = new Date();
 
   const pages = PAGES.map((p) => ({
@@ -43,5 +47,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
-  return [...pages, ...articles];
+  /* Fiches déposées par le BO. Une vente n'y entre qu'avec un récit validé :
+     sans lui, sa fiche est en noindex (voir `venteIndexable`). */
+  const [biens, toutes] = await Promise.all([biensAVendre(), ventes()]);
+  const fichesBiens = biens.map((b) => ({
+    url: `${SITE.url}/immeubles-a-vendre/${b.slug}/`,
+    lastModified: new Date(b.publieLe),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+  const fichesVentes = toutes.filter(venteIndexable).map((v) => ({
+    url: `${SITE.url}/immeubles-vendus/${v.slug}/`,
+    lastModified: new Date(v.recitValideLe ?? v.date),
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+  }));
+
+  return [...pages, ...articles, ...fichesBiens, ...fichesVentes];
 }

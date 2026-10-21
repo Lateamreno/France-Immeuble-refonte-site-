@@ -28,7 +28,7 @@ const pct = (n: number) => `${n.toLocaleString("fr-FR", { maximumFractionDigits:
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const b = await bienAVendre(slug);
-  if (!b) return { title: "Immeuble introuvable | France Immeuble", robots: { index: false } };
+  if (!b) return { title: { absolute: "Immeuble introuvable | France Immeuble" }, robots: { index: false } };
   const titre = `${b.titre} — ${b.ville} (${b.dept}) | France Immeuble`;
   const desc = [
     `${b.type} à ${b.ville}`,
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     .filter(Boolean)
     .join(", ");
   return {
-    title: titre,
+    title: { absolute: titre },
     description: `${desc}. Dossier complet sur demande.`,
     alternates: { canonical: `${SITE.url}/immeubles-a-vendre/${b.slug}/` },
     openGraph: b.images[0] ? { images: [b.images[0]] } : undefined,
