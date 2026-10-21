@@ -143,7 +143,12 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .rule{border:0;border-top:1px solid var(--color-ligne);margin:0;}
 .split{display:grid;gap:var(--space-l);align-items:start;}
 @media (min-width:900px){.split{grid-template-columns:1fr 1fr;gap:var(--space-xl);}}
-.split--sticky > .split__aside{position:sticky;top:110px;}
+/* Collante seulement a deux colonnes. En dessous de 900 px la grille passe a
+   une colonne : l'aside restait epingle et recouvrait les etapes qui defilaient
+   dessous. */
+@media (min-width:900px){
+  .split--sticky > .split__aside{position:sticky;top:110px;}
+}
 
 /* --- 5. SIGNATURE VISUELLE GROUPE (CLAUDE.md §3) -------------------------- */
 .eyebrow{
@@ -229,7 +234,7 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .card:hover{border-color:var(--color-bronze-profond);transform:translateY(-4px);}
 .card:hover::after{opacity:1;}
 .card > *{position:relative;z-index:1;}
-.card h3{margin-bottom:var(--space-2xs);}
+.card :is(h2,h3){margin-bottom:var(--space-2xs);}
 .card p{color:var(--color-gris);}
 .card__num{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
@@ -282,17 +287,26 @@ strong,b{font-weight:600;color:var(--color-creme);}
 .header-cta{display:flex;align-items:center;gap:var(--space-xs);}
 .header-tel{font-family:var(--font-mono-site);font-size:var(--fs-small);color:var(--color-creme);white-space:nowrap;}
 .header-tel:hover{color:var(--color-bronze);}
+/* Sans remise a zero, le navigateur peint le fond `buttonface` : un disque
+   blanc d'ou les trois traits creme ressortaient a peine. Le bouton doit etre
+   un burger sur fond sombre, pas une pastille. */
 .nav-toggle{
   display:none;width:44px;height:44px;border:1px solid var(--color-ligne);
   border-radius:var(--radius-pill);align-items:center;justify-content:center;
+  appearance:none;-webkit-appearance:none;
+  background:transparent;padding:0;cursor:pointer;
+  color:var(--color-creme);
+  transition:border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
+.nav-toggle:hover{border-color:var(--color-bronze);}
+.nav-toggle[aria-expanded="true"]{border-color:var(--color-bronze);background:rgba(193,155,110,.12);}
 .nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
-  content:"";display:block;width:18px;height:1.5px;background:var(--color-creme);
+  content:"";display:block;width:18px;height:1.5px;background:currentColor;
   transition:transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 .nav-toggle span::before{transform:translateY(-6px);}
 .nav-toggle span::after{transform:translateY(4.5px);}
-.nav-toggle[aria-expanded="true"] span{background:transparent;}
+.nav-toggle[aria-expanded="true"] span{background:transparent;color:var(--color-bronze-clair);}
 .nav-toggle[aria-expanded="true"] span::before{transform:rotate(45deg);}
 .nav-toggle[aria-expanded="true"] span::after{transform:translateY(-1.5px) rotate(-45deg);}
 @media (max-width:980px){
@@ -1268,6 +1282,11 @@ strong,b{font-weight:600;color:var(--color-creme);}
    échelle, calée sur la largeur réelle d'une carte. `overflow-wrap` reste en
    dernier filet : un bord ne doit jamais trancher un mot. */
 .card h3{font-size:clamp(1.15rem, 1rem + 0.6vw, 1.4rem);}
+/* Deux cartes de la page Vendre titrent en h2 : au barème de section, elles
+   affichaient 32 px sur quatre lignes dans une carte, au même poids que le
+   titre de section juste au-dessus. Un titre de carte garde son niveau
+   sémantique et prend l'échelle d'une carte. */
+.card h2{font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);}
 .card h3,.card h2,.card h4{overflow-wrap:break-word;hyphens:auto;}
 
 /* 16.2 — `.grid--3` écrasée.
