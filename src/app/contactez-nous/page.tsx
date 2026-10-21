@@ -1,33 +1,80 @@
 import type { Metadata } from "next";
-import { ContenuWP, metadonneesWP, pageOu404 } from "@/components/ContenuWP";
+import { Eyebrow } from "@/components/Eyebrow";
+import { Reveal } from "@/components/Reveal";
+import { ContactForm } from "@/components/ContactForm";
+import { Picto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
+import { metadonneesWP } from "@/components/ContenuWP";
+import { SITE } from "@/lib/site";
 
 /**
- * Contact — page reprise du WordPress, à l'identique.
+ * /contactez-nous/ — page reprise du WordPress, RECOMPOSÉE.
  *
- * Texte, images et structure viennent de `content/pages-wp.json` (copie du
- * 26 août 2026, seule copie existante depuis la perte du site). Rien n'est
- * réécrit : seule la couche graphique est neuve.
+ * Texte repris mot pour mot. Dans la version précédente, le pictogramme de
+ * localisation s'affichait à 700 px de large et occupait deux écrans : les
+ * pictos n'étaient pas dans un <figure> et héritaient de `img{width:100%}`.
+ * Ils sont désormais inline, à 20 px, dans une fiche de contact.
  *
- * Title, meta et canonical sont repris au caractère près — objectif zéro
- * perte de référencement (CLAUDE.md §10).
+ * Le `<h1>Votre message</h1>` du corps d'origine devient un h2 : la page
+ * portait deux h1, ce qu'aucun moteur n'apprécie. Le mot reste à l'écran.
  */
-const CHEMIN = "/contactez-nous/";
+export const metadata: Metadata = metadonneesWP("/contactez-nous/");
 
-export const metadata: Metadata = metadonneesWP(CHEMIN);
-
-export default function Page() {
-  const page = pageOu404(CHEMIN);
+export default function ContactezNous() {
   return (
     <>
       <JsonLd
         data={filAriane([
           { nom: "Accueil", url: "/" },
-          { nom: "Contact", url: CHEMIN },
+          { nom: "Contact", url: "/contactez-nous/" },
         ])}
       />
-      <ContenuWP page={page} />
+
+      <section className="section section--noir">
+        <div className="container split">
+          <Reveal>
+            <Eyebrow>Contact</Eyebrow>
+            <h1>Contactez-nous</h1>
+            <p className="lead">
+              Un immeuble à vendre ou à acheter&nbsp;? nous répondons à toutes vos questions
+            </p>
+
+            <ul className="fiche-contact" style={{ marginTop: "var(--space-l)" }}>
+              <li>
+                <Picto nom="mail" taille={20} />
+                <span>
+                  <span className="fiche-contact__lbl">Email</span>
+                  <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                </span>
+              </li>
+              <li>
+                <Picto nom="secteur" taille={20} />
+                <span>
+                  <span className="fiche-contact__lbl">Adresse</span>
+                  <span>
+                    {SITE.adresse}
+                    <br />
+                    {SITE.codePostalVille}
+                  </span>
+                </span>
+              </li>
+              <li>
+                <Picto nom="telephone" taille={20} />
+                <span>
+                  <span className="fiche-contact__lbl">Téléphone</span>
+                  <a href={SITE.telHref}>{SITE.tel}</a>
+                </span>
+              </li>
+            </ul>
+          </Reveal>
+
+          <div>
+            <h2 style={{ marginBottom: "var(--space-s)" }}>Votre message</h2>
+            <ContactForm />
+          </div>
+        </div>
+      </section>
     </>
   );
 }

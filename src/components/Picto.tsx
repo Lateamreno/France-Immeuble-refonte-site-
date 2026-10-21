@@ -1,0 +1,66 @@
+import type { SVGProps } from "react";
+
+/**
+ * Pictogrammes de la charte 2026.
+ *
+ * Inline et non en <img> : dans une image, `currentColor` ne vaut rien et il
+ * faudrait servir un fichier par couleur de fond. Ici le picto prend la
+ * couleur de son contexte — bronze sur sombre, bronze profond sur crème.
+ *
+ * Dessin : grille 24, trait 1.5, bouts arrondis, aucun disque de fond. Les
+ * fichiers d'origine portaient un dégradé or à six arrêts, c'est-à-dire une
+ * seconde couleur d'accent, que le §3 interdit.
+ */
+export type NomPicto =
+  | "secteur" | "technique" | "financier" | "constructibilite" | "cible"
+  | "reseau" | "stats" | "augmentation" | "poignee" | "best" | "business"
+  | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier";
+
+const TRACES: Record<NomPicto, React.ReactNode> = {
+  // Secteur — repère sur un plan
+  secteur: <><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></>,
+  // Technique — élévation d'immeuble, niveaux marqués
+  technique: <><path d="M4.5 20.5V6.2l7.5-3.7 7.5 3.7v14.3" /><path d="M3 20.5h18" /><path d="M4.5 10.6h15M4.5 15.2h15" /><path d="M10.2 20.5v-3.4h3.6v3.4" /></>,
+  // Financier — courbe de rendement
+  financier: <><path d="M3.5 20.5h17" /><path d="M4 16.4l4.6-4.6 3.3 3.3 7.6-7.6" /><path d="M15 7.5h4.5V12" /><circle cx="19.5" cy="7.5" r="1.1" fill="currentColor" stroke="none" /></>,
+  // Constructibilité — volume bâti et surélévation en pointillé
+  constructibilite: <><path d="M4 20.5V12h10v8.5" /><path d="M3 20.5h18" /><path d="M4 12V7.5h10V12" strokeDasharray="2.4 2.4" /><path d="M18 20.5V8.5m0 0-1.8 1.8M18 8.5l1.8 1.8" /></>,
+  // Cible — le critère qui sélectionne
+  cible: <><rect x="3.5" y="3.5" width="17" height="17" rx="1.5" /><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17" /><rect x="9.2" y="9.2" width="5.6" height="5.6" fill="currentColor" stroke="none" /></>,
+  // Réseau d'acheteurs
+  reseau: <><circle cx="12" cy="4.8" r="2.3" /><circle cx="4.8" cy="18" r="2.3" /><circle cx="19.2" cy="18" r="2.3" /><path d="M12 7.1v4.4m0 0-5.3 4.3M12 11.5l5.3 4.3" /></>,
+  stats: <><path d="M3.5 20.5h17" /><path d="M6.8 20.5v-5.2M11.3 20.5V9.4M15.8 20.5v-7.6M20 20.5V5.2" /></>,
+  augmentation: <><path d="M3.5 16.5 9 11l3.5 3.5L20.5 6.5" /><path d="M15.5 6.5h5v5" /></>,
+  poignee: <><path d="M2.5 10.2 6 6.8h3.4L12 9l2.6-2.2H18l3.5 3.4" /><path d="M21.5 10.2v4.2L18 17.8l-3-2.6-2.1 1.3a1.8 1.8 0 0 1-2.2-.3L7.4 13" /><path d="M2.5 10.2v4.2L6 17.8" /></>,
+  best: <><circle cx="12" cy="9" r="5.3" /><path d="m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1.1-2 1.1.4-2.2L8.8 8.9l2.2-.3 1-2Z" /><path d="M8.4 13.8 7 21l5-2.5L17 21l-1.4-7.2" /></>,
+  business: <><rect x="2.5" y="7.2" width="19" height="12.3" rx="2" /><path d="M8.4 7.2V5.6a1.8 1.8 0 0 1 1.8-1.8h3.6a1.8 1.8 0 0 1 1.8 1.8v1.6" /><path d="M2.5 12.4h19M10.4 12.4h3.2" /></>,
+  immeubles: <><path d="M3.5 20.5V8l6-3.2v4.4L15 6.6v4l5.5-2.4v12.3" /><path d="M2.5 20.5h19" /><path d="M6.3 12.2v1.4M6.3 16.1v1.4M12 12.5v1.4M12 16.2v1.4M17.6 12.3v1.4M17.6 16.1v1.4" /></>,
+  mail: <><rect x="2.5" y="4.8" width="19" height="14.4" rx="2.2" /><path d="m3.2 7 7.6 5.4a2 2 0 0 0 2.4 0L20.8 7" /></>,
+  telephone: <><path d="M7.4 3.6 9.8 8l-2 2.1a13.6 13.6 0 0 0 6.1 6.1l2.1-2 4.4 2.4-.6 2.6a2 2 0 0 1-2.2 1.5C11.4 20 4 12.6 3.1 5.4a2 2 0 0 1 1.5-2.2l2.8-.6Z" /></>,
+  calculatrice: <><rect x="4.5" y="2.8" width="15" height="18.4" rx="2" /><rect x="7.5" y="5.8" width="9" height="3.4" rx=".6" /><path d="M8.2 13h.01M12 13h.01M15.8 13h.01M8.2 17h.01M12 17h.01M15.8 17h.01" strokeWidth="2" /></>,
+  dossier: <><path d="M3.5 7.2a2 2 0 0 1 2-2h4l2 2.4h7a2 2 0 0 1 2 2v9.2a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2Z" /><path d="M8 13.5h8M8 16.8h5" /></>,
+};
+
+export function Picto({
+  nom,
+  taille = 26,
+  ...reste
+}: { nom: NomPicto; taille?: number } & Omit<SVGProps<SVGSVGElement>, "ref">) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={taille}
+      height={taille}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      {...reste}
+    >
+      {TRACES[nom]}
+    </svg>
+  );
+}

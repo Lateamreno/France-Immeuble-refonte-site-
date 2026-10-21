@@ -7,6 +7,8 @@ export const SITE = {
   url: "https://www.france-immeuble.fr",
   tel: "01 72 87 52 22",
   telHref: "tel:+33172875222",
+  /** Repris des mentions légales et de la page Contact du site d'origine. */
+  email: "contact@france-immeuble.fr",
   adresse: "66 avenue des Champs-Élysées",
   codePostalVille: "75008 Paris",
   gtmId: "GTM-5KF68JV",

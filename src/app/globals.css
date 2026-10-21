@@ -1038,3 +1038,136 @@ strong,b{font-weight:600;color:var(--color-creme);}
   background:var(--color-bronze);
 }
 .cadre strong{color:var(--color-creme);font-weight:600;}
+
+/* --- 13. PAGES RECOMPOSÉES ------------------------------------------------
+   Les pages reprises du WordPress ne sont plus un vidage de HTML : elles sont
+   recomposées avec les composants de la charte. Ces quelques classes couvrent
+   ce que le design system n'avait pas encore. */
+.card__picto{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:50px;height:50px;margin-bottom:var(--space-s);
+  border:1px solid var(--color-bronze-profond);border-radius:var(--radius-sm);
+  color:var(--color-bronze);
+}
+.section--creme .card__picto{color:var(--color-bronze-profond);}
+
+.fiche-contact{display:flex;flex-direction:column;gap:var(--space-s);margin-top:var(--space-m);}
+.fiche-contact li{display:flex;align-items:flex-start;gap:14px;color:var(--color-bronze);}
+.fiche-contact li > span{display:flex;flex-direction:column;gap:2px;}
+.fiche-contact__lbl{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+  letter-spacing:.15em;text-transform:uppercase;color:var(--color-gris);
+}
+.fiche-contact a{color:var(--color-creme);font-size:var(--fs-body);}
+.fiche-contact a:hover{color:var(--color-bronze);}
+.section--creme .fiche-contact a{color:var(--color-noir);}
+
+/* `.section__head{max-width:52ch}` se calcule sur la taille du PARENT (~17px),
+   soit ~450px : parfait pour le chapô, beaucoup trop étroit pour un titre de
+   50px qui tombait sur quatre lignes. Le titre reprend sa propre mesure. */
+.section__head h2{max-width:20ch;text-wrap:balance;}
+.section__head .lead{max-width:56ch;}
+
+/* Sur crème, `--color-ligne` (#282522) donnait un trait invisible. */
+.section--creme .card{border-color:color-mix(in srgb, var(--color-noir) 14%, transparent);}
+.section--creme .card:hover{border-color:var(--color-bronze-profond);}
+
+/* CLAUDE.md §5 — sur fond clair : fond noir, texte blanc, hover bronze.
+   Le bronze #C19B6E sur le crème #EFE9DE donne 2,1:1 : le bouton n'a pas de
+   bord, il se dissout dans le fond. La règle vaut pour TOUTE section crème,
+   pas seulement pour le contenu repris. */
+.section--creme .btn--primary{background:var(--color-noir);color:#FFF;box-shadow:var(--btn-shadow);}
+.section--creme .btn--primary:hover{background:var(--color-bronze-hover);color:#FFF;}
+
+/* --- 14. ACCUEIL RECOMPOSÉ ------------------------------------------------ */
+
+/* Colonne média : le visuel occupe sa colonne, cadré, sans flotter. */
+.media-colonne img{
+  width:100%;height:auto;border-radius:var(--radius-card);
+  background:var(--color-noir-2);
+}
+.section--creme .media-colonne img{background:transparent;}
+
+/* Les références vendues. Un immeuble est un sujet vertical : 4/5. */
+.biens{
+  display:grid;gap:var(--space-s);
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+}
+.bien{
+  position:relative;aspect-ratio:4/5;overflow:hidden;
+  border-radius:var(--radius-card);border:1px solid var(--color-ligne);
+  display:flex;align-items:flex-end;
+}
+.bien__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.bien__voile{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,10,.15) 0%,rgba(10,10,10,.92) 62%);
+}
+.bien__texte{position:relative;z-index:1;padding:var(--space-s);width:100%;}
+.bien__ville{
+  display:block;font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:1.35rem;line-height:1.05;letter-spacing:-0.015em;
+  color:var(--color-creme);margin-bottom:var(--space-xs);
+}
+.bien__infos{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0;}
+.bien__infos div{display:flex;flex-direction:column;}
+.bien__infos dt{
+  font-family:var(--font-mono-site);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--color-gris);
+}
+.bien__infos dd{
+  margin:0;font-family:var(--font-mono-site);font-size:var(--fs-small);
+  color:var(--color-creme);font-weight:600;letter-spacing:.02em;
+}
+
+/* Les avis : douze pavés de texte gris devenaient illisibles empilés. */
+.avis{
+  display:grid;gap:var(--space-s);
+  grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+}
+.avis__item{
+  display:flex;flex-direction:column;gap:var(--space-xs);
+  border:1px solid color-mix(in srgb, var(--color-noir) 14%, transparent);
+  border-radius:var(--radius-card);padding:var(--space-s);
+  background:color-mix(in srgb, var(--color-noir) 3%, transparent);
+}
+.avis__etoiles{color:var(--color-bronze-profond);letter-spacing:.14em;font-size:.9rem;}
+.avis__item p{font-size:var(--fs-small);line-height:1.6;margin:0;flex:1;}
+.avis__item footer{display:flex;flex-direction:column;gap:2px;margin-top:var(--space-2xs);}
+.avis__nom{font-weight:600;color:var(--color-noir);}
+.avis__date{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+  letter-spacing:.1em;color:var(--color-bronze-profond);
+}
+
+/* Signature de la page « Notre histoire ». */
+.signature{
+  margin-top:var(--space-m);padding-left:14px;
+  border-left:2px solid var(--color-bronze);
+  display:flex;flex-direction:column;gap:2px;
+}
+.signature__nom{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:1.15rem;color:var(--color-creme);
+}
+.signature__role{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+  letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);
+}
+.section--creme .signature__nom{color:var(--color-noir);}
+.section--creme .signature__role{color:var(--color-bronze-profond);}
+
+/* La carte off-market doit se voir comme une restriction, pas comme un
+   catalogue : c'est sa promesse. */
+.card--offmarket{
+  background:linear-gradient(145deg,var(--color-noir-3),var(--color-noir));
+  border-color:var(--color-bronze-profond);
+}
+
+@media (max-width:640px){
+  .bien__infos{grid-template-columns:1fr 1fr;}
+  .biens{grid-template-columns:1fr 1fr;gap:12px;}
+  .bien__ville{font-size:1.05rem;}
+}
