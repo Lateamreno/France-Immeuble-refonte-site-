@@ -1,0 +1,131 @@
+/* ==========================================================================
+   REPRISE DU MARKUP WORDPRESS
+   ==========================================================================
+   Le contenu des 8 pages est repris au caractère près de l'ancien site. Son
+   markup Gutenberg a perdu ses classes `wp-block-*` à la migration : il ne
+   reste qu'un empilement de <div> sans nom. Cette feuille rend cette
+   structure lisible dans la charte 2026, SANS toucher au HTML lui-même.
+
+   On cible donc par la forme (`:has()`), pas par des classes qui n'existent
+   plus. Chaque règle dit quel bloc d'origine elle reconstitue.
+   ========================================================================== */
+
+.page-wp__tete h1 { max-width: 18ch; }
+
+/* --- Images -------------------------------------------------------------
+   Sans contrainte, une illustration de 1400 px s'affiche pleine largeur et
+   la page d'accueil atteignait 49 000 px de haut. On plafonne par la
+   hauteur : le cadrage d'origine est conservé, l'échelle redevient sensée. */
+.prose figure { margin: var(--space-m) 0; text-align: center; }
+.prose figure img { max-height: 460px; width: auto; margin-inline: auto; border-radius: var(--radius-sm); }
+.prose figcaption {
+  font-family: var(--font-mono-site); font-size: var(--fs-eyebrow);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--color-bronze-hover); margin-top: var(--space-2xs);
+}
+
+/* Les pictogrammes de la charte (70 px d'origine) ne sont pas des photos :
+   ils gardent leur taille et ne prennent ni cadre ni arrondi. */
+.prose figure img[src$=".svg"] { max-height: 70px; border-radius: 0; }
+
+/* --- Boutons ------------------------------------------------------------
+   Deux CTA voisins étaient côte à côte dans une grille Gutenberg. Sans ses
+   classes, chacun tombait sur sa propre ligne. */
+.prose div:has(> div > p.prose-cta) {
+  display: flex; flex-wrap: wrap; gap: var(--space-xs);
+  align-items: center; margin-block: var(--space-m);
+}
+.prose div:has(> div > p.prose-cta) > div { margin: 0; }
+.prose p.prose-cta { margin: 0; }
+
+/* --- Grilles de cartes --------------------------------------------------
+   Le bloc « Analyses comprises dans l'estimation » et ses équivalents :
+   une suite de picto + <h6> + description, en colonnes à l'origine. */
+.prose div:has(> div > h6) {
+  display: grid; gap: var(--space-m);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-block: var(--space-m);
+}
+.prose div:has(> div > h6) > div { text-align: center; }
+.prose h6 {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" var(--display-wdth), "wght" var(--display-wght);
+  letter-spacing: -0.01em; font-size: 1.05rem;
+  margin: var(--space-2xs) 0 6px;
+}
+.prose div:has(> div > h6) figure { margin: 0 0 var(--space-2xs); }
+
+/* --- Blocs de chiffres --------------------------------------------------
+   « 365 / 1372 / 359 » sur la page d'accueil : des <h2> isolés qui sont en
+   réalité des compteurs. On les traite comme les statistiques du site. */
+.prose div:has(> div > h2 + p):not(:has(h3, h4, ul, figure)) { margin-block: var(--space-m); }
+
+/* --- Reliquats de mise en page ------------------------------------------
+   Les cales de hauteur Gutenberg (<div style="height:62px">) sont conservées
+   mais plafonnées : elles creusaient des trous sur mobile. */
+.prose div[aria-hidden="true"][style*="height"] { max-height: 34px; }
+
+/* Les icônes FontAwesome du carrousel d'avis n'ont plus leur police. */
+.prose i.fas, .prose i.fa-star { display: none; }
+
+/* --- Formulaires montés dans le flux ------------------------------------ */
+.prose .form-shell { margin-block: var(--space-l); color: var(--color-creme); }
+.prose .form-shell h3, .prose .form-shell h4, .prose .form-shell label { color: var(--color-creme); }
+.prose .form-shell p { color: var(--color-gris); }
+.prose .form-shell a:not(.btn) { color: var(--color-bronze-clair); }
+
+@media (max-width: 640px) {
+  .prose figure img { max-height: 300px; }
+}
+
+/* ==========================================================================
+   CARROUSEL « IMMEUBLES VENDUS » DE LA PAGE D'ACCUEIL
+   ==========================================================================
+   Ces blocs-là ont GARDÉ leurs classes de thème (`hono-biens*`). Le JS qui
+   les faisait défiler n'existe plus : empilés, les dix fiches faisaient à
+   elles seules l'essentiel des 44 000 px de la page. On les présente en
+   grille — tout est visible d'un coup, sans dépendre d'un slider.
+   ========================================================================== */
+.prose .hono-biens-slider {
+  display: grid; gap: var(--space-s);
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  margin-block: var(--space-m);
+}
+.prose .hono-biens-container {
+  position: relative; min-height: 310px;
+  background-size: cover; background-position: center;
+  border-radius: var(--radius-card); overflow: hidden;
+  border: 1px solid var(--color-ligne);
+}
+/* Voile sombre : sans lui le texte crème passe sur des façades claires. */
+.prose .hono-biens-container .overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,10,.35) 0%, rgba(10,10,10,.88) 62%);
+  display: flex; align-items: flex-end;
+  padding: var(--space-s);
+}
+.prose .hono-carousel-content { width: 100%; color: var(--color-creme); }
+.prose .hono-carousel-content br { display: none; }
+.prose .hono-carousel-content h3 {
+  font-family: var(--font-mono-site); font-size: var(--fs-eyebrow);
+  font-variation-settings: normal; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--color-bronze); margin-bottom: 4px;
+}
+.prose .hono-carousel-content h2 { font-size: 1.15rem; color: var(--color-creme); margin-bottom: 2px; }
+.prose .hono-carousel-content > span {
+  display: block; font-family: var(--font-mono-site);
+  font-size: var(--fs-small); color: var(--color-gris); margin-bottom: var(--space-xs);
+}
+
+.prose .infos-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.prose .info-immeuble { display: flex; align-items: center; gap: 9px; }
+.prose .info-immeuble img { width: 20px; height: 20px; max-height: 20px; margin: 0; flex: none; }
+/* icon-zone-noir est un PNG noir : invisible sur le voile sombre. */
+.prose .info-immeuble img[src*="noir"] { filter: invert(1) brightness(1.6); }
+.prose .info-immeuble .content { display: flex; flex-direction: column; line-height: 1.25; }
+.prose .info-immeuble .intitule {
+  font-family: var(--font-mono-site); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--color-gris);
+}
+.prose .info-immeuble .valeur { font-size: var(--fs-small); color: var(--color-creme); font-weight: 600; }
+.prose .hono-biens .anchor { display: none; }
