@@ -1,0 +1,207 @@
+/* ==========================================================================
+   MODE REVUE — outil de recette (retours posés sur les écrans)
+   ==========================================================================
+   Feuille VOLONTAIREMENT séparée de globals.css : c'est un outil interne, il
+   n'appartient pas à la charte. Il n'apparaît jamais en production (voir
+   `MODE_REVUE` dans app/layout.tsx).
+
+   Ses variables sont déclarées sur SES conteneurs, jamais sur `:root` :
+   `--font-body` existe déjà dans la charte (Inter) et le redéclarer
+   globalement casserait le site entier. Même raison pour `--line`.
+   ========================================================================== */
+.rv-fab, .rv-panel, .rv-pin, .rv-zone, .lst-page, .modal-ov, body.rv-armed {
+  --slate: #44525f; --slate-2: #4e5b67;
+  --gray-txt: #6c7781; --gray-lt: #b9bdc2;
+  --red: #d60000; --orange: #e3790d; --green: #3db327; --gold-bo: #b6a359;
+  --chip: #e3e3e3; --line: #e3e3e3; --line-lt: #ececec;
+  --rv-titre: var(--font-body, system-ui), sans-serif;
+  --bottbar-h: 0px;
+}
+
+/* --- Mode Revue (retours de recette posés sur les écrans) --- */
+body.rv-armed, body.rv-armed * { cursor: crosshair !important; user-select: none !important; }
+body.rv-armed::after {
+  content: "Mode Revue — entourez la zone concernée en glissant la souris, ou cliquez pour une épingle (Échap pour annuler)";
+  position: fixed; inset: 0 0 auto 0; z-index: 998;
+  background: rgba(214, 0, 0, .92); color: #fff;
+  font-family: var(--rv-titre); font-size: 12.5px; font-weight: 600;
+  text-align: center; padding: 6px;
+}
+body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
+
+.rv-fab {
+  position: fixed; right: 16px; bottom: calc(var(--bottbar-h) + 14px); z-index: 999;
+  display: flex; align-items: center; gap: 6px;
+}
+.rv-btn {
+  border: 0; border-radius: 20px; padding: 9px 16px; cursor: pointer;
+  background: var(--slate); color: #fff;
+  font-family: var(--rv-titre); font-size: 12.5px; font-weight: 600;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .22);
+}
+.rv-btn:hover { background: #38434e; }
+.rv-btn.on { background: var(--red); }
+.rv-chip {
+  border: 1px solid var(--line); background: #fff; color: var(--slate);
+  border-radius: 20px; padding: 7px 12px; font-size: 12px; font-weight: 600;
+  text-decoration: none; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); cursor: pointer;
+}
+
+.rv-pin {
+  position: absolute; z-index: 997;
+  transform: translate(-50%, -50%);
+  width: 22px; height: 22px; border-radius: 50% 50% 50% 2px;
+  background: var(--orange); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: grid; place-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+  cursor: help;
+}
+.rv-pin.draft { background: var(--red); z-index: 1001; }
+
+.rv-panel {
+  position: fixed; right: 16px; bottom: calc(var(--bottbar-h) + 60px); z-index: 1000;
+  width: 380px; max-width: calc(100vw - 32px);
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+  display: flex; flex-direction: column; max-height: 78vh;
+  color: var(--slate);
+}
+.rv-head {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--slate); color: #fff; border-radius: 7px 7px 0 0;
+  padding: 10px 14px; font-family: var(--rv-titre); font-size: 13.5px; font-weight: 600;
+}
+.rv-head button { border: 0; background: none; color: #fff; font-size: 14px; cursor: pointer; }
+/* `min-height: 0` n'est pas décoratif : sans lui, un enfant qui défile dans
+   une colonne flex refuse de se comprimer sous la taille de son contenu. Le
+   corps poussait alors le pied hors du panneau et le bouton Enregistrer
+   disparaissait dès qu'on collait deux captures. */
+.rv-body { flex: 1 1 auto; min-height: 0; padding: 12px 14px; overflow: auto; }
+.rv-body .mrow { margin-bottom: 8px; }
+.rv-target {
+  font-size: 12px; color: var(--gray-txt); background: #f6f6f4;
+  border-radius: 4px; padding: 6px 9px; margin-bottom: 10px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.rv-paste {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  border: 1px dashed var(--line); border-radius: 5px; padding: 8px;
+  margin-top: 8px; font-size: 12px; color: var(--gray-txt);
+}
+.rv-paste img { max-height: 90px; border-radius: 4px; border: 1px solid var(--line); display: block; }
+/* Une vignette par capture, chacune retirable : on en colle trois, on en
+   enlève une sans devoir tout recommencer. */
+.rv-vig { position: relative; display: inline-block; }
+.rv-vig .xdel {
+  position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
+  border-radius: 50%; background: #fff; border: 1px solid var(--line);
+  line-height: 1; font-size: 10px; cursor: pointer; padding: 0;
+}
+.rv-cnt { font-size: 11.5px; color: var(--gray-txt); }
+/* Le bouton est centré dans le panneau : c'est le geste principal, il n'a pas
+   à être poussé dans un coin par le chemin de la page. */
+.rv-foot {
+  flex: none;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 10px 14px; border-top: 1px solid var(--line);
+}
+.rv-foot .rv-ou { font-size: 11.5px; color: var(--gray-lt); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rv-foot .kgo { justify-content: center; min-width: 210px; }
+
+/* --- Mode Revue : sélection rectangulaire libre --- */
+.rv-zone {
+  position: absolute; z-index: 997;
+  /* Même réaffichée, la zone laisse passer les clics : seule la pastille
+     numérotée capte la souris. */
+  pointer-events: none;
+  border: 2px solid var(--orange); border-radius: 3px;
+  background: rgba(227, 121, 13, .10);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .55) inset;
+}
+.rv-zone b, .rv-pin { pointer-events: auto; cursor: help; }
+.rv-zone b {
+  position: absolute; left: -2px; top: -2px;
+  min-width: 20px; height: 18px; padding: 0 5px;
+  display: grid; place-items: center;
+  background: var(--orange); color: #fff;
+  font-size: 11px; font-weight: 700;
+  border-radius: 3px 0 3px 0;
+}
+.rv-zone.trace, .rv-zone.draft {
+  z-index: 1001; border-color: var(--red); background: rgba(214, 0, 0, .10);
+  pointer-events: none;
+}
+.rv-zone.trace b, .rv-zone.draft b { background: var(--red); white-space: nowrap; }
+
+/* ===================== La page /revue ===================== */
+.lst-page {
+  max-width: 1040px; margin: 0 auto; padding: 22px 26px 60px;
+  background: #fff; color: var(--slate);
+  font-family: var(--font-body, system-ui), sans-serif;
+  min-height: 100vh;
+}
+.lst-title { font-family: var(--rv-titre); font-size: 22px; font-weight: 700; color: var(--slate); margin-bottom: 14px; }
+
+.fb { display: flex; gap: 12px; border: 1px solid var(--line-lt); border-radius: 6px; padding: 12px 14px; margin-bottom: 10px; background: #fff; }
+.fb.corrige { opacity: .55; }
+.fb .fb-gr { flex: none; width: 8px; border-radius: 4px; }
+.fb .fb-main { flex: 1; min-width: 0; }
+.fb .fb-meta { font-size: 11.5px; color: var(--gray-lt); margin-bottom: 4px; }
+.fb .fb-txt { font-size: 13.5px; color: var(--slate); white-space: pre-wrap; }
+.fb .fb-zone { font-size: 12px; color: var(--gray-txt); margin-top: 4px; }
+.fb img.fb-shot { max-width: 220px; max-height: 150px; border: 1px solid var(--line); border-radius: 4px; }
+
+.ftabs { display: flex; justify-content: center; gap: 2px; border-bottom: 1px solid var(--line); margin: 2px 0 12px; }
+.ftab { font-family: var(--rv-titre); font-size: 13px; font-weight: 600; color: var(--gray-txt); background: none; border: 0; border-bottom: 2px solid transparent; padding: 7px 12px 8px; cursor: pointer; text-decoration: none; }
+.ftab:hover { color: var(--slate); }
+.ftab.on { color: var(--slate); border-bottom-color: #b6a359; }
+.ftab .n { margin-left: 6px; background: var(--chip); border-radius: 8px; font-size: 10.5px; padding: 1px 6px; color: var(--slate-2); }
+.fempty { color: var(--gray-lt); font-size: 13px; text-align: center; padding: 26px 0; }
+.fsub { font-family: var(--rv-titre); font-size: 13px; font-weight: 700; color: var(--slate); margin: 4px 0 8px; }
+.lnk { color: #2f6fb1; text-decoration: underline; }
+
+/* --- Corriger un retour depuis la revue --- */
+.fbk-crayon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; margin-right: 5px; }
+.fbk-edit { margin-top: 10px; border: 1px solid var(--gold-bo); border-radius: 5px; padding: 10px; background: #fbfaf7; }
+.fbk-edit textarea {
+  width: 100%; box-sizing: border-box; border: 1px solid #cfcfcf; border-radius: 4px;
+  padding: 8px 10px; font-size: 13px; color: var(--slate);
+  line-height: 1.55; resize: vertical; background: #fff;
+}
+.fbk-edit textarea:focus { border-color: var(--gold-bo); outline: none; }
+.fbk-edit-l { display: flex; align-items: center; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.fbk-edit-l button {
+  border: 1px solid #cfcfcf; border-radius: 99px; background: #fff; cursor: pointer;
+  padding: 4px 11px; font-family: var(--rv-titre); font-size: 11.5px; color: var(--gray-txt);
+}
+.fbk-edit-l button.on { background: var(--slate); border-color: var(--slate); color: #fff; }
+.fbk-edit-n { margin-top: 7px; font-size: 11.5px; color: var(--gray-txt); }
+
+/* ===================== Classes partagées de l'outil ===================== */
+.mrow { display: flex; gap: 6px; flex-wrap: wrap; }
+.mopt { border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--slate-2); font-size: 12.5px; font-weight: 700; padding: 6px 11px; cursor: pointer; }
+.mopt.on { background: var(--slate); border-color: var(--slate); color: #fff; }
+.min { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; font: inherit; font-size: 13.5px; color: var(--slate); background: #fff; outline: none; }
+.min:focus { border-color: var(--red); }
+.warnbox { border: 1px solid #e5c98a; background: #fdf6e5; color: #8a6d1a; border-radius: 4px; padding: 10px 13px; font-size: 12.5px; margin-top: 14px; }
+.kgo { border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--slate); font-family: var(--rv-titre); font-size: 14px; font-weight: 600; height: 34px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+.kgo:hover { background: #f6f6f6; }
+.kgo .ch { font-weight: 700; }
+.fadd { border: 1px solid #cfcfcf; background: #fff; border-radius: 4px; font-family: var(--rv-titre); font-size: 12.5px; font-weight: 600; color: var(--slate-2); padding: 5px 10px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; }
+.fadd:hover { background: #f6f6f6; }
+.xdel { border: 0; background: none; color: var(--gray-lt); font-size: 13px; cursor: pointer; padding: 2px 5px; border-radius: 3px; }
+.xdel:hover { color: var(--red); background: #fdeaea; }
+.savebar-go { border: 0; background: var(--green); color: #fff; border-radius: 4px; padding: 9px 20px; font-family: var(--rv-titre); font-size: 13.5px; font-weight: 700; cursor: pointer; }
+.savebar-go:disabled { opacity: .55; cursor: default; }
+
+/* La fenêtre partagée (components/modale.tsx) */
+.modal-ov { position: fixed; inset: 0; z-index: 60; background: rgba(30, 30, 30, .55); display: grid; place-items: start center; padding: 60px 16px; overflow-y: auto; }
+.modal { background: #fff; color: var(--slate); border-radius: 6px; width: 100%; max-width: 560px; box-shadow: 0 18px 50px rgba(0, 0, 0, .3); }
+.modal-h { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; border-bottom: 1px solid var(--line); font-family: var(--rv-titre); font-weight: 600; font-size: 15px; color: var(--slate); }
+.modal-h button { border: 0; background: none; color: var(--gray-lt); font-size: 15px; cursor: pointer; }
+.modal-b { padding: 16px 18px; }
+.modal-f { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--line); background: #fafafa; border-radius: 0 0 6px 6px; }
+.qst-m { font-size: 14px; color: var(--slate); line-height: 1.5; white-space: pre-line; }
+.qst-i { display: block; width: 100%; box-sizing: border-box; margin-top: 12px; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; font: inherit; font-size: 14px; background: #fff; color: var(--slate); }
+.qst-i:focus { outline: none; border-color: var(--gold-bo); }
