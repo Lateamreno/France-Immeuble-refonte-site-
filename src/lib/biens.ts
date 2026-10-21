@@ -48,6 +48,8 @@ export type Vente = {
 export type FaitsVente = {
   /** Ancienne adresse de fiche, à l'année (44 ventes de départ) : redirigée. */
   ancienSlug?: string | null;
+  /** Surface exacte en m² (0006). À défaut, la tranche surfaceMin–surfaceMax. */
+  surface?: number | null;
   /** Loyer annuel HC potentiel, en euros. */
   loyerPotentiel?: number | null;
   /** Prix de vente comparé à l'estimation, en % : +3 = 3 % au-dessus. */
@@ -100,6 +102,7 @@ type LigneVente = {
   visites?: number | null; offres?: number | null;
   chapo?: string | null; recit?: string | null;
   seo_title?: string | null; seo_desc?: string | null; recit_valide_le?: string | null;
+  surface?: number | string | null;
   loyer_potentiel?: number | string | null; ecart_estimation?: number | string | null;
   delai_offre_jours?: number | null;
 };
@@ -155,6 +158,7 @@ export async function ventes(): Promise<Vente[]> {
       chapo: l.chapo, recit: l.recit, seoTitle: l.seo_title, seoDesc: l.seo_desc,
       // La base refuse un récit sans validation ; le site vérifie quand même.
       recitValideLe: l.recit_valide_le,
+      surface: nombre(l.surface),
       loyerPotentiel: nombre(l.loyer_potentiel), ecartEstimation: nombre(l.ecart_estimation),
       delaiOffreJours: l.delai_offre_jours ?? null,
       ancienSlug: ancien.get(l.id) ?? null,
@@ -249,6 +253,14 @@ export type GroupeVentes = {
   departements: { dept: string | null; ventes: Vente[] }[];
   total: number;
 };
+
+/**
+ * L'écart entre l'estimation et le prix de vente reste MASQUÉ sur le site tant
+ * que MAV n'a pas vu l'écart moyen calculé par le BO (demande du 21/10/2026).
+ * Le BO peut le déposer dès maintenant : passer à `true` le publie partout
+ * (vignettes et fiches) d'un coup.
+ */
+export const AFFICHER_ECART_ESTIMATION = false;
 
 /** Du plus cher au moins cher : MAV veut le tri par prix, pas par date. */
 const parPrix = (a: Vente, b: Vente) => b.prix - a.prix;

@@ -1,3 +1,6 @@
+> **Mis à jour le 21/10/2026 (soir)** : surface exacte, nouveaux champs `loyer_potentiel`,
+> `ecart_estimation`, `delai_offre_jours`, et l'écart avec l'estimation autorisé dans le récit.
+>
 > ⚠️ **Remplacé en partie le 21/10/2026.** Le contrat validé par MAV est versionné
 > dans le dépôt du BO, `docs/CONTRAT-SITE.md`. Il fait foi là où ce document
 > diverge : mise en ligne toujours décidée à la main, statut 7 en ligne
@@ -64,7 +67,7 @@ effaçable (un champ vide n'est pas publié) :
 | Type | Immeuble de rapport · Immeuble mixte · Immeuble de bureaux |
 | Lots | 9 |
 | Composition | 7 appartements, 1 commerce en pied d'immeuble, 1 local d'activité |
-| Surface | **tranche** de 100 m² : 400 à 500 m² (jamais la surface exacte) |
+| Surface | **exacte**, en m² (décision de MAV du 21/10/2026) |
 | Époque | Fin XIXe · Années 1930 · Années 1970 |
 | DPE | une lettre, ou rien |
 | Occupation | en %, à la vente |
@@ -119,7 +122,11 @@ site). Le BO ne crée ni ne modifie aucune table.
 | `arrondissement` | texte | ou null |
 | `lots` | entier | |
 | `composition` | texte | |
-| `surface_min`, `surface_max` | entiers | bornes de la tranche, `surface_min < surface_max` |
+| `surface` | nombre | surface exacte en m² (migration 0006) |
+| `surface_min`, `surface_max` | entiers | ancienne tranche, à ne plus remplir si `surface` l'est |
+| `loyer_potentiel` | nombre | loyer annuel HC potentiel, en euros (0005) |
+| `ecart_estimation` | nombre | prix de vente comparé à l'estimation, en % : `3` = 3 % au-dessus (0005) |
+| `delai_offre_jours` | entier | jours entre la mise en commercialisation (A/B/C/D) et l'offre retenue (0005) |
 | `epoque` | texte | |
 | `dpe` | `A`…`G` | ou null |
 | `occupation` | nombre | **en %** : `89`, pas `0.89` |
@@ -171,9 +178,10 @@ RÈGLES DE FOND
    l'acquéreur ni pour les locataires. Les profils suffisent.
 4. Jamais le motif personnel de la vente (décès, divorce, dettes, santé).
    « Indivision » est un profil, pas une histoire.
-5. Jamais le prix de mandat, l'estimation initiale, ni l'écart de négociation.
-   Le prix de l'acte, oui.
-6. Surface en tranche, telle que fournie. Jamais une surface exacte.
+5. Jamais le prix de mandat. L'écart entre l'estimation et le prix de vente
+   peut être cité (décision de MAV du 21/10/2026), en %, seulement s'il figure
+   dans les faits.
+6. Surface exacte, telle que fournie.
 
 RÈGLES DE FORME
 7. 350 à 650 mots. Français soutenu mais simple, phrases courtes, aucun
@@ -240,7 +248,7 @@ Un upsert sur ces `id` ne touche ni au slug ni à l'URL.
 
 1. Passer une fiche test au statut 11 : elle disparaît de `biens_a_vendre`, une
    tâche « Vente à publier » apparaît, **rien** n'apparaît dans `ventes`.
-2. Ouvrir l'écran : les faits sont pré-remplis, en %, la surface en tranche.
+2. Ouvrir l'écran : les faits sont pré-remplis, en %, la surface en m².
 3. Générer : le récit fait 350 à 650 mots, 3 à 5 intertitres « ## », aucun
    chiffre absent des faits. Le vérifier ligne à ligne contre les faits.
 4. Écrire « rue Victor-Hugo » dans le récit : le bouton se bloque. Forcer

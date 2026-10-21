@@ -10,7 +10,9 @@ import { CarteVente, surfaceVente, delaiOffre } from "@/components/CarteVente";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { SITE } from "@/lib/site";
-import { prix, ventes, venteParSlug, nouveauSlugVente, venteIndexable, type Vente } from "@/lib/biens";
+import {
+  prix, ventes, venteParSlug, nouveauSlugVente, venteIndexable, AFFICHER_ECART_ESTIMATION, type Vente,
+} from "@/lib/biens";
 
 /**
  * Fiche d'une vente réalisée — un cas pratique.
@@ -146,7 +148,7 @@ export default async function FicheVente({ params }: Params) {
   ];
   const vente: ([string, ReactNode] | null | false)[] = [
     ["Prix de vente", prix(v.prix)],
-    rempli(v.ecartEstimation) && [
+    AFFICHER_ECART_ESTIMATION && rempli(v.ecartEstimation) && [
       "Écart avec l’estimation",
       `${v.ecartEstimation > 0 ? "+" : ""}${pct(v.ecartEstimation)}`,
     ],
@@ -259,7 +261,7 @@ export default async function FicheVente({ params }: Params) {
             )}
             <p className="fiche-bien__adresse">
               Le numéro de rue et le nom des parties restent confidentiels.
-              {rempli(v.surfaceMin) && " La surface est donnée par tranche."}
+              {!v.surface && rempli(v.surfaceMin) && " La surface est donnée par tranche."}
             </p>
           </div>
         </div>

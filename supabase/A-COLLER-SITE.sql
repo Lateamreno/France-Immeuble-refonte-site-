@@ -1,6 +1,6 @@
 -- ============================================================================
 -- À COLLER EN UNE FOIS dans l'éditeur SQL du projet « France Immeuble site ».
--- les migrations 0002, 0003, 0004, 0005, puis les 44 ventes. Rejouable sans risque : si une version précédente a
+-- les migrations 0002, 0003, 0004, 0005, 0006, puis les 44 ventes. Rejouable sans risque : si une version précédente a
 -- déjà été collée, recoller celle-ci ne casse ni ne duplique rien.
 -- Fichier généré par scripts/graine-ventes.mjs — ne pas l'éditer à la main.
 -- ============================================================================
@@ -446,6 +446,16 @@ from (values
 ) as n(id, slug)
 where v.id = n.id and v.slug is distinct from n.slug;
 alter table public.ventes enable trigger ventes_slug;
+
+-- 0006 — Surface exacte des ventes (décision de MAV du 21/10/2026).
+--
+-- MAV préfère la surface au m² près à la tranche de 100 m². `surface_min` et
+-- `surface_max` restent pour les ventes que le BO dépose encore en tranche ;
+-- le site affiche `surface` dès qu'elle est renseignée.
+--
+-- Rejouable sans risque.
+alter table public.ventes
+  add column if not exists surface numeric check (surface is null or surface > 0);
 
 -- Graine : les 44 ventes publiées, déposées une fois à la main.
 --

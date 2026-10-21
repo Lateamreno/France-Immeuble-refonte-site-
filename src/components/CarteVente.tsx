@@ -1,17 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Picto } from "./Picto";
-import { prix, type Vente } from "@/lib/biens";
+import { prix, AFFICHER_ECART_ESTIMATION, type Vente } from "@/lib/biens";
 
 /** « 4,1 % », « +3 % » — formats français. */
 const pct = (n: number, signe = false) =>
   `${signe && n > 0 ? "+" : ""}${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
 
-/** « 400 à 500 m² » : la surface reste en tranche (§2). */
+/**
+ * « 538 m² » : la surface exacte, choisie par MAV le 21/10/2026. À défaut, la
+ * tranche « 500 à 600 m² » quand le BO n'a déposé que celle-ci.
+ */
 export const surfaceVente = (v: Vente) =>
-  v.surfaceMin && v.surfaceMax
-    ? `${v.surfaceMin.toLocaleString("fr-FR")} à ${v.surfaceMax.toLocaleString("fr-FR")} m²`
-    : null;
+  v.surface
+    ? `${Math.round(v.surface).toLocaleString("fr-FR")} m²`
+    : v.surfaceMin && v.surfaceMax
+      ? `${v.surfaceMin.toLocaleString("fr-FR")} à ${v.surfaceMax.toLocaleString("fr-FR")} m²`
+      : null;
 
 /** « Offre en 3 semaines » ; moins de 14 jours : en jours. */
 export const delaiOffre = (j: number) =>
@@ -31,7 +36,9 @@ export function CarteVente({ v }: { v: Vente }) {
   const surface = surfaceVente(v);
   const suite = [
     v.delaiOffreJours != null ? `Offre en ${delaiOffre(v.delaiOffreJours)}` : null,
-    v.ecartEstimation != null ? `${pct(v.ecartEstimation, true)}\u00a0vs\u00a0estimation` : null,
+    AFFICHER_ECART_ESTIMATION && v.ecartEstimation != null
+      ? `${pct(v.ecartEstimation, true)}\u00a0vs\u00a0estimation`
+      : null,
   ].filter(Boolean);
 
   return (

@@ -114,6 +114,7 @@ Vendre et publier le détail en page Références.
 > ventes réalisées, la **rue sans numéro** est affichée (« rue des Bas-Fossés »), dans son
 > propre champ `ventes.rue`, jamais dans un texte. La base refuse une rue qui contient un
 > chiffre. Le numéro, les noms et l'adresse dans les récits restent interdits.
+> Même jour : la **surface exacte** remplace la fourchette pour les ventes (`ventes.surface`).
 
 ### Le sens difficile : les leads (site → BO)
 

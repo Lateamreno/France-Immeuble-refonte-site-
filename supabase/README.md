@@ -82,6 +82,9 @@ Buckets : `bo-files` (privé, captures de recette), `ventes` et `biens`
   faits de plus déposés par le BO : `loyer_potentiel` (€/an), `ecart_estimation`
   (% du prix de vente par rapport à l'estimation, de -100 à 100) et
   `delai_offre_jours` (mise en commercialisation → offre retenue).
+- 0006 : `surface` exacte (m²), préférée par MAV à la tranche. L'écart avec
+  l'estimation est déposé mais masqué sur le site tant que MAV n'a pas vu
+  l'écart moyen (`AFFICHER_ECART_ESTIMATION` dans `src/lib/biens.ts`).
 
 Testé le 21/10/2026 sur un Postgres 16 local : fichier rejoué deux fois, rejoué
 par-dessus l'ancienne version, et chacun des refus ci-dessus vérifié.
