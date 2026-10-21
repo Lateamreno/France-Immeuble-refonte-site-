@@ -1070,6 +1070,48 @@ strong,b{font-weight:600;color:var(--color-creme);}
 }
 .section--creme .card__picto{color:var(--color-bronze-profond);}
 
+/* --- Carte à médaillon centré et picto en filigrane -----------------------
+   Variante retenue le 21/10 pour les cartes de la page Vendre. Le picto passe
+   deux fois : en médaillon net au-dessus du titre, et en fond très pâle qui
+   déborde du coin haut-droit. Le relief vient d'un dégradé monochrome, jamais
+   d'une seconde couleur (§3).
+
+   Le filigrane est au COIN et non derrière le texte : centré, il place des
+   traits sous le titre et sous le paragraphe, et on lit alors du texte sur un
+   dessin. Au coin, il occupe le vide que laisse un contenu centré et rien ne
+   se superpose. */
+.card--medaillon{
+  text-align:center;position:relative;overflow:hidden;
+  /* La carte decide de la taille de son filigrane d'apres SA largeur a elle :
+     une carte de 255 px est aussi etroite dans une grille de trois colonnes a
+     1280 que sur un telephone. */
+  container-type:inline-size;
+}
+.card--medaillon > *{position:relative;z-index:1;}
+.card--medaillon .card__picto{
+  width:64px;height:64px;border-radius:50%;
+  margin-inline:auto;margin-bottom:var(--space-s);
+  background:color-mix(in srgb, var(--color-bronze) 14%, transparent);
+  border-color:color-mix(in srgb, var(--color-bronze-profond) 45%, transparent);
+}
+/* La mesure est bornée : un texte centré trop large oblige l'œil à chercher le
+   début de chaque ligne. */
+.card--medaillon :is(h2,h3){margin-inline:auto;max-width:18ch;}
+.card--medaillon p{margin-inline:auto;max-width:42ch;}
+.card--medaillon .card__fond{
+  position:absolute;z-index:0;pointer-events:none;
+  top:-28px;right:-34px;width:190px;height:190px;
+  color:var(--color-bronze-profond);opacity:.09;
+}
+.section--creme .card--medaillon .card__fond{opacity:.12;}
+.card--medaillon .card__fond svg{width:100%;height:100%;stroke-width:1;}
+
+/* Sur une carte étroite — trois par rangée, ou un téléphone — un filigrane de
+   190 px couvrirait la moitié du bloc. Il se réduit avec la carte. */
+@container (max-width: 330px){
+  .card--medaillon .card__fond{top:-20px;right:-24px;width:140px;height:140px;}
+}
+
 .fiche-contact{display:flex;flex-direction:column;gap:var(--space-s);margin-top:var(--space-m);}
 /* Le bronze appartient au PICTOGRAMME, pas à la valeur. Posé sur le `li`, il
    peignait en bronze l'adresse — seule valeur qui n'est pas un lien — pendant

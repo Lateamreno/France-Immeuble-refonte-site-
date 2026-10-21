@@ -90,3 +90,50 @@
   color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));
   font-size:var(--fs-small);
 }
+
+
+/* ===========================================================================
+   E. CENTRE + FILIGRANE — la combinaison demandee (A + B).
+   Le picto passe deux fois : en medaillon net au-dessus du titre, et en fond
+   tres pale. Reste a savoir OU poser le fond, parce qu'une carte centree a un
+   axe vertical et qu'un filigrane de coin le contrarie. Trois placements.
+   =========================================================================== */
+.card--combi{text-align:center;position:relative;overflow:hidden;}
+.card--combi .card__picto{
+  position:relative;z-index:1;
+  width:64px;height:64px;border-radius:50%;
+  margin-inline:auto;margin-bottom:var(--space-s);
+  background:var(--color-creme);
+  border-color:color-mix(in srgb, var(--color-bronze-profond) 45%, transparent);
+}
+.section--creme .card--combi .card__picto{
+  background:color-mix(in srgb, var(--color-bronze) 14%, var(--color-creme));
+}
+.card--combi :is(h2,h3){position:relative;z-index:1;margin-inline:auto;max-width:18ch;}
+.card--combi p{position:relative;z-index:1;margin-inline:auto;max-width:42ch;}
+.card--combi .card__fond{
+  position:absolute;pointer-events:none;z-index:0;
+  color:var(--color-bronze-profond);opacity:.09;
+}
+.section--creme .card--combi .card__fond{opacity:.12;}
+.card--combi .card__fond svg{width:100%;height:100%;stroke-width:1;}
+
+/* E1 — halo : le fond est centre sur le medaillon, qui en masque le coeur.
+   Il reste un echo du picto rayonnant autour du cercle. */
+.card--combi-halo .card__fond{
+  top:calc(var(--space-l) - 58px);left:50%;transform:translateX(-50%);
+  width:200px;height:200px;
+}
+/* Le medaillon doit etre opaque, sinon le fond transparait au travers. */
+.card--combi-halo .card__picto{border-width:1px;}
+
+/* E2 — socle : le fond descend sous le texte et deborde par le bas. L'axe est
+   respecte, et rien ne se superpose au medaillon. */
+.card--combi-socle .card__fond{
+  bottom:-62px;left:50%;transform:translateX(-50%);
+  width:220px;height:220px;
+}
+
+/* E3 — coin : le filigrane de la variante B, tel quel, sous une carte centree.
+   C'est la somme litterale des deux variantes. */
+.card--combi-coin .card__fond{top:-28px;right:-34px;width:190px;height:190px;}

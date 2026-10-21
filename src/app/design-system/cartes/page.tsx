@@ -119,6 +119,26 @@ function Filet() {
   );
 }
 
+/** E — la combinaison demandée : médaillon centré + filigrane. Trois placements. */
+function Combi({ variante }: { variante: "halo" | "socle" | "coin" }) {
+  return (
+    <div className="grid grid--2">
+      {CARTES.map((c) => (
+        <article className={`card card--combi card--combi-${variante}`} key={c.titre}>
+          <span className="card__fond" aria-hidden="true">
+            <Picto nom={c.picto} taille={220} />
+          </span>
+          <span className="card__picto" aria-hidden="true">
+            <Picto nom={c.picto} taille={30} />
+          </span>
+          <h2>{c.titre}</h2>
+          <p>{c.texte}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 const PROPOSITIONS: { lettre: string; nom: string; note: string; rendu: () => React.ReactNode }[] = [
   {
     lettre: "0",
@@ -143,6 +163,24 @@ const PROPOSITIONS: { lettre: string; nom: string; note: string; rendu: () => Re
     nom: "Picto en ligne avec le titre",
     note: "Le picto et le titre partagent une ligne. La carte gagne la hauteur d’un bloc entier — ce qui compte sur un téléphone où ces deux cartes se suivent. C’est la variante la plus compacte.",
     rendu: EnLigne,
+  },
+  {
+    lettre: "E1",
+    nom: "Centré + filigrane en halo",
+    note: "Le fond est centré sur le médaillon, qui en masque le cœur : il reste un écho du picto rayonnant autour du cercle. C’est la combinaison la plus liée — un seul objet, vu deux fois à deux échelles.",
+    rendu: () => <Combi variante="halo" />,
+  },
+  {
+    lettre: "E2",
+    nom: "Centré + filigrane en socle",
+    note: "Le fond descend sous le texte et déborde par le bas de la carte. L’axe vertical est respecté et rien ne se superpose au médaillon : les deux apparitions du picto occupent chacune leur zone.",
+    rendu: () => <Combi variante="socle" />,
+  },
+  {
+    lettre: "E3",
+    nom: "Centré + filigrane de coin",
+    note: "Le filigrane de la variante B, posé tel quel sous une carte centrée. C’est la somme littérale des deux. Le coin tire l’œil à droite pendant que le reste de la carte le ramène au centre.",
+    rendu: () => <Combi variante="coin" />,
   },
   {
     lettre: "D",

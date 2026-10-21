@@ -119,9 +119,12 @@ export default function VendreUnImmeuble() {
       <section className="section section--creme">
         <div className="container">
           <div className="grid grid--2">
-            <Reveal as="article" className="card">
+            <Reveal as="article" className="card card--medaillon">
+              <span className="card__fond" aria-hidden="true">
+                <Picto nom="calculatrice" taille={190} />
+              </span>
               <span className="card__picto" aria-hidden="true">
-                <Picto nom="calculatrice" taille={28} />
+                <Picto nom="calculatrice" taille={30} />
               </span>
               <h2>Vous souhaitez connaître la valeur de votre immeuble&nbsp;?</h2>
               <p>
@@ -130,9 +133,12 @@ export default function VendreUnImmeuble() {
                 constructible pour une valorisation optimale.
               </p>
             </Reveal>
-            <Reveal as="article" className="card" delayIndex={1}>
+            <Reveal as="article" className="card card--medaillon" delayIndex={1}>
+              <span className="card__fond" aria-hidden="true">
+                <Picto nom="poignee" taille={190} />
+              </span>
               <span className="card__picto" aria-hidden="true">
-                <Picto nom="poignee" taille={28} />
+                <Picto nom="poignee" taille={30} />
               </span>
               <h2>Vous cherchez un acquéreur pour votre immeuble&nbsp;?</h2>
               <p>
@@ -179,9 +185,12 @@ export default function VendreUnImmeuble() {
         <div className="container">
           <div className="grid grid--3">
             {ATOUTS.map((a, i) => (
-              <Reveal key={a.titre} as="article" className="card" delayIndex={i}>
+              <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={a.picto} taille={190} />
+                </span>
                 <span className="card__picto" aria-hidden="true">
-                  <Picto nom={a.picto} taille={28} />
+                  <Picto nom={a.picto} taille={30} />
                 </span>
                 <h3>{a.titre}</h3>
                 <p>{a.texte}</p>
