@@ -580,7 +580,18 @@ strong,b{font-weight:600;color:var(--color-creme);}
 
 /* Hero avec image de fond. Le voile sombre n'est pas décoratif : sans lui le
    texte crème passe sous le seuil de contraste sur les zones éclairées. */
-.hero-media{position:relative;isolation:isolate;overflow:hidden;}
+/* Le hero est une composition, pas un bandeau posé au-dessus d'une image. Sans
+   hauteur minimale, il retombait à 428 px sur un écran de 900 : une barre noire
+   surmontant une bande de photo, puis la section crème — trois morceaux au lieu
+   d'un. Il occupe désormais la hauteur qu'une ouverture demande, et le voile
+   s'est allégé pour que l'immeuble se voie derrière le texte. */
+.hero-media{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:min(78svh, 740px);
+  display:flex;align-items:center;
+}
+@supports not (height: 100svh){ .hero-media{min-height:min(78vh, 740px);} }
+.hero-media > .container{width:100%;}
 .hero-media__img{
   position:absolute;inset:0;z-index:-2;
   width:100%;height:100%;object-fit:cover;object-position:center;
@@ -593,12 +604,12 @@ strong,b{font-weight:600;color:var(--color-creme);}
        contraste là où il y a des lettres. Valeurs calées sur mesure du pire
        pixel, pas à l'œil. */
     linear-gradient(100deg,
-      rgba(10,10,10,.95) 0%,
-      rgba(10,10,10,.93) 52%,
-      rgba(10,10,10,.68) 70%,
-      rgba(10,10,10,.28) 90%,
-      rgba(10,10,10,.18) 100%),
-    linear-gradient(to bottom, rgba(10,10,10,.40) 0%, transparent 32%, rgba(10,10,10,.52) 100%);
+      rgba(10,10,10,.92) 0%,
+      rgba(10,10,10,.89) 48%,
+      rgba(10,10,10,.58) 68%,
+      rgba(10,10,10,.24) 88%,
+      rgba(10,10,10,.14) 100%),
+    linear-gradient(to bottom, rgba(10,10,10,.34) 0%, transparent 34%, rgba(10,10,10,.46) 100%);
 }
 /* le bronze de la marque réchauffe l'image plutôt que de la laisser neutre */
 .hero-media__voile::after{
@@ -606,21 +617,44 @@ strong,b{font-weight:600;color:var(--color-creme);}
   background:radial-gradient(70% 60% at 82% 12%, rgba(193,155,110,.20), transparent 66%);
   mix-blend-mode:screen;
 }
-@media (max-width:760px){
-  /* sur mobile le texte occupe toute la largeur : voile plus couvrant */
+/* Un voile LATERAL ne protege que du texte range en colonne. Sous 1100 px le
+   texte du hero occupe toute la largeur : il deborde sur la partie ouverte du
+   degrade, et l'accroche tombait a 3,06:1 — defaut de geometrie, anterieur au
+   reglage des opacites. En dessous, le voile devient donc vertical et couvrant.
+   Mesure apres correctif plus bas dans ce fichier. */
+@media (max-width:1100px){
   .hero-media__voile{
     background:
       linear-gradient(to bottom, rgba(10,10,10,.84) 0%, rgba(10,10,10,.74) 45%, rgba(10,10,10,.88) 100%);
   }
 }
+/* Entre 1101 et 1400 px, la colonne de texte occupe une part plus large de
+   l'ecran : le degrade doit s'ouvrir plus tard, sinon les dernieres lettres
+   d'un titre long tombent deja sur l'image. Mesure : le h1 de Vendre passait
+   a 2,85:1 a 1280 px. */
+@media (min-width:1101px) and (max-width:1400px){
+  .hero-media__voile{
+    background:
+      linear-gradient(100deg,
+        rgba(10,10,10,.92) 0%,
+        rgba(10,10,10,.90) 62%,
+        rgba(10,10,10,.62) 80%,
+        rgba(10,10,10,.26) 93%,
+        rgba(10,10,10,.14) 100%),
+      linear-gradient(to bottom, rgba(10,10,10,.34) 0%, transparent 34%, rgba(10,10,10,.46) 100%);
+  }
+}
 
 /* Sur une image, le gris secondaire ne tient plus le contraste dès que le
    voile s'allège : le texte d'accroche passe en crème légèrement atténuée. */
+/* Couleur posee, pas opacite : avec `opacity`, la teinte reelle du texte depend
+   du pixel qu'il recouvre, et son contraste varie d'une image a l'autre. Un
+   creme legerement eteint donne le meme rendu avec une valeur constante. */
 .hero-media .lead,
 .hero-media .hero-proof__lbl,
 .hero-media .stat-note{
-  color:var(--color-creme);
-  opacity:.82;
+  color:color-mix(in srgb, var(--color-creme) 86%, var(--color-noir));
+  opacity:1;
 }
 .hero-media .eyebrow{color:var(--color-bronze-clair);}
 /* Ombre très diffuse : elle ne se voit pas comme une ombre, elle décolle
@@ -1386,15 +1420,13 @@ strong,b{font-weight:600;color:var(--color-creme);}
    garantit que tout le contenu tient sans être coupé. Les 77 px du header
    collant sont déduits : il occupe sa place dans le flux, au-dessus. */
 @media (max-width:760px){
-  .hero-media{
-    min-height:calc(100svh - 77px);
-    display:flex;align-items:center;
-  }
-  /* `100vh` en repli pour les navigateurs sans unités de viewport modernes. */
+  /* Sur téléphone, le premier écran doit être le premier écran : le hero prend
+     tout ce qui reste sous le header collant. */
+  .hero-media{min-height:calc(100svh - 77px);}
   @supports not (height: 100svh){
     .hero-media{min-height:calc(100vh - 77px);}
   }
-  .hero-media > .container{width:100%;padding-block:var(--space-l);}
+  .hero-media > .container{padding-block:var(--space-l);}
 
   /* Les trois compteurs passent en colonne : à 390 px, trois paires
      « nombre + libellé » sur une ligne se chevauchaient. */
@@ -1429,6 +1461,5 @@ strong,b{font-weight:600;color:var(--color-creme);}
    bandeau, pas une ouverture. On lui donne une hauteur tenable sans aller
    jusqu'au plein écran, qui n'a de sens qu'au format portrait du téléphone. */
 @media (min-width:761px) and (max-width:1100px){
-  .hero-media{min-height:min(74svh, 620px);display:flex;align-items:center;}
-  .hero-media > .container{width:100%;}
+  .hero-media{min-height:min(74svh, 620px);}
 }
