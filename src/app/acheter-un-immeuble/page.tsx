@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { RechercheForm } from "@/components/RechercheForm";
+import { VENTES_STATS } from "@/lib/biens";
 import { PREUVES, SITE, nombre } from "@/lib/site";
 import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
@@ -46,8 +47,10 @@ export default function Acheter() {
               <span className="hero-proof__lbl">investisseurs déjà dans le fichier</span>
             </div>
             <div className="hero-proof__item">
-              <span className="hero-proof__val">{PREUVES.immeublesTraites}</span>
-              <span className="hero-proof__lbl">immeubles traités depuis {PREUVES.depuis}</span>
+              <span className="hero-proof__val">{VENTES_STATS.total}</span>
+              <span className="hero-proof__lbl">
+                immeubles vendus depuis {VENTES_STATS.premiereAnnee}
+              </span>
             </div>
           </div>
         </>

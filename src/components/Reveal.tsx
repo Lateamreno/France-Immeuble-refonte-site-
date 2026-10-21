@@ -15,7 +15,8 @@ export function Reveal({
   style,
 }: {
   children: ReactNode;
-  as?: "div" | "article" | "figure" | "section";
+  /** `li` : une liste de biens est une liste, et chaque entrée en est un item. */
+  as?: "div" | "article" | "figure" | "section" | "li";
   className?: string;
   delayIndex?: number;
   style?: CSSProperties;

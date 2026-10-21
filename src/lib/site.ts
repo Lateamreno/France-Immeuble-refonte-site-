@@ -33,8 +33,16 @@ export const SITE = {
  * chiffre d'époque, et une note de datation en pied d'article le situe.
  */
 export const PREUVES = {
-  immeublesTraites: 365,
-  depuis: 2018,
+  /**
+   * ⚠️ Ne plus écrire de chiffre de ventes ici. Le nombre d'immeubles vendus,
+   * les communes couvertes et les années se CALCULENT dans `lib/biens.ts` à
+   * partir des ventes déposées par le BO (`VENTES_STATS`).
+   *
+   * Le site annonçait « 365 immeubles » : aucune table du CRM ne produit ce
+   * nombre — 274 mandats, 211 commercialisations, 875 estimations, 44 ventes.
+   * MAV a tranché le 21/10 : on aligne le discours sur ce que la base prouve.
+   * Un chiffre dérivé des données ne peut plus diverger de la réalité.
+   */
   investisseurs: 1372,
   noteGoogle: "4,9",
   nbAvis: 28,
@@ -51,11 +59,29 @@ export const CALIBRE = {
   rentabiliteProvinceMin: 10,
 } as const;
 
-export const NAV = [
+export type LienNav = {
+  href: string;
+  label: string;
+  enfants?: readonly { readonly href: string; readonly label: string }[];
+};
+
+/**
+ * `/immeubles-vendus/` garde son URL : c'est une des 22 URLs existantes, et on
+ * n'en change aucune (§16). Les deux autres sont neuves, donc libres.
+ */
+export const NAV: readonly LienNav[] = [
   { href: "/vendre-un-immeuble/", label: "Vendre" },
   { href: "/estimer-un-immeuble/", label: "Estimer" },
   { href: "/acheter-un-immeuble/", label: "Acheter" },
-  { href: "/immeubles-vendus/", label: "Nos biens" },
+  {
+    href: "/immeubles-vendus/",
+    label: "Nos biens",
+    enfants: [
+      { href: "/immeubles-vendus/", label: "Biens vendus" },
+      { href: "/immeubles-a-vendre/", label: "Biens à vendre" },
+      { href: "/immeubles-off-market/", label: "Biens off-market" },
+    ],
+  },
   { href: "/contactez-nous/", label: "Contact" },
 ] as const;
 

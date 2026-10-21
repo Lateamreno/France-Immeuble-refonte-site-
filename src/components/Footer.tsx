@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { VENTES_STATS } from "@/lib/biens";
 import { PREUVES, SITE, nombre } from "@/lib/site";
 import { Logo } from "./Logo";
 
@@ -21,7 +22,7 @@ export function Footer() {
             </Link>
             <p className="small muted" style={{ marginTop: "var(--space-s)", maxWidth: "34ch" }}>
               Agence spécialisée dans la vente d&rsquo;immeubles de rapport en bloc.{" "}
-              {PREUVES.immeublesTraites} immeubles traités depuis {PREUVES.depuis}.
+              {VENTES_STATS.total} immeubles vendus depuis {VENTES_STATS.premiereAnnee}.
             </p>
             <p className="small mono" style={{ marginTop: "var(--space-s)" }}>
               <a href={SITE.telHref}>{SITE.tel}</a>

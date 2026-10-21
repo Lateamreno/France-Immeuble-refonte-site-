@@ -42,7 +42,9 @@ export function organisation() {
       "Estimation d'immeuble",
     ],
     slogan: "L’agence dédiée aux immeubles",
-    foundingDate: String(PREUVES.depuis),
+    /* L'année de création de la société, qui n'est pas une mesure de ventes :
+       elle ne se dérive donc pas des données du BO. */
+    foundingDate: "2018",
   };
 }
 

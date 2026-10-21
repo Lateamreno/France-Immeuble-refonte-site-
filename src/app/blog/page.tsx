@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
+import { VENTES_STATS } from "@/lib/biens";
 import { PREUVES, SITE } from "@/lib/site";
 import { dateFr, dureeLecture, tousLesArticles } from "@/lib/contenu";
 
@@ -55,8 +56,8 @@ export default function BlogPage() {
           <Eyebrow>Blog</Eyebrow>
           <h1>Vendre, estimer, arbitrer&nbsp;: ce qu’il faut savoir</h1>
           <p className="lead">
-            Ce que nous observons sur {PREUVES.immeublesTraites} immeubles traités depuis{" "}
-            {PREUVES.depuis}, en bloc et à la découpe — droit de préemption, DPE, promoteurs,
+            Ce que nous observons sur {VENTES_STATS.total} immeubles vendus depuis{" "}
+            {VENTES_STATS.premiereAnnee}, en bloc et à la découpe — droit de préemption, DPE, promoteurs,
             marché parisien. Écrit pour des propriétaires d’immeubles, pas pour des
             primo-accédants.
           </p>
