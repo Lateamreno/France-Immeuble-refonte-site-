@@ -1,6 +1,6 @@
 # Polices self-hébergées
 
-Les 3 woff2 variables sont **présents dans ce dossier**. Ils ne sont pas servis
+Les 4 woff2 variables sont **présents dans ce dossier**. Ils ne sont pas servis
 depuis `/assets/fonts/` : ils sont importés par `src/lib/fonts.ts` via
 **`next/font/local`**, qui génère les `@font-face`, empreinte les fichiers et les
 sert depuis `/_next/static/media/`.
@@ -12,10 +12,16 @@ sert depuis `/_next/static/media/`.
 | `Archivo[wdth,wght].woff2` | Display — titres H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
 | `Inter[opsz,wght].woff2` | Body — texte, navigation, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
 | `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
+| `Caveat[wght].woff2` | Écriture — légendes des polaroïds de l'accueil, rien d'autre | `wght` 400-700 | 75 Ko |
+
+Caveat (Pablo Impallari, SIL Open Font License 1.1) a été ajoutée le 22/10/2026
+sur validation de MAV. Fichier pris tel quel chez Google Fonts (sous-ensemble
+latin, version 2.000, variable), puis hébergé ici : le navigateur ne contacte
+jamais Google.
 
 Sous-ensemblés au latin étendu (couverture FR complète : accents, ligatures,
 guillemets français, tirets cadratins, €, exposants). Licence SIL Open Font
-License pour les trois.
+License pour les quatre.
 
 ## Le point à ne jamais casser
 

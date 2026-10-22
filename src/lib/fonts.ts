@@ -2,7 +2,7 @@ import localFont from "next/font/local";
 
 /**
  * Polices self-hébergées — CLAUDE.md §4.
- * Aucune requête vers une CDN de polices : les 3 woff2 variables vivent dans le repo
+ * Aucune requête vers une CDN de polices : les 4 woff2 variables vivent dans le repo
  * et sont servies depuis notre domaine (maîtrise du chargement + RGPD).
  *
  * Archivo ne doit JAMAIS être découpée par graisse : l'axe `wdth` 118 du titrage
@@ -32,4 +32,16 @@ export const jetbrainsMono = localFont({
   display: "swap",
 });
 
-export const fontVariables = `${archivo.variable} ${inter.variable} ${jetbrainsMono.variable}`;
+/**
+ * Écriture manuscrite des légendes de polaroïds, et rien d'autre (MAV,
+ * 22/10/2026). Sous-ensemble latin de Google Fonts, hébergé ici comme les trois
+ * autres : aucune requête vers Google depuis le navigateur.
+ */
+export const caveat = localFont({
+  src: "../../assets/fonts/Caveat[wght].woff2",
+  variable: "--font-caveat",
+  weight: "400 700",
+  display: "swap",
+});
+
+export const fontVariables = `${archivo.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable}`;

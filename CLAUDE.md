@@ -208,7 +208,9 @@ h1, h2, h3, .h-display, .stat-number{
 - `--color-ligne` = bordures sur fond sombre. `--color-gris` = texte secondaire.
 - Sur fond crème, le texte secondaire se dérive des tokens
   (`color-mix(in srgb, var(--color-noir) 62%, var(--color-creme))`), jamais par un gris inventé.
-- **Le blanc pur n'est admis que comme couleur de texte sur bouton à fond sombre** (§5).
+- **Le blanc pur n'est admis que comme couleur de texte sur bouton à fond sombre** (§5), et
+  pour le papier des polaroïds de la vitrine d'accueil (token `--color-papier`, MAV, 22/10/2026) :
+  c'est un objet photographié, pas une couleur d'interface.
 - **Couleurs mortes** : `#D9BF7D`, `#D98F7D`, `#0C2432`, `#BD9091`, `#000000`, `#CCCCCC`,
   `#EFEFEF`, `#F8F8F8`.
 - **Le site actuellement en ligne utilise l'ancienne charte** — ne jamais s'en inspirer.
@@ -222,7 +224,7 @@ h1, h2, h3, .h-display, .stat-number{
 
 ## 4. Typographie — polices dans le repo
 
-Les 3 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin étendu.
+Les 4 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin étendu.
 **Ne rien remplacer, ne jamais découper par graisse.**
 
 | Fichier | Rôle | Axes | Poids |
@@ -230,6 +232,7 @@ Les 3 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin 
 | `Archivo[wdth,wght].woff2` | Display — H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
 | `Inter[opsz,wght].woff2` | Body — texte, nav, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
 | `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
+| `Caveat[wght].woff2` | Écriture des légendes de polaroïds, rien d'autre (MAV, 22/10/2026) | `wght` 400-700 | 75 Ko |
 
 ```css
 @font-face{font-family:"Archivo";src:url("/assets/fonts/Archivo[wdth,wght].woff2") format("woff2-variations");font-weight:100 900;font-stretch:62% 125%;font-display:swap}

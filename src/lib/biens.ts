@@ -297,15 +297,17 @@ export async function ventesEtStats() {
 }
 
 /**
- * Les ventes de la vitrine d'accueil (MAV, 22/10/2026) : toutes celles de
- * Paris d'abord, puis les plus chères, `n` en tout. Paris est classé par prix
- * lui aussi.
+ * Les ventes de la vitrine d'accueil (MAV, 22/10/2026), `n` en tout : les 3
+ * plus chères de Paris, la plus chère des Hauts-de-Seine (elle remplace le
+ * petit immeuble parisien de 80 m²), puis les plus chères ailleurs.
  */
 export function vitrineAccueil(v: Vente[], n = 8): Vente[] {
   const parPrix = (a: Vente, b: Vente) => b.prix - a.prix;
-  const paris = v.filter((x) => x.dept === "75").sort(parPrix);
-  const autres = v.filter((x) => x.dept !== "75").sort(parPrix);
-  return [...paris, ...autres].slice(0, n);
+  const paris = v.filter((x) => x.dept === "75").sort(parPrix).slice(0, 3);
+  const hautsDeSeine = v.filter((x) => x.dept === "92").sort(parPrix).slice(0, 1);
+  const choisies = new Set([...paris, ...hautsDeSeine]);
+  const autres = v.filter((x) => !choisies.has(x)).sort(parPrix);
+  return [...paris, ...hautsDeSeine, ...autres].slice(0, n);
 }
 
 /** Les communes les plus représentées, pour le bloc de couverture. */

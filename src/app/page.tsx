@@ -15,7 +15,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
-import { CarrouselVentes } from "@/components/CarrouselVentes";
+import { VitrinePolaroids } from "@/components/VitrinePolaroids";
 import { Avis } from "@/components/Avis";
 
 /**
@@ -162,9 +162,9 @@ export default async function Accueil() {
             <h2>Immeubles vendus par France Immeuble</h2>
           </Reveal>
         </div>
-        {/* Déposées par le BO, comme la page des ventes. Paris d'abord, puis
-            les plus chères ; chaque vignette ouvre la fiche de la vente. */}
-        <CarrouselVentes ventes={vitrine} />
+        {/* Déposées par le BO, comme la page des ventes, en polaroïds (MAV).
+            Chaque polaroid ouvre la fiche de la vente. */}
+        <VitrinePolaroids ventes={vitrine} />
         <div className="container vitrine__suite">
           <Button href="/immeubles-vendus/">Voir tous nos immeubles vendus</Button>
         </div>
