@@ -19,9 +19,18 @@ export type ImageTete = {
  * d'immeuble (ou un immeuble détouré) à droite du titre casse cette monotonie
  * sans ajouter de texte. Sous 900 px, l'image passe sous le texte, plus basse.
  */
-export function TeteMedia({ image, children }: { image: ImageTete; children: ReactNode }) {
+export function TeteMedia({
+  image,
+  fondu = false,
+  children,
+}: {
+  image: ImageTete;
+  /** La photo se fond dans le fond de la section, sans cadre (fond sombre). */
+  fondu?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <div className="tete-media">
+    <div className={`tete-media${fondu ? " tete-media--fondu" : ""}`}>
       <Reveal className="section__head tete-media__texte">{children}</Reveal>
       <Reveal delayIndex={1} className={`tete-media__visuel${image.libre ? " tete-media__visuel--libre" : ""}`}>
         <Image

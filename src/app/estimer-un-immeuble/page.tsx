@@ -8,6 +8,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
 import { TeteMedia } from "@/components/TeteMedia";
+import { LigneDefilante } from "@/components/LigneDefilante";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
@@ -109,7 +110,7 @@ export default function EstimerUnImmeuble() {
           {/* Les cinq analyses sur une seule ligne (MAV, 22/10/2026), en
               médaillons comme sur la page Vendre. Quand la largeur manque, la
               ligne défile au doigt plutôt que de passer à la ligne. */}
-          <div className="ligne-cartes">
+          <LigneDefilante>
             {ANALYSES.map((a, i) => (
               <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
@@ -122,7 +123,7 @@ export default function EstimerUnImmeuble() {
                 <p>{a.texte}</p>
               </Reveal>
             ))}
-          </div>
+          </LigneDefilante>
         </div>
       </section>
 

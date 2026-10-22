@@ -30,7 +30,6 @@ export default async function Acheter() {
   return (
     <>
       <HeroMedia
-        className="section section--noir"
         image={VISUELS.toursContrePlongee.src}
         alt={VISUELS.toursContrePlongee.alt}
       >

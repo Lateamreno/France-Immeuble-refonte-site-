@@ -201,7 +201,6 @@ export default function Decoupe() {
       />
 
       <HeroMedia
-        className="section section--noir"
         image={VISUELS.fenetresHeureBleue.src}
         alt={VISUELS.fenetresHeureBleue.alt}
       >

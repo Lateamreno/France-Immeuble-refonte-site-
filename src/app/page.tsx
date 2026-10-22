@@ -67,8 +67,10 @@ export default async function Accueil() {
         <div className="container split">
           <Reveal>
             <Eyebrow>Vendre</Eyebrow>
-            <h2>Vendez votre immeuble au meilleur prix</h2>
-            <p className="lead" style={{ marginTop: "var(--space-s)" }}>
+            <h2>
+              Vendez votre immeuble <span className="accent">au meilleur prix</span>
+            </h2>
+            <p className="lead lead--or" style={{ marginTop: "var(--space-s)" }}>
               Estimation et commercialisation conçues pour les immeubles
             </p>
             <p style={{ marginTop: "var(--space-s)" }}>
@@ -92,13 +94,14 @@ export default async function Accueil() {
             </div>
           </Reveal>
 
-          {/* Le carnet est détouré : posé tel quel, sans cadre ni fond (MAV). */}
+          {/* Le dossier d'estimation, détouré et en entier : le carnet d'origine
+              était coupé à droite dans le fichier même (MAV, 22/10/2026). */}
           <Reveal delayIndex={1} className="media-colonne media-colonne--libre">
             <Image
-              src="/media/05_Notebook-Mock-up-1.webp"
-              alt="Dossier d’estimation France Immeuble"
-              width={700}
-              height={700}
+              src="/media/img-vendez2x.webp"
+              alt="Dossier d’estimation France Immeuble ouvert"
+              width={1400}
+              height={1093}
               sizes="(max-width: 900px) 100vw, 540px"
             />
           </Reveal>
@@ -133,7 +136,10 @@ export default async function Accueil() {
 
           <div className="grid grid--3">
             {recherches.map((r, i) => (
-              <Reveal key={r.lbl} as="article" className="card" delayIndex={i}>
+              <Reveal key={r.lbl} as="article" className="card card--filigrane" delayIndex={i}>
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={r.picto} taille={96} />
+                </span>
                 <span className="stat-number">{r.val}</span>
                 <span className="stat-label" style={{ marginTop: 6, display: "block" }}>
                   {r.lbl}
@@ -143,7 +149,7 @@ export default async function Accueil() {
             ))}
           </div>
 
-          <div className="btn-row">
+          <div className="btn-row reseau__suite">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
         </div>
@@ -164,7 +170,16 @@ export default async function Accueil() {
         </div>
       </section>
 
+      {/* Sur fond sombre comme sur la page Vendre, avec une poignée de main en
+          fondu à la place de la photo de Paris (MAV, 22/10/2026). */}
       <Avis
+        fond="noir-2"
+        photo={{
+          src: "/media/temoignages-poignee-de-main.webp",
+          alt: "Deux personnes en chemise se serrent la main au terme d’une vente",
+          width: 1800,
+          height: 1202,
+        }}
         intro="Ils ont choisi France Immeuble pour acheter ou vendre leurs immeubles, retrouvez tous leurs avis et découvrez pourquoi ils nous font confiance."
       >
         <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
@@ -224,7 +239,7 @@ export default async function Accueil() {
             {/* Les deux cartes ont la même construction (MAV, 22/10/2026) :
                 surtitre, titre, texte, bouton, et leurs boutons alignés. */}
             <Reveal as="article" className="card card--offre">
-              <Eyebrow bare>Recherche sur critères</Eyebrow>
+              <Eyebrow>Recherche sur critères</Eyebrow>
               <h3>Je souhaite acheter un immeuble</h3>
               <p>
                 Recherchez selon des <strong>critères spécifiques aux immeubles</strong> ou créez
@@ -241,7 +256,7 @@ export default async function Accueil() {
             </Reveal>
 
             <Reveal as="article" className="card card--offre card--offmarket" delayIndex={1}>
-              <Eyebrow bare>Les offres off-market</Eyebrow>
+              <Eyebrow>Les offres off-market</Eyebrow>
               <h3>Nos biens d’exception</h3>
               <p>
                 Les meilleurs immeubles se vendent en quelques heures. Pour ne pas les rater, créez

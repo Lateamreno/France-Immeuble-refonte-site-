@@ -2,7 +2,7 @@ import { AVIS } from "@/lib/accueil";
 import { PREUVES } from "@/lib/site";
 import { Eyebrow } from "./Eyebrow";
 import { Reveal } from "./Reveal";
-import { TeteMedia } from "./TeteMedia";
+import { TeteMedia, type ImageTete } from "./TeteMedia";
 
 /**
  * Le « G » de Google, dessiné d'un seul trait en `currentColor` : pas de
@@ -41,12 +41,15 @@ export function Avis({
   intro,
   compact = false,
   fond = "creme",
+  photo,
   children,
 }: {
   titre?: string;
   intro?: string;
   compact?: boolean;
   fond?: "creme" | "noir-2" | "noir-3";
+  /** Photo à côté du titre, fondue dans le fond sombre (accueil, 22/10/2026). */
+  photo?: ImageTete;
   children?: React.ReactNode;
 }) {
   const liste = compact ? AVIS.slice(0, 3) : AVIS;
@@ -77,7 +80,11 @@ export function Avis({
   return (
     <section className={`section section--${fond}`}>
       <div className="container">
-        {fond === "creme" ? (
+        {photo ? (
+          <TeteMedia image={photo} fondu>
+            {tete}
+          </TeteMedia>
+        ) : fond === "creme" ? (
           /* Sur crème, une photo à côté du titre casse l'aplat (22/10/2026). */
           <TeteMedia
             image={{
