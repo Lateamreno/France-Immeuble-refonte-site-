@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE } from "@/lib/site";
 
 /**
@@ -188,6 +189,7 @@ export function RechercheForm() {
             Être rappelé
           </a>
         </div>
+        <PropositionCompte texte="Retrouvez vos recherches et les immeubles qu’on vous propose dans votre compte." />
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { relancerFile } from "@/lib/leads";
+import { nettoyerMorceaux } from "@/lib/compte/stockage";
 
 /**
  * Relance de la file d'attente des leads — appelée par la tâche planifiée de
@@ -20,7 +21,13 @@ export async function GET(req: Request) {
   }
   try {
     const r = await relancerFile(50);
-    return NextResponse.json({ ok: true, ...r });
+    let morceauxEffaces = 0;
+    try {
+      morceauxEffaces = await nettoyerMorceaux();
+    } catch (e) {
+      console.error("[pièces] nettoyage des morceaux impossible —", e);
+    }
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

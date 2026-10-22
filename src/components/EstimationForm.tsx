@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE, CALIBRE } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
 
@@ -65,7 +66,14 @@ const ECHEANCES = ["Dès maintenant", "Sous 6 mois", "Sous 12 mois", "Je me rens
 
 type Phase = "saisie" | "complement" | "fin";
 
-export function EstimationForm({ formulaire }: { formulaire: "vendre" | "estimer" }) {
+export function EstimationForm({
+  formulaire,
+  dansLeCompte = false,
+}: {
+  formulaire: "vendre" | "estimer";
+  /** Depuis /mon-compte/ : la proposition de créer un compte n'a plus lieu d'être. */
+  dansLeCompte?: boolean;
+}) {
   const uid = useId();
   const [phase, setPhase] = useState<Phase>("saisie");
   const [d, setD] = useState<Data>(VIDE);
@@ -180,6 +188,7 @@ export function EstimationForm({ formulaire }: { formulaire: "vendre" | "estimer
   if (phase !== "saisie" && verdict) {
     return (
       <Suite
+        dansLeCompte={dansLeCompte}
         phase={phase}
         verdict={verdict}
         stocke={stocke}
@@ -281,8 +290,9 @@ function Champ({ id, label, hint, err, full, children }: {
  * champ de plus, sans quoi il croit que sa demande dépend de ce qu'il lui reste
  * à remplir — exactement ce qu'on voulait éviter en découpant.
  */
-function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser }: {
+function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser, dansLeCompte }: {
   phase: Phase;
+  dansLeCompte: boolean;
   verdict: Verdict;
   /** false : la demande n'a pu être enregistrée nulle part. */
   stocke: boolean;
@@ -355,6 +365,10 @@ function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser
 
       {rdt !== null && (
         <p>Rendement brut calculé sur vos chiffres&nbsp;: <strong>{rdt.toFixed(1)} %</strong>.</p>
+      )}
+
+      {!pleinbail && !dansLeCompte && (
+        <PropositionCompte texte="Votre estimation s’affichera dans votre compte dès qu’un agent l’aura validée." />
       )}
 
       {phase === "complement" && !pleinbail && (

@@ -1,6 +1,7 @@
 // Serveur uniquement : lit BO_LEAD_TOKEN et la clé secrète du site.
 import { createHash } from "node:crypto";
 import { configSite } from "./supabase-site";
+import { effacerObjets } from "./compte/stockage";
 
 /**
  * Leads : du site vers le BO, sans jamais en perdre un — CLAUDE.md §2 et §9.
@@ -50,8 +51,11 @@ function configBO(): ConfigBO | null {
   return { endpoint, jeton };
 }
 
-/** true si et seulement si le BO a répondu 200. */
-async function deposerAuBO(cfg: ConfigBO, lead: Record<string, unknown>): Promise<{ ok: boolean; erreur?: string }> {
+/** ok si et seulement si le BO a répondu 200 ; `statut` : le code reçu, 0 sans réponse. */
+async function deposerAuBO(
+  cfg: ConfigBO,
+  lead: Record<string, unknown>,
+): Promise<{ ok: boolean; statut: number; erreur?: string }> {
   try {
     const r = await fetch(cfg.endpoint, {
       method: "POST",
@@ -60,10 +64,10 @@ async function deposerAuBO(cfg: ConfigBO, lead: Record<string, unknown>): Promis
       signal: AbortSignal.timeout(8000),
       cache: "no-store",
     });
-    if (r.status === 200) return { ok: true };
-    return { ok: false, erreur: `BO ${r.status}` };
+    if (r.status === 200) return { ok: true, statut: 200 };
+    return { ok: false, statut: r.status, erreur: `BO ${r.status}` };
   } catch (e) {
-    return { ok: false, erreur: e instanceof Error ? e.message : String(e) };
+    return { ok: false, statut: 0, erreur: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -126,17 +130,28 @@ async function mettreEnFile(lead: Record<string, unknown>, erreur: string): Prom
   }
 }
 
-export type Issue = "bo" | "file" | "perdu";
+export type Issue = "bo" | "file" | "perdu" | "refuse";
 
 /**
  * Dépose un lead. « bo » : enregistré par le BO. « file » : gardé par le site,
  * réessayé ensuite. « perdu » : ni l'un ni l'autre — le visiteur doit appeler.
+ *
+ * `refusDefinitif` : un 422 du BO veut dire que le dépôt ne passera jamais
+ * (pièce d'un autre compte, format refusé…). Pour ces dépôts-là, on ne le met
+ * pas en file : on rend « refuse » et l'appelant prévient la personne.
  */
-export async function deposerLead(lead: Record<string, unknown>): Promise<Issue> {
+export async function deposerLead(
+  lead: Record<string, unknown>,
+  { refusDefinitif = false }: { refusDefinitif?: boolean } = {},
+): Promise<Issue> {
   const cfg = configBO();
   if (cfg) {
     const r = await deposerAuBO(cfg, lead);
     if (r.ok) return "bo";
+    if (refusDefinitif && r.statut === 422) {
+      console.warn("[lead] dépôt refusé par le BO (422) —", JSON.stringify({ type: lead.type, ref: lead.ref }));
+      return "refuse";
+    }
     console.error("[lead] BO indisponible, lead mis en file —", r.erreur, JSON.stringify({ type: lead.type, ref: lead.ref }));
     return (await mettreEnFile(lead, r.erreur ?? "échec")) ? "file" : "perdu";
   }
@@ -170,6 +185,13 @@ export async function relancerFile(limite = 20): Promise<{ transmis: number; res
     if (envoi.ok) {
       await sb(`leads_outbox?id=eq.${l.id}`, { method: "DELETE" });   // purgé dès transmission
       transmis++;
+    } else if (envoi.statut === 422 && l.payload.type === "document") {
+      // Une pièce que le BO refuse ne passera jamais : on l'efface du seau
+      // (le site n'en garde rien) et on sort le dépôt de la file. Le
+      // propriétaire voit qu'elle n'apparaît pas dans ses pièces reçues.
+      console.warn("[lead] pièce refusée par le BO à la relance — effacée du seau.");
+      await effacerObjets([String(l.payload.chemin ?? "")].filter(Boolean));
+      await sb(`leads_outbox?id=eq.${l.id}`, { method: "DELETE" });
     } else {
       const n = l.tentatives + 1;
       await sb(`leads_outbox?id=eq.${l.id}`, {

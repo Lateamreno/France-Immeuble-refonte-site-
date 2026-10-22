@@ -2100,3 +2100,101 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   color:var(--color-bronze);
 }
 .hero-media .hero-proof__val{color:var(--color-bronze);}
+
+/* ==========================================================================
+   22. COMPTE CLIENT (/mon-compte/) — contrat BO §9 et §10
+   ========================================================================== */
+.lien-discret{
+  background:none;border:0;padding:0;cursor:pointer;font:inherit;
+  font-size:var(--fs-small);color:var(--color-bronze);
+  text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb, var(--color-bronze) 45%, transparent);
+}
+.lien-discret:hover{color:var(--color-bronze-clair);}
+.lien-discret:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;border-radius:3px;}
+.lien-discret:disabled{opacity:.6;cursor:default;}
+.field__lbl{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--color-gris);
+}
+.compte-onglets{margin-bottom:var(--space-m);}
+.compte-note{
+  border-left:2px solid var(--color-bronze);padding:10px 14px;margin:0 0 var(--space-m);
+  background:color-mix(in srgb, var(--color-bronze) 8%, transparent);color:var(--color-creme);
+}
+.compte-erreur{margin-top:var(--space-s);color:var(--color-bronze-clair);font-size:var(--fs-small);}
+.compte-liens{margin-top:var(--space-s);}
+.compte-atouts{margin:var(--space-m) 0;padding-left:0;list-style:none;display:grid;gap:10px;}
+.compte-atouts li{padding-left:22px;position:relative;color:var(--color-creme);}
+.compte-atouts li::before{content:"";position:absolute;left:0;top:.6em;width:10px;height:1px;background:var(--color-bronze);}
+.compte-bandeau{padding-block:var(--space-m);}
+.compte-vide{color:var(--color-gris);max-width:60ch;}
+.compte-action{margin-top:var(--space-m);}
+.compte-action > .btn{margin-inline:0;}
+.compte-sous-titre{font-size:var(--fs-h3);margin:var(--space-xl) 0 var(--space-m);}
+.compte-grille{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-s);
+  grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));}
+.compte-carte{
+  display:flex;flex-direction:column;gap:6px;align-items:flex-start;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);
+  border-radius:var(--radius-card);padding:var(--space-s);
+}
+.compte-carte__titre{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:1.15rem;line-height:1.1;letter-spacing:-.015em;color:var(--color-creme);margin:0;
+}
+.compte-carte__dept{font-family:var(--font-body);font-variation-settings:normal;font-weight:400;font-size:.8em;color:var(--color-gris);}
+.compte-carte__texte,.compte-carte__note{margin:0;color:var(--color-gris);font-size:var(--fs-small);}
+.compte-carte__chiffres{display:flex;gap:14px;margin:0;font-family:var(--font-mono-site);font-weight:600;color:var(--color-creme);}
+.compte-carte__chiffres span + span{color:var(--color-bronze);}
+.compte-carte__date{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.06em;color:var(--color-gris);}
+.compte-badge{
+  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--radius-pill);border:1px solid var(--color-bronze-profond);color:var(--color-bronze-clair);
+}
+.compte-badge--vendu,.compte-badge--retire,.compte-badge--close{border-color:var(--color-ligne);color:var(--color-gris);}
+.compte-reponses{width:100%;margin-top:6px;display:grid;gap:var(--space-s);}
+.compte-reponses__form .field-nav{margin-top:var(--space-s);justify-content:flex-start;}
+.compte-reponse{margin:6px 0 0;font-size:var(--fs-small);color:var(--color-gris);}
+.compte-confirme{display:flex;flex-direction:column;gap:6px;align-items:flex-start;color:var(--color-creme);font-size:var(--fs-small);}
+.compte-recherche-form{width:100%;display:grid;gap:var(--space-s);margin-top:var(--space-s);}
+.compte-recherche-form .field-nav{justify-content:flex-start;}
+.compte-liste{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
+.compte-liste li{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--color-ligne);color:var(--color-creme);}
+.compte-biens{display:grid;gap:var(--space-m);}
+.compte-bien{background:var(--color-noir-2);border:1px solid var(--color-ligne);border-radius:var(--radius-card);padding:clamp(18px,2.6vw,32px);
+  border-left:2px solid var(--color-bronze);}
+.compte-bien__tete{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-s);}
+.compte-bien__chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-s);margin:var(--space-s) 0;}
+.compte-bien__chiffres dt{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.1em;text-transform:uppercase;color:var(--color-gris);}
+.compte-bien__chiffres dd{margin:2px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);font-size:1.4rem;color:var(--color-bronze);}
+.compte-estimation{margin:0 0 6px;color:var(--color-creme);}
+.compte-bien__liens{display:flex;flex-wrap:wrap;gap:var(--space-s);align-items:flex-start;margin-top:6px;}
+.compte-pieces__titre{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);margin:var(--space-m) 0 var(--space-xs);font-weight:500;}
+.compte-pieces{list-style:none;margin:0;padding:0;}
+.compte-piece{display:flex;justify-content:space-between;align-items:center;gap:var(--space-s);padding:14px 0;border-top:1px solid var(--color-ligne);}
+.compte-piece__texte{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.compte-piece__nom{color:var(--color-creme);font-weight:600;}
+.compte-piece__aide{color:var(--color-gris);font-size:var(--fs-small);}
+.compte-piece__recue{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);color:var(--color-bronze-clair);overflow-wrap:anywhere;}
+.depot{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none;max-width:50%;}
+.depot__champ{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}
+.depot__msg{margin:0;font-size:var(--fs-small);color:var(--color-gris);text-align:right;}
+.depot__msg--err{color:var(--color-bronze-clair);}
+:root .btn.btn.btn--petit{padding:9px 20px;font-size:var(--fs-small);min-height:0;}
+@media (max-width:560px){
+  .compte-piece{flex-direction:column;align-items:flex-start;}
+  .depot{align-items:flex-start;max-width:none;}
+  .depot__msg{text-align:left;}
+}
+.compte-estimer{margin-top:var(--space-xl);}
+/* La carte d'un bien à vendre est dessinée pour le crème : dans le compte,
+   sur fond sombre, elle garde son propre fond crème pour rester lisible. */
+.compte-correspondants .bien-carte{background:var(--color-creme);color:var(--color-noir);}
+.compte-reglages{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-m);align-items:flex-start;}
+.compte-reglages p{margin:var(--space-xs) 0;color:var(--color-creme);}
+.compte-fermer{max-width:420px;color:var(--color-gris);}
+.compte-fermer summary{cursor:pointer;color:var(--color-gris);font-size:var(--fs-small);}
+.compte-fermer[open] summary{margin-bottom:var(--space-s);}
+.compte-fermer .field-nav{justify-content:flex-start;}

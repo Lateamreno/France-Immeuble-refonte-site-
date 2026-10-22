@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { SITE } from "@/lib/site";
+import { PropositionCompte } from "./compte/PropositionCompte";
 
 /**
  * Formulaire de contact — repris du WordPress.
@@ -113,6 +114,7 @@ export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } 
             Nous joindre directement · {SITE.tel}
           </a>
         </div>
+        <PropositionCompte texte="Suivez votre demande de dossier dans votre compte." />
       </div>
     );
   }

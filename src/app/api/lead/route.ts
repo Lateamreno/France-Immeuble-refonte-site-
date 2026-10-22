@@ -1,6 +1,7 @@
 import { NextResponse, after } from "next/server";
 import { router, type Dossier } from "@/lib/routage";
 import { deposerLead, relancerFile } from "@/lib/leads";
+import { sessionCourante } from "@/lib/compte/auth";
 
 /**
  * Réception des leads — CLAUDE.md §2 et §9, contrat BO du 21/10/2026.
@@ -19,6 +20,7 @@ export const runtime = "nodejs";
 
 type Payload = Record<string, unknown> & Partial<Dossier> & { type?: string };
 
+/** Les formulaires publics. Les types du compte (§9.4) passent par /api/compte/. */
 const TYPES = new Set(["estimation", "recherche_acquereur", "contact"]);
 
 function nombreOuNull(v: unknown): number | null {
@@ -59,7 +61,15 @@ export async function POST(req: Request) {
     loyerAnnuel: nombreOuNull(body.loyerAnnuel),
   });
 
-  const lead = { ...body, ref, verdict, recuLe: new Date().toISOString() };
+  // Le champ `compte` (§9.4) ne vient JAMAIS du navigateur : sinon n'importe
+  // qui rattacherait un formulaire au compte d'un autre. Il est pris dans la
+  // session vérifiée, et seulement si l'adresse du compte est vérifiée.
+  const { compte: _ignore, ...propre } = body;
+  void _ignore;
+  const session = await sessionCourante();
+  const compte = session?.utilisateur.email_confirmed_at ? session.utilisateur.id : undefined;
+
+  const lead = { ...propre, ...(compte ? { compte } : {}), ref, verdict, recuLe: new Date().toISOString() };
   const issue = await deposerLead(lead);
 
   // Chaque lead qui arrive est l'occasion de vider la file : si le BO vient de
