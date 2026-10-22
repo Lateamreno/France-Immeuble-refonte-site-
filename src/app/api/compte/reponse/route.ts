@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { deposerLead } from "@/lib/leads";
 import { appartient } from "@/lib/compte/donnees";
-import { exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
+import { exigerCompte, lireJson, refus, texte, UUID, contexteDe } from "@/lib/compte/requete";
 
 export const runtime = "nodejs";
 
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     proposition,
     reponse,
     message: texte(b?.message, 1000),
-  });
+  }, { contexte: contexteDe(s.utilisateur) });
   if (issue === "perdu") return refus("Envoi impossible pour le moment. Réessayez.", 503);
   return NextResponse.json({ ok: true, stocke: issue });
 }

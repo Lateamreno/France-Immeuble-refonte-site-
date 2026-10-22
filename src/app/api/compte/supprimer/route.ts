@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { deposerLead } from "@/lib/leads";
 import { effacerSession, supprimerUtilisateur, uuidDe } from "@/lib/compte/auth";
 import { viderCompte } from "@/lib/compte/stockage";
-import { erreurEnReponse, exigerCompte, lireJson, refus } from "@/lib/compte/requete";
+import { erreurEnReponse, exigerCompte, lireJson, refus, contexteDe } from "@/lib/compte/requete";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const b = await lireJson(req);
   if (b?.confirmation !== "FERMER") return refus("Tapez FERMER pour confirmer.", 422);
   const id = s.utilisateur.id;
-  const issue = await deposerLead({ type: "compte_supprime", ref: uuidDe(`compte_supprime|${id}`), compte: id });
+  const issue = await deposerLead({ type: "compte_supprime", ref: uuidDe(`compte_supprime|${id}`), compte: id }, { contexte: contexteDe(s.utilisateur) });
   if (issue === "perdu") return refus("Fermeture impossible pour le moment. Réessayez.", 503);
   try {
     await viderCompte(id);

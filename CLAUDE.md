@@ -425,6 +425,11 @@ Canal d'acquisition n°1 — à ne pas improviser.
 - **Event GTM sur soumission réussie** (`form_submit_estimation`). Le tracking de conversion
   était défaillant : point à sécuriser.
 - Formspree est **abandonné** — le BO reçoit directement.
+- **Alerte de l'agence à chaque formulaire** (MAV, 22/10/2026) : le site envoie lui-même un
+  e-mail à `contact@` et `ma.voci@` (SendGrid, depuis `contact@france-immeuble.fr`,
+  Reply-To = le client), quel que soit le formulaire, même si le BO est en panne
+  (`src/lib/notifications.ts`). Aucun e-mail automatique vers le visiteur. Réglages :
+  `docs/COMPTE-CONFIGURATION.md`.
 
 ---
 

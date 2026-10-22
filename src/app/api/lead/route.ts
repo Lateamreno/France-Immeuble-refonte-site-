@@ -70,7 +70,12 @@ export async function POST(req: Request) {
   const compte = session?.utilisateur.email_confirmed_at ? session.utilisateur.id : undefined;
 
   const lead = { ...propre, ...(compte ? { compte } : {}), ref, verdict, recuLe: new Date().toISOString() };
-  const issue = await deposerLead(lead);
+  const u = compte ? session?.utilisateur : undefined;
+  const issue = await deposerLead(lead, {
+    contexte: u
+      ? { email: u.email, prenom: u.user_metadata?.prenom, nom: u.user_metadata?.nom, telephone: u.user_metadata?.telephone }
+      : {},
+  });
 
   // Chaque lead qui arrive est l'occasion de vider la file : si le BO vient de
   // répondre, ceux qui attendaient partent aussi. Après la réponse, pour ne pas

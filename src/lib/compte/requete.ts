@@ -1,6 +1,14 @@
 // Serveur uniquement.
 import { NextResponse } from "next/server";
-import { ErreurAuth, sessionCourante, type Connecte } from "./auth";
+import { ErreurAuth, sessionCourante, type Connecte, type Utilisateur } from "./auth";
+
+/** Les coordonnées du compte, pour l'alerte de l'agence (le dépôt au BO ne porte que la clé). */
+export const contexteDe = (u: Utilisateur) => ({
+  email: u.email,
+  prenom: u.user_metadata?.prenom,
+  nom: u.user_metadata?.nom,
+  telephone: u.user_metadata?.telephone,
+});
 
 /**
  * Une écriture du compte ne vient que de nos propres pages. Les cookies sont

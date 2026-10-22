@@ -1,46 +1,71 @@
-# Compte client : réglages à faire dans Supabase (projet du SITE)
+# E-mails du site et compte client : réglages à faire
 
-Le code du compte est en place (contrat BO §9 et §10). Ces réglages se font une
-fois, dans le tableau de bord Supabase du projet **France Immeuble site**
-(`omtkttpvfjsbnqsajcsp`). Aucun ne demande de clé dans le site.
+Deux sortes d'e-mails partent du site, tous par **SendGrid**, depuis
+`contact@france-immeuble.fr` :
 
-## 1. Envoi des e-mails (bloquant)
+1. **Les alertes de l'agence** : un e-mail à `contact@` et à `ma.voci@` à
+   chaque formulaire rempli (vente, estimation, recherche, contact, demande de
+   dossier, compte client et actions dans le compte). Envoyées par le site
+   lui-même, même si le BO est en panne.
+2. **Les e-mails du compte client** : seulement le lien de vérification de
+   l'adresse et le lien « mot de passe oublié ». Envoyés par Supabase Auth.
+   Aucun autre e-mail ne part vers le client (contrat BO §9.1).
 
-Sans serveur d'envoi à vous, Supabase n'envoie les e-mails de vérification
-qu'aux adresses des membres de l'équipe Supabase, et deux par heure au plus.
-Un client ne recevrait jamais son lien.
+Le domaine `france-immeuble.fr` est déjà authentifié chez SendGrid (clés
+DKIM `s1` et `s2` en place chez OVH, vérifié le 22/10/2026) : rien à changer
+dans le DNS.
 
-**Authentication → Emails → SMTP Settings** : activer « Custom SMTP ».
+## 1. SendGrid
 
-- Expéditeur : `noreply@france-immeuble.fr`, nom « France Immeuble ».
-- Serveur : celui de votre messagerie (OVH, Brevo, Resend…). Hôte, port,
-  identifiant et mot de passe se saisissent dans Supabase, jamais dans le site.
+- **Settings → Sender Authentication → Domain Authentication** :
+  `france-immeuble.fr` doit être « Verified ».
+- **Settings → Tracking** : tout sur Off (Click, Open, Subscription, Google
+  Analytics). Le suivi réécrit les liens et ajoute un pixel : mauvais pour la
+  délivrabilité et soumis à consentement (CNIL).
+- **Settings → API Keys → Create API Key → Restricted Access**, droit unique
+  **Mail Send : Full Access**. Deux clés, jamais celle du BO :
+  - `site-notifications` pour Vercel ;
+  - `site-supabase` pour Supabase.
 
-Seuls deux e-mails partent : la vérification de l'adresse à la création du
-compte, et le lien « mot de passe oublié » quand la personne le demande.
-Aucun autre e-mail automatique (§9.1).
+## 2. Vercel (alertes de l'agence)
 
-## 2. Adresses de retour
+Projet `france-immeuble-refonte-site` → Settings → Environment Variables :
+
+| Nom | Valeur |
+|---|---|
+| `SENDGRID_API_KEY` | la clé `site-notifications` |
+| `SITE_NOTIF_FROM` | `contact@france-immeuble.fr` |
+| `SITE_NOTIF_DESTINATAIRES` | `contact@france-immeuble.fr,ma.voci@france-immeuble.fr` |
+
+Puis redéployer (Deployments → … → Redeploy) pour que les variables soient lues.
+
+## 3. Supabase (e-mails du compte client)
+
+Projet **France Immeuble site** (`omtkttpvfjsbnqsajcsp`).
+
+**Authentication → Emails → SMTP Settings → Enable Custom SMTP**
+
+| Champ | Valeur |
+|---|---|
+| Sender email | `contact@france-immeuble.fr` |
+| Sender name | `France Immeuble` |
+| Host | `smtp.sendgrid.net` |
+| Port | `587` |
+| Username | `apikey` (ce mot, littéralement) |
+| Password | la clé `site-supabase` |
 
 **Authentication → URL Configuration**
 
 - Site URL : `https://www.france-immeuble.fr`
 - Redirect URLs, une par ligne :
   - `https://www.france-immeuble.fr/**`
-  - `https://*-lateamrenos-projects.vercel.app/**` (les previews)
-
-Sans elles, le lien reçu par e-mail renvoie sur la page d'accueil au lieu de
-`/mon-compte/confirmer/`.
-
-## 3. Règles du compte
+  - `https://*-lateamrenos-projects.vercel.app/**`
 
 **Authentication → Sign In / Providers → Email**
 
-- Confirm email : **activé** (le compte n'est rattaché au BO qu'après).
+- Confirm email : activé.
 - Secure password change : activé.
 - Minimum password length : 8.
-
-## 4. Modèles d'e-mail en français
 
 **Authentication → Emails → Templates**
 
@@ -64,19 +89,20 @@ Sans elles, le lien reçu par e-mail renvoie sur la page d'accueil au lieu de
 <p>France Immeuble · 66 avenue des Champs-Élysées, 75008 Paris · 01 72 87 52 22</p>
 ```
 
-## 5. Limites de débit
-
 **Authentication → Rate Limits** : toutes les connexions passent par les
-serveurs du site (Vercel). Supabase les voit donc venir de quelques adresses
-seulement. Monter « Sign-ups and sign-ins » à 100 par 5 minutes et « Token
-refreshes » à 300 par 5 minutes.
+serveurs du site, Supabase les voit venir de quelques adresses seulement.
+« Sign-ups and sign-ins » à 100 par 5 minutes, « Token refreshes » à 300 par
+5 minutes. « Emails sent » à 100 par heure.
+
+## 4. OVH
+
+`contact@france-immeuble.fr` doit exister (boîte ou redirection vers ma.voci) :
+c'est l'adresse que voient les clients, leurs réponses doivent arriver.
 
 ## Ce qui est déjà fait
 
-- Les tables `compte_recherches`, `compte_propositions`, `compte_demandes`,
-  `compte_biens`, `compte_estimations`, `compte_documents` (migration 0008) :
-  lecture par le seul titulaire du compte, écriture par la clé secrète.
-- Le seau privé `depots-proprietaires` : aucune lecture publique, 25 Mo, formats
-  du §10.2.
-- La session vit dans deux cookies httpOnly ; rien dans le stockage du
-  navigateur.
+- Les tables du compte (migration 0008), lisibles par leur seul titulaire.
+- Le seau privé `depots-proprietaires`.
+- La session du compte dans deux cookies httpOnly, rien dans le navigateur.
+- Les alertes : `src/lib/notifications.ts`, inactives tant que les variables
+  Vercel ne sont pas posées.

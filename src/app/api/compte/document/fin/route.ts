@@ -3,7 +3,7 @@ import { deposerLead } from "@/lib/leads";
 import { appartient } from "@/lib/compte/donnees";
 import { contenuConforme, controlerAnnonce, estCategorie } from "@/lib/compte/pieces";
 import { deposerObjet, effacerObjets, extension, FORMATS, lireObjet, nomDeFichier, TAILLE_MAX } from "@/lib/compte/stockage";
-import { exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
+import { exigerCompte, lireJson, refus, texte, UUID, contexteDe } from "@/lib/compte/requete";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
   const issue = await deposerLead(
     { type: "document", ref: depot, compte, bien, categorie, chemin, nom },
-    { refusDefinitif: true },
+    { refusDefinitif: true, contexte: contexteDe(s.utilisateur) },
   );
   if (issue === "refuse") {
     await effacerObjets([chemin]);
