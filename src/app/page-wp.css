@@ -132,19 +132,9 @@
 .prose div:has(> h6) p { grid-column: 2; margin: 0; font-size: var(--fs-small); max-width: 52ch; }
 
 /* --- 6. Boutons ----------------------------------------------------------
-   Le markup repris porte `btn btn--primary` en dur. Or le §5 impose, sur
-   fond clair : fond noir, texte blanc. Du bronze #C19B6E sur du crème
-   #EFE9DE donne 2,1:1 — le bouton se dissout dans le fond. L'arbitrage se
-   fait au sélecteur, sans toucher au HTML. */
-.section--creme .prose .btn--primary {
-  background: var(--color-noir); color: #FFF; box-shadow: var(--btn-shadow);
-}
-.section--creme .prose .btn--primary:hover { background: var(--color-bronze-hover); color: #FFF; }
-/* Deux CTA du même poids, c'est aucun CTA : le second redevient secondaire. */
-.prose div:has(> div > p.prose-cta) > div:nth-child(n+2) .btn--primary {
-  background: transparent; color: var(--color-noir);
-  border-color: rgba(10, 10, 10, .28); box-shadow: none;
-}
+   Le markup repris porte `btn btn--primary` en dur. Depuis le 22/10/2026,
+   MAV veut tous les boutons en or, texte noir (§5) : aucune exception ici,
+   la règle globale de globals.css s'applique telle quelle. */
 .prose div:has(> div > p.prose-cta) {
   display: flex; flex-wrap: wrap; gap: var(--space-xs);
   align-items: center; margin-block: var(--space-m);

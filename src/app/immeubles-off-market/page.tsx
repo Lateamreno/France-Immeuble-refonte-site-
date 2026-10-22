@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { chiffres } from "@/lib/chiffres";
+import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -58,7 +60,7 @@ const heure = (iso: string) =>
   });
 
 export default async function ImmeublesOffMarket() {
-  const [{ stats }, communes] = await Promise.all([ventesEtStats(), offMarket()]);
+  const [{ stats }, communes, ch] = await Promise.all([ventesEtStats(), offMarket(), chiffres()]);
   const total = communes.reduce((s, c) => s + c.nombre, 0);
   // Paris 8e et Paris 18e sont deux cartes, mais une seule commune.
   const nbCommunes = new Set(communes.map((c) => `${c.dept}|${c.commune}`)).size;
@@ -75,10 +77,12 @@ export default async function ImmeublesOffMarket() {
       <HeroMedia image={VISUELS.fenetresHeureBleue.src} alt={VISUELS.fenetresHeureBleue.alt}>
         <>
           <Eyebrow>Nos biens · off-market</Eyebrow>
-          <h1>Les immeubles que personne ne voit passer</h1>
+          <h1>
+            Les immeubles que <span className="accent">personne ne voit passer</span>
+          </h1>
           <p className="lead">
-            La plupart de nos mandats ne sont jamais diffusés. Ils partent directement à notre
-            fichier d’acquéreurs&nbsp;— et c’est précisément ce que le vendeur achète.
+            La plupart de nos immeubles de rapport partent sans annonce, directement aux
+            acquéreurs de notre fichier. C’est précisément ce que le vendeur achète.
           </p>
           <div className="btn-row">
             <Button href="#deposer" icone>
@@ -107,7 +111,7 @@ export default async function ImmeublesOffMarket() {
             {RAISONS.map((r, i) => (
               <Reveal key={r.titre} as="article" className="card card--medaillon" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
-                  <Picto nom={r.picto} taille={190} />
+                  <Picto nom={r.picto} taille={96} />
                 </span>
                 <span className="card__picto" aria-hidden="true">
                   <Picto nom={r.picto} taille={30} />
@@ -171,14 +175,8 @@ export default async function ImmeublesOffMarket() {
               précise, plus tôt vous êtes appelé.
             </p>
             <div className="hero-proof" style={{ marginTop: "var(--space-l)" }}>
-              <span className="hero-proof__item">
-                <span className="hero-proof__val">{nombre(PREUVES.investisseurs)}</span>
-                <span className="hero-proof__lbl">acquéreurs dans le fichier</span>
-              </span>
-              <span className="hero-proof__item">
-                <span className="hero-proof__val">{stats.villes}</span>
-                <span className="hero-proof__lbl">communes où nous avons vendu</span>
-              </span>
+              <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="acquéreurs dans le fichier" />
+              <Chiffre picto="secteur" valeur={stats.villes} libelle="communes où nous avons vendu" />
             </div>
           </Reveal>
 

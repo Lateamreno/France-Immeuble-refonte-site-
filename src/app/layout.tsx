@@ -31,7 +31,10 @@ const scriptJs = `document.documentElement.classList.add('js');`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={fontVariables} suppressHydrationWarning>
+    /* `data-scroll-behavior` : Next suspend le défilement doux le temps d'un
+       changement de page. Sans lui, l'animation vers le haut était interrompue
+       et Vendre ou Estimer s'ouvraient déjà défilées (MAV, 22/10/2026). */
+    <html lang="fr" className={fontVariables} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: scriptJs }} />
       </head>

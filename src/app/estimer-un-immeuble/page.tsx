@@ -69,7 +69,9 @@ export default function EstimerUnImmeuble() {
           {/* « Estimer un immeuble » est le H1 d'origine : il reste sur la page,
               en surtitre, et le titre visuel prend la place qui est la sienne. */}
           <Eyebrow>Estimer un immeuble</Eyebrow>
-          <h1>Découvrez tout le potentiel de votre immeuble</h1>
+          <h1>
+            Découvrez tout le <span className="accent">potentiel</span> de votre immeuble
+          </h1>
           {/* Les deux textes d'origine étaient fusionnés ici : sept lignes
               d'accroche dans un hero. Le second descend d'une section, là où
               il a la place d'être lu. Rien n'est retiré. */}

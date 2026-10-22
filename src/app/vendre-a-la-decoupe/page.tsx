@@ -207,13 +207,13 @@ export default function Decoupe() {
       >
         <>
           <Eyebrow>Vente à la découpe</Eyebrow>
-          <h1 style={{ maxWidth: "19ch", marginBottom: "var(--space-m)" }}>
+          <h1>
             La marge du marchand de biens,{" "}
             <span className="accent">sans lui vendre votre immeuble</span>
           </h1>
-          <p className="lead" style={{ maxWidth: "60ch" }}>
+          <p className="lead">
             Celui qui rachète votre immeuble en bloc pour le découper fait un métier. Il le met en
-            copropriété, négocie les départs, rénove, revend lot par lot — et garde l’écart. Nous
+            copropriété, négocie les départs, rénove, revend lot par lot, et garde l’écart. Nous
             faisons ce travail pour vous, et l’écart vous revient.
           </p>
           <div className="btn-row">

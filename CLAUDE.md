@@ -258,14 +258,26 @@ sur les fichiers du repo.
 - **Forme** : pilule stricte, `border-radius: var(--radius-pill)` sur les 4 côtés. Jamais 8 px.
 - **Texte centré** horizontalement, même avec icône. Icône à droite, `gap: 10px`.
 - **Padding** : `var(--btn-padding)`.
-- **Sur fond clair** : fond `--color-noir`, texte blanc, hover `--color-bronze-hover`,
-  ombre `--btn-shadow`.
-- **Sur fond sombre** : CTA principal plein `--color-bronze` texte `--color-noir` ;
-  CTA secondaire en outline bronze 1 px, hover fond bronze.
+- **Couleur — décision de MAV du 22/10/2026, remplace la règle fond clair / fond sombre** :
+  tous les boutons sont **pleins `--color-bronze`, texte `--color-noir`**, sur tous les fonds,
+  hover `--color-bronze-clair-2`. Plus de bouton noir sur crème, plus de contour.
+- **Jamais de flèche** dans un bouton.
+- **Centrés** dans leur bloc, sauf dans le hero où ils suivent le texte aligné à gauche.
 - Focus clavier visible obligatoire :
   `outline: 2px solid var(--color-bronze-clair); outline-offset: 3px`.
 
 ---
+
+### Hero — modèle unique (MAV, 22/10/2026)
+
+Chaque page, et toute page future, ouvre sur le hero de `/acheter-un-immeuble/` (composant
+`HeroMedia`) : image pleine largeur et **pleine hauteur d'écran** (`100svh`), surtitre or clair,
+titre blanc avec les **mots importants en or** (`<span className="accent">`), courte
+description blanche, petite flèche or discrète vers le bas. La barre de menu, fixe, est
+transparente au-dessus du hero et devient noire floutée au défilement.
+
+Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto qui en dit
+l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
 
 ## 6. Structure du site
 

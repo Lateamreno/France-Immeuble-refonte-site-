@@ -37,7 +37,7 @@ export function CarteVente({ v }: { v: Vente }) {
   const suite = [
     v.delaiOffreJours != null ? `Offre en ${delaiOffre(v.delaiOffreJours)}` : null,
     AFFICHER_ECART_ESTIMATION && v.ecartEstimation != null
-      ? `${pct(v.ecartEstimation, true)}\u00a0vs\u00a0estimation`
+      ? `Meilleure offre ${pct(v.ecartEstimation, true)}\u00a0vs\u00a0estimation`
       : null,
   ].filter(Boolean);
 

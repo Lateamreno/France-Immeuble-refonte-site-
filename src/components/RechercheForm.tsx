@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowIcon } from "./ArrowIcon";
 import { SITE } from "@/lib/site";
 
 /**
@@ -162,7 +161,7 @@ export function RechercheForm() {
         </p>
         <div className="btn-row">
           <a className="btn btn--primary" href={SITE.telHref}>
-            Appeler · {SITE.tel} <ArrowIcon />
+            Appeler · {SITE.tel}
           </a>
         </div>
       </div>
@@ -183,7 +182,7 @@ export function RechercheForm() {
         </p>
         <div className="btn-row">
           <a className="btn btn--primary" href={SITE.telHref}>
-            Appeler · {SITE.tel} <ArrowIcon />
+            Appeler · {SITE.tel}
           </a>
           <a className="btn btn--outline" href="/contactez-nous/">
             Être rappelé
@@ -303,7 +302,7 @@ export function RechercheForm() {
       <div className="field-nav">
         <button type="submit" className="btn btn--primary" disabled={envoi}>
           {envoi ? "Envoi…" : rs.length > 1 ? "Déposer mes recherches" : "Déposer ma recherche"}{" "}
-          {!envoi && <ArrowIcon />}
+         
         </button>
       </div>
     </form>

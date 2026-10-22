@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -27,26 +28,32 @@ import { SITE } from "@/lib/site";
  */
 export const metadata: Metadata = metadonneesWP("/vendre-un-immeuble/");
 
+/* Les illustrations sont celles de l'ancien site, reprises à la demande de MAV
+   (22/10/2026) : cartes de visite, calculatrice, loupe, ordinateur. */
 const ETAPES = [
   {
     num: "1/4",
+    image: "/media/img-carte-3.webp",
     titre: "Parlons-nous",
     texte: "Faites-nous part de votre projet en ligne, par mail ou par téléphone",
   },
   {
     num: "2/4",
+    image: "/media/img-carte-2.webp",
     titre: "Estimation",
     texte:
       "Nous déterminons le prix de vente maximum de votre immeuble selon ses atouts et le type d’acheteurs ciblé",
   },
   {
     num: "3/4",
+    image: "/media/img-carte-1.webp",
     titre: "Commercialisation",
     texte:
       "Grâce à nos outils spécifiques et à notre réseau, nous trouvons le meilleur acheteur pour votre immeuble",
   },
   {
     num: "4/4",
+    image: "/media/img-carte.webp",
     titre: "Finalisation de la vente",
     texte:
       "Nous vous accompagnons dans les négociations puis nous occupons de toutes les démarches jusqu’à la vente",
@@ -61,25 +68,25 @@ const ATOUTS: { picto: NomPicto; titre: string; texte: string }[] = [
       "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
   },
   {
-    picto: "stats",
+    picto: "loupeCible",
     titre: "Commercialisation optimisée",
     texte:
       "Nos dossiers sont conçus pour les immeubles et adaptés au type d’acheteur ciblé pour faciliter leur prise de décision.",
   },
   {
-    picto: "poignee",
+    picto: "ecoute",
     titre: "Conseils et un suivi complet",
     texte:
       "Nos conseillers sont à votre disposition pour tout conseil sur les sujets propres aux immeubles avant, pendant et après la vente.",
   },
   {
-    picto: "best",
+    picto: "euro",
     titre: "Le meilleur prix pour votre immeuble",
     texte:
       "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
   },
   {
-    picto: "business",
+    picto: "equipe",
     titre: "Agents spécialisés",
     texte:
       "Nos agents basés à Paris et Bordeaux sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
@@ -105,7 +112,9 @@ export default function VendreUnImmeuble() {
       <HeroMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
         <>
           <Eyebrow>Vendre un immeuble &middot; Valorisation</Eyebrow>
-          <h1>Vendez votre immeuble au meilleur prix</h1>
+          <h1>
+            Vendez votre immeuble <span className="accent">au meilleur prix</span>
+          </h1>
           <p className="lead">
             France Immeuble estime, valorise et trouve le meilleur acheteur pour votre immeuble.
           </p>
@@ -122,7 +131,7 @@ export default function VendreUnImmeuble() {
           <div className="grid grid--2">
             <Reveal as="article" className="card card--medaillon">
               <span className="card__fond" aria-hidden="true">
-                <Picto nom="calculatrice" taille={190} />
+                <Picto nom="calculatrice" taille={96} />
               </span>
               <span className="card__picto" aria-hidden="true">
                 <Picto nom="calculatrice" taille={30} />
@@ -136,7 +145,7 @@ export default function VendreUnImmeuble() {
             </Reveal>
             <Reveal as="article" className="card card--medaillon" delayIndex={1}>
               <span className="card__fond" aria-hidden="true">
-                <Picto nom="poignee" taille={190} />
+                <Picto nom="poignee" taille={96} />
               </span>
               <span className="card__picto" aria-hidden="true">
                 <Picto nom="poignee" taille={30} />
@@ -167,8 +176,11 @@ export default function VendreUnImmeuble() {
 
           <div className="steps">
             {ETAPES.map((e, i) => (
-              <Reveal key={e.num} as="article" className="step" delayIndex={i}>
+              <Reveal key={e.num} as="article" className="step step--illustre" delayIndex={i}>
                 <span className="step__dot" aria-hidden="true" />
+                <span className="step__visuel" aria-hidden="true">
+                  <Image src={e.image} alt="" width={445} height={390} sizes="150px" />
+                </span>
                 <span className="step__num">{e.num}</span>
                 <h3>{e.titre}</h3>
                 <p>{e.texte}</p>
@@ -188,7 +200,7 @@ export default function VendreUnImmeuble() {
             {ATOUTS.map((a, i) => (
               <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
-                  <Picto nom={a.picto} taille={190} />
+                  <Picto nom={a.picto} taille={96} />
                 </span>
                 <span className="card__picto" aria-hidden="true">
                   <Picto nom={a.picto} taille={30} />

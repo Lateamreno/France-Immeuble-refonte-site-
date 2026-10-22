@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ArrowIcon } from "./ArrowIcon";
 import { SITE } from "@/lib/site";
 
 /**
@@ -96,7 +95,7 @@ export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } 
         <p>Un incident technique nous empêche de l’enregistrer. Appelez-nous directement.</p>
         <div className="btn-row">
           <a className="btn btn--primary" href={SITE.telHref}>
-            Appeler · {SITE.tel} <ArrowIcon />
+            Appeler · {SITE.tel}
           </a>
         </div>
       </div>
@@ -212,7 +211,7 @@ export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } 
 
       <div className="field-nav">
         <button type="submit" className="btn btn--primary" disabled={envoi}>
-          {envoi ? "Envoi…" : "Envoyer"} {!envoi && <ArrowIcon />}
+          {envoi ? "Envoi…" : "Envoyer"}
         </button>
       </div>
     </form>

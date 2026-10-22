@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { nombre } from "@/lib/site";
+import { chiffres } from "@/lib/chiffres";
+import { Chiffre } from "@/components/Chiffre";
 import Image from "next/image";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -21,14 +24,24 @@ import { Avis } from "@/components/Avis";
  */
 export const metadata: Metadata = metadonneesWP("/");
 
-export default function Accueil() {
+export default async function Accueil() {
+  const ch = await chiffres();
+  /* Les trois compteurs de recherches : déposés par le BO (table `chiffres`),
+     les textes restent ceux du WordPress. */
+  const recherches = [
+    { ...RECHERCHES[0], val: nombre(ch.recherchesPatrimonial), picto: "immeubles" as const },
+    { ...RECHERCHES[1], val: nombre(ch.recherchesInvestisseur), picto: "financier" as const },
+    { ...RECHERCHES[2], val: nombre(ch.recherchesMarchand), picto: "business" as const },
+  ];
   return (
     <>
       <HeroMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
         <>
           <Eyebrow>Vente en bloc &middot; Off-market</Eyebrow>
           {/* H1 gelé au caractère près — §10. */}
-          <h1>L’agence dédiée aux immeubles</h1>
+          <h1>
+            L’agence dédiée aux <span className="accent">immeubles</span>
+          </h1>
           <p className="lead">
             Estimation et commercialisation conçues pour les immeubles.
           </p>
@@ -40,11 +53,8 @@ export default function Accueil() {
           {/* Les trois compteurs étaient au troisième écran, un par écran.
               Ils disent ce que le réseau cherche : c'est la preuve du site. */}
           <div className="hero-proof">
-            {RECHERCHES.map((r) => (
-              <div className="hero-proof__item" key={r.val}>
-                <span className="hero-proof__val">{r.val}</span>
-                <span className="hero-proof__lbl">{r.lbl}</span>
-              </div>
+            {recherches.map((r) => (
+              <Chiffre key={r.lbl} picto={r.picto} valeur={r.val} libelle={r.lbl} />
             ))}
           </div>
         </>
@@ -118,8 +128,8 @@ export default function Accueil() {
           </Reveal>
 
           <div className="grid grid--3">
-            {RECHERCHES.map((r, i) => (
-              <Reveal key={r.val} as="article" className="card" delayIndex={i}>
+            {recherches.map((r, i) => (
+              <Reveal key={r.lbl} as="article" className="card" delayIndex={i}>
                 <span className="stat-number">{r.val}</span>
                 <span className="stat-label" style={{ marginTop: 6, display: "block" }}>
                   {r.lbl}

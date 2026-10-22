@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Eyebrow } from "@/components/Eyebrow";
+import { HeroMedia } from "@/components/HeroMedia";
+import { VISUELS } from "@/lib/visuels";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
@@ -94,8 +95,14 @@ export default async function ArticlePage({ params }: Params) {
       />
 
       <article className="article">
-        <header className="article__tete section section--noir">
-          <div className="container container--narrow">
+        {/* Le hero de chaque page, articles compris (MAV, 22/10/2026) : l'image
+            de l'article en plein écran derrière le titre. */}
+        <HeroMedia
+          image={a.imageUne ?? VISUELS.interieurToits.src}
+          alt={a.imageUne ? (a.imageUneAlt ?? "") : VISUELS.interieurToits.alt}
+          className="article__tete"
+        >
+          <>
             <Eyebrow>
               <Link href="/blog/">Blog</Link>
             </Eyebrow>
@@ -105,21 +112,8 @@ export default async function ArticlePage({ params }: Params) {
               <span aria-hidden="true"> · </span>
               {dureeLecture(a.contenuHtml)} min de lecture
             </p>
-          </div>
-        </header>
-
-        {a.imageUne && (
-          <div className="article__une">
-            <Image
-              src={a.imageUne}
-              alt={a.imageUneAlt ?? ""}
-              width={1400}
-              height={788}
-              sizes="(max-width: 880px) 100vw, 880px"
-              priority
-            />
-          </div>
-        )}
+          </>
+        </HeroMedia>
 
         {/*
           Corps sur fond crème, à rebours du reste du site : un texte long se

@@ -7,16 +7,27 @@ import type { SVGProps } from "react";
  * faudrait servir un fichier par couleur de fond. Ici le picto prend la
  * couleur de son contexte — bronze sur sombre, bronze profond sur crème.
  *
- * Dessin : grille 24, trait 1.5, bouts arrondis, aucun disque de fond. Les
+ * Dessin : grille 24, trait 1.5, bouts arrondis, aucun disque de fond.
+ * La poignée de main reprend le tracé « handshake » de Lucide (licence ISC) :
+ * la version dessinée à la main ne se lisait pas comme une poignée de main. Les
  * fichiers d'origine portaient un dégradé or à six arrêts, c'est-à-dire une
  * seconde couleur d'accent, que le §3 interdit.
  */
 export type NomPicto =
   | "secteur" | "technique" | "financier" | "constructibilite" | "cible"
   | "reseau" | "stats" | "augmentation" | "poignee" | "best" | "business"
-  | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier";
+  | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier"
+  | "loupeCible" | "ecoute" | "euro" | "equipe";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
+  // Loupe sur une cible — commercialisation ciblée
+  loupeCible: <><circle cx="10" cy="10" r="6.6"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="1" fill="currentColor" stroke="none"/><path d="m14.8 14.8 5.7 5.7" strokeWidth="2.2"/></>,
+  // Une personne en écoute une autre — conseil
+  ecoute: <><circle cx="5.8" cy="12.6" r="2.2"/><path d="M2 21c.4-3 1.8-4.6 3.8-4.6s3.4 1.6 3.8 4.6"/><circle cx="18.2" cy="12.6" r="2.2"/><path d="M14.4 21c.4-3 1.8-4.6 3.8-4.6s3.4 1.6 3.8 4.6"/><path d="M3.6 2.6h6a1.2 1.2 0 0 1 1.2 1.2v1.8a1.2 1.2 0 0 1-1.2 1.2H6.4L4.6 8.3V6.8h-1a1.2 1.2 0 0 1-1.2-1.2V3.8a1.2 1.2 0 0 1 1.2-1.2Z"/><path d="M14 11.2a2.2 2.2 0 0 0 0 2.8M12.3 10a4 4 0 0 0 0 5.2"/></>,
+  // Euro et flèche montante — valorisation
+  euro: <><path d="M15.4 7.4a5.6 5.6 0 1 0 0 9.2"/><path d="M4.6 10.8h7.6M4.6 13.6h7.6"/><path d="M20 17V5m0 0-2 2m2-2 2 2"/></>,
+  // Trois personnes en cravate — agents
+  equipe: <><circle cx="12" cy="7.2" r="2.6"/><path d="M7.4 20.5c.5-4.3 2.3-6.5 4.6-6.5s4.1 2.2 4.6 6.5"/><path d="M12 14.2l-.9 1.4.9 3.4.9-3.4z" fill="currentColor" strokeWidth=".8"/><circle cx="5" cy="9.4" r="2.1"/><path d="M1.5 19.5c.4-3.3 1.7-4.9 3.5-4.9.7 0 1.3.2 1.8.6"/><path d="M5 14.9l-.6 1 .6 2.4.6-2.4z" fill="currentColor" strokeWidth=".7"/><circle cx="19" cy="9.4" r="2.1"/><path d="M22.5 19.5c-.4-3.3-1.7-4.9-3.5-4.9-.7 0-1.3.2-1.8.6"/><path d="M19 14.9l-.6 1 .6 2.4.6-2.4z" fill="currentColor" strokeWidth=".7"/></>,
   // Secteur — repère sur un plan
   secteur: <><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></>,
   // Technique — élévation d'immeuble, niveaux marqués
@@ -24,14 +35,14 @@ const TRACES: Record<NomPicto, React.ReactNode> = {
   // Financier — courbe de rendement
   financier: <><path d="M3.5 20.5h17" /><path d="M4 16.4l4.6-4.6 3.3 3.3 7.6-7.6" /><path d="M15 7.5h4.5V12" /><circle cx="19.5" cy="7.5" r="1.1" fill="currentColor" stroke="none" /></>,
   // Constructibilité — volume bâti et surélévation en pointillé
-  constructibilite: <><path d="M4 20.5V12h10v8.5" /><path d="M3 20.5h18" /><path d="M4 12V7.5h10V12" strokeDasharray="2.4 2.4" /><path d="M18 20.5V8.5m0 0-1.8 1.8M18 8.5l1.8 1.8" /></>,
+  constructibilite: <><path d="M4 20.5V10h10v10.5"/><path d="M3 20.5h18"/><path d="M8.1 20.5v-3h1.8v3"/><path d="M5.9 12h1.6v1.6H5.9zM10.5 12h1.6v1.6h-1.6zM5.9 15.2h1.6v1.6H5.9zM10.5 15.2h1.6v1.6h-1.6z" strokeWidth="1"/><path d="M9 3.6H4V10M9 3.6h5V10" strokeDasharray="2 2"/><path d="M18 20.5V8.5m0 0-1.8 1.8M18 8.5l1.8 1.8"/></>,
   // Cible — le critère qui sélectionne
   cible: <><rect x="3.5" y="3.5" width="17" height="17" rx="1.5" /><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17" /><rect x="9.2" y="9.2" width="5.6" height="5.6" fill="currentColor" stroke="none" /></>,
   // Réseau d'acheteurs
   reseau: <><circle cx="12" cy="4.8" r="2.3" /><circle cx="4.8" cy="18" r="2.3" /><circle cx="19.2" cy="18" r="2.3" /><path d="M12 7.1v4.4m0 0-5.3 4.3M12 11.5l5.3 4.3" /></>,
   stats: <><path d="M3.5 20.5h17" /><path d="M6.8 20.5v-5.2M11.3 20.5V9.4M15.8 20.5v-7.6M20 20.5V5.2" /></>,
   augmentation: <><path d="M3.5 16.5 9 11l3.5 3.5L20.5 6.5" /><path d="M15.5 6.5h5v5" /></>,
-  poignee: <><path d="M2.5 10.2 6 6.8h3.4L12 9l2.6-2.2H18l3.5 3.4" /><path d="M21.5 10.2v4.2L18 17.8l-3-2.6-2.1 1.3a1.8 1.8 0 0 1-2.2-.3L7.4 13" /><path d="M2.5 10.2v4.2L6 17.8" /></>,
+  poignee: <><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></>,
   best: <><circle cx="12" cy="9" r="5.3" /><path d="m12 6.6 1 2 2.2.3-1.6 1.6.4 2.2-2-1.1-2 1.1.4-2.2L8.8 8.9l2.2-.3 1-2Z" /><path d="M8.4 13.8 7 21l5-2.5L17 21l-1.4-7.2" /></>,
   business: <><rect x="2.5" y="7.2" width="19" height="12.3" rx="2" /><path d="M8.4 7.2V5.6a1.8 1.8 0 0 1 1.8-1.8h3.6a1.8 1.8 0 0 1 1.8 1.8v1.6" /><path d="M2.5 12.4h19M10.4 12.4h3.2" /></>,
   immeubles: <><path d="M3.5 20.5V8l6-3.2v4.4L15 6.6v4l5.5-2.4v12.3" /><path d="M2.5 20.5h19" /><path d="M6.3 12.2v1.4M6.3 16.1v1.4M12 12.5v1.4M12 16.2v1.4M17.6 12.3v1.4M17.6 16.1v1.4" /></>,

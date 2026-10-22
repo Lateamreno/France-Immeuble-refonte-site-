@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -44,19 +45,16 @@ export default async function ImmeublesAVendre() {
       <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt}>
         <>
           <Eyebrow>Nos biens · à vendre</Eyebrow>
-          <h1>Les immeubles que nous commercialisons</h1>
+          <h1>
+            Les immeubles que nous <span className="accent">commercialisons</span>
+          </h1>
           <p className="lead">
-            Surface, lots, loyers, rendement et prix. Tout ce qu’il faut pour décider s’il vaut
-            le déplacement&nbsp;— sauf l’adresse, communiquée à la demande.
+            Immeubles de rapport à vendre : surface, lots, loyers, rendement et prix. Tout ce qu’il
+            faut pour décider s’il vaut le déplacement. L’adresse est communiquée à la demande.
           </p>
           {biens.length > 0 && (
             <div className="hero-proof">
-              <span className="hero-proof__item">
-                <span className="hero-proof__val">{enVente}</span>
-                <span className="hero-proof__lbl">
-                  immeuble{enVente > 1 ? "s" : ""} en vente
-                </span>
-              </span>
+              <Chiffre picto="immeubles" valeur={enVente} libelle={`immeuble${enVente > 1 ? "s" : ""} en vente`} />
             </div>
           )}
         </>

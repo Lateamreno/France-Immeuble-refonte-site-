@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Eyebrow } from "@/components/Eyebrow";
+import { HeroMedia } from "@/components/HeroMedia";
+import { VISUELS } from "@/lib/visuels";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
@@ -50,17 +52,19 @@ export default async function BlogPage() {
         }}
       />
 
-      <section className="section section--noir">
-        <div className="container container--narrow">
+      <HeroMedia image={VISUELS.interieurToits.src} alt={VISUELS.interieurToits.alt}>
+        <>
           <Eyebrow>Blog</Eyebrow>
-          <h1>Vendre, estimer, arbitrer&nbsp;: ce qu’il faut savoir</h1>
+          <h1>
+            Vendre, estimer, arbitrer&nbsp;: <span className="accent">ce qu’il faut savoir</span>
+          </h1>
           <p className="lead">
             Ce que nous observons en vendant des immeubles de rapport, en bloc et à la découpe&nbsp;:
             droit de préemption, DPE, promoteurs, marché parisien. Écrit pour des propriétaires
             d’immeubles, pas pour des primo-accédants.
           </p>
-        </div>
-      </section>
+        </>
+      </HeroMedia>
 
       <section className="section">
         <div className="container container--narrow">

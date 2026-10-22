@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowIcon } from "./ArrowIcon";
 
 type Variante = "primary" | "outline" | "light" | "ghost-dark";
 
 /**
- * Bouton — CLAUDE.md §5. Pilule stricte sur les 4 côtés, texte centré même
- * avec icône, icône à droite. Aucune variante ne doit déroger à la forme.
+ * Bouton — CLAUDE.md §5. Pilule stricte sur les 4 côtés, texte centré.
+ * Depuis le 22/10/2026 (MAV) : toujours or, texte noir, sans flèche, quelle
+ * que soit la variante. `variant` et `icone` restent acceptés pour ne pas
+ * toucher chaque appel ; la flèche n'est plus dessinée.
  */
 export function Button({
   href,
@@ -29,12 +30,8 @@ export function Button({
   const externe =
     href.startsWith("tel:") || href.startsWith("mailto:") ||
     href.startsWith("http") || href.startsWith("#");
-  const contenu = (
-    <>
-      {children}
-      {icone && <ArrowIcon />}
-    </>
-  );
+  void icone;
+  const contenu = <>{children}</>;
 
   if (externe) {
     return (

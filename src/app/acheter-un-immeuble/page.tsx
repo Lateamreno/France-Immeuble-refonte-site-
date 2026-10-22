@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { chiffres } from "@/lib/chiffres";
+import { Chiffre } from "@/components/Chiffre";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
+import { Picto, type NomPicto } from "@/components/Picto";
 import { RechercheForm } from "@/components/RechercheForm";
 import { ventesEtStats } from "@/lib/biens";
 import { PREUVES, SITE, nombre } from "@/lib/site";
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Acheter() {
-  const { stats } = await ventesEtStats();
+  const [{ stats }, ch] = await Promise.all([ventesEtStats(), chiffres()]);
   return (
     <>
       <HeroMedia
@@ -33,24 +36,18 @@ export default async function Acheter() {
       >
         <>
           <Eyebrow>Accès investisseurs</Eyebrow>
-          <h1 style={{ maxWidth: "19ch", marginBottom: "var(--space-m)" }}>
+          <h1>
             Les meilleurs immeubles partent{" "}
             <span className="accent">avant d’être annoncés</span>
           </h1>
-          <p className="lead" style={{ maxWidth: "58ch" }}>
+          <p className="lead">
             C’est ce que nous promettons aux propriétaires : leur dossier est présenté à notre
-            fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page —
-            mais l’accès à ceux qui circulent en premier.
+            fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page, mais
+            l’accès à ceux qui circulent en premier.
           </p>
           <div className="hero-proof">
-            <div className="hero-proof__item">
-              <span className="hero-proof__val">{nombre(PREUVES.investisseurs)}</span>
-              <span className="hero-proof__lbl">investisseurs déjà dans le fichier</span>
-            </div>
-            <div className="hero-proof__item">
-              <span className="hero-proof__val">{stats.villes}</span>
-              <span className="hero-proof__lbl">communes où nous avons vendu</span>
-            </div>
+            <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="investisseurs déjà dans le fichier" />
+            <Chiffre picto="secteur" valeur={stats.villes} libelle="communes où nous avons vendu" />
           </div>
         </>
       </HeroMedia>
@@ -70,21 +67,27 @@ export default async function Acheter() {
             {[
               {
                 n: "01",
+                picto: "cible" as NomPicto,
                 t: "Vous déposez vos critères",
                 p: "Zones, budget, financement, rendement visé. Plus c’est précis, moins vous recevez de choses inutiles.",
               },
               {
                 n: "02",
+                picto: "loupeCible" as NomPicto,
                 t: "Nous filtrons pour vous",
                 p: "Chaque immeuble rentré est confronté au fichier. Si vos critères collent, vous êtes dans la short-list.",
               },
               {
                 n: "03",
+                picto: "dossier" as NomPicto,
                 t: "Vous recevez le dossier complet",
                 p: "Baux, revenus, état d’occupation, travaux. Pas une annonce : de quoi décider.",
               },
             ].map((c, i) => (
-              <Reveal key={c.n} as="article" className="card" delayIndex={i}>
+              <Reveal key={c.n} as="article" className="card card--filigrane" delayIndex={i}>
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={c.picto} taille={96} />
+                </span>
                 <span className="card__num">{c.n}</span>
                 <h3>{c.t}</h3>
                 <p>{c.p}</p>
@@ -103,7 +106,7 @@ export default async function Acheter() {
         </p>
       </BandeMedia>
 
-      <section className="section section--noir-3">
+      <section id="deposer" className="section section--noir-3">
         <div className="container split">
           <Reveal className="split__aside">
             <Eyebrow>Ce que ça vous donne</Eyebrow>

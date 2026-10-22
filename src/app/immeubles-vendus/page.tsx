@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -54,7 +55,9 @@ export default async function ImmeublesVendus() {
       <HeroMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
         <>
           <Eyebrow>Nos biens · vendus</Eyebrow>
-          <h1>Les immeubles que nous avons vendus</h1>
+          <h1>
+            Les immeubles que nous <span className="accent">avons vendus</span>
+          </h1>
           <p className="lead">
             Immeubles de rapport vendus en bloc à Paris, en Île-de-France et en région. Voici une
             sélection de nos dernières ventes, avec la commune, la rue et le prix de vente.
@@ -62,18 +65,9 @@ export default async function ImmeublesVendus() {
           {/* MAV, 21/10/2026 : ces chiffres décrivent l'échantillon affiché, pas
               l'ensemble de nos ventes. Les libellés le disent. */}
           <div className="hero-proof">
-            <span className="hero-proof__item">
-              <span className="hero-proof__val">{stats.total}</span>
-              <span className="hero-proof__lbl">ventes présentées</span>
-            </span>
-            <span className="hero-proof__item">
-              <span className="hero-proof__val">{stats.villes}</span>
-              <span className="hero-proof__lbl">communes</span>
-            </span>
-            <span className="hero-proof__item">
-              <span className="hero-proof__val">{volume(stats.volume)}</span>
-              <span className="hero-proof__lbl">de ventes dans cette sélection</span>
-            </span>
+            <Chiffre picto="immeubles" valeur={stats.total} libelle="ventes présentées" />
+            <Chiffre picto="secteur" valeur={stats.villes} libelle="communes" />
+            <Chiffre picto="financier" valeur={volume(stats.volume)} libelle="de ventes dans cette sélection" />
           </div>
         </>
       </HeroMedia>

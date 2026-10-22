@@ -11,7 +11,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { SITE } from "@/lib/site";
 import {
-  prix, ventes, venteParSlug, nouveauSlugVente, venteIndexable, AFFICHER_ECART_ESTIMATION, type Vente,
+  prix, ventes, venteParSlug, nouveauSlugVente, venteIndexable, AFFICHER_ECART_ESTIMATION, LIBELLE_ECART,
+  type Vente,
 } from "@/lib/biens";
 
 /**
@@ -149,7 +150,7 @@ export default async function FicheVente({ params }: Params) {
   const vente: ([string, ReactNode] | null | false)[] = [
     ["Prix de vente", prix(v.prix)],
     AFFICHER_ECART_ESTIMATION && rempli(v.ecartEstimation) && [
-      "Écart avec l’estimation",
+      LIBELLE_ECART,
       `${v.ecartEstimation > 0 ? "+" : ""}${pct(v.ecartEstimation)}`,
     ],
     rempli(v.delaiOffreJours) && ["De la mise en vente à l’offre", delaiOffre(v.delaiOffreJours)],

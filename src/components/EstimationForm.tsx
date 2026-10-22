@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowIcon } from "./ArrowIcon";
 import { SITE, CALIBRE } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
 
@@ -251,7 +250,7 @@ export function EstimationForm({ formulaire }: { formulaire: "vendre" | "estimer
 
       <div className="field-nav">
         <button type="submit" className="btn btn--primary" disabled={envoi}>
-          {envoi ? "Envoi…" : "Estimer mon immeuble"} {!envoi && <ArrowIcon />}
+          {envoi ? "Envoi…" : "Estimer mon immeuble"}
         </button>
       </div>
 
@@ -319,7 +318,7 @@ function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser
         </p>
         <div className="btn-row">
           <a className="btn btn--primary" href={SITE.telHref}>
-            Appeler · {SITE.tel} <ArrowIcon />
+            Appeler · {SITE.tel}
           </a>
         </div>
       </div>
@@ -428,7 +427,7 @@ function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser
 
           <div className="field-nav">
             <button type="submit" className="btn btn--primary" disabled={envoi}>
-              {envoi ? "Envoi…" : "Compléter mon dossier"} {!envoi && <ArrowIcon />}
+              {envoi ? "Envoi…" : "Compléter mon dossier"}
             </button>
             <button type="button" className="btn btn--ghost" onClick={onPasser}>
               C’est tout pour l’instant
@@ -442,7 +441,7 @@ function Suite({ phase, verdict, stocke, d, set, uid, envoi, onEnvoyer, onPasser
           {pleinbail ? (
             <>
               <a className="btn btn--primary" href={SITE.pleinbail} target="_blank" rel="noopener">
-                Déposer sur PleinBail <ArrowIcon />
+                Déposer sur PleinBail
               </a>
               <a className="btn btn--outline" href={SITE.telHref}>{SITE.tel}</a>
             </>

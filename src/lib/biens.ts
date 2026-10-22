@@ -52,7 +52,7 @@ export type FaitsVente = {
   surface?: number | null;
   /** Loyer annuel HC potentiel, en euros. */
   loyerPotentiel?: number | null;
-  /** Prix de vente comparé à l'estimation, en % : +3 = 3 % au-dessus. */
+  /** Meilleure offre reçue comparée à l'estimation, en % : +3 = 3 % au-dessus. */
   ecartEstimation?: number | null;
   /** Jours entre la mise en commercialisation et l'offre retenue. */
   delaiOffreJours?: number | null;
@@ -255,12 +255,13 @@ export type GroupeVentes = {
 };
 
 /**
- * L'écart entre l'estimation et le prix de vente reste MASQUÉ sur le site tant
- * que MAV n'a pas vu l'écart moyen calculé par le BO (demande du 21/10/2026).
- * Le BO peut le déposer dès maintenant : passer à `true` le publie partout
- * (vignettes et fiches) d'un coup.
+ * L'écart avec l'estimation, publié le 22/10/2026 à la demande du BO validée
+ * par MAV. Ce que mesure `ecart_estimation` : la MEILLEURE OFFRE REÇUE
+ * comparée à l'estimation, en %. Pas le prix de l'acte. Le libellé le dit.
+ * `false` le masque partout d'un coup.
  */
-export const AFFICHER_ECART_ESTIMATION = false;
+export const AFFICHER_ECART_ESTIMATION = true;
+export const LIBELLE_ECART = "Meilleure offre reçue comparée à l’estimation";
 
 /** Du plus cher au moins cher : MAV veut le tri par prix, pas par date. */
 const parPrix = (a: Vente, b: Vente) => b.prix - a.prix;
