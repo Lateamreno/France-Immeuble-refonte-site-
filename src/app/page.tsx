@@ -94,15 +94,15 @@ export default async function Accueil() {
             </div>
           </Reveal>
 
-          {/* Le dossier d'estimation, détouré et en entier : le carnet d'origine
-              était coupé à droite dans le fichier même (MAV, 22/10/2026). */}
-          <Reveal delayIndex={1} className="media-colonne media-colonne--libre">
+          {/* Le carnet des témoignages. Le fichier d'origine est coupé à droite :
+              l'image va jusqu'au bord de l'écran, la coupe s'y confond (MAV). */}
+          <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord">
             <Image
-              src="/media/img-vendez2x.webp"
-              alt="Dossier d’estimation France Immeuble ouvert"
-              width={1400}
-              height={1093}
-              sizes="(max-width: 900px) 100vw, 540px"
+              src="/media/05_Notebook-Mock-up-1.webp"
+              alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
+              width={800}
+              height={820}
+              sizes="(max-width: 900px) 100vw, 760px"
             />
           </Reveal>
         </div>

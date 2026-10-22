@@ -1407,6 +1407,9 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .media-colonne--libre{border:0;border-radius:0;aspect-ratio:auto;overflow:visible;}
 .media-colonne--libre::after{display:none;}
 .media-colonne--libre img{height:auto;object-fit:contain;border-radius:0;background:transparent !important;}
+/* Visuel coupé à droite dans son fichier : il touche le bord de l'écran. */
+.media-colonne--bord{margin-right:calc(-1 * (max(0px, (100vw - var(--container)) / 2) + var(--gutter)));}
+.section:has(.media-colonne--bord){overflow-x:clip;}
 
 /* Les références vendues. Un immeuble est un sujet vertical : 4/5. */
 .biens{
