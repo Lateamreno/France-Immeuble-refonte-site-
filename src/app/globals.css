@@ -1888,11 +1888,10 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .fiche-vente__recit h3{font-size:1.15rem;margin-top:var(--space-s);}
 
 /* ==========================================================================
-   20. BOUTONS — décision de MAV du 22/10/2026
-   Toujours or, texte noir, sans flèche, centrés. « On ne les voit pas » sur
-   fond crème en noir, ni en contour : un seul bouton, partout. Le sélecteur
-   est renforcé exprès pour passer devant les variantes plus anciennes
-   (fond crème, contenu repris du WordPress).
+   20. BOUTONS — décisions de MAV du 22/10/2026
+   Or, texte noir, sans flèche, centrés. Le sélecteur est renforcé exprès pour
+   passer devant les variantes plus anciennes (fond crème, contenu repris du
+   WordPress).
    ========================================================================== */
 :root .btn.btn.btn{
   background:var(--color-bronze);color:var(--color-noir);
@@ -1900,6 +1899,22 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 :root .btn.btn.btn:hover{background:var(--color-bronze-clair-2);color:var(--color-noir);border-color:var(--color-bronze-clair-2);}
 :root .btn.btn.btn:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+/* Deux boutons côte à côte : seul le plus important reste or (`btn--primary`),
+   l'autre prend une couleur qui contraste avec le fond. Crème texte noir sur
+   fond sombre ; noir texte or sur fond crème. Un bouton seul reste or quelle
+   que soit sa variante. */
+:root :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary){
+  background:var(--color-creme);color:var(--color-noir);border-color:var(--color-creme);
+}
+:root :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary):hover{
+  background:var(--color-bronze-clair);border-color:var(--color-bronze-clair);color:var(--color-noir);
+}
+:root .section--creme :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary){
+  background:var(--color-noir);color:var(--color-bronze);border-color:var(--color-noir);
+}
+:root .section--creme :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary):hover{
+  background:var(--color-noir-3);color:var(--color-bronze-clair);border-color:var(--color-noir-3);
+}
 .btn .btn__icon{display:none;}
 .btn-row,.field-nav{justify-content:center;}
 /* Exception : dans le hero, le texte est aligné à gauche et les boutons le

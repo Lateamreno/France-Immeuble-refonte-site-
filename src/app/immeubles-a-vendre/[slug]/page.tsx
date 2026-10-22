@@ -166,7 +166,7 @@ export default async function FicheBien({ params }: Params) {
               les documents.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href={SITE.telHref} variant="outline">
+              <Button href={SITE.telHref}>
                 Appeler · {SITE.tel}
               </Button>
               <Button href="/immeubles-a-vendre/" variant="outline">

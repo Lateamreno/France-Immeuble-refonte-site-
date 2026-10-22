@@ -111,7 +111,7 @@ export default async function ImmeublesAVendre() {
               acquéreurs inscrits dont la recherche correspond.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/immeubles-off-market/" variant="outline">
+              <Button href="/immeubles-off-market/">
                 Accéder à l’off-market
               </Button>
               <Button href={SITE.telHref} variant="outline">

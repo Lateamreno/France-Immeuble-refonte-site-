@@ -259,8 +259,11 @@ sur les fichiers du repo.
 - **Texte centré** horizontalement, même avec icône. Icône à droite, `gap: 10px`.
 - **Padding** : `var(--btn-padding)`.
 - **Couleur — décision de MAV du 22/10/2026, remplace la règle fond clair / fond sombre** :
-  tous les boutons sont **pleins `--color-bronze`, texte `--color-noir`**, sur tous les fonds,
-  hover `--color-bronze-clair-2`. Plus de bouton noir sur crème, plus de contour.
+  les boutons sont **pleins `--color-bronze`, texte `--color-noir`**, sur tous les fonds,
+  hover `--color-bronze-clair-2`. Plus de contour, plus de texte blanc.
+- **Deux boutons côte à côte** (MAV, 22/10/2026) : seul le plus important est or. L'autre
+  prend une couleur qui contraste avec le fond : `--color-creme` texte `--color-noir` sur fond
+  sombre, `--color-noir` texte `--color-bronze` sur fond crème. Un bouton seul est toujours or.
 - **Jamais de flèche** dans un bouton.
 - **Centrés** dans leur bloc, sauf dans le hero où ils suivent le texte aligné à gauche.
 - Focus clavier visible obligatoire :
