@@ -13,7 +13,9 @@ import { Picto } from "@/components/Picto";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { BIENS_VENDUS, RECHERCHES } from "@/lib/accueil";
+import { RECHERCHES } from "@/lib/accueil";
+import { ventes, vitrineAccueil } from "@/lib/biens";
+import { CarrouselVentes } from "@/components/CarrouselVentes";
 import { Avis } from "@/components/Avis";
 
 /**
@@ -25,7 +27,8 @@ import { Avis } from "@/components/Avis";
 export const metadata: Metadata = metadonneesWP("/");
 
 export default async function Accueil() {
-  const ch = await chiffres();
+  const [ch, toutes] = await Promise.all([chiffres(), ventes()]);
+  const vitrine = vitrineAccueil(toutes);
   /* Les trois compteurs de recherches : déposés par le BO (table `chiffres`),
      les textes restent ceux du WordPress. */
   const recherches = [
@@ -89,7 +92,8 @@ export default async function Accueil() {
             </div>
           </Reveal>
 
-          <Reveal delayIndex={1} className="media-colonne">
+          {/* Le carnet est détouré : posé tel quel, sans cadre ni fond (MAV). */}
+          <Reveal delayIndex={1} className="media-colonne media-colonne--libre">
             <Image
               src="/media/05_Notebook-Mock-up-1.webp"
               alt="Dossier d’estimation France Immeuble"
@@ -151,31 +155,12 @@ export default async function Accueil() {
             <Eyebrow>Biens vendus</Eyebrow>
             <h2>Immeubles vendus par France Immeuble</h2>
           </Reveal>
-
-          <div className="biens">
-            {BIENS_VENDUS.map((b, i) => (
-              <Reveal key={b.ville + b.prix} as="article" className="bien" delayIndex={i}>
-                <Image
-                  className="bien__img"
-                  src={b.image}
-                  alt={`Immeuble vendu à ${b.ville}`}
-                  width={520}
-                  height={650}
-                  sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 25vw"
-                />
-                <span className="bien__voile" aria-hidden="true" />
-                <div className="bien__texte">
-                  <span className="bien__ville">{b.ville}</span>
-                  <dl className="bien__infos">
-                    <div><dt>Surface carrez</dt><dd>{b.surface}</dd></div>
-                    <div><dt>Destination</dt><dd>{b.destination}</dd></div>
-                    <div><dt>Occupation</dt><dd>{b.occupation}</dd></div>
-                    <div><dt>Prix de vente</dt><dd>{b.prix}</dd></div>
-                  </dl>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+        </div>
+        {/* Déposées par le BO, comme la page des ventes. Paris d'abord, puis
+            les plus chères ; chaque vignette ouvre la fiche de la vente. */}
+        <CarrouselVentes ventes={vitrine} />
+        <div className="container vitrine__suite">
+          <Button href="/immeubles-vendus/">Voir tous nos immeubles vendus</Button>
         </div>
       </section>
 
@@ -236,10 +221,10 @@ export default async function Accueil() {
           </Reveal>
 
           <div className="grid grid--2">
-            <Reveal as="article" className="card">
-              <span className="card__picto" aria-hidden="true">
-                <Picto nom="dossier" taille={28} />
-              </span>
+            {/* Les deux cartes ont la même construction (MAV, 22/10/2026) :
+                surtitre, titre, texte, bouton, et leurs boutons alignés. */}
+            <Reveal as="article" className="card card--offre">
+              <Eyebrow bare>Recherche sur critères</Eyebrow>
               <h3>Je souhaite acheter un immeuble</h3>
               <p>
                 Recherchez selon des <strong>critères spécifiques aux immeubles</strong> ou créez
@@ -255,7 +240,7 @@ export default async function Accueil() {
               </div>
             </Reveal>
 
-            <Reveal as="article" className="card card--offmarket" delayIndex={1}>
+            <Reveal as="article" className="card card--offre card--offmarket" delayIndex={1}>
               <Eyebrow bare>Les offres off-market</Eyebrow>
               <h3>Nos biens d’exception</h3>
               <p>

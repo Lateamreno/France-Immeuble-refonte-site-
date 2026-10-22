@@ -262,8 +262,9 @@ sur les fichiers du repo.
   les boutons sont **pleins `--color-bronze`, texte `--color-noir`**, sur tous les fonds,
   hover `--color-bronze-clair-2`. Plus de contour, plus de texte blanc.
 - **Deux boutons côte à côte** (MAV, 22/10/2026) : seul le plus important est or. L'autre
-  prend une couleur qui contraste avec le fond : `--color-creme` texte `--color-noir` sur fond
-  sombre, `--color-noir` texte `--color-bronze` sur fond crème. Un bouton seul est toujours or.
+  est **noir texte or** (`--color-noir` / `--color-bronze`) sur tous les fonds : il contraste
+  avec le bouton or. Filet or de 1 px sur fond sombre pour dessiner sa forme. Un bouton seul
+  est toujours or.
 - **Jamais de flèche** dans un bouton.
 - **Centrés** dans leur bloc, sauf dans le hero où ils suivent le texte aligné à gauche.
 - Focus clavier visible obligatoire :
@@ -274,13 +275,18 @@ sur les fichiers du repo.
 ### Hero — modèle unique (MAV, 22/10/2026)
 
 Chaque page, et toute page future, ouvre sur le hero de `/acheter-un-immeuble/` (composant
-`HeroMedia`) : image pleine largeur et **pleine hauteur d'écran** (`100svh`), surtitre or clair,
+`HeroMedia`) : image pleine largeur et **pleine hauteur d'écran** (`100svh`), titre de 56 px
+au plus (lisible d'un coup d'œil, deux à trois lignes), surtitre or clair,
 titre blanc avec les **mots importants en or** (`<span className="accent">`), courte
 description blanche, petite flèche or discrète vers le bas. La barre de menu, fixe, est
 transparente au-dessus du hero et devient noire floutée au défilement.
 
-Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto qui en dit
-l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
+Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto or **sans
+cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
+
+**Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
+cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré
+(composant `TeteMedia` à côté du titre).
 
 ## 6. Structure du site
 

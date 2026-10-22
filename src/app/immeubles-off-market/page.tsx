@@ -8,6 +8,7 @@ import { Reveal } from "@/components/Reveal";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { RechercheForm } from "@/components/RechercheForm";
 import { JsonLd } from "@/components/JsonLd";
+import { TeteMedia } from "@/components/TeteMedia";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
@@ -97,7 +98,14 @@ export default async function ImmeublesOffMarket() {
 
       <section className="section section--creme">
         <div className="container">
-          <Reveal className="section__head">
+          <TeteMedia
+            image={{
+              src: "/media/streets-of-paris-PV7Y89Z-1024x684.webp",
+              alt: "Rue parisienne bordée d’immeubles haussmanniens",
+              width: 1024,
+              height: 684,
+            }}
+          >
             <Eyebrow>Le principe</Eyebrow>
             <h2>Off-market ne veut pas dire confidentiel pour tout le monde</h2>
             <p className="lead">
@@ -105,7 +113,7 @@ export default async function ImmeublesOffMarket() {
               dossier complet part à la poignée d’acquéreurs dont la recherche correspond
               vraiment, et à eux seuls.
             </p>
-          </Reveal>
+          </TeteMedia>
 
           <div className="grid grid--3">
             {RAISONS.map((r, i) => (

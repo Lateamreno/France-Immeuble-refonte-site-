@@ -10,7 +10,7 @@ export function Chiffre({ picto, valeur, libelle }: { picto: NomPicto; valeur: s
   return (
     <span className="hero-proof__item">
       <span className="hero-proof__picto" aria-hidden="true">
-        <Picto nom={picto} taille={22} />
+        <Picto nom={picto} taille={28} />
       </span>
       <span className="hero-proof__val">{valeur}</span>
       <span className="hero-proof__lbl">{libelle}</span>

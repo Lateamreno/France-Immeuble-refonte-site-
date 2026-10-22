@@ -4,39 +4,9 @@
  * Tout le texte vient de `content/pages-wp.json` : rien n'est réécrit. Ce
  * fichier ne fait que le sortir du markup Gutenberg pour qu'il soit composable.
  *
- * ⚠️ Les prix exacts et les communes des références sont repris tels qu'ils
- * étaient publiés. C'est en tension avec la règle d'anonymisation du §2
- * (arrondissement et non rue, fourchettes et non montants exacts) : à trancher.
- * Rien n'a été ajouté, mais rien n'a été masqué non plus.
+ * Les immeubles vendus ne sont plus ici : la vitrine d'accueil lit les ventes
+ * déposées par le BO (`vitrineAccueil`, lib/biens.ts).
  */
-
-export type BienVendu = {
-  ville: string;
-  image: string;
-  surface: string;
-  destination: string;
-  occupation: string;
-  prix: string;
-};
-
-/**
- * Ordre revu : Paris d'abord. La page affiche « Tous types d'immeubles à
- * Paris et Hauts-de-Seine » et ouvrait sur Melun et Spicheren — un
- * propriétaire du 8e en concluait qu'il n'était pas au bon endroit. Les
- * fiches sont les mêmes, l'ordre seul change.
- */
-export const BIENS_VENDUS: BienVendu[] = [
-  { ville: "Paris (75005)", image: "/media/8.jpg", surface: "484 m²", destination: "Mixte", occupation: "87 %", prix: "6 400 000 € HAI" },
-  { ville: "Paris (75002)", image: "/media/5.jpg", surface: "215 m²", destination: "Mixte", occupation: "100 %", prix: "2 849 700 € HAI" },
-  { ville: "Massy (91)", image: "/media/2.jpg", surface: "396 m²", destination: "Habitation", occupation: "100 %", prix: "2 000 000 € HAI" },
-  { ville: "Chambly (60)", image: "/media/6.jpg", surface: "399 m²", destination: "Mixte", occupation: "100 %", prix: "1 100 000 € HAI" },
-  { ville: "Pontoise (95)", image: "/media/9.jpg", surface: "316 m²", destination: "Habitation", occupation: "83 %", prix: "945 000 € HAI" },
-  { ville: "Tourcoing (59)", image: "/media/https___s3.amazonaws.com_appforest_uf_f1597232614110x297444380103170100_IMG_2293.jpg", surface: "735 m²", destination: "Habitation", occupation: "80 %", prix: "900 000 € HAI" },
-  { ville: "Bordeaux (33)", image: "/media/10-compressed.jpg", surface: "248 m²", destination: "Mixte", occupation: "58 %", prix: "845 000 € HAI" },
-  { ville: "Spicheren (57)", image: "/media/4.jpg", surface: "817 m²", destination: "Habitation", occupation: "100 %", prix: "661 500 € HAI" },
-  { ville: "Melun (77)", image: "/media/3.jpg", surface: "176 m²", destination: "Habitation", occupation: "100 %", prix: "565 000 € HAI" },
-  { ville: "Laroche-Saint-Cydroine (89)", image: "/media/7.jpg", surface: "403 m²", destination: "Habitation", occupation: "100 %", prix: "365 000 € HAI" },
-];
 
 export type Avis = { nom: string; date: string; texte: string };
 

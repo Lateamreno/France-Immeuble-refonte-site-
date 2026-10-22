@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -125,9 +126,21 @@ export default function VendreUnImmeuble() {
         </>
       </HeroMedia>
 
-      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. */}
+      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Chaque
+          carte entière est un lien (MAV, 22/10/2026) : l'estimation mène à la
+          page Estimer, la recherche d'acquéreur au formulaire de vente plus
+          bas. L'immeuble détouré casse l'aplat crème. */}
       <section className="section section--creme">
         <div className="container">
+          <Reveal className="portes__visuel">
+            <Image
+              src="/media/img-vendez222-2.webp"
+              alt="Immeuble de rapport parisien d’angle, façade en pierre et brique"
+              width={900}
+              height={437}
+              sizes="(max-width: 700px) 100vw, 620px"
+            />
+          </Reveal>
           <div className="grid grid--2">
             <Reveal as="article" className="card card--medaillon">
               <span className="card__fond" aria-hidden="true">
@@ -136,7 +149,11 @@ export default function VendreUnImmeuble() {
               <span className="card__picto" aria-hidden="true">
                 <Picto nom="calculatrice" taille={30} />
               </span>
-              <h2>Vous souhaitez connaître la valeur de votre immeuble&nbsp;?</h2>
+              <h2>
+                <Link href="/estimer-un-immeuble/" className="card__lien">
+                  Vous souhaitez connaître la valeur de votre immeuble&nbsp;?
+                </Link>
+              </h2>
               <p>
                 Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
                 géographique et locatif de votre immeuble ainsi que sur son caractère
@@ -150,7 +167,11 @@ export default function VendreUnImmeuble() {
               <span className="card__picto" aria-hidden="true">
                 <Picto nom="poignee" taille={30} />
               </span>
-              <h2>Vous cherchez un acquéreur pour votre immeuble&nbsp;?</h2>
+              <h2>
+                <a href="#estimer" className="card__lien">
+                  Vous cherchez un acquéreur pour votre immeuble&nbsp;?
+                </a>
+              </h2>
               <p>
                 Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family
                 offices, de marchands de biens et d’institutionnels le meilleur acheteur pour
@@ -223,7 +244,7 @@ export default function VendreUnImmeuble() {
         titre="Ce qu'en disent les vendeurs"
         compact
         fond="noir-2"
-        intro="28 avis Google, 4,9/5 de moyenne. Des propriétaires qui nous ont confié un immeuble entier."
+        intro="Des propriétaires qui nous ont confié la vente de leur immeuble de rapport."
       />
 
       <section id="estimer" className="section section--noir">

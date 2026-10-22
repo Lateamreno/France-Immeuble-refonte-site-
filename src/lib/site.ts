@@ -46,6 +46,8 @@ export const PREUVES = {
   investisseurs: 1372,
   noteGoogle: "4,9",
   nbAvis: 28,
+  /** La fiche Google de l'agence, ouverte sur ses avis (lien de l'ancien site). */
+  avisGoogle: "https://www.google.com/search?q=France+Immeuble#lrd=0x47e66f1063ba55b7:0xe7d484f6c7bed1cf,1,,,",
   honorairesPct: 5,
 } as const;
 
@@ -62,7 +64,9 @@ export const CALIBRE = {
 export type LienNav = {
   href: string;
   label: string;
-  enfants?: readonly { readonly href: string; readonly label: string }[];
+  /** Le libellé du parent est un lien vers `href` ; la flèche seule déroule. */
+  lien?: boolean;
+  enfants?: readonly { readonly href: string; readonly label: string; readonly badge?: string }[];
 };
 
 /**
@@ -70,7 +74,17 @@ export type LienNav = {
  * n'en change aucune (§16). Les deux autres sont neuves, donc libres.
  */
 export const NAV: readonly LienNav[] = [
-  { href: "/vendre-un-immeuble/", label: "Vendre" },
+  /* « Vendre » mène toujours à sa page ; la flèche ouvre les deux façons de
+     vendre (MAV, 22/10/2026). La découpe reste sous Vendre (§6). */
+  {
+    href: "/vendre-un-immeuble/",
+    label: "Vendre",
+    lien: true,
+    enfants: [
+      { href: "/vendre-un-immeuble/", label: "Vendre en bloc" },
+      { href: "/vendre-a-la-decoupe/", label: "Vendre à la découpe", badge: "nouveau" },
+    ],
+  },
   { href: "/estimer-un-immeuble/", label: "Estimer" },
   { href: "/acheter-un-immeuble/", label: "Acheter" },
   {

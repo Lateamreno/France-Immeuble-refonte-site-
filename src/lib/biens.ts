@@ -296,6 +296,18 @@ export async function ventesEtStats() {
   return { ventes: v, stats: statsVentes(v) };
 }
 
+/**
+ * Les ventes de la vitrine d'accueil (MAV, 22/10/2026) : toutes celles de
+ * Paris d'abord, puis les plus chères, `n` en tout. Paris est classé par prix
+ * lui aussi.
+ */
+export function vitrineAccueil(v: Vente[], n = 8): Vente[] {
+  const parPrix = (a: Vente, b: Vente) => b.prix - a.prix;
+  const paris = v.filter((x) => x.dept === "75").sort(parPrix);
+  const autres = v.filter((x) => x.dept !== "75").sort(parPrix);
+  return [...paris, ...autres].slice(0, n);
+}
+
 /** Les communes les plus représentées, pour le bloc de couverture. */
 export function villesFrequentes(v: Vente[], n = 8): { ville: string; n: number }[] {
   const compte = new Map<string, number>();

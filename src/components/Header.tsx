@@ -134,6 +134,9 @@ export function Header() {
  * contente d'ouvrir en plus sur les écrans qui ont un vrai pointeur (CSS,
  * `@media (hover: hover)`). Le parent reste atteignable par son premier
  * enfant, qui pointe sur la même URL.
+ *
+ * Avec `lien` (Vendre), le libellé est un vrai lien vers la page et seule la
+ * flèche, à côté, bascule la liste.
  */
 function SousMenu({
   item,
@@ -160,33 +163,45 @@ function SousMenu({
       className={`nav-groupe${ouvert ? " is-open" : ""}${verrou ? " is-ferme" : ""}`}
       onMouseLeave={() => setVerrou(false)}
     >
-      <button
-        type="button"
-        className="nav-groupe__btn"
-        aria-expanded={ouvert}
-        aria-controls={id}
-        aria-current={actif ? "page" : undefined}
-        onClick={() => {
-          setVerrou(false);
-          onBascule();
-        }}
-      >
-        {item.label}
-        <svg
-          className="nav-groupe__chev"
-          viewBox="0 0 24 24"
-          width="14"
-          height="14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
+      {item.lien ? (
+        <span className="nav-groupe__tete">
+          <Link
+            className="nav-groupe__lien"
+            href={item.href}
+            aria-current={pathname === item.href ? "page" : actif ? "true" : undefined}
+          >
+            {item.label}
+          </Link>
+          <button
+            type="button"
+            className="nav-groupe__btn nav-groupe__btn--fleche"
+            aria-expanded={ouvert}
+            aria-controls={id}
+            aria-label={`Sous-menu ${item.label}`}
+            onClick={() => {
+              setVerrou(false);
+              onBascule();
+            }}
+          >
+            {chevron}
+          </button>
+        </span>
+      ) : (
+        <button
+          type="button"
+          className="nav-groupe__btn"
+          aria-expanded={ouvert}
+          aria-controls={id}
+          aria-current={actif ? "page" : undefined}
+          onClick={() => {
+            setVerrou(false);
+            onBascule();
+          }}
         >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
-      </button>
+          {item.label}
+          {chevron}
+        </button>
+      )}
       <div className="nav-groupe__liste" id={id}>
         {(item.enfants ?? []).map((e) => (
           <Link
@@ -199,9 +214,28 @@ function SousMenu({
             }}
           >
             {e.label}
+            {e.badge && <sup className="nav-badge">{e.badge}</sup>}
           </Link>
         ))}
       </div>
     </div>
   );
 }
+
+/** La flèche du sous-menu, partagée par les deux formes d'entrée. */
+const chevron = (
+  <svg
+    className="nav-groupe__chev"
+    viewBox="0 0 24 24"
+    width="14"
+    height="14"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);

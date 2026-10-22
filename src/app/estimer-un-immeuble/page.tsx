@@ -7,6 +7,7 @@ import { EstimationForm } from "@/components/EstimationForm";
 import { ContactForm } from "@/components/ContactForm";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
+import { TeteMedia } from "@/components/TeteMedia";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
@@ -87,7 +88,15 @@ export default function EstimerUnImmeuble() {
 
       <section className="section section--creme">
         <div className="container">
-          <Reveal className="section__head">
+          <TeteMedia
+            image={{
+              src: "/media/img-vendez-3.webp",
+              alt: "Immeuble de rapport parisien d’angle, façade en pierre et brique",
+              width: 1058,
+              height: 582,
+              libre: true,
+            }}
+          >
             <Eyebrow>Estimation</Eyebrow>
             <h2>Analyses comprises dans l’estimation gratuite</h2>
             <p className="lead">
@@ -95,13 +104,19 @@ export default function EstimerUnImmeuble() {
               de votre immeuble ainsi que sur son caractère constructible pour une valorisation
               optimale.
             </p>
-          </Reveal>
+          </TeteMedia>
 
-          <div className="grid grid--3">
+          {/* Les cinq analyses sur une seule ligne (MAV, 22/10/2026), en
+              médaillons comme sur la page Vendre. Quand la largeur manque, la
+              ligne défile au doigt plutôt que de passer à la ligne. */}
+          <div className="ligne-cartes">
             {ANALYSES.map((a, i) => (
-              <Reveal key={a.titre} as="article" className="card" delayIndex={i}>
+              <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={a.picto} taille={96} />
+                </span>
                 <span className="card__picto" aria-hidden="true">
-                  <Picto nom={a.picto} taille={28} />
+                  <Picto nom={a.picto} taille={30} />
                 </span>
                 <h3>{a.titre}</h3>
                 <p>{a.texte}</p>

@@ -324,6 +324,17 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .nav-groupe.is-open > .nav-groupe__btn,
 .nav-groupe__btn[aria-current="page"]{color:var(--color-creme);}
 .nav-groupe__chev{transition:transform var(--dur) var(--ease);}
+/* Parent cliquable (Vendre) : le libellé mène à la page, la flèche déroule. */
+.nav-groupe__tete{display:inline-flex;align-items:center;gap:2px;}
+.nav-groupe__btn--fleche{padding:6px 2px;}
+.nav .nav-groupe__lien[aria-current]{color:var(--color-creme);}
+.nav .nav-groupe__lien[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--color-bronze);}
+/* « nouveau » en exposant, or. */
+.nav-badge{
+  margin-left:6px;font-family:var(--font-mono-site);font-size:.66rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--color-bronze);
+  vertical-align:super;line-height:0;
+}
 .nav-groupe.is-open .nav-groupe__chev{transform:rotate(180deg);}
 
 .nav-groupe__liste{
@@ -410,6 +421,11 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
     padding-block:16px;border-bottom:1px solid var(--color-ligne);
     font-size:1.05rem;
   }
+  /* Parent cliquable : le lien prend la ligne, la flèche garde une cible de
+     44 px au bout, comme le bouton des autres groupes. */
+  .nav-groupe__tete{display:flex;width:100%;border-bottom:1px solid var(--color-ligne);}
+  .nav-groupe__tete .nav-groupe__lien{flex:1;border-bottom:0;}
+  .nav-groupe__btn--fleche{width:44px;justify-content:center;border-bottom:0;padding-block:0;}
   /* `display:none` et non une transition de hauteur : avec plusieurs enfants,
      une grille en `0fr` ne replie que sa première rangée, et les suivantes
      restent visibles. Un repli franc vaut mieux qu'une animation fausse. */
@@ -720,7 +736,15 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 @supports not (height: 100svh){ .hero-media{min-height:100vh;} }
 .hero-media > .container{width:100%;padding-top:calc(var(--header-h) + var(--space-l));padding-bottom:calc(var(--space-xl) + 24px);}
-.hero-media h1{max-width:19ch;margin-bottom:var(--space-m);}
+/* Titre du hero ramené à 56 px au plus (retour du 22/10/2026 : à 72 px il
+   prenait tout l'écran et se lisait mal). Repères UX courants : un titre de
+   hero entre 40 et 64 px sur ordinateur, 2,5 à 4 fois le corps de texte (17 px
+   ici), et deux à trois lignes au plus. Archivo en largeur 118 occupe environ
+   18 % de plus qu'une police standard : on se place dans le bas de la plage. */
+.hero-media h1{
+  font-size:clamp(2rem, 1.1rem + 2.4vw, 3.5rem);
+  max-width:22ch;margin-bottom:var(--space-m);
+}
 .hero-media .lead{max-width:58ch;}
 .hero-media .accent{color:var(--color-bronze);}
 /* La flèche : or, fine, centrée en bas, un léger balancement. Rien de plus. */
@@ -1369,6 +1393,10 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   background:var(--color-noir-2);
 }
 .section--creme .media-colonne img{background:transparent;}
+/* Visuel détouré (le carnet de l'accueil) : ni cadre, ni fond, ni voile. */
+.media-colonne--libre{border:0;border-radius:0;aspect-ratio:auto;overflow:visible;}
+.media-colonne--libre::after{display:none;}
+.media-colonne--libre img{height:auto;object-fit:contain;border-radius:0;background:transparent !important;}
 
 /* Les références vendues. Un immeuble est un sujet vertical : 4/5. */
 .biens{
@@ -1419,6 +1447,99 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   color:var(--color-creme);font-weight:600;letter-spacing:.02em;
 }
 
+/* Une ligne de cartes, jamais repliée (Estimer, les cinq analyses). À partir
+   de 1200 px les cinq tiennent : la ligne déborde du conteneur jusqu'à 1320 px
+   pour donner à « Constructibilité » la place d'un mot entier. En dessous, la
+   ligne glisse au doigt et la carte suivante dépasse pour montrer la suite. */
+.ligne-cartes{
+  display:grid;grid-auto-flow:column;grid-auto-columns:230px;
+  gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding-bottom:6px;scrollbar-width:thin;
+}
+.ligne-cartes > *{scroll-snap-align:start;}
+.ligne-cartes .card--medaillon{padding-inline:18px;}
+.ligne-cartes .card--medaillon h3{font-size:clamp(1rem, .4rem + .9vw, 1.1rem);max-width:none;hyphens:manual;}
+.ligne-cartes .card--medaillon .card__fond{width:72px;height:72px;}
+@media (min-width:1200px){
+  .ligne-cartes{
+    grid-auto-columns:1fr;overflow:visible;
+    margin-inline:calc(50% - min(50vw - var(--gutter) - 8px, 660px));
+  }
+}
+@media (max-width:700px){
+  .ligne-cartes{grid-auto-columns:78%;margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);}
+}
+
+/* Carte entièrement cliquable : le lien est sur le titre (un seul arrêt de
+   tabulation, un nom accessible clair) et son ::after couvre toute la carte. */
+.card__lien{color:inherit;}
+/* Les enfants de carte sont en `position:relative` : le titre doit redevenir
+   statique, sinon le ::after se calerait sur lui et non sur la carte. */
+.card.card > :is(h2,h3):has(> .card__lien){position:static;}
+.card__lien::after{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;}
+.card:has(.card__lien){cursor:pointer;}
+.card:has(.card__lien:hover){border-color:var(--color-bronze);transform:translateY(-4px);}
+.card:has(.card__lien:focus-visible){outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.card__lien:focus-visible{outline:none;}
+/* Immeuble détouré au-dessus des deux portes de la page Vendre. */
+.portes__visuel{display:flex;justify-content:center;margin-bottom:var(--space-m);}
+.portes__visuel img{width:min(620px,100%);height:auto;}
+
+/* En-tête de section avec image (composant TeteMedia) : casse la monotonie
+   des sections crème. */
+.tete-media{display:grid;gap:var(--space-m);align-items:center;margin-bottom:var(--space-l);}
+.tete-media__texte.section__head{margin-bottom:0;}
+/* Le texte de l'en-tête est aligné à gauche : son bouton le suit, comme dans
+   le hero. Centré dans la colonne, il flottait sous le texte. */
+.tete-media__texte .btn-row{justify-content:flex-start;}
+.tete-media__visuel img{
+  display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
+  border-radius:var(--radius-card);
+}
+.tete-media__visuel--libre img{aspect-ratio:auto;object-fit:contain;border-radius:0;}
+@media (min-width:900px){
+  .tete-media{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:var(--space-xl);}
+}
+@media (max-width:899px){
+  .tete-media__visuel img{max-height:280px;}
+  .tete-media__visuel--libre img{width:auto;max-width:100%;margin-inline:auto;}
+}
+
+/* Vitrine d'accueil (MAV, 22/10/2026) : une ligne d'immeubles vendus qui
+   défile seule. La piste porte la liste deux fois ; glisser d'une moitié (plus
+   un demi-écart) ramène exactement la copie à la place de l'original. */
+.defile{
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+  mask-image:linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+}
+.defile__piste{
+  display:flex;gap:var(--space-s);width:max-content;
+  list-style:none;margin:0;padding:0;
+  animation:defile calc(var(--n, 8) * 6s) linear infinite;
+}
+.defile__item{flex:0 0 clamp(240px, 24vw, 320px);display:flex;}
+.defile:hover .defile__piste,
+.defile:focus-within .defile__piste{animation-play-state:paused;}
+@keyframes defile{to{transform:translateX(calc(-50% - var(--space-s) / 2));}}
+@media (prefers-reduced-motion: reduce){
+  .defile{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-mask-image:none;mask-image:none;}
+  .defile__piste{animation:none;}
+  .defile__item{scroll-snap-align:start;}
+  .defile__item[aria-hidden="true"]{display:none;}
+}
+.bien--lien{width:100%;color:inherit;transition:border-color var(--dur) var(--ease);}
+.bien--lien:hover,.bien--lien:focus-visible{border-color:var(--color-bronze);}
+.bien--lien:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.bien--lien .bien__img{transition:transform .6s var(--ease);}
+.bien--lien:hover .bien__img{transform:scale(1.04);}
+.bien__sansphoto{
+  position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;
+  padding-top:30%;color:var(--color-bronze-profond);background:var(--color-noir-3);
+}
+.bien__dept{font-family:var(--font-body);font-variation-settings:normal;font-weight:400;font-size:.7em;letter-spacing:0;color:var(--color-gris);}
+.vitrine__suite{display:flex;justify-content:center;margin-top:var(--space-m);}
+
 /* Les avis : douze pavés de texte gris devenaient illisibles empilés. */
 .avis{
   display:grid;gap:var(--space-s);
@@ -1433,14 +1554,52 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   border-radius:var(--radius-card);padding:var(--space-s);
   background:color-mix(in srgb, var(--color-noir) 3%, transparent);
 }
-.avis__etoiles{color:var(--color-bronze-profond);letter-spacing:.14em;font-size:.9rem;}
 .avis__item p{font-size:var(--fs-small);line-height:1.6;margin:0;flex:1;}
-.avis__item footer{display:flex;flex-direction:column;gap:2px;margin-top:var(--space-2xs);}
-.avis__nom{font-weight:600;color:var(--color-noir);}
-.avis__date{
-  font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
-  letter-spacing:.1em;color:var(--color-bronze-profond);
+/* En-tête d'avis : monogramme, nom en or, note, source. Le nom était noir et
+   disparaissait sur les sections sombres (retour du 22/10/2026). */
+.avis__tete{display:flex;align-items:center;gap:12px;}
+.avis__mono{
+  flex:none;width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:var(--font-mono-site);font-size:.8rem;font-weight:600;letter-spacing:.04em;
+  color:var(--color-noir);
+  background:linear-gradient(135deg, var(--color-bronze-clair-2), var(--color-bronze-profond));
 }
+.avis__qui{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+.avis__nom{font-weight:600;color:var(--color-bronze-profond);}
+.avis__note{display:flex;align-items:center;gap:8px;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);font-weight:600;color:var(--color-noir);}
+.avis__etoiles{color:var(--color-bronze);letter-spacing:.12em;font-size:.85rem;}
+.avis__source{flex:none;color:color-mix(in srgb, var(--color-noir) 45%, var(--color-creme));}
+:is(.section--noir,.section--noir-2,.section--noir-3) .avis__item{
+  border-color:var(--color-ligne);background:color-mix(in srgb, var(--color-creme) 3%, transparent);
+}
+:is(.section--noir,.section--noir-2,.section--noir-3) .avis__item p{color:var(--color-gris);}
+:is(.section--noir,.section--noir-2,.section--noir-3) .avis__nom{color:var(--color-bronze);}
+:is(.section--noir,.section--noir-2,.section--noir-3) .avis__note{color:var(--color-creme);}
+:is(.section--noir,.section--noir-2,.section--noir-3) .avis__source{color:var(--color-gris);}
+
+/* La note Google, en grand, cliquable vers la fiche. */
+.avis-note{
+  display:inline-flex;align-items:center;gap:var(--space-s);
+  margin-block:var(--space-xs) var(--space-s);color:inherit;
+}
+.avis-note__val{
+  font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:clamp(3rem, 6vw, 4.5rem);line-height:1;letter-spacing:-0.02em;
+  color:var(--color-bronze);
+}
+.section--creme .avis-note__val{color:var(--color-bronze-profond);}
+.avis-note__sur{font-size:.45em;margin-left:2px;opacity:.75;}
+.avis-note__detail{display:flex;flex-direction:column;gap:4px;}
+.avis-note__etoiles{color:var(--color-bronze);letter-spacing:.14em;font-size:1.15rem;}
+.avis-note__lien{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:var(--fs-small);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb, currentColor 35%, transparent);
+}
+.avis-note:hover .avis-note__lien{text-decoration-color:var(--color-bronze);}
+.avis-note:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:4px;border-radius:6px;}
 
 /* Signature de la page « Notre histoire ». */
 .signature{
@@ -1462,6 +1621,10 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 
 /* La carte off-market doit se voir comme une restriction, pas comme un
    catalogue : c'est sa promesse. */
+/* Cartes d'offres de l'accueil : même construction, bouton calé en bas pour
+   que les deux soient à la même hauteur quelle que soit la longueur du texte. */
+.card--offre{display:flex;flex-direction:column;}
+.card--offre > .btn-row{margin-top:auto !important;padding-top:var(--space-m);}
 .card--offmarket{
   background:linear-gradient(145deg,var(--color-noir-3),var(--color-noir));
   border-color:var(--color-bronze-profond);
@@ -1899,21 +2062,19 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 :root .btn.btn.btn:hover{background:var(--color-bronze-clair-2);color:var(--color-noir);border-color:var(--color-bronze-clair-2);}
 :root .btn.btn.btn:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
-/* Deux boutons côte à côte : seul le plus important reste or (`btn--primary`),
-   l'autre prend une couleur qui contraste avec le fond. Crème texte noir sur
-   fond sombre ; noir texte or sur fond crème. Un bouton seul reste or quelle
-   que soit sa variante. */
+/* Deux boutons côte à côte : seul le plus important reste or (`btn--primary`).
+   L'autre est noir, texte or, sur tous les fonds : il contraste avec le
+   bouton or à côté de lui (MAV, 22/10/2026). Sur fond sombre, un filet or
+   dessine sa forme, qui sinon se fondrait dans le noir. Un bouton seul reste
+   or quelle que soit sa variante. */
 :root :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary){
-  background:var(--color-creme);color:var(--color-noir);border-color:var(--color-creme);
+  background:var(--color-noir);color:var(--color-bronze);border-color:var(--color-bronze);
 }
 :root :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary):hover{
-  background:var(--color-bronze-clair);border-color:var(--color-bronze-clair);color:var(--color-noir);
+  background:var(--color-noir-3);color:var(--color-bronze-clair);border-color:var(--color-bronze-clair);
 }
 :root .section--creme :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary){
-  background:var(--color-noir);color:var(--color-bronze);border-color:var(--color-noir);
-}
-:root .section--creme :is(.btn--primary ~ .btn, .btn:has(~ .btn--primary)).btn.btn:not(.btn--primary):hover{
-  background:var(--color-noir-3);color:var(--color-bronze-clair);border-color:var(--color-noir-3);
+  border-color:var(--color-noir);
 }
 .btn .btn__icon{display:none;}
 .btn-row,.field-nav{justify-content:center;}
@@ -1927,12 +2088,10 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
    un picto qui en dit l'intention.
    ========================================================================== */
 .hero-proof__item{align-items:center;gap:10px;}
+/* Le picto seul, en or, sans cercle autour (MAV, 22/10/2026). */
 .hero-proof__picto{
   display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:38px;height:38px;border-radius:var(--radius-pill);
   color:var(--color-bronze);
-  border:1px solid color-mix(in srgb, var(--color-bronze) 45%, transparent);
-  background:color-mix(in srgb, var(--color-bronze) 10%, transparent);
 }
 .hero-proof__val{
   font-family:var(--font-display);
