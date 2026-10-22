@@ -5,18 +5,28 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Picto } from "./Picto";
 
-export type Polaroid = {
+export type FicheVitrine = {
   href: string;
   image: string | null;
   ville: string;
   dept: string;
+  /** Vignette : les quatre données, le prix en dernier. */
+  infos: [string, string][];
+  /** Polaroid : la légende écrite à la main. */
   faits: string;
   prix: string;
 };
 
+export type FormeVitrine = "vignettes" | "polaroids";
+
 /**
- * Les ventes en polaroïds, l'un de face au milieu, les voisins inclinés
- * derrière (MAV, 22/10/2026, maquette validée).
+ * La vitrine des ventes de l'accueil : la vente du milieu en grand, les
+ * voisines plus petites, inclinées et dans l'ombre (MAV, 22/10/2026).
+ *
+ * Deux formes de carte. Les vignettes de l'ancienne vitrine sont en ligne ;
+ * les polaroïds (cadre blanc, légende manuscrite, tampon « VENDU » or) ont été
+ * validés puis mis de côté par MAV, qui veut pouvoir y revenir : il suffit de
+ * passer `forme="polaroids"`.
  *
  * - Défilement seul toutes les 4,5 s, arrêté au survol, au focus et quand
  *   l'utilisateur a demandé moins d'animations.
@@ -51,7 +61,7 @@ function pose(d: number): CSSProperties {
   } as CSSProperties;
 }
 
-export function Polaroids({ items }: { items: Polaroid[] }) {
+export function VitrineDefilante({ items, forme }: { items: FicheVitrine[]; forme: FormeVitrine }) {
   const n = items.length;
   const [courant, setCourant] = useState(0);
   const [pause, setPause] = useState(false);
@@ -86,9 +96,9 @@ export function Polaroids({ items }: { items: Polaroid[] }) {
   if (n === 0) return null;
 
   return (
-    <div className="polas">
+    <div className={`vitr vitr--${forme}`}>
       <div
-        className="polas__scene"
+        className="vitr__scene"
         role="region"
         aria-roledescription="carrousel"
         aria-label="Immeubles vendus"
@@ -105,7 +115,7 @@ export function Polaroids({ items }: { items: Polaroid[] }) {
           if (e.key === "ArrowRight") { e.preventDefault(); aller(courant + 1); }
         }}
         onPointerDown={(e) => {
-          if ((e.target as HTMLElement).closest(".polas__fleche")) return;
+          if ((e.target as HTMLElement).closest(".vitr__fleche")) return;
           depart.current = e.clientX;
           bouge.current = false;
         }}
@@ -145,11 +155,11 @@ export function Polaroids({ items }: { items: Polaroid[] }) {
             <Link
               key={it.href}
               href={it.href}
-              className="pola"
+              className={`vitr__carte ${forme === "polaroids" ? "pola" : "vig"}`}
               style={pose(d)}
               data-pos={d}
               tabIndex={d === 0 ? 0 : -1}
-              aria-label={`${it.ville} (${it.dept}), ${it.faits}, vendu ${it.prix}`}
+              aria-label={`${it.ville} (${it.dept}), ${it.faits ? `${it.faits}, ` : ""}vendu ${it.prix}`}
               draggable={false}
               onClick={(e) => {
                 // Un glissement n'est pas un clic ; un voisin vient au milieu.
@@ -160,41 +170,70 @@ export function Polaroids({ items }: { items: Polaroid[] }) {
                 bouge.current = false;
               }}
             >
-              <span className="pola__papier" ref={(el) => { papiers.current[i] = el; }}>
-                <span className="pola__photo">
+              {forme === "polaroids" ? (
+                <span className="pola__papier" ref={(el) => { papiers.current[i] = el; }}>
+                  <span className="pola__photo">
+                    {it.image ? (
+                      <Image src={it.image} alt="" fill sizes="300px" draggable={false} />
+                    ) : (
+                      <span className="pola__sansphoto" aria-hidden="true">
+                        <Picto nom="immeubles" taille={40} />
+                      </span>
+                    )}
+                  </span>
+                  <span className="pola__tampon" aria-hidden="true">
+                    <i>V</i><i>E</i><i>N</i><i>D</i><i>U</i>
+                  </span>
+                  <span className="pola__legende" aria-hidden="true">
+                    <span className={`pola__ville${it.ville.length > 14 ? " pola__ville--longue" : ""}`}>
+                      {it.ville} ({it.dept})
+                    </span>
+                    <span className="pola__faits">
+                      {it.faits ? `${it.faits} · ` : ""}
+                      <span className="pola__prix">{it.prix}</span>
+                    </span>
+                  </span>
+                </span>
+              ) : (
+                <>
                   {it.image ? (
-                    <Image src={it.image} alt="" fill sizes="300px" draggable={false} />
+                    <Image className="vig__img" src={it.image} alt="" fill sizes="300px" draggable={false} />
                   ) : (
-                    <span className="pola__sansphoto" aria-hidden="true">
+                    <span className="vig__sansphoto" aria-hidden="true">
                       <Picto nom="immeubles" taille={40} />
                     </span>
                   )}
-                </span>
-                <span className="pola__legende" aria-hidden="true">
-                  <span className={`pola__ville${it.ville.length > 14 ? " pola__ville--longue" : ""}`}>
-                    {it.ville} ({it.dept})
+                  <span className="vig__voile" aria-hidden="true" />
+                  <span className="vig__texte" aria-hidden="true">
+                    <span className="vig__ville">
+                      {it.ville} <span className="vig__dept">({it.dept})</span>
+                    </span>
+                    <dl className="vig__infos">
+                      {it.infos.map(([dt, dd]) => (
+                        <div key={dt}>
+                          <dt>{dt}</dt>
+                          <dd>{dd}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   </span>
-                  <span className="pola__faits">
-                    {it.faits ? `${it.faits} · ` : ""}
-                    <span className="pola__prix">{it.prix}</span>
-                  </span>
-                </span>
-              </span>
+                </>
+              )}
             </Link>
           );
         })}
-        <button type="button" className="polas__fleche polas__fleche--avant" aria-label="Immeuble précédent"
+        <button type="button" className="vitr__fleche vitr__fleche--avant" aria-label="Immeuble précédent"
           onClick={() => aller(courant - 1)}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8"
             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
         </button>
-        <button type="button" className="polas__fleche polas__fleche--apres" aria-label="Immeuble suivant"
+        <button type="button" className="vitr__fleche vitr__fleche--apres" aria-label="Immeuble suivant"
           onClick={() => aller(courant + 1)}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8"
             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
         </button>
       </div>
-      <div className="polas__points">
+      <div className="vitr__points">
         {items.map((it, i) => (
           <button key={it.href} type="button" aria-current={i === courant}
             aria-label={`${it.ville}, vente ${i + 1} sur ${n}`} onClick={() => aller(i)} />

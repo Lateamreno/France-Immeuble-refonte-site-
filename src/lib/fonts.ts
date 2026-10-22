@@ -36,12 +36,17 @@ export const jetbrainsMono = localFont({
  * Écriture manuscrite des légendes de polaroïds, et rien d'autre (MAV,
  * 22/10/2026). Sous-ensemble latin de Google Fonts, hébergé ici comme les trois
  * autres : aucune requête vers Google depuis le navigateur.
+ *
+ * Pas de préchargement : la vitrine est en vignettes et les polaroïds sont
+ * gardés de côté. Le navigateur ne télécharge le fichier que si une légende
+ * manuscrite est affichée.
  */
 export const caveat = localFont({
   src: "../../assets/fonts/Caveat[wght].woff2",
   variable: "--font-caveat",
   weight: "400 700",
   display: "swap",
+  preload: false,
 });
 
 export const fontVariables = `${archivo.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable}`;

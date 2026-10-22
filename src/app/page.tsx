@@ -15,7 +15,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
-import { VitrinePolaroids } from "@/components/VitrinePolaroids";
+import { VitrineAccueil } from "@/components/VitrineAccueil";
 import { Avis } from "@/components/Avis";
 
 /**
@@ -162,9 +162,9 @@ export default async function Accueil() {
             <h2>Immeubles vendus par France Immeuble</h2>
           </Reveal>
         </div>
-        {/* Déposées par le BO, comme la page des ventes, en polaroïds (MAV).
-            Chaque polaroid ouvre la fiche de la vente. */}
-        <VitrinePolaroids ventes={vitrine} />
+        {/* Déposées par le BO, comme la page des ventes. Vignettes en ligne ;
+            les polaroïds restent prêts (forme="polaroids"), MAV 22/10/2026. */}
+        <VitrineAccueil ventes={vitrine} forme="vignettes" />
         <div className="container vitrine__suite">
           <Button href="/immeubles-vendus/">Voir tous nos immeubles vendus</Button>
         </div>

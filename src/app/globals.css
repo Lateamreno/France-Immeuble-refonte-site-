@@ -1549,30 +1549,70 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   .tete-media__visuel--libre img{width:auto;max-width:100%;margin-inline:auto;}
 }
 
-/* Vitrine d'accueil en polaroïds (MAV, 22/10/2026, maquette validée).
-   Format du film Polaroid 600 : 88 × 107 mm, photo carrée de 79 mm, marges de
-   4,5 mm sur les côtés, 6,5 mm en haut, 21,5 mm en bas pour l'écriture. Les
-   marges en % se calculent sur la largeur : 4,5/88 et 6,5/88. */
-/* Toute la largeur de l'écran, avec un fondu aux bords : un polaroid ne doit
-   jamais être tranché net. */
-.polas{--w:clamp(210px, 25vw, 300px);overflow-x:clip;}
-.polas__scene{
-  position:relative;height:calc(var(--w) * 1.216 + 110px);
+/* Vitrine d'accueil (MAV, 22/10/2026) : la vente du milieu en grand, les
+   voisines plus petites, inclinées et dans l'ombre. Deux formes de carte :
+   les vignettes (en ligne) et les polaroïds (gardés pour plus tard).
+   Toute la largeur de l'écran, avec un fondu aux bords : une carte ne doit
+   jamais être tranchée net. */
+.vitr{--w:clamp(210px, 25vw, 300px);overflow-x:clip;}
+.vitr--vignettes{--hr:1.25;}
+.vitr--polaroids{--hr:1.216;}
+.vitr__scene{
+  position:relative;height:calc(var(--w) * var(--hr) + 110px);
   -webkit-mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent);
   mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent);
   touch-action:pan-y;user-select:none;-webkit-user-select:none;
 }
-.polas__scene:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:-6px;border-radius:12px;}
-@media (pointer:fine){.polas__scene{cursor:grab;}}
-.pola{
-  position:absolute;left:50%;top:50%;width:var(--w);aspect-ratio:88/107;
+.vitr__scene:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:-6px;border-radius:12px;}
+@media (pointer:fine){.vitr__scene{cursor:grab;}}
+.vitr__carte{
+  position:absolute;left:50%;top:50%;width:var(--w);
   transform:translate(-50%,-50%) translateX(var(--x,0)) translateY(var(--y,0)) rotate(var(--r,0deg)) scale(var(--s,1));
   z-index:var(--z,1);filter:brightness(var(--b,1));
   transition:transform .85s cubic-bezier(.2,.75,.25,1), filter .6s ease;
-  color:var(--color-noir);text-decoration:none;display:block;
+  text-decoration:none;display:block;
   -webkit-tap-highlight-color:transparent;
 }
-.pola:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:6px;}
+.vitr__carte:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:6px;}
+
+/* Les vignettes de l'ancienne vitrine : photo pleine, voile sombre, ville
+   en blanc, département et prix de vente en or (MAV, 22/10/2026). */
+.vig{
+  aspect-ratio:4/5;border-radius:var(--radius-card);overflow:hidden;
+  border:1px solid var(--color-ligne);background:var(--color-noir-3);color:var(--color-creme);
+  display:flex;align-items:flex-end;
+  box-shadow:
+    0 calc(var(--lift,1) * 6px) calc(var(--lift,1) * 14px) rgba(0,0,0,.45),
+    0 calc(var(--lift,1) * 26px) calc(var(--lift,1) * 50px) -12px rgba(0,0,0,.7);
+  transition:transform .85s cubic-bezier(.2,.75,.25,1), filter .6s ease, border-color var(--dur) var(--ease), box-shadow .85s ease;
+}
+.vig[data-pos="0"]{border-color:color-mix(in srgb,var(--color-bronze) 55%,var(--color-ligne));}
+.vig__img{object-fit:cover;transition:transform .9s ease;}
+.vig[data-pos="0"] .vig__img{transform:scale(1.04);}
+.vig__sansphoto{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:30%;color:var(--color-bronze-profond);}
+.vig__voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.12) 0%,rgba(10,10,10,.92) 64%);}
+.vig__texte{position:relative;z-index:1;width:100%;padding:calc(var(--w) * .07);}
+.vig__ville{
+  display:block;font-family:var(--font-display);
+  font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:calc(var(--w) * .072);line-height:1.05;letter-spacing:-0.015em;margin-bottom:.55em;
+  overflow-wrap:break-word;hyphens:auto;
+}
+.vig__dept{font-family:var(--font-body);font-variation-settings:normal;font-weight:400;font-size:.7em;letter-spacing:0;color:var(--color-bronze);}
+.vig__infos{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0;}
+.vig__infos div{display:flex;flex-direction:column;min-width:0;}
+.vig__infos dt{
+  font-family:var(--font-mono-site);font-size:calc(var(--w) * .036);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--color-gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vig__infos dd{margin:0;font-family:var(--font-mono-site);font-size:calc(var(--w) * .048);font-weight:600;letter-spacing:.02em;color:var(--color-creme);}
+.vig__infos div:last-child dd{color:var(--color-bronze);}
+
+/* Les polaroïds (maquette validée puis mise de côté, MAV 22/10/2026).
+   Format du film Polaroid 600 : 88 × 107 mm, photo carrée de 79 mm, marges de
+   4,5 mm sur les côtés, 6,5 mm en haut, 21,5 mm en bas pour l'écriture. Les
+   marges en % se calculent sur la largeur : 4,5/88 et 6,5/88. */
+.pola{aspect-ratio:88/107;color:var(--color-noir);}
 /* Le papier glacé se courbe : ses coins bas décollent de la table et l'ombre
    se creuse dessous. Plus la carte est près du milieu, plus elle est haute. */
 .pola::before,.pola::after{
@@ -1637,23 +1677,44 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .pola__ville--longue{font-size:.7em;}
 .pola__faits{font-size:.76em;font-weight:500;color:color-mix(in srgb,var(--color-noir) 82%,transparent);margin-top:.12em;white-space:nowrap;}
 .pola__prix{color:var(--color-bronze-profond);font-weight:700;}
-.polas__fleche{
+.vitr__fleche{
   position:absolute;top:50%;z-index:30;width:46px;height:46px;transform:translateY(-50%);
   display:grid;place-items:center;border-radius:50%;cursor:pointer;color:var(--color-bronze);
   background:color-mix(in srgb,var(--color-noir) 72%,transparent);
   border:1px solid color-mix(in srgb,var(--color-bronze) 50%,transparent);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:border-color var(--dur) var(--ease);
 }
-.polas__fleche:hover{border-color:var(--color-bronze);}
-.polas__fleche:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
-.polas__fleche--avant{left:max(clamp(8px,3vw,40px), calc(50% - 600px + 40px));}
-.polas__fleche--apres{right:max(clamp(8px,3vw,40px), calc(50% - 600px + 40px));}
-.polas__points{display:flex;justify-content:center;gap:9px;margin-top:4px;}
-.polas__points button{width:8px;height:8px;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-ligne);cursor:pointer;transition:width .3s,background .3s;}
-.polas__points button[aria-current="true"]{width:22px;background:var(--color-bronze);}
-.polas__points button:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
-@media (max-width:640px){.polas__fleche{width:40px;height:40px;}}
-@media (prefers-reduced-motion: reduce){.pola,.pola__papier,.pola__papier::after{transition:none;}}
+.vitr__fleche:hover{border-color:var(--color-bronze);}
+.vitr__fleche:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.vitr__fleche--avant{left:max(clamp(8px,3vw,40px), calc(50% - 600px + 40px));}
+.vitr__fleche--apres{right:max(clamp(8px,3vw,40px), calc(50% - 600px + 40px));}
+.vitr__points{display:flex;justify-content:center;gap:9px;margin-top:4px;}
+.vitr__points button{width:8px;height:8px;padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-ligne);cursor:pointer;transition:width .3s,background .3s;}
+.vitr__points button[aria-current="true"]{width:22px;background:var(--color-bronze);}
+.vitr__points button:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+@media (max-width:640px){.vitr__fleche{width:40px;height:40px;}}
+/* Le tampon « VENDU » : petit, en biais, en haut à droite de la photo. Un
+   seul cadre, encre or irrégulière (grain fin et zones plus ou moins
+   chargées), lettres un peu décalées, comme un vrai coup de tampon. */
+.pola__tampon{
+  position:absolute;z-index:5;right:6%;top:10%;transform:rotate(19deg);
+  font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+  font-size:calc(var(--w) * .058);letter-spacing:.12em;line-height:1;white-space:nowrap;
+  color:var(--color-bronze);padding:.3em .38em .26em .5em;
+  border:.12em solid currentColor;border-radius:.16em .1em .18em .12em;pointer-events:none;
+  /* Un liseré sombre à peine visible : l'or reste lisible sur un ciel clair. */
+  filter:drop-shadow(0 0 .7px rgba(10,10,10,.6));
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='90' preserveAspectRatio='none'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' result='f'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .09' numOctaves='2' seed='11' result='g'/%3E%3CfeComposite in='f' in2='g' operator='arithmetic' k2='.55' k3='.95'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.1 2.6'/%3E%3C/filter%3E%3Crect width='200' height='90' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='90' preserveAspectRatio='none'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' result='f'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .09' numOctaves='2' seed='11' result='g'/%3E%3CfeComposite in='f' in2='g' operator='arithmetic' k2='.55' k3='.95'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.1 2.6'/%3E%3C/filter%3E%3Crect width='200' height='90' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+}
+.pola__tampon i{font-style:normal;display:inline-block;}
+.pola__tampon i:nth-child(1){transform:translateY(.03em) rotate(-3deg);opacity:.92;}
+.pola__tampon i:nth-child(2){transform:translateY(-.04em) rotate(2deg);}
+.pola__tampon i:nth-child(3){transform:translateY(.05em) rotate(-1deg) scale(1.04);opacity:.85;}
+.pola__tampon i:nth-child(4){transform:translateY(-.02em) rotate(3deg);}
+.pola__tampon i:nth-child(5){transform:translateY(.04em) rotate(-2deg);opacity:.9;}
+@media (prefers-reduced-motion: reduce){.vitr__carte,.vig,.vig__img,.pola__papier,.pola__papier::after{transition:none;}}
 .vitrine__suite{display:flex;justify-content:center;margin-top:var(--space-m);}
 
 /* Les avis : douze pavés de texte gris devenaient illisibles empilés. */
