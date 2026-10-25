@@ -232,7 +232,7 @@ Les 4 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin 
 | `Archivo[wdth,wght].woff2` | Display — H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
 | `Inter[opsz,wght].woff2` | Body — texte, nav, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
 | `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
-| `Caveat[wght].woff2` | Écriture des légendes de polaroïds, rien d'autre (MAV, 22/10/2026). Non préchargée : polaroïds gardés de côté | `wght` 400-700 | 75 Ko |
+| `Caveat[wght].woff2` | Écriture des légendes de polaroïds, rien d'autre (MAV, 22/10/2026). Non préchargée : seul l'accueil s'en sert | `wght` 400-700 | 75 Ko |
 
 ```css
 @font-face{font-family:"Archivo";src:url("/assets/fonts/Archivo[wdth,wght].woff2") format("woff2-variations");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
@@ -288,10 +288,11 @@ Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto 
 cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
 
 **Vitrine des ventes de l'accueil** (MAV, 22/10/2026) : la vente du milieu en grand, les
-voisines plus petites, inclinées et dans l'ombre, flèches et glisser. Cartes en **vignettes**
-(photo pleine, ville en blanc, département et prix de vente en or). La version **polaroïds**
-(cadre blanc, légende en Caveat, petit tampon « VENDU » or à l'encre irrégulière en haut à
-droite de la photo) est validée et gardée de côté : `forme="polaroids"` sur `VitrineAccueil`.
+voisines plus petites, inclinées et dans l'ombre, flèches et glisser. Cartes en **polaroïds**
+(MAV, 25/10/2026) : cadre blanc, légende en Caveat, petit tampon « VENDU » or à l'encre
+irrégulière en haut à droite de la photo. La version **vignettes** (photo pleine, ville en
+blanc, département et prix de vente en or) est validée et gardée de côté :
+`forme="vignettes"` sur `VitrineAccueil`.
 
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
 cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré

@@ -30,10 +30,10 @@ function infos(v: Vente): [string, string][] {
 /**
  * La vitrine des ventes de l'accueil. Les textes sont préparés ici, côté
  * serveur : le composant client ne reçoit que du texte et ne touche pas aux
- * données du BO. Vignettes en ligne ; `forme="polaroids"` pour la version
- * polaroïd gardée de côté (MAV, 22/10/2026).
+ * données du BO. Polaroïds en ligne (MAV, 25/10/2026) ; `forme="vignettes"`
+ * pour la version vignettes gardée de côté.
  */
-export function VitrineAccueil({ ventes, forme = "vignettes" }: { ventes: Vente[]; forme?: FormeVitrine }) {
+export function VitrineAccueil({ ventes, forme = "polaroids" }: { ventes: Vente[]; forme?: FormeVitrine }) {
   const items: FicheVitrine[] = ventes.map((v) => ({
     href: `/immeubles-vendus/${v.slug}/`,
     image: v.image,

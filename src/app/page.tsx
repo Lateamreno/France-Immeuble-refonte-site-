@@ -162,9 +162,9 @@ export default async function Accueil() {
             <h2>Immeubles vendus par France Immeuble</h2>
           </Reveal>
         </div>
-        {/* Déposées par le BO, comme la page des ventes. Vignettes en ligne ;
-            les polaroïds restent prêts (forme="polaroids"), MAV 22/10/2026. */}
-        <VitrineAccueil ventes={vitrine} forme="vignettes" />
+        {/* Déposées par le BO, comme la page des ventes. Polaroïds en ligne
+            (MAV, 25/10/2026) ; les vignettes restent prêtes (forme="vignettes"). */}
+        <VitrineAccueil ventes={vitrine} forme="polaroids" />
         <div className="container vitrine__suite">
           <Button href="/immeubles-vendus/">Voir tous nos immeubles vendus</Button>
         </div>

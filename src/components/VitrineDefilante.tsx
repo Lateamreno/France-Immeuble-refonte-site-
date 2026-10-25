@@ -23,10 +23,9 @@ export type FormeVitrine = "vignettes" | "polaroids";
  * La vitrine des ventes de l'accueil : la vente du milieu en grand, les
  * voisines plus petites, inclinées et dans l'ombre (MAV, 22/10/2026).
  *
- * Deux formes de carte. Les vignettes de l'ancienne vitrine sont en ligne ;
- * les polaroïds (cadre blanc, légende manuscrite, tampon « VENDU » or) ont été
- * validés puis mis de côté par MAV, qui veut pouvoir y revenir : il suffit de
- * passer `forme="polaroids"`.
+ * Deux formes de carte. Les polaroïds (cadre blanc, légende manuscrite, tampon
+ * « VENDU » or) sont en ligne (MAV, 25/10/2026). Les vignettes de l'ancienne
+ * vitrine restent prêtes : il suffit de passer `forme="vignettes"`.
  *
  * - Défilement seul toutes les 4,5 s, arrêté au survol, au focus et quand
  *   l'utilisateur a demandé moins d'animations.

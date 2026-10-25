@@ -1551,7 +1551,7 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 
 /* Vitrine d'accueil (MAV, 22/10/2026) : la vente du milieu en grand, les
    voisines plus petites, inclinées et dans l'ombre. Deux formes de carte :
-   les vignettes (en ligne) et les polaroïds (gardés pour plus tard).
+   les polaroïds (en ligne, MAV 25/10/2026) et les vignettes (gardées de côté).
    Toute la largeur de l'écran, avec un fondu aux bords : une carte ne doit
    jamais être tranchée net. */
 .vitr{--w:clamp(210px, 25vw, 300px);overflow-x:clip;}
@@ -1575,8 +1575,8 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 .vitr__carte:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:6px;}
 
-/* Les vignettes de l'ancienne vitrine : photo pleine, voile sombre, ville
-   en blanc, département et prix de vente en or (MAV, 22/10/2026). */
+/* Les vignettes de l'ancienne vitrine, gardées de côté : photo pleine, voile
+   sombre, ville en blanc, département et prix de vente en or (MAV, 22/10/2026). */
 .vig{
   aspect-ratio:4/5;border-radius:var(--radius-card);overflow:hidden;
   border:1px solid var(--color-ligne);background:var(--color-noir-3);color:var(--color-creme);
@@ -1608,7 +1608,7 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .vig__infos dd{margin:0;font-family:var(--font-mono-site);font-size:calc(var(--w) * .048);font-weight:600;letter-spacing:.02em;color:var(--color-creme);}
 .vig__infos div:last-child dd{color:var(--color-bronze);}
 
-/* Les polaroïds (maquette validée puis mise de côté, MAV 22/10/2026).
+/* Les polaroïds (en ligne, MAV 25/10/2026).
    Format du film Polaroid 600 : 88 × 107 mm, photo carrée de 79 mm, marges de
    4,5 mm sur les côtés, 6,5 mm en haut, 21,5 mm en bas pour l'écriture. Les
    marges en % se calculent sur la largeur : 4,5/88 et 6,5/88. */

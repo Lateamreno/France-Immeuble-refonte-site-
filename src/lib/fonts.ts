@@ -37,9 +37,9 @@ export const jetbrainsMono = localFont({
  * 22/10/2026). Sous-ensemble latin de Google Fonts, hébergé ici comme les trois
  * autres : aucune requête vers Google depuis le navigateur.
  *
- * Pas de préchargement : la vitrine est en vignettes et les polaroïds sont
- * gardés de côté. Le navigateur ne télécharge le fichier que si une légende
- * manuscrite est affichée.
+ * Pas de préchargement : seule la vitrine de l'accueil s'en sert. Le
+ * navigateur ne télécharge le fichier que sur une page qui affiche une
+ * légende manuscrite, pas sur les autres.
  */
 export const caveat = localFont({
   src: "../../assets/fonts/Caveat[wght].woff2",
