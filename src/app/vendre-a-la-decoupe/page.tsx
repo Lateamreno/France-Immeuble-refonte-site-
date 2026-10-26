@@ -5,7 +5,8 @@ import { Button } from "@/components/Button";
 import { Faq, type QuestionFaq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
-import { PREUVES, SITE } from "@/lib/site";
+import { SITE, nombre } from "@/lib/site";
+import { chiffres } from "@/lib/chiffres";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 
@@ -183,7 +184,8 @@ const QUESTIONS: QuestionFaq[] = [
   },
 ];
 
-export default function Decoupe() {
+export default async function Decoupe() {
+  const ch = await chiffres();
   return (
     <>
       <JsonLd
@@ -466,7 +468,7 @@ export default function Decoupe() {
               {
                 n: "06",
                 t: "La commercialisation",
-                p: `Lots occupés vers notre fichier de ${PREUVES.investisseurs} investisseurs, lots libres vers les occupants, en off-market puis en diffusion élargie. Agence locale en renfort si le secteur l’exige, sans frais supplémentaires pour vous.`,
+                p: `Lots occupés vers notre fichier de ${nombre(ch.investisseurs)} investisseurs, lots libres vers les occupants, en off-market puis en diffusion élargie. Agence locale en renfort si le secteur l’exige, sans frais supplémentaires pour vous.`,
                 m: "Deux marchés, deux prix",
               },
             ].map((e, i) => (

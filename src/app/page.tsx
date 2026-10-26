@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { nombre } from "@/lib/site";
 import { chiffres } from "@/lib/chiffres";
 import { Chiffre } from "@/components/Chiffre";
 import Image from "next/image";
@@ -12,7 +11,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { Picto } from "@/components/Picto";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
-import { SITE } from "@/lib/site";
+import { SITE, nombre } from "@/lib/site";
 import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
 import { VitrineAccueil } from "@/components/VitrineAccueil";
@@ -21,10 +20,22 @@ import { Avis } from "@/components/Avis";
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
  *
- * Tout le texte vient de `content/pages-wp.json`, au mot près. Title, meta et
- * H1 restent gelés au caractère près (CLAUDE.md §10 et §16).
+ * Tout le texte vient de `content/pages-wp.json`, au mot près. Title et H1
+ * restent gelés au caractère près (CLAUDE.md §10 et §16). Seule exception
+ * dans la meta (MAV, 26/10/2026) : « 1 500+ acheteurs » devient le nombre
+ * d'acheteurs déposé par le BO, le même que partout ailleurs sur le site.
  */
-export const metadata: Metadata = metadonneesWP("/");
+export async function generateMetadata(): Promise<Metadata> {
+  const base = metadonneesWP("/");
+  const { investisseurs } = await chiffres();
+  const aJour = (d: string | null | undefined) =>
+    d ? d.replace("Réseau de 1 500+ acheteurs", `Réseau de ${nombre(investisseurs)} acheteurs`) : undefined;
+  return {
+    ...base,
+    description: aJour(base.description),
+    openGraph: { ...base.openGraph, description: aJour(base.openGraph?.description as string | undefined) },
+  };
+}
 
 export default async function Accueil() {
   const [ch, toutes] = await Promise.all([chiffres(), ventes()]);

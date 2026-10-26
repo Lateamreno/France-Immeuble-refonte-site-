@@ -16,18 +16,14 @@ export const SITE = {
 } as const;
 
 /**
- * `investisseurs` : 1 372, le décompte réel du fichier — pas les « 1 500+ »
- * de la meta d'accueil.
+ * `investisseurs` : le nombre d'acquéreurs actifs du fichier. Le BO le dépose
+ * dans la table `chiffres` (clé `investisseurs`) ; la valeur ci-dessous ne
+ * sert que tant que rien n'est déposé ou si la base ne répond pas.
  *
- * Un chiffre exact se défend, un chiffre rond s'invente : devant un
- * propriétaire d'immeuble à plusieurs millions, 1 372 est plus crédible que
- * 1 500+. Et c'est le seul des deux qu'une projection `web.stats` pourra
- * alimenter automatiquement (§2) — un arrondi marketing ne se calcule pas.
- *
- * La meta de la homepage reste gelée à « 1 500+ » : la modifier est interdit
- * (§16), et elle n'apparaît que dans les résultats de recherche, jamais sur
- * la page. L'écart n'est donc jamais visible côté visiteur. À rouvrir au lot
- * Homepage (M7), où le CTR est justement l'enjeu.
+ * 1 480 au 26/10/2026, relevé dans le BO par MAV : 1 487 contacts cochés
+ * « acquéreur », dont 1 480 non archivés (1 203 avec au moins une recherche).
+ * Un seul chiffre fait foi partout, meta de l'accueil comprise (MAV,
+ * 26/10/2026) : il remplace les « 1 500+ » et les « 1 372 » d'avant.
  *
  * Deux articles de 2021 et 2022 citent « 1 500 acheteurs » : ils gardent leur
  * chiffre d'époque, et une note de datation en pied d'article le situe.
@@ -43,7 +39,7 @@ export const PREUVES = {
    * MAV a tranché le 21/10 : on aligne le discours sur ce que la base prouve.
    * Un chiffre dérivé des données ne peut plus diverger de la réalité.
    */
-  investisseurs: 1372,
+  investisseurs: 1480,
   noteGoogle: "4,9",
   nbAvis: 28,
   /** La fiche Google de l'agence, ouverte sur ses avis (lien de l'ancien site). */

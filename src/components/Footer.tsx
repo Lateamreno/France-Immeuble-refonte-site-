@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PREUVES, SITE, nombre } from "@/lib/site";
+import { SITE, nombre } from "@/lib/site";
+import { chiffres } from "@/lib/chiffres";
 import { Logo } from "./Logo";
 
 /**
@@ -11,6 +12,7 @@ import { Logo } from "./Logo";
  *  - la colonne « Vendre par ville » arrivera en M6, avec les pages.
  */
 export async function Footer() {
+  const { investisseurs } = await chiffres();
   return (
     <footer className="site-footer">
       <div className="container">
@@ -67,7 +69,7 @@ export async function Footer() {
         <div className="footer-bottom">
           <span>&copy; 2026 {SITE.nom}</span>
           <span className="mono">
-            {nombre(PREUVES.investisseurs)} investisseurs · Paris 8<sup>e</sup>
+            {nombre(investisseurs)} investisseurs · Paris 8<sup>e</sup>
           </span>
         </div>
       </div>
