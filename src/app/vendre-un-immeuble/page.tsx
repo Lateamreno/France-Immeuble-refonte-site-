@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
+import { SectionFondue } from "@/components/SectionFondue";
 import { Button } from "@/components/Button";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
@@ -153,64 +154,57 @@ export default async function VendreUnImmeuble() {
         </>
       </HeroMedia>
 
-      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Chaque
-          carte entière est un lien (MAV, 22/10/2026) : l'estimation mène à la
-          page Estimer, la recherche d'acquéreur au formulaire de vente plus
-          bas. L'immeuble détouré casse l'aplat crème. */}
-      <section className="section section--creme">
-        <div className="container">
-          <Reveal className="portes__visuel">
-            <Image
-              src="/media/img-vendez222-2.webp"
-              alt="Immeuble de rapport parisien d’angle, façade en pierre et brique"
-              width={900}
-              height={437}
-              sizes="(max-width: 700px) 100vw, 620px"
-            />
-          </Reveal>
-          <div className="grid grid--2">
-            <Reveal as="article" className="card card--medaillon">
-              <span className="card__fond" aria-hidden="true">
-                <Picto nom="calculatrice" taille={96} />
-              </span>
-              <span className="card__picto" aria-hidden="true">
-                <Picto nom="calculatrice" taille={30} />
-              </span>
-              <h2>
-                <Link href="/estimer-un-immeuble/" className="card__lien">
-                  Vous souhaitez connaître la valeur de votre immeuble&nbsp;?
-                </Link>
-              </h2>
-              <p>
-                Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
-                géographique et locatif de votre immeuble ainsi que sur son caractère
-                constructible pour une valorisation optimale.
-              </p>
-            </Reveal>
-            <Reveal as="article" className="card card--medaillon" delayIndex={1}>
-              <span className="card__fond" aria-hidden="true">
-                <Picto nom="poignee" taille={96} />
-              </span>
-              <span className="card__picto" aria-hidden="true">
-                <Picto nom="poignee" taille={30} />
-              </span>
-              <h2>
-                <a href="#estimer" className="card__lien">
-                  Vous cherchez un acquéreur pour votre immeuble&nbsp;?
-                </a>
-              </h2>
-              <p>
-                Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family
-                offices, de marchands de biens et d’institutionnels le meilleur acheteur pour
-                votre immeuble.
-              </p>
-            </Reveal>
-          </div>
-          <div className="btn-row atouts-sec__bouton">
-            <Button href="#estimer" icone>Vendre mon immeuble</Button>
-          </div>
+      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Même
+          construction que les atouts (MAV, 26/10/2026) : photo fondue dans le
+          beige, cartes noires à picto et photo. Chaque carte entière est un
+          lien : l'estimation mène à la page Estimer, la recherche
+          d'acquéreur au formulaire de vente plus bas. */}
+      <SectionFondue
+        image="/media/streets-of-paris-PV7Y89Z-1536x1025.webp"
+        position="center 30%"
+        surtitre="Votre projet"
+        titre={<>Estimer ou vendre votre immeuble de rapport</>}
+      >
+        <LigneDefilante className="atouts portes">
+          <article className="atout atout--lien">
+            <span className="atout__photo" aria-hidden="true">
+              <Image src="/media/portes/valeur-calcul.webp" alt="" fill sizes="(max-width: 760px) 80vw, 560px" />
+            </span>
+            <Picto nom="calculatrice" taille={54} className="atout__picto" />
+            <h3>
+              <Link href="/estimer-un-immeuble/" className="card__lien">
+                Vous souhaitez connaître la valeur de votre immeuble&nbsp;?
+              </Link>
+            </h3>
+            <span className="atout__filet" aria-hidden="true" />
+            <p>
+              Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
+              géographique et locatif de votre immeuble ainsi que sur son caractère
+              constructible pour une valorisation optimale.
+            </p>
+          </article>
+          <article className="atout atout--lien">
+            <span className="atout__photo" aria-hidden="true">
+              <Image src="/media/portes/acquereur-dossier.webp" alt="" fill sizes="(max-width: 760px) 80vw, 560px" />
+            </span>
+            <Picto nom="poignee" taille={54} className="atout__picto" />
+            <h3>
+              <a href="#estimer" className="card__lien">
+                Vous cherchez un acquéreur pour votre immeuble&nbsp;?
+              </a>
+            </h3>
+            <span className="atout__filet" aria-hidden="true" />
+            <p>
+              Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family
+              offices, de marchands de biens et d’institutionnels le meilleur acheteur pour
+              votre immeuble.
+            </p>
+          </article>
+        </LigneDefilante>
+        <div className="btn-row sec-fondu__bouton">
+          <Button href="#estimer" icone>Vendre mon immeuble</Button>
         </div>
-      </section>
+      </SectionFondue>
 
       <section className="section section--noir-2">
         <div className="container split split--sticky">
@@ -241,15 +235,11 @@ export default async function VendreUnImmeuble() {
       {/* Le titre est dans la section beige, au-dessus des cartes, sur les
           toits de Paris fondus dans le fond (MAV, 26/10/2026). La section
           tient sur un écran : les cartes défilent en une seule ligne. */}
-      <section className="section section--creme section--ecran atouts-sec">
-        <div className="atouts-sec__fondu" aria-hidden="true">
-          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" />
-        </div>
-        <div className="container">
-          <div className="section__head atouts-sec__tete">
-            <Eyebrow>Nos atouts</Eyebrow>
-            <h2>Pourquoi vendre avec France Immeuble&nbsp;?</h2>
-          </div>
+      <SectionFondue
+        image={VISUELS.toitsAeriens.src}
+        surtitre="Nos atouts"
+        titre={<>Pourquoi vendre avec France Immeuble&nbsp;?</>}
+      >
           <LigneDefilante className="atouts">
             {atouts(ch.investisseurs).map((a) => (
               <article key={a.titre} className="atout">
@@ -263,11 +253,10 @@ export default async function VendreUnImmeuble() {
               </article>
             ))}
           </LigneDefilante>
-          <div className="btn-row atouts-sec__bouton">
+          <div className="btn-row sec-fondu__bouton">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
-        </div>
-      </section>
+      </SectionFondue>
 
       {/* Les avis arrivent juste avant le formulaire : c'est le moment ou le
           vendeur hesite, pas en bas de page une fois decide. Trois suffisent,

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <section className="section section--noir" style={{ minHeight: "68vh" }}>
+    <section className="section section--noir">
       <div className="container container--narrow">
         <Eyebrow>Erreur 404</Eyebrow>
         <h1>Cette page n’existe pas</h1>
