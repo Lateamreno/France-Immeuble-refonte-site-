@@ -489,10 +489,6 @@ Meta  : Agence n°1 spécialisée dans la vente d'immeubles de rapport en France
 H1    : L'agence dédiée aux immeubles
 ```
 
-> **Exception décidée par MAV le 26/10/2026** : dans la meta, « 1 500+ acheteurs » est
-> remplacé par le nombre d'acquéreurs déposé par le BO (`chiffres.investisseurs`, 1 480 au
-> 26/10/2026). Le reste de la meta et le title restent gelés au caractère près.
-
 Le H1 et les textes clés sont préservés sémantiquement. Le design est libre.
 
 ### Baseline SEO
@@ -532,7 +528,7 @@ Expression dominante : **« immeuble de rapport »** (14 000+ impressions/an) �
 partout. Secondaire : « vente en bloc » (contexte juridique). À éviter : « immeuble entier »
 (~600 imp/an), sauf contexte définitionnel.
 
-Réassurance : 365 immeubles traités depuis 2018 · 1 480 acquéreurs actifs en base (chiffre déposé par le BO) · 28 avis Google
+Réassurance : 365 immeubles traités depuis 2018 · 1 500 acheteurs en base (chiffre déposé par le BO) · 28 avis Google
 à 4,9/5 · honoraires 5 % du prix net vendeur · modèle off-market · mandats semi-exclusifs avec
 période de test interne 2-4 semaines.
 
@@ -622,9 +618,9 @@ l'essentiel de l'enjeu CTR : elle passe en dernier, quand le socle est éprouvé
 - **Liens morts dans le footer livré** : `/mentions-legales/` n'existe pas (la vraie URL est
   `/mentions-legales-2/`, slug dupliqué à nettoyer) et `/politique-de-confidentialite/`
   n'existe pas du tout. `/plan-du-site/` est absent du footer alors qu'il a sa place.
-- ~~**Incohérence de chiffre**~~ : tranché le 26/10/2026. Un seul chiffre partout, le nombre
-  d'acquéreurs actifs déposé par le BO (`chiffres.investisseurs`) : meta de l'accueil, page
-  Vendre, pied de page, page Découpe. Valeur de secours 1 480 (`PREUVES.investisseurs`).
+- ~~**Incohérence de chiffre**~~ : tranché par MAV le 26/10/2026. **1 500** partout, comme
+  la meta de l'accueil (gelée) : page Vendre, page Acheter, pied de page, page Découpe, lus
+  dans `chiffres.investisseurs` déposé par le BO, valeur de secours `PREUVES.investisseurs`.
 - **Libellés « bureaux » / « commerces » inversés** dans le formulaire actuel (§9).
 - `/immeubles-vendus/` est une iframe Bubble : zéro contenu indexable, 365 transactions non
   exploitées.
@@ -643,7 +639,7 @@ l'essentiel de l'enjeu CTR : elle passe en dernier, quand le socle est éprouvé
 
 **SEO**
 - ❌ Changer une URL existante, ou changer de nom de domaine
-- ❌ Modifier le title/meta de la homepage (seule exception : le nombre d'acheteurs, §10)
+- ❌ Modifier le title/meta de la homepage
 - ❌ Une page ville sans données ville (doorway page)
 - ❌ Publier un article généré sans relecture humaine
 - ❌ Oublier `GTM-5KF68JV` sur une page

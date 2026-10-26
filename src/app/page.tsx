@@ -20,22 +20,10 @@ import { Avis } from "@/components/Avis";
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
  *
- * Tout le texte vient de `content/pages-wp.json`, au mot près. Title et H1
- * restent gelés au caractère près (CLAUDE.md §10 et §16). Seule exception
- * dans la meta (MAV, 26/10/2026) : « 1 500+ acheteurs » devient le nombre
- * d'acheteurs déposé par le BO, le même que partout ailleurs sur le site.
+ * Tout le texte vient de `content/pages-wp.json`, au mot près. Title, meta et
+ * H1 restent gelés au caractère près (CLAUDE.md §10 et §16).
  */
-export async function generateMetadata(): Promise<Metadata> {
-  const base = metadonneesWP("/");
-  const { investisseurs } = await chiffres();
-  const aJour = (d: string | null | undefined) =>
-    d ? d.replace("Réseau de 1 500+ acheteurs", `Réseau de ${nombre(investisseurs)} acheteurs`) : undefined;
-  return {
-    ...base,
-    description: aJour(base.description),
-    openGraph: { ...base.openGraph, description: aJour(base.openGraph?.description as string | undefined) },
-  };
-}
+export const metadata: Metadata = metadonneesWP("/");
 
 export default async function Accueil() {
   const [ch, toutes] = await Promise.all([chiffres(), ventes()]);

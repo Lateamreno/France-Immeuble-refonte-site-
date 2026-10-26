@@ -66,9 +66,10 @@ const ETAPES = [
 /**
  * Les six atouts, en cartes noires à photo fondue (MAV, 26/10/2026). Les
  * photos ont été choisies d'après le texte de chaque carte, pas son titre :
- *   constructibilite  grue au coucher du soleil, ce que le promoteur bâtirait
- *                     (Unsplash, photo-1630412820150)
- *   commercialisation un acheteur lit son dossier (Unsplash, photo-1549923746)
+ *   constructibilite  grues au-dessus de la ville, ciel de fin de journée :
+ *                     ce que le promoteur bâtirait (Pexels, 40328174)
+ *   commercialisation un acheteur annote son dossier, stylo à la main
+ *                     (Pexels, 3760514)
  *   conseils          un rendez-vous, carnet ouvert (Unsplash, photo-1758519288372)
  *   meilleur-prix     les offres reçues, en enveloppes (Pexels, 6963849)
  *   agents            l'équipe France Immeuble
@@ -80,14 +81,14 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
   return [
     {
       picto: "constructibilite",
-      photo: "/media/atouts/constructibilite.webp",
+      photo: "/media/atouts/constructibilite-grues.webp",
       titre: "Etude de constructibilité offerte",
       texte:
         "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
     },
     {
       picto: "stats",
-      photo: "/media/atouts/commercialisation.webp",
+      photo: "/media/atouts/commercialisation-dossier.webp",
       titre: "Commercialisation optimisée",
       texte:
         "Nos dossiers sont conçus pour les immeubles et adaptés au type d’acheteur ciblé pour faciliter leur prise de décision.",

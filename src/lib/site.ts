@@ -16,14 +16,14 @@ export const SITE = {
 } as const;
 
 /**
- * `investisseurs` : le nombre d'acquéreurs actifs du fichier. Le BO le dépose
- * dans la table `chiffres` (clé `investisseurs`) ; la valeur ci-dessous ne
- * sert que tant que rien n'est déposé ou si la base ne répond pas.
+ * `investisseurs` : le nombre d'acheteurs du fichier, le même partout. Le BO
+ * le dépose dans la table `chiffres` (clé `investisseurs`) ; la valeur
+ * ci-dessous ne sert que tant que rien n'est déposé ou si la base ne répond
+ * pas.
  *
- * 1 480 au 26/10/2026, relevé dans le BO par MAV : 1 487 contacts cochés
- * « acquéreur », dont 1 480 non archivés (1 203 avec au moins une recherche).
- * Un seul chiffre fait foi partout, meta de l'accueil comprise (MAV,
- * 26/10/2026) : il remplace les « 1 500+ » et les « 1 372 » d'avant.
+ * 1 500 par décision de MAV (26/10/2026), cohérent avec les « 1 500+ » de la
+ * meta d'accueil, gelée. Relevé du BO le même jour : 1 487 contacts cochés
+ * « acquéreur », dont 1 480 non archivés et 1 203 avec au moins une recherche.
  *
  * Deux articles de 2021 et 2022 citent « 1 500 acheteurs » : ils gardent leur
  * chiffre d'époque, et une note de datation en pied d'article le situe.
@@ -39,7 +39,7 @@ export const PREUVES = {
    * MAV a tranché le 21/10 : on aligne le discours sur ce que la base prouve.
    * Un chiffre dérivé des données ne peut plus diverger de la réalité.
    */
-  investisseurs: 1480,
+  investisseurs: 1500,
   noteGoogle: "4,9",
   nbAvis: 28,
   /** La fiche Google de l'agence, ouverte sur ses avis (lien de l'ancien site). */
