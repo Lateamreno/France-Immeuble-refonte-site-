@@ -14,7 +14,9 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
-import { SITE } from "@/lib/site";
+import { SITE, nombre } from "@/lib/site";
+import { chiffres } from "@/lib/chiffres";
+import { LigneDefilante } from "@/components/LigneDefilante";
 
 /**
  * /vendre-un-immeuble/ — page reprise du WordPress, RECOMPOSÉE.
@@ -61,46 +63,67 @@ const ETAPES = [
   },
 ];
 
-const ATOUTS: { picto: NomPicto; titre: string; texte: string }[] = [
-  {
-    picto: "constructibilite",
-    titre: "Etude de constructibilité offerte",
-    texte:
-      "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
-  },
-  {
-    picto: "loupeCible",
-    titre: "Commercialisation optimisée",
-    texte:
-      "Nos dossiers sont conçus pour les immeubles et adaptés au type d’acheteur ciblé pour faciliter leur prise de décision.",
-  },
-  {
-    picto: "ecoute",
-    titre: "Conseils et un suivi complet",
-    texte:
-      "Nos conseillers sont à votre disposition pour tout conseil sur les sujets propres aux immeubles avant, pendant et après la vente.",
-  },
-  {
-    picto: "euro",
-    titre: "Le meilleur prix pour votre immeuble",
-    texte:
-      "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
-  },
-  {
-    picto: "equipe",
-    titre: "Agents spécialisés",
-    texte:
-      "Nos agents basés à Paris et Bordeaux sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
-  },
-  {
-    picto: "reseau",
-    titre: "Un réseau en recherche constante",
-    texte:
-      "Plus de 1 500 acheteurs en recherche active d’immeubles : investisseurs privés, foncières, family offices, institutionnels, marchands de biens, promoteurs immobiliers…",
-  },
-];
+/**
+ * Les six atouts, en cartes noires à photo fondue (MAV, 26/10/2026). Les
+ * photos ont été choisies d'après le texte de chaque carte, pas son titre :
+ *   constructibilite  grue au coucher du soleil, ce que le promoteur bâtirait
+ *                     (Unsplash, photo-1630412820150)
+ *   commercialisation un acheteur lit son dossier (Unsplash, photo-1549923746)
+ *   conseils          un rendez-vous, carnet ouvert (Unsplash, photo-1758519288372)
+ *   meilleur-prix     les offres reçues, en enveloppes (Pexels, 6963849)
+ *   agents            l'équipe France Immeuble
+ *   reseau            des investisseurs autour d'une table (Unsplash, photo-1714974528737)
+ * Licences Unsplash et Pexels : usage commercial libre, sans mention.
+ * Le nombre d'acheteurs est celui que le BO dépose dans `chiffres`.
+ */
+function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: string; texte: string }[] {
+  return [
+    {
+      picto: "constructibilite",
+      photo: "/media/atouts/constructibilite.webp",
+      titre: "Etude de constructibilité offerte",
+      texte:
+        "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
+    },
+    {
+      picto: "stats",
+      photo: "/media/atouts/commercialisation.webp",
+      titre: "Commercialisation optimisée",
+      texte:
+        "Nos dossiers sont conçus pour les immeubles et adaptés au type d’acheteur ciblé pour faciliter leur prise de décision.",
+    },
+    {
+      picto: "ecoute",
+      photo: "/media/atouts/conseils.webp",
+      titre: "Conseils et un suivi complet",
+      texte:
+        "Nos conseillers sont à votre disposition pour tout conseil sur les sujets propres aux immeubles avant, pendant et après la vente.",
+    },
+    {
+      picto: "best",
+      photo: "/media/atouts/meilleur-prix.webp",
+      titre: "Le meilleur prix pour votre immeuble",
+      texte:
+        "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
+    },
+    {
+      picto: "business",
+      photo: "/media/atouts/agents.webp",
+      titre: "Agents spécialisés",
+      texte:
+        "Nos agents basés à Paris et Bordeaux sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
+    },
+    {
+      picto: "reseau",
+      photo: "/media/atouts/reseau.webp",
+      titre: "Un réseau en recherche constante",
+      texte: `${nombre(acheteurs)} acheteurs en recherche active d’immeubles : investisseurs privés, foncières, family offices, institutionnels, marchands de biens, promoteurs immobiliers…`,
+    },
+  ];
+}
 
-export default function VendreUnImmeuble() {
+export default async function VendreUnImmeuble() {
+  const ch = await chiffres();
   return (
     <>
       <JsonLd
@@ -217,20 +240,19 @@ export default function VendreUnImmeuble() {
 
       <section className="section section--creme">
         <div className="container">
-          <div className="grid grid--3">
-            {ATOUTS.map((a, i) => (
-              <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
-                <span className="card__fond" aria-hidden="true">
-                  <Picto nom={a.picto} taille={96} />
+          <LigneDefilante className="atouts">
+            {atouts(ch.investisseurs).map((a) => (
+              <article key={a.titre} className="atout">
+                <span className="atout__photo" aria-hidden="true">
+                  <Image src={a.photo} alt="" fill sizes="(max-width: 760px) 80vw, 400px" />
                 </span>
-                <span className="card__picto" aria-hidden="true">
-                  <Picto nom={a.picto} taille={30} />
-                </span>
+                <Picto nom={a.picto} taille={54} className="atout__picto" />
                 <h3>{a.titre}</h3>
+                <span className="atout__filet" aria-hidden="true" />
                 <p>{a.texte}</p>
-              </Reveal>
+              </article>
             ))}
-          </div>
+          </LigneDefilante>
           <div className="btn-row" style={{ marginTop: "var(--space-l)" }}>
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
