@@ -589,6 +589,8 @@ dans la réponse. MAV l'a rappelé le 21/10/2026 : « il faut que tu le fasses s
 - **Mesures, pas impressions** : hauteurs, contrastes, nombre de mots indexables, compteurs —
   relevés par script sur les pages servies.
 - **Ce qui reste à trancher** en fin de document, explicitement.
+- **Toujours la version mobile à côté de l'ordinateur** (MAV, 26/10/2026) : rapports, maquettes
+  et propositions montrent les deux formats, sans attendre qu'on le demande.
 - Une page neuve n'a pas d'« avant » : le dire, et montrer l'état réel, y compris vide.
 
 ---
