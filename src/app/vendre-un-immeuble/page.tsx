@@ -72,11 +72,12 @@ const ETAPES = [
  *                     (Pexels, 3760514)
  *   conseils          un conseiller montre un dossier à son client
  *                     (Pexels, 6285115)
- *   meilleur-prix     un agent serre la main du vendeur (Pexels, 8441789)
- *   agents            deux hommes en costume devant un immeuble à
- *                     colonnes (Pexels, 26950396). Remplace la photo de
+ *   meilleur-prix     deux mains qui se serrent, manches de costume
+ *                     (Pexels, 33175650)
+ *   agents            un agent en costume accueille un couple et lui serre
+ *                     la main (Pexels, 8112160). Remplace la photo de
  *                     l'équipe, conservée dans l'historique git.
- *   reseau            un ordinateur allumé dans le noir (Pexels, 4069064)
+ *   reseau            des écrans de suivi allumés dans le noir (Pexels, 35296240)
  * Licences Unsplash et Pexels : usage commercial libre, sans mention.
  * Le nombre d'acheteurs est celui que le BO dépose dans `chiffres`.
  */
@@ -105,21 +106,21 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
     },
     {
       picto: "euro",
-      photo: "/media/atouts/meilleur-prix-poignee.webp",
+      photo: "/media/atouts/meilleur-prix-mains.webp",
       titre: "Le meilleur prix pour votre immeuble",
       texte:
         "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
     },
     {
       picto: "business",
-      photo: "/media/atouts/agents-colonnes.webp",
+      photo: "/media/atouts/agents-accueil.webp",
       titre: "Agents spécialisés",
       texte:
         "Nos agents basés à Paris sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
     },
     {
       picto: "reseau",
-      photo: "/media/atouts/reseau-ordinateur.webp",
+      photo: "/media/atouts/reseau-ecrans.webp",
       titre: "Un réseau en recherche constante",
       texte: `${nombre(acheteurs)} acheteurs en recherche active d’immeubles : investisseurs privés, foncières, family offices, institutionnels, marchands de biens, promoteurs immobiliers…`,
     },
