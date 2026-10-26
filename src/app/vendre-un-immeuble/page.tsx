@@ -66,8 +66,8 @@ const ETAPES = [
 /**
  * Les six atouts, en cartes noires à photo fondue (MAV, 26/10/2026). Les
  * photos ont été choisies d'après le texte de chaque carte, pas son titre :
- *   constructibilite  grues au-dessus de la ville, ciel de fin de journée :
- *                     ce que le promoteur bâtirait (Pexels, 40328174)
+ *   constructibilite  un architecte dessine un plan sous la lampe : le
+ *                     calcul du constructible (Pexels, 9617369)
  *   commercialisation un acheteur annote son dossier, stylo à la main
  *                     (Pexels, 3760514)
  *   conseils          un rendez-vous, carnet ouvert (Unsplash, photo-1758519288372)
@@ -81,7 +81,7 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
   return [
     {
       picto: "constructibilite",
-      photo: "/media/atouts/constructibilite-grues.webp",
+      photo: "/media/atouts/constructibilite-plan.webp",
       titre: "Etude de constructibilité offerte",
       texte:
         "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
