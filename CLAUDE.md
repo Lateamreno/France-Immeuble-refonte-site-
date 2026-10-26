@@ -559,6 +559,9 @@ de `<body>`. C'était absent de certaines pages du site actuel : ne jamais l'oub
 - `git push` → preview Vercel automatique sur la branche → validation → merge → production.
 - **Deployment Protection (Vercel Authentication) activée** sur les previews.
 - Aucun secret commité. Variables d'environnement dans Vercel uniquement.
+- Les clés `UNSPLASH_*` et `PEXELS_API_KEY` restent sur le projet Vercel du site (MAV,
+  26/10/2026) : elles servent à chercher photos et vidéos libres de droits. Le site ne les
+  lit pas ; les médias retenus sont téléchargés dans `/public/media/` (aucune image hors domaine).
 - **Projets Vercel séparés** pour le site et le BO, variables cloisonnées (§2).
 - Bascule DNS : créer d'abord l'enregistrement d'origine et vérifier qu'il répond, **avant**
   de basculer `www`. L'apex redirige vers `www`.
@@ -621,6 +624,7 @@ l'essentiel de l'enjeu CTR : elle passe en dernier, quand le socle est éprouvé
 - ~~**Incohérence de chiffre**~~ : tranché par MAV le 26/10/2026. **1 500** partout, comme
   la meta de l'accueil (gelée) : page Vendre, page Acheter, pied de page, page Découpe, lus
   dans `chiffres.investisseurs` déposé par le BO, valeur de secours `PREUVES.investisseurs`.
+  Le BO dépose **1 500** et non son décompte réel (MAV, 26/10/2026 : « go pour 1500 tant pis »).
 - **Libellés « bureaux » / « commerces » inversés** dans le formulaire actuel (§9).
 - `/immeubles-vendus/` est une iframe Bubble : zéro contenu indexable, 365 transactions non
   exploitées.
