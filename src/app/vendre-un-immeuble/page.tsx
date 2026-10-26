@@ -113,7 +113,7 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
     },
     {
       picto: "business",
-      photo: "/media/atouts/agents-accueil.webp",
+      photo: "/media/atouts/agents-accueil-haut.webp",
       titre: "Agents spécialisés",
       texte:
         "Nos agents basés à Paris sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
