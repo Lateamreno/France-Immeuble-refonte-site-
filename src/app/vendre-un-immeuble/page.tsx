@@ -72,8 +72,8 @@ const ETAPES = [
  *                     (Pexels, 3760514)
  *   conseils          un conseiller montre un dossier à son client
  *                     (Pexels, 6285115)
- *   meilleur-prix     deux mains qui se serrent, manches de costume
- *                     (Pexels, 33175650)
+ *   meilleur-prix     deux mains qui se serrent dans la rue, manches de
+ *                     costume et poignet de chemise (Pexels, 4963445)
  *   agents            un agent en costume accueille un couple et lui serre
  *                     la main (Pexels, 8112160). Remplace la photo de
  *                     l'équipe, conservée dans l'historique git.
@@ -106,7 +106,7 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
     },
     {
       picto: "euro",
-      photo: "/media/atouts/meilleur-prix-mains.webp",
+      photo: "/media/atouts/meilleur-prix-poignee-rue.webp",
       titre: "Le meilleur prix pour votre immeuble",
       texte:
         "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
