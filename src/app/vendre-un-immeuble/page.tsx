@@ -70,10 +70,13 @@ const ETAPES = [
  *                     constructible (Pexels, 1109541)
  *   commercialisation un acheteur annote son dossier, stylo à la main
  *                     (Pexels, 3760514)
- *   conseils          un rendez-vous, carnet ouvert (Unsplash, photo-1758519288372)
- *   meilleur-prix     les offres reçues, en enveloppes (Pexels, 6963849)
- *   agents            l'équipe France Immeuble
- *   reseau            des investisseurs autour d'une table (Unsplash, photo-1714974528737)
+ *   conseils          un conseiller montre un dossier à son client
+ *                     (Pexels, 6285115)
+ *   meilleur-prix     un agent serre la main du vendeur (Pexels, 8441789)
+ *   agents            deux hommes en costume devant un immeuble à
+ *                     colonnes (Pexels, 26950396). Remplace la photo de
+ *                     l'équipe, conservée dans l'historique git.
+ *   reseau            un ordinateur allumé dans le noir (Pexels, 4069064)
  * Licences Unsplash et Pexels : usage commercial libre, sans mention.
  * Le nombre d'acheteurs est celui que le BO dépose dans `chiffres`.
  */
@@ -87,36 +90,36 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
         "Nous calculons avec précision la surface constructible sur votre terrain et à quel prix un promoteur peut l’acheter.",
     },
     {
-      picto: "stats",
+      picto: "dossierCible",
       photo: "/media/atouts/commercialisation-dossier.webp",
       titre: "Commercialisation optimisée",
       texte:
         "Nos dossiers sont conçus pour les immeubles et adaptés au type d’acheteur ciblé pour faciliter leur prise de décision.",
     },
     {
-      picto: "ecoute",
-      photo: "/media/atouts/conseils.webp",
+      picto: "bulles",
+      photo: "/media/atouts/conseils-rendez-vous.webp",
       titre: "Conseils et un suivi complet",
       texte:
         "Nos conseillers sont à votre disposition pour tout conseil sur les sujets propres aux immeubles avant, pendant et après la vente.",
     },
     {
-      picto: "best",
-      photo: "/media/atouts/meilleur-prix.webp",
+      picto: "euro",
+      photo: "/media/atouts/meilleur-prix-poignee.webp",
       titre: "Le meilleur prix pour votre immeuble",
       texte:
         "Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family offices, de marchands de biens et d’institutionnels le meilleur acheteur pour votre immeuble.",
     },
     {
       picto: "business",
-      photo: "/media/atouts/agents.webp",
+      photo: "/media/atouts/agents-colonnes.webp",
       titre: "Agents spécialisés",
       texte:
-        "Nos agents basés à Paris et Bordeaux sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
+        "Nos agents basés à Paris sont formés pour répondre aux exigences des acheteurs d’immeubles et défendre au mieux vos intérêts.",
     },
     {
       picto: "reseau",
-      photo: "/media/atouts/reseau.webp",
+      photo: "/media/atouts/reseau-ordinateur.webp",
       titre: "Un réseau en recherche constante",
       texte: `${nombre(acheteurs)} acheteurs en recherche active d’immeubles : investisseurs privés, foncières, family offices, institutionnels, marchands de biens, promoteurs immobiliers…`,
     },

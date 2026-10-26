@@ -17,9 +17,13 @@ export type NomPicto =
   | "secteur" | "technique" | "financier" | "constructibilite" | "cible"
   | "reseau" | "stats" | "augmentation" | "poignee" | "best" | "business"
   | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier"
-  | "loupeCible" | "ecoute" | "euro" | "equipe";
+  | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
+  // Dossier et cible — le dossier pensé pour un acheteur précis
+  dossierCible: <><path d="M11.5 21.5H6A1.5 1.5 0 0 1 4.5 20V4A1.5 1.5 0 0 1 6 2.5h8l4.5 4.5v4"/><path d="M14 2.5V7h4.5"/><path d="M7.5 10h6M7.5 13h4M7.5 16h2.5" strokeWidth="1"/><circle cx="17" cy="17" r="4.3"/><circle cx="17" cy="17" r="2"/><circle cx="17" cy="17" r=".7" fill="currentColor" stroke="none"/></>,
+  // Deux bulles — la conversation avec le conseiller
+  bulles: <><path d="M3 5.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H8.5L5.5 15v-2.5H5a2 2 0 0 1-2-2Z"/><path d="M17.8 8.5H19a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v2.6l-3.1-2.6H11a2 2 0 0 1-2-2v-.8"/><path d="M7 8h.01M9 8h.01M11 8h.01" strokeWidth="2"/></>,
   // Loupe sur une cible — commercialisation ciblée
   loupeCible: <><circle cx="10" cy="10" r="6.6"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="1" fill="currentColor" stroke="none"/><path d="m14.8 14.8 5.7 5.7" strokeWidth="2.2"/></>,
   // Une personne en écoute une autre — conseil
