@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
-import { BandeMedia } from "@/components/BandeMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Avis } from "@/components/Avis";
@@ -207,7 +206,7 @@ export default async function VendreUnImmeuble() {
               </p>
             </Reveal>
           </div>
-          <div className="btn-row" style={{ marginTop: "var(--space-l)" }}>
+          <div className="btn-row atouts-sec__bouton">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
         </div>
@@ -239,12 +238,18 @@ export default async function VendreUnImmeuble() {
         </div>
       </section>
 
-      <BandeMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt}>
-        <h2>Pourquoi vendre avec France Immeuble&nbsp;?</h2>
-      </BandeMedia>
-
-      <section className="section section--creme">
+      {/* Le titre est dans la section beige, au-dessus des cartes, sur les
+          toits de Paris fondus dans le fond (MAV, 26/10/2026). La section
+          tient sur un écran : les cartes défilent en une seule ligne. */}
+      <section className="section section--creme section--ecran atouts-sec">
+        <div className="atouts-sec__fondu" aria-hidden="true">
+          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" />
+        </div>
         <div className="container">
+          <div className="section__head atouts-sec__tete">
+            <Eyebrow>Nos atouts</Eyebrow>
+            <h2>Pourquoi vendre avec France Immeuble&nbsp;?</h2>
+          </div>
           <LigneDefilante className="atouts">
             {atouts(ch.investisseurs).map((a) => (
               <article key={a.titre} className="atout">
@@ -258,7 +263,7 @@ export default async function VendreUnImmeuble() {
               </article>
             ))}
           </LigneDefilante>
-          <div className="btn-row" style={{ marginTop: "var(--space-l)" }}>
+          <div className="btn-row atouts-sec__bouton">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
         </div>

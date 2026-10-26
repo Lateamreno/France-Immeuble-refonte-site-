@@ -294,6 +294,13 @@ irrégulière en haut à droite de la photo. La version **vignettes** (photo ple
 blanc, département et prix de vente en or) est validée et gardée de côté :
 `forme="vignettes"` sur `VitrineAccueil`.
 
+**Sections d'un écran** (MAV, 26/10/2026) : chaque section, ordinateur et téléphone, remplit
+au moins la hauteur de l'écran (`min-height:100svh`, contenu centré verticalement), comme le
+hero, pour que ce qui se lit ensemble arrive ensemble. Pas de défilement forcé par section :
+on se cale sur la hauteur d'écran. Une section plus haute que l'écran est à resserrer (ligne
+qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèle sur les atouts
+de la page Vendre.
+
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
 cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré
 (composant `TeteMedia` à côté du titre).

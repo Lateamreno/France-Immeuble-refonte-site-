@@ -127,7 +127,10 @@ strong,b{font-weight:600;color:var(--color-creme);}
 /* --- 4. LAYOUT ------------------------------------------------------------ */
 .container{width:100%;max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter);}
 .container--narrow{max-width:var(--container-narrow);}
-.section{padding-block:var(--section-y);position:relative;}
+/* Chaque section remplit au moins l'écran, contenu centré verticalement,
+   comme le hero (MAV, 26/10/2026) : ce qui se lit ensemble arrive ensemble. */
+.section{padding-block:var(--section-y);position:relative;
+  min-height:100svh;display:flex;flex-direction:column;justify-content:center;}
 .section--noir{background:var(--color-noir);}
 .section--noir-2{background:var(--color-noir-2);}
 .section--noir-3{background:var(--color-noir-3);}
@@ -1510,16 +1513,50 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 /* Les six atouts de la page Vendre (MAV, 26/10/2026) : cartes noires, photo
    fondue à droite, picto blanc au trait, titre or, filet or, texte clair.
    Ni numéro (la page a déjà une méthode en 4 étapes) ni effet au survol (les
-   cartes ne sont pas des liens). Au téléphone, la ligne glisse au doigt ;
-   à partir de la tablette, grille de deux puis trois colonnes. */
+   cartes ne sont pas des liens). Une seule ligne qui glisse, à tous les
+   formats, pour que la section tienne sur un écran : une carte et le bord de
+   la suivante au téléphone, deux sur tablette, trois sur ordinateur. */
 .ligne-cartes.atouts{grid-auto-columns:82%;gap:14px;padding-block:4px 32px;margin-bottom:-28px;}
 @media (min-width:760px){
   .ligne-cartes.atouts{
-    grid-auto-flow:row;grid-template-columns:repeat(2,1fr);grid-auto-columns:auto;
-    overflow:visible;margin-inline:0;padding:0;margin-bottom:0;cursor:auto;gap:clamp(16px,2vw,24px);
+    --g:clamp(16px,2vw,24px);gap:var(--g);grid-auto-columns:calc((100% - var(--g)) / 2);
+    margin-inline:0;padding-inline:0;scroll-padding-inline:0;
+    /* L'ombre des cartes reste dans la ligne qui défile, sans trait de coupe. */
+    padding-block:4px 40px;margin-bottom:-36px;
   }
 }
-@media (min-width:980px){.ligne-cartes.atouts{grid-template-columns:repeat(3,1fr);}}
+@media (min-width:980px){.ligne-cartes.atouts{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}}
+@media (min-width:1200px){.ligne-cartes.atouts{overflow-x:auto;margin-inline:0;}}
+@media (min-width:1200px) and (hover: hover) and (pointer: fine){.ligne-cartes.atouts{cursor:grab;}}
+
+/* Section d'un écran (MAV, 26/10/2026) : au moins la hauteur de l'écran, le
+   contenu centré verticalement, comme le hero. */
+.section--ecran{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(64px,9svh,96px) clamp(40px,6svh,72px);}
+
+/* La section des atouts : les toits de Paris fondus dans le beige, sur toute
+   la hauteur, pour que titre, cartes et bouton partagent le même fond. */
+.atouts-sec{isolation:isolate;overflow:hidden;}
+.atouts-sec__fondu{position:absolute;inset:0;z-index:-1;opacity:.42;mix-blend-mode:multiply;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 45%,rgba(0,0,0,.35) 100%);
+          mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 45%,rgba(0,0,0,.35) 100%);}
+.atouts-sec__fondu img{object-fit:cover;object-position:center 40%;filter:grayscale(.35) sepia(.35) contrast(1.05);}
+.atouts-sec__tete{margin-bottom:clamp(24px,4svh,44px);max-width:none;}
+.atouts-sec__tete h2{max-width:22ch;}
+.atouts-sec .eyebrow{color:var(--color-bronze-profond);}
+.atouts-sec .eyebrow::before{background:var(--color-bronze-profond);}
+.atouts-sec__bouton{margin-top:clamp(24px,4svh,44px);}
+.atouts-sec .atout{min-height:clamp(340px,44svh,420px);}
+/* Écrans bas (petit téléphone, portable 13 pouces) : on resserre pour que
+   titre, cartes et bouton restent sur un seul écran. */
+@media (max-height:720px){
+  .atouts-sec .atout{min-height:0;padding:20px 22px;}
+  .atouts-sec .atout__picto{width:40px;height:40px;margin:0 0 14px;}
+  .atouts-sec .atout__filet{margin:12px 0 10px;}
+  .atouts-sec .atout p{font-size:14.5px;line-height:1.5;}
+  .atouts-sec__tete h2{font-size:clamp(26px,4.2svh,40px);}
+  .atouts-sec__tete .eyebrow{margin-bottom:10px;}
+}
 .atout{
   position:relative;isolation:isolate;overflow:hidden;border-radius:var(--radius-card);
   background:var(--color-noir-2);color:var(--color-creme);border:1px solid var(--color-ligne);
