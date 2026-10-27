@@ -304,6 +304,8 @@ de la page Vendre.
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
 cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré
 (composant `TeteMedia` à côté du titre).
+Pas de photo dans toutes les sections (MAV, 27/10/2026) : chargé à l'œil et lourd à charger.
+Une section porte au plus une couche d'image : photo fondue en fond **ou** photos dans les cartes.
 
 ## 6. Structure du site
 
