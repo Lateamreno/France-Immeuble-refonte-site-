@@ -74,9 +74,13 @@ Projet **France Immeuble site** (`omtkttpvfjsbnqsajcsp`).
 
 **Authentication → Sign In / Providers → Email**
 
-- Email OTP Expiration : `86400` secondes (24 h). C'est la durée de validité
-  du lien d'accès à l'espace client envoyé après une estimation ; par défaut,
-  une heure seulement.
+- Email OTP Expiration : `86400` secondes (24 h), le maximum permis. C'est la
+  durée de validité du lien d'accès à l'espace client envoyé après une
+  estimation ; par défaut, une heure seulement. Le réglage n'est pas dans le
+  menu Emails : Authentication → Sign In / Providers, puis cliquer sur la
+  ligne « Email » de la liste des fournisseurs ; le champ est dans le panneau
+  qui s'ouvre. Lien direct :
+  https://supabase.com/dashboard/project/omtkttpvfjsbnqsajcsp/auth/providers
 - Confirm email : activé.
 - Secure password change : activé.
 - Minimum password length : 8.
