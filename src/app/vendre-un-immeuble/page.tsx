@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { SectionFondue } from "@/components/SectionFondue";
@@ -154,51 +153,45 @@ export default async function VendreUnImmeuble() {
         </>
       </HeroMedia>
 
-      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Sans
-          carte (MAV, 27/10/2026) : picto, titre et texte posés sur le beige,
-          côte à côte sur ordinateur, l'un sous l'autre au téléphone ; un
-          immeuble détouré en transparence dans le coin bas droit. Chaque bloc
-          entier est un lien : l'estimation mène à la page Estimer, la
-          recherche d'acquéreur au formulaire de vente plus bas. */}
+      {/* Une seule démarche, un seul bouton (MAV, 27/10/2026) : quand le
+          propriétaire confie la vente, nous estimons d'abord, pour vérifier
+          que l'immeuble intéressera nos acquéreurs, puis nous le présentons à
+          ceux qui feront la meilleure offre. Deux étapes numérotées posées sur
+          le beige, un immeuble détouré en transparence dans le coin bas
+          droit. Le bouton mène au formulaire de vente, qui demande déjà les
+          informations d'une estimation. */}
       <SectionFondue
         image="/media/img-vendez222-2.webp"
         coin={{ width: 900, height: 437 }}
         className="portes-sec"
         surtitre="Votre projet"
-        titre={<>Estimer ou vendre votre immeuble de rapport</>}
+        titre={<>Nous estimons, puis nous trouvons le meilleur acheteur</>}
       >
-        <div className="portes-libres">
-          <article className="porte">
+        <ol className="portes-libres">
+          <li className="porte">
+            <span className="porte__num">01</span>
             <Picto nom="calculatrice" taille={52} className="porte__picto" />
-            <h3>
-              <Link href="/estimer-un-immeuble/" className="porte__lien">
-                Vous souhaitez connaître la valeur de votre immeuble&nbsp;?
-              </Link>
-            </h3>
+            <h3>Nous estimons votre immeuble</h3>
             <span className="porte__filet" aria-hidden="true" />
             <p>
-              Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
-              géographique et locatif de votre immeuble ainsi que sur son caractère
-              constructible pour une valorisation optimale.
+              Gratuitement et en 48&nbsp;h, à partir de son emplacement, de ses loyers et de sa
+              constructibilité. Vous connaissez sa valeur avant de décider.
             </p>
-          </article>
-          <article className="porte">
+          </li>
+          <li className="porte">
+            <span className="porte__num">02</span>
             <Picto nom="poignee" taille={52} className="porte__picto" />
-            <h3>
-              <a href="#estimer" className="porte__lien">
-                Vous cherchez un acquéreur pour votre immeuble&nbsp;?
-              </a>
-            </h3>
+            <h3>Nous le présentons aux bons acquéreurs</h3>
             <span className="porte__filet" aria-hidden="true" />
             <p>
-              Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family
-              offices, de marchands de biens et d’institutionnels le meilleur acheteur pour
-              votre immeuble.
+              Parmi nos {nombre(ch.investisseurs)} acheteurs, ceux dont les critères correspondent à
+              votre immeuble, pour obtenir la meilleure offre.
             </p>
-          </article>
-        </div>
-        <div className="btn-row sec-fondu__bouton">
+          </li>
+        </ol>
+        <div className="btn-row sec-fondu__bouton portes__bouton">
           <Button href="#estimer" icone>Vendre mon immeuble</Button>
+          <p className="portes__mention">Estimation offerte · réponse sous 48&nbsp;h</p>
         </div>
       </SectionFondue>
 

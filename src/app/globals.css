@@ -1622,26 +1622,23 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   .sec-fondu__bouton{margin-top:18px;}
   .sec-fondu .atout h3{font-size:20px;}
 }
-/* Les deux portes de la page Vendre, sans carte (MAV, 27/10/2026) : picto,
-   titre, filet et texte posés sur le beige. Côte à côte sur ordinateur, un
-   filet fin les sépare ; l'un sous l'autre au téléphone. Le bloc entier est
-   cliquable, le filet or s'allonge au survol et au focus. */
+/* Les deux étapes de la page Vendre, sans carte (MAV, 27/10/2026) : numéro,
+   picto, titre, filet et texte posés sur le beige. Côte à côte sur
+   ordinateur, un filet fin les sépare ; l'un sous l'autre au téléphone. Un
+   seul bouton sous les deux. */
 /* Titre centré au-dessus des deux blocs (MAV, 27/10/2026). */
 .portes-sec .sec-fondu__tete{display:flex;flex-direction:column;align-items:center;text-align:center;}
 .portes-sec .sec-fondu__tete h2{max-width:24ch;}
-.portes-libres{display:grid;gap:clamp(22px,3vw,40px);}
+.portes-libres{display:grid;gap:clamp(22px,3vw,40px);list-style:none;margin:0;padding:0;}
+.porte__num{font-family:var(--font-mono-site);font-size:13px;letter-spacing:.14em;color:var(--color-bronze-profond);margin-bottom:10px;}
+.portes__bouton{flex-direction:column;align-items:center;gap:10px;}
+.portes__mention{margin:0;font-family:var(--font-mono-site);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--color-bronze-profond);}
 .porte{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;
   padding-inline:clamp(4px,2vw,40px);}
 .porte__picto{color:var(--color-bronze-profond);stroke-width:1.25;margin-bottom:16px;flex:none;}
 .porte h3{margin:0;max-width:21ch;font-size:clamp(21px,1.8vw,26px);color:var(--color-noir);}
-.porte__lien{color:inherit;}
-.porte__lien::after{content:"";position:absolute;inset:-12px;}
-.porte__lien:focus-visible{outline:none;}
-.porte:has(.porte__lien:focus-visible){outline:2px solid var(--color-bronze-clair);outline-offset:6px;border-radius:12px;}
-.porte__filet{display:block;width:44px;height:2px;background:var(--color-bronze);margin:16px 0 14px;
-  transition:width var(--dur) var(--ease);}
-.porte:has(.porte__lien:hover) .porte__filet,
-.porte:has(.porte__lien:focus-visible) .porte__filet{width:88px;}
+.porte__filet{display:block;width:44px;height:2px;background:var(--color-bronze);margin:16px 0 14px;}
 .porte p{margin:0;max-width:44ch;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
 @media (min-width:760px){
   .portes-libres{grid-template-columns:1fr 1fr;}
@@ -1652,6 +1649,7 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 @media (max-width:759px){
   .porte{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:14px;align-items:center;
     text-align:left;padding-inline:0;}
+  .porte__num{display:none;}
   .porte__picto{width:40px;height:40px;margin:0;}
   .porte h3{font-size:19px;max-width:none;}
   .porte__filet{display:none;}
