@@ -63,7 +63,7 @@ export default async function ImmeublesAVendre() {
       <section className="section section--creme">
         <div className="container">
           {biens.length > 0 ? (
-            <ul className="biens-liste">
+            <ul className="biens-liste biens-liste--ligne-mob">
               {biens.map((b, i) => (
                 <Reveal key={b.id} as="li" delayIndex={i % 6}>
                   <CarteBien b={b} rang={i} />

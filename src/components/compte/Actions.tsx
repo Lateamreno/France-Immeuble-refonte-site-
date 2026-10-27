@@ -19,7 +19,7 @@ export function Deconnexion() {
 }
 
 /** Nouveau mot de passe, après le lien reçu par e-mail. */
-export function NouveauMotDePasse() {
+export function NouveauMotDePasse({ premier = false }: { premier?: boolean }) {
   const uid = useId();
   const [mdp, setMdp] = useState("");
   const [erreur, setErreur] = useState("");
@@ -29,7 +29,7 @@ export function NouveauMotDePasse() {
     return (
       <div className="form-shell outcome">
         <span className="outcome__badge">C’est fait</span>
-        <h3>Votre mot de passe est changé</h3>
+        <h3>{premier ? "Votre mot de passe est enregistré" : "Votre mot de passe est changé"}</h3>
         <div className="btn-row"><a className="btn btn--primary" href="/mon-compte/">Ouvrir mon compte</a></div>
       </div>
     );
@@ -42,9 +42,12 @@ export function NouveauMotDePasse() {
       setEnvoi(false);
       if (r.ok) setFait(true); else setErreur(r.erreur ?? "");
     }}>
-      <div className="step-head"><h3>Choisissez un nouveau mot de passe</h3></div>
+      <div className="step-head">
+        <h3>{premier ? "Choisissez votre mot de passe" : "Choisissez un nouveau mot de passe"}</h3>
+        {premier && <p>Votre espace est ouvert. Avec un mot de passe, vous y revenez quand vous voulez.</p>}
+      </div>
       <div className="field">
-        <label htmlFor={`${uid}-mdp`}>Nouveau mot de passe</label>
+        <label htmlFor={`${uid}-mdp`}>{premier ? "Mot de passe" : "Nouveau mot de passe"}</label>
         <input id={`${uid}-mdp`} type="password" autoComplete="new-password" minLength={8}
           value={mdp} onChange={(e) => setMdp(e.target.value)} />
         <span className="hint">8 caractères au moins.</span>

@@ -2,6 +2,7 @@ import { NextResponse, after } from "next/server";
 import { router, type Dossier } from "@/lib/routage";
 import { deposerLead, relancerFile } from "@/lib/leads";
 import { sessionCourante } from "@/lib/compte/auth";
+import { accueillirVendeur } from "@/lib/compte/accueil";
 
 /**
  * Réception des leads — CLAUDE.md §2 et §9, contrat BO du 21/10/2026.
@@ -87,6 +88,16 @@ export async function POST(req: Request) {
       } catch (e) {
         console.error("[lead] relance de la file impossible —", e);
       }
+    });
+  }
+
+  // Après une estimation, le client reçoit la liste des pièces et l'accès à
+  // son espace, ouvert pour lui (MAV, 27/10/2026). Au premier envoi
+  // seulement, hors compte connecté, et après la réponse au navigateur.
+  if (body.type === "estimation" && body.etat === "principal" && !compte && issue !== "perdu") {
+    after(async () => {
+      const r = await accueillirVendeur(lead);
+      if (r === "echec") console.error("[lead] e-mail au client non parti");
     });
   }
 

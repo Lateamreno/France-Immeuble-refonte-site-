@@ -45,7 +45,7 @@ export default function ContactezNous() {
         </>
       </HeroMedia>
 
-      <section className="section section--noir">
+      <section className="section section--noir contact-sec">
         <div className="container split">
           <Reveal>
             <ul className="fiche-contact">

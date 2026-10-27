@@ -16,7 +16,6 @@ import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
 import { VitrineAccueil } from "@/components/VitrineAccueil";
 import { Avis } from "@/components/Avis";
-import { Depliable } from "@/components/Depliable";
 
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
@@ -54,10 +53,11 @@ export default async function Accueil() {
           </div>
 
           {/* Trois chiffres qui se comprennent d'un coup d'œil (retour #55,
-              MAV, 27/10/2026) : les ventes et les acheteurs viennent du BO, la
+              MAV, 27/10/2026) : les immeubles traités et les acheteurs viennent
+              du BO (table `chiffres`), la
               zone dit où nous vendons, en toutes lettres pour le référencement. */}
           <div className="hero-proof">
-            <Chiffre picto="immeubles" valeur={nombre(toutes.length)} libelle="immeubles vendus" />
+            <Chiffre picto="immeubles" valeur={nombre(ch.immeublesTraites)} libelle="immeubles traités" />
             <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="acheteurs dans notre réseau" />
             <Chiffre picto="france" valeur="Paris" libelle="Île-de-France et toute la France" />
           </div>
@@ -75,7 +75,12 @@ export default async function Accueil() {
             <p className="lead lead--or" style={{ marginTop: "var(--space-s)" }}>
               Estimation et commercialisation conçues pour les immeubles
             </p>
-            <Depliable suite={
+            <p style={{ marginTop: "var(--space-s)" }}>
+              Obtenez une estimation basée sur des critères propres aux immeubles comme la
+              rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
+              estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
+              recherchons parmi notre réseau les acheteurs susceptibles d’être intéressés.
+            </p>
             <p style={{ marginTop: "var(--space-s)" }}>
               Une fois identifiés, nous leur transmettons un dossier contenant tous les éléments
               nécessaires à l’étude de votre immeuble. Nous effectuons également les visites et
@@ -84,15 +89,10 @@ export default async function Accueil() {
                 De l’estimation à l’acte de vente, nos experts vous accompagnent dans la vente de
                 votre immeuble.
               </strong>
-            </p>}>
-            <p style={{ marginTop: "var(--space-s)" }}>
-              Obtenez une estimation basée sur des critères propres aux immeubles comme la
-              rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
-              estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
-              recherchons parmi notre réseau les acheteurs susceptibles d’être intéressés.
             </p>
-            </Depliable>
-            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+            {/* Au téléphone, les boutons restent au bas de l'écran pendant que le
+                texte défile, jusqu'à la section suivante (MAV, 27/10/2026). */}
+            <div className="btn-row accueil-vendre__boutons" style={{ marginTop: "var(--space-m)" }}>
               <Button href="#estimer" icone>Estimer mon immeuble</Button>
               <Button href="/vendre-un-immeuble/" variant="ghost-dark">En savoir plus</Button>
             </div>
@@ -100,7 +100,7 @@ export default async function Accueil() {
 
           {/* Le carnet des témoignages. Le fichier d'origine est coupé à droite :
               l'image va jusqu'au bord de l'écran, la coupe s'y confond (MAV). */}
-          <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord">
+          <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord media--fond-mob">
             <Image
               src="/media/05_Notebook-Mock-up-1.webp"
               alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
@@ -126,7 +126,7 @@ export default async function Accueil() {
         </div>
       </section>
 
-      <section className="section section--noir-2">
+      <section className="section section--noir-2 reseau-sec">
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Notre réseau</Eyebrow>
@@ -134,7 +134,9 @@ export default async function Accueil() {
             <p className="lead">Nos clients recherchent actuellement&nbsp;:</p>
           </Reveal>
 
-          <div className="grid grid--3">
+          {/* Au téléphone, les trois cartes défilent sur une ligne : la section
+              tient sur un écran (MAV, 27/10/2026). */}
+          <div className="grid grid--3 grid--ligne-mob">
             {recherches.map((r, i) => (
               <Reveal key={r.lbl} as="article" className="card card--filigrane" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
@@ -187,7 +189,7 @@ export default async function Accueil() {
         </div>
       </Avis>
 
-      <section className="section section--noir-3">
+      <section className="section section--noir-3 histoire-sec">
         <div className="container split">
           <Reveal>
             <Eyebrow>Mes références</Eyebrow>
@@ -216,7 +218,8 @@ export default async function Accueil() {
             </div>
           </Reveal>
 
-          <Reveal delayIndex={1} className="media-colonne">
+          {/* Au téléphone, la photo passe en fond, fondue : le texte tient sur un écran. */}
+          <Reveal delayIndex={1} className="media-colonne media--fond-mob">
             <Image
               src="/media/FRANCE_IMMEUBLE_210922_12_38_15_WEB-1.webp"
               alt="L’équipe France Immeuble"
@@ -235,7 +238,7 @@ export default async function Accueil() {
             <h2>Les offres France Immeuble</h2>
           </Reveal>
 
-          <div className="grid grid--2">
+          <div className="grid grid--2 grid--ligne-mob">
             {/* Les deux cartes ont la même construction (MAV, 22/10/2026) :
                 surtitre, titre, texte, bouton, et leurs boutons alignés. */}
             <Reveal as="article" className="card card--offre">
@@ -271,7 +274,7 @@ export default async function Accueil() {
         </div>
       </section>
 
-      <section className="section section--noir-2">
+      <section className="section section--noir-2 contact-sec">
         <div className="container split">
           <Reveal>
             <Eyebrow>Contact</Eyebrow>

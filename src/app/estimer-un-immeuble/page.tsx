@@ -149,7 +149,7 @@ export default function EstimerUnImmeuble() {
         </div>
       </section>
 
-      <section className="section section--noir-3">
+      <section className="section section--noir-3 contact-sec">
         <div className="container split">
           <Reveal>
             <Eyebrow>Contact</Eyebrow>

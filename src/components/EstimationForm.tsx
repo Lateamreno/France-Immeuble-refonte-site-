@@ -267,7 +267,7 @@ export function EstimationForm({
         <form className="form-shell" onSubmit={envoyerComplement} noValidate>
           <div className="step-head">
             <span className="outcome__badge">Demande enregistrée</span>
-            <h3 ref={titre} tabIndex={-1}>Merci {d.prenom}. Parlons de l’immeuble.</h3>
+            <h3 ref={titre} tabIndex={-1}>Parlons de votre immeuble.</h3>
             <p>
               Votre demande est bien arrivée. Ces chiffres permettent à l’agent de préparer
               l’estimation avant de vous appeler.
@@ -704,7 +704,7 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
     return (
       <div className="form-shell outcome">
         <span className="outcome__badge outcome__badge--autre">Envoi impossible</span>
-        <h3 ref={titre} tabIndex={-1}>Votre demande n’a pas pu partir, {d.prenom}.</h3>
+        <h3 ref={titre} tabIndex={-1}>Votre demande n’a pas pu partir.</h3>
         <p>
           Un incident technique nous empêche de l’enregistrer. Appelez-nous directement&nbsp;:
           nous prenons les mêmes informations en deux minutes.
@@ -720,7 +720,7 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
     return (
       <div className="form-shell outcome">
         <span className="outcome__badge outcome__badge--autre">Demande enregistrée</span>
-        <h3 ref={titre} tabIndex={-1}>Merci {d.prenom}. Votre bien ira plus vite sur PleinBail.</h3>
+        <h3 ref={titre} tabIndex={-1}>Merci. Votre bien ira plus vite sur PleinBail.</h3>
         <p>
           Notre fichier d’investisseurs se concentre sur les immeubles à partir de{" "}
           {CALIBRE.ticketMinLabel} et sur la province au-delà de{" "}
@@ -746,7 +746,7 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
       <span className="outcome__badge">
         {verdict.piste === "prioritaire" ? "Dossier prioritaire" : "Dossier retenu"}
       </span>
-      <h3 ref={titre} tabIndex={-1}>C’est noté, {d.prenom}. Un agent vous appelle sous 48&nbsp;h.</h3>
+      <h3 ref={titre} tabIndex={-1}>C’est noté. Un agent vous appelle sous 48&nbsp;h.</h3>
       <p>
         {verdict.piste === "prioritaire"
           ? "Votre immeuble correspond au cœur de ce que nous vendons. L’agent vous rappelle avec une estimation appuyée sur nos ventes comparables."
@@ -760,18 +760,20 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
             <li key={c.cle}><strong>{c.titre}</strong> <span>{c.aide}</span></li>
           ))}
         </ul>
-        <p>
-          Vous pouvez nous les envoyer dès maintenant à{" "}
-          <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>
-          {dansLeCompte
-            ? ", ou les déposer dans la rubrique Pièces de votre compte."
-            : ", ou les déposer vous-même dans votre espace client."}
-        </p>
+        {dansLeCompte ? (
+          <p>
+            Déposez-les dans la rubrique Pièces de votre compte, ou envoyez-les à{" "}
+            <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
+          </p>
+        ) : (
+          <p>
+            Nous venons de vous envoyer cette liste par e-mail, avec l’accès à votre espace client,
+            ouvert pour vous. Vous y déposerez les pièces et y retrouverez votre estimation. Vous
+            pouvez aussi les envoyer à{" "}
+            <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
+          </p>
+        )}
       </div>
-
-      {!dansLeCompte && (
-        <PropositionCompte texte="Dans votre compte, vous déposez les pièces et retrouvez l’estimation dès que l’agent l’a validée." />
-      )}
     </div>
   );
 }

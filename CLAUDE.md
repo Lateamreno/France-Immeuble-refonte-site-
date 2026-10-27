@@ -299,7 +299,12 @@ au moins la hauteur de l'écran **sous la barre de menu** (`min-height:var(--ecr
 `100svh - --header-h`, MAV, 27/10/2026 ; contenu centré verticalement), comme le hero, pour que ce qui se lit ensemble arrive ensemble. Pas de défilement forcé par section :
 on se cale sur la hauteur d'écran. Une section plus haute que l'écran est à resserrer (ligne
 qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèle sur les atouts
-de la page Vendre.
+de la page Vendre. Outils (27/10/2026) : `grid--ligne-mob` (cartes en ligne au téléphone),
+`media--fond-mob` (photo en fond fondu au téléphone), `tete-2col`, `steps--frise`,
+LigneDefilante `marches` pour toute liste longue (références, articles, étapes).
+Exception voulue : « Vendez votre immeuble » de l'accueil dépasse au téléphone, texte entier,
+boutons collés en bas de l'écran pendant qu'il défile (MAV : « Lire la suite », personne ne
+clique).
 
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
 cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré
@@ -451,8 +456,15 @@ Canal d'acquisition n°1 — à ne pas improviser.
 - **Alerte de l'agence à chaque formulaire** (MAV, 22/10/2026) : le site envoie lui-même un
   e-mail à `contact@` et `ma.voci@` (SendGrid, depuis `contact@france-immeuble.fr`,
   Reply-To = le client), quel que soit le formulaire, même si le BO est en panne
-  (`src/lib/notifications.ts`). Aucun e-mail automatique vers le visiteur. Réglages :
-  `docs/COMPTE-CONFIGURATION.md`.
+  (`src/lib/notifications.ts`). Réglages : `docs/COMPTE-CONFIGURATION.md`.
+- **E-mail au client après une estimation et compte créé pour lui** (MAV, 27/10/2026) :
+  un agent appelle sous 48 h, liste des pièces, lien d'accès à l'espace client
+  (`src/lib/compte/accueil.ts`, page `/mon-compte/activer/`). Une adresse reçoit au plus un
+  e-mail par 24 h (table `envois_client`, empreinte de l'adresse). C'est le seul e-mail
+  automatique vers un visiteur.
+- **Aucun prénom dans les messages des formulaires** (MAV, 27/10/2026 : « c'est insultant »).
+  Pas de « Merci Claire » ; l'e-mail au client commence par « Bonjour, ».
+- Dépôt de recherche acquéreur en trois étapes courtes : critères, budget, coordonnées.
 
 ---
 
@@ -541,7 +553,8 @@ Expression dominante : **« immeuble de rapport »** (14 000+ impressions/an) �
 partout. Secondaire : « vente en bloc » (contexte juridique). À éviter : « immeuble entier »
 (~600 imp/an), sauf contexte définitionnel.
 
-Réassurance : 365 immeubles traités depuis 2018 · 1 500 acheteurs en base (chiffre déposé par le BO) · 28 avis Google
+Réassurance : 365 immeubles traités depuis 2018 (chiffre `immeubles_traites` déposé par le BO
+dans `chiffres`, affiché en tête de l'accueil, MAV 27/10/2026) · 1 500 acheteurs en base (chiffre déposé par le BO) · 28 avis Google
 à 4,9/5 · honoraires 5 % du prix net vendeur · modèle off-market · mandats semi-exclusifs avec
 période de test interne 2-4 semaines.
 

@@ -12,6 +12,8 @@ import { PREUVES } from "./site";
  */
 export type Chiffres = {
   investisseurs: number;
+  /** Immeubles traités depuis la création de l'agence (MAV, 27/10/2026), déposé par le BO. */
+  immeublesTraites: number;
   recherchesPatrimonial: number;
   recherchesInvestisseur: number;
   recherchesMarchand: number;
@@ -22,6 +24,8 @@ export type Chiffres = {
 /** Dernières valeurs publiées sur le site, avant le premier dépôt du BO. */
 const REPLI: Chiffres = {
   investisseurs: PREUVES.investisseurs,
+  // Le chiffre que le site affichait jusqu'ici, en attendant le dépôt du BO.
+  immeublesTraites: 365,
   recherchesPatrimonial: 365,
   recherchesInvestisseur: 1372,
   recherchesMarchand: 359,
@@ -44,6 +48,7 @@ export async function chiffres(): Promise<Chiffres> {
     const n = (cle: string, defaut: number) => (Number.isFinite(v.get(cle)) ? (v.get(cle) as number) : defaut);
     return {
       investisseurs: n("investisseurs", REPLI.investisseurs),
+      immeublesTraites: n("immeubles_traites", REPLI.immeublesTraites),
       recherchesPatrimonial: n("recherches_patrimonial", REPLI.recherchesPatrimonial),
       recherchesInvestisseur: n("recherches_investisseur", REPLI.recherchesInvestisseur),
       recherchesMarchand: n("recherches_marchand", REPLI.recherchesMarchand),

@@ -72,7 +72,7 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
             </p>
           </>
         </HeroMedia>
-        <section className="section section--noir-2">
+        <section className="section section--noir-2 compte-accueil-sec">
           <div className="container split">
             <div>
               <Eyebrow>Un seul compte</Eyebrow>
@@ -85,8 +85,8 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
                 <li>Le dépôt des pièces de votre immeuble, directement au coffre de l’agence.</li>
               </ul>
               <p className="muted">
-                Aucun e-mail automatique : nous vous écrivons quand un agent a quelque chose à vous
-                envoyer, c’est tout.
+                Après une demande d’estimation, l’espace est ouvert pour vous : le lien arrive par
+                e-mail avec la liste des pièces à préparer.
               </p>
             </div>
             <Acces etat={etat} />
@@ -100,7 +100,6 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
   const [d, enLigne] = await Promise.all([donneesCompte(jeton), biensAVendre()]);
   const slugs = new Map(enLigne.map((b) => [b.id, b.slug]));
   const correspondants = biensCorrespondants(enLigne, d.recherches);
-  const prenom = utilisateur.user_metadata?.prenom || "";
 
   return (
     <>
@@ -108,7 +107,7 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
         <>
           <Eyebrow>Mon compte</Eyebrow>
           <h1>
-            Bonjour{prenom ? " " : ""}<span className="accent">{prenom || ""}</span>
+            Votre <span className="accent">espace</span> France Immeuble
           </h1>
           <p className="lead">
             Vos recherches, les immeubles que nous vous avons proposés et le suivi de vos immeubles.
@@ -120,13 +119,13 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
         </>
       </HeroMedia>
 
-      {(etat === "bienvenue" || etat === "nouveau-mot-de-passe") && (
+      {(etat === "bienvenue" || etat === "nouveau-mot-de-passe" || etat === "choisir-mot-de-passe") && (
         <section className="section section--noir compte-bandeau">
           <div className="container container--narrow">
             {etat === "bienvenue" ? (
               <p className="compte-note">Votre adresse est vérifiée : votre compte est ouvert.</p>
             ) : (
-              <NouveauMotDePasse />
+              <NouveauMotDePasse premier={etat === "choisir-mot-de-passe"} />
             )}
           </div>
         </section>

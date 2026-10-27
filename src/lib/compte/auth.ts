@@ -193,6 +193,51 @@ export async function marquerRattache(id: string): Promise<void> {
   });
 }
 
+/**
+ * Un lien d'accès au compte, fabriqué par le serveur (MAV, 27/10/2026 : le
+ * compte est créé tout seul après une estimation). Sans compte pour cette
+ * adresse, Supabase en crée un, sans mot de passe (« invite ») ; s'il existe,
+ * c'est un lien de connexion (« magiclink »). Supabase n'envoie rien : c'est
+ * notre e-mail qui porte le lien.
+ *
+ * On ne garde que l'empreinte du jeton (`hashed_token`) : le lien pointe sur
+ * NOTRE domaine et c'est notre serveur qui la vérifie (`verifierJeton`).
+ */
+export async function lienDAcces(
+  email: string,
+  meta: { prenom?: string; nom?: string; telephone?: string },
+): Promise<{ type: "invite" | "magiclink"; empreinte: string }> {
+  const cfg = cfgSecrete();
+  type Reponse = { hashed_token?: string; properties?: { hashed_token?: string } };
+  const lire = (r: Reponse) => r.hashed_token ?? r.properties?.hashed_token ?? "";
+  try {
+    const r = await gotrue<Reponse>("admin/generate_link", {
+      method: "POST",
+      cle: cfg,
+      jeton: cfg.cle,
+      body: JSON.stringify({ type: "invite", email, data: meta }),
+    });
+    return { type: "invite", empreinte: lire(r) };
+  } catch (e) {
+    if (!(e instanceof ErreurAuth) || !["email_exists", "user_already_exists", "422"].includes(e.code)) throw e;
+    const r = await gotrue<Reponse>("admin/generate_link", {
+      method: "POST",
+      cle: cfg,
+      jeton: cfg.cle,
+      body: JSON.stringify({ type: "magiclink", email }),
+    });
+    return { type: "magiclink", empreinte: lire(r) };
+  }
+}
+
+/** Échange l'empreinte d'un lien d'accès contre une session (une seule fois). */
+export function verifierJeton(type: "invite" | "magiclink", empreinte: string): Promise<Session> {
+  return gotrue<Session>("verify", {
+    method: "POST",
+    body: JSON.stringify({ type, token_hash: empreinte }),
+  });
+}
+
 export async function supprimerUtilisateur(id: string): Promise<void> {
   const cfg = cfgSecrete();
   await gotrue(`admin/users/${id}`, { method: "DELETE", cle: cfg, jeton: cfg.cle });

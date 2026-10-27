@@ -8,9 +8,11 @@
  * BO : si le BO est en panne, l'alerte part quand même, avec la mention
  * « en attente de transmission ». Une demande ne peut plus passer inaperçue.
  *
- * L'alerte va à l'agence seulement. Aucun e-mail automatique ne part vers le
- * visiteur (contrat BO §6 et §9.1) ; « Répondre » écrit au client, grâce au
- * Reply-To.
+ * « Répondre » écrit au client, grâce au Reply-To.
+ *
+ * Un seul e-mail part vers le visiteur : celui qui suit une estimation, avec
+ * la liste des pièces et l'accès à son espace (MAV, 27/10/2026). Il est écrit
+ * dans `compte/accueil.ts` et passe par `envoyerAuClient` ci-dessous.
  *
  * Envoi par l'API de SendGrid, avec une clé restreinte à « Mail Send ». Sans
  * les variables, rien ne part et rien ne casse.
@@ -225,6 +227,53 @@ export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {})
     return false;
   } catch (e) {
     console.error("[alerte] envoi impossible —", e instanceof Error ? e.message : e);
+    return false;
+  }
+}
+
+/**
+ * Un e-mail au client (seul cas : après une estimation, voir `compte/accueil.ts`).
+ * Il part de contact@, et « Répondre » écrit à l'agence. Ne lève jamais.
+ */
+export async function envoyerAuClient(m: {
+  a: string;
+  nom?: string;
+  sujet: string;
+  html: string;
+  text: string;
+}): Promise<boolean> {
+  const cfg = config();
+  if (!cfg || !EMAIL.test(m.a)) return false;
+  try {
+    const r = await fetch(`${cfg.api}/v3/mail/send`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${cfg.cle}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: m.a, ...(m.nom ? { name: m.nom } : {}) }] }],
+        from: { email: cfg.de, name: "France Immeuble" },
+        reply_to: { email: cfg.de, name: "France Immeuble" },
+        subject: m.sujet.slice(0, 200),
+        content: [
+          { type: "text/plain", value: m.text },
+          { type: "text/html", value: m.html },
+        ],
+        // Pas de suivi : le lien d'accès ne doit pas transiter par un domaine de SendGrid.
+        tracking_settings: {
+          click_tracking: { enable: false, enable_text: false },
+          open_tracking: { enable: false },
+          subscription_tracking: { enable: false },
+          ganalytics: { enable: false },
+        },
+        categories: ["site-client"],
+      }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(6000),
+    });
+    if (r.status === 202 || r.ok) return true;
+    console.error(`[client] SendGrid ${r.status} : ${(await r.text()).slice(0, 200)}`);
+    return false;
+  } catch (e) {
+    console.error("[client] envoi impossible —", e instanceof Error ? e.message : e);
     return false;
   }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/Button";
+import { LigneDefilante } from "@/components/LigneDefilante";
 import { Faq, type QuestionFaq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
@@ -96,7 +97,7 @@ const QUESTIONS: QuestionFaq[] = [
         </p>
         <p>
           Quand le second dépasse largement le premier, la découpe crée de la valeur. Quand les
-          deux se rejoignent — rendement élevé, prix résidentiel bas — elle n’en crée aucune, et
+          deux se rejoignent (rendement élevé, prix résidentiel bas), elle n’en crée aucune, et
           nous vous disons de vendre en bloc.
         </p>
       </>
@@ -112,7 +113,7 @@ const QUESTIONS: QuestionFaq[] = [
           que d’attendre des départs qui prendraient des années.
         </p>
         <p>
-          Les lots déjà vides partent en premier — ils financent la patience sur le reste. Pour les
+          Les lots déjà vides partent en premier : ils financent la patience sur le reste. Pour les
           autres, on travaille au cas par cas : rachat de bail, départ anticipé indemnisé, vente au
           locataire en place, ou vente occupée avec sa décote.
         </p>
@@ -131,7 +132,7 @@ const QUESTIONS: QuestionFaq[] = [
         <p>
           Notre règle est constante : le prix qui lui est notifié est un prix net vendeur, jamais
           majoré de nos honoraires. Un locataire qui préempte n’est pas un acquéreur que nous avons
-          présenté — nos honoraires sont dans ce cas minorés de 20 %.
+          présenté. Nos honoraires sont dans ce cas minorés de 20 %.
         </p>
       </>
     ),
@@ -152,7 +153,7 @@ const QUESTIONS: QuestionFaq[] = [
     reponse: (
       <p>
         Comptez environ deux mois pour arriver au règlement de copropriété et lancer les premières
-        ventes — celles des lots vides ou dont le départ est déjà négocié. Les lots occupés sortent
+        ventes, celles des lots vides ou dont le départ est déjà négocié. Les lots occupés sortent
         ensuite, au fil des congés et des préemptions, sur douze à vingt-quatre mois. Le calendrier
         n’est pas tenu par nous mais par la loi : information préalable, délais de préemption,
         échéances de baux.
@@ -166,7 +167,7 @@ const QUESTIONS: QuestionFaq[] = [
         De l’ordre de 20 000 à 25 000 € pour un immeuble d’une dizaine de lots : géomètre, notaire,
         diagnostic technique global, diagnostics par lot, commissaire de justice, syndic
         provisoire. Ces frais sont réglés directement aux intervenants, que nous mettons en
-        concurrence — nous ne les refacturons pas et ne prenons aucune commission dessus.
+        concurrence. Nous ne les refacturons pas et ne prenons aucune commission dessus.
       </p>
     ),
   },
@@ -252,7 +253,7 @@ export default async function Decoupe() {
       </section>
 
       {/* ───────── Le cas chiffré ───────── */}
-      <section className="section section--noir-3">
+      <section className="section section--noir-3 cas-sec">
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Un dossier réel</Eyebrow>
@@ -319,7 +320,7 @@ export default async function Decoupe() {
       </section>
 
       {/* ───────── Le bilan, frais déduits ───────── */}
-      <section className="section section--noir">
+      <section className="section section--noir dossier-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Ce qui reste dans votre poche</Eyebrow>
@@ -402,8 +403,8 @@ export default async function Decoupe() {
             </p>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
               Dans le dossier ci-dessus, l’écart est de {CAS.bloc.prixM2} contre{" "}
-              {CAS.decoupe.prixM2} : il paie très largement l’opération. Ailleurs — rendement élevé,
-              prix résidentiel bas — les deux valeurs se rejoignent et la découpe ne crée rien.
+              {CAS.decoupe.prixM2} : il paie très largement l’opération. Ailleurs (rendement élevé,
+              prix résidentiel bas), les deux valeurs se rejoignent et la découpe ne crée rien.
               Dans ce cas nous vous le disons, et nous vendons en bloc.
             </p>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
@@ -416,9 +417,11 @@ export default async function Decoupe() {
       </section>
 
       {/* ───────── Ce que nous prenons en charge ───────── */}
-      <section className="section section--noir-3">
-        <div className="container split split--sticky">
-          <Reveal className="split__aside">
+      {/* Les six étapes défilent sur une frise : la section tient sur un écran
+          (MAV, 27/10/2026). */}
+      <section className="section section--noir-3 mission-sec">
+        <div className="container">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>Notre mission</Eyebrow>
             <h2>Vous n’avez pas à devenir marchand de biens</h2>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
@@ -426,14 +429,9 @@ export default async function Decoupe() {
               négociations locataire par locataire. Nous tenons l’ensemble. Vous validez et vous
               signez.
             </p>
-            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/estimer-un-immeuble/" icone>
-                Faire étudier mon immeuble
-              </Button>
-            </div>
           </Reveal>
 
-          <div className="steps">
+          <LigneDefilante className="etapes-ligne">
             {[
               {
                 n: "01",
@@ -471,21 +469,26 @@ export default async function Decoupe() {
                 p: `Lots occupés vers notre fichier de ${nombre(ch.investisseurs)} investisseurs, lots libres vers les occupants, en off-market puis en diffusion élargie. Agence locale en renfort si le secteur l’exige, sans frais supplémentaires pour vous.`,
                 m: "Deux marchés, deux prix",
               },
-            ].map((e, i) => (
-              <Reveal key={e.n} as="article" className="step" delayIndex={i}>
-                <span className="step__dot" aria-hidden="true" />
+            ].map((e) => (
+              <article key={e.n} className="etape-frise">
+                <span className="etape-frise__point" aria-hidden="true" />
                 <span className="step__num">Étape {e.n}</span>
                 <h3>{e.t}</h3>
                 <p>{e.p}</p>
                 <span className="step__meta">{e.m}</span>
-              </Reveal>
+              </article>
             ))}
+          </LigneDefilante>
+          <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+            <Button href="/estimer-un-immeuble/" icone>
+              Faire étudier mon immeuble
+            </Button>
           </div>
         </div>
       </section>
 
       {/* ───────── Le cadre légal ───────── */}
-      <section className="section section--noir">
+      <section className="section section--noir cadre-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Le cadre à respecter</Eyebrow>
@@ -499,41 +502,41 @@ export default async function Decoupe() {
           <Reveal>
             <ul className="cadre">
               <li>
-                <strong>Diagnostic technique global</strong> — obligatoire avant toute mise en
+                <strong>Diagnostic technique global</strong> : obligatoire avant toute mise en
                 copropriété d’un immeuble de plus de dix ans, et préalable au règlement.
               </li>
               <li>
-                <strong>DPE collectif de l’immeuble</strong> — exigé pour toute copropriété. Il
+                <strong>DPE collectif de l’immeuble</strong> : exigé pour toute copropriété. Il
                 s’obtient dans la même mission que le diagnostic technique global.
               </li>
               <li>
-                <strong>État descriptif de division et tantièmes</strong> — établis par un
+                <strong>État descriptif de division et tantièmes</strong> : établis par un
                 géomètre-expert. Sur un immeuble mixte, les grilles de charges habitation et
                 commerces se traitent séparément : une erreur se paie pendant toute la vie de la
                 copropriété.
               </li>
               <li>
-                <strong>Règlement de copropriété</strong> — rédigé et publié par le notaire, qui
+                <strong>Règlement de copropriété</strong> : rédigé et publié par le notaire, qui
                 immatricule le syndicat au registre national dans la foulée.
               </li>
               <li>
-                <strong>Information préalable des locataires</strong> — puis offres de vente valant
+                <strong>Information préalable des locataires</strong> : puis offres de vente valant
                 droit de préemption, avec des délais de réponse encadrés.
               </li>
               <li>
-                <strong>Congé pour vente</strong> — délivrable six mois avant le terme du bail
+                <strong>Congé pour vente</strong> : délivrable six mois avant le terme du bail
                 seulement. C’est ce qui fixe les fenêtres de tir, pas notre calendrier commercial.
               </li>
               <li>
-                <strong>Droit de préférence du locataire commercial</strong> — déclenché par la
+                <strong>Droit de préférence du locataire commercial</strong> : déclenché par la
                 première vente d’un local loué.
               </li>
               <li>
-                <strong>Diagnostics par lot</strong> — un DPE d’immeuble ne suffit pas à vendre :
+                <strong>Diagnostics par lot</strong> : un DPE d’immeuble ne suffit pas à vendre :
                 chaque lot a les siens.
               </li>
               <li>
-                <strong>Autorisation préalable de division</strong> — selon la commune. La division
+                <strong>Autorisation préalable de division</strong> : selon la commune. La division
                 est par ailleurs interdite sur un immeuble frappé d’arrêté de péril ou
                 d’insalubrité.
               </li>
@@ -543,7 +546,7 @@ export default async function Decoupe() {
       </section>
 
       {/* ───────── Honoraires ───────── */}
-      <section className="section section--noir-2">
+      <section className="section section--noir-2 couts-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Nos honoraires</Eyebrow>
@@ -551,21 +554,21 @@ export default async function Decoupe() {
             <p className="lead">
               Deux lignes, et rien d’autre : un forfait de structuration, puis une commission à
               chaque vente. Les frais des intervenants extérieurs vous sont facturés directement
-              par eux — nous ne prenons aucune marge dessus.
+              par eux. Nous ne prenons aucune marge dessus.
             </p>
           </Reveal>
 
           <Reveal>
             <ul className="tarifs">
               <li>
-                <span className="tarifs__nom">Forfait de structuration — par lot occupé</span>
+                <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
                 <span className="tarifs__note">
                   Payable pour partie à la signature, le solde à la première vente.
                 </span>
               </li>
               <li>
-                <span className="tarifs__nom">Forfait de structuration — par lot vide</span>
+                <span className="tarifs__nom">Forfait de structuration, par lot vide</span>
                 <span className="tarifs__val">1 500 € TTC</span>
               </li>
               <li>
@@ -595,7 +598,7 @@ export default async function Decoupe() {
               </li>
               <li>
                 <span className="tarifs__nom">
-                  Frais d’intervenants — géomètre, notaire, diagnostics, syndic
+                  Frais d’intervenants : géomètre, notaire, diagnostics, syndic
                 </span>
                 <span className="tarifs__val">≈ 20 à 25 000 €</span>
                 <span className="tarifs__note">
@@ -618,14 +621,14 @@ export default async function Decoupe() {
               Une découpe se pilote sur le terrain : rendez-vous locataire par locataire,
               entreprises à suivre, syndic à installer, mairie à interroger. Nous ne prenons ces
               missions que là où nous pouvons être présents dans la journée. Pour un immeuble hors
-              de ce périmètre, nous vendons en bloc — c’est plus honnête que d’accepter une
+              de ce périmètre, nous vendons en bloc : c’est plus honnête que d’accepter une
               opération que nous tiendrions mal.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="section section--noir">
+      <section className="section section--noir faq-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Questions fréquentes</Eyebrow>
@@ -645,7 +648,7 @@ export default async function Decoupe() {
             <p className="lead">
               Décrivez-nous l’immeuble et ses loyers. Nous revenons avec la valeur en bloc, la
               valeur découpée lot par lot, et le net vendeur dans les deux cas, frais déduits. Vous
-              choisissez ensuite — ou vous ne faites rien.
+              choisissez ensuite, ou vous ne faites rien.
             </p>
             <div className="btn-row">
               <Button href="/estimer-un-immeuble/" icone>

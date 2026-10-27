@@ -33,8 +33,9 @@ const TRACES: Record<NomPicto, React.ReactNode> = {
   // Trois personnes en cravate — agents
   equipe: <><circle cx="12" cy="7.2" r="2.6"/><path d="M7.4 20.5c.5-4.3 2.3-6.5 4.6-6.5s4.1 2.2 4.6 6.5"/><path d="M12 14.2l-.9 1.4.9 3.4.9-3.4z" fill="currentColor" strokeWidth=".8"/><circle cx="5" cy="9.4" r="2.1"/><path d="M1.5 19.5c.4-3.3 1.7-4.9 3.5-4.9.7 0 1.3.2 1.8.6"/><path d="M5 14.9l-.6 1 .6 2.4.6-2.4z" fill="currentColor" strokeWidth=".7"/><circle cx="19" cy="9.4" r="2.1"/><path d="M22.5 19.5c-.4-3.3-1.7-4.9-3.5-4.9-.7 0-1.3.2-1.8.6"/><path d="M19 14.9l-.6 1 .6 2.4.6-2.4z" fill="currentColor" strokeWidth=".7"/></>,
   // Secteur — repère sur un plan
-  /* L'Hexagone simplifié, Paris en point plein (retour #55, MAV, 27/10/2026). */
-  france: <><path d="M12.3 1.8 15.2 3.4 17.3 4.1 20.6 5.6 19.8 8.6 19.9 10.4 18.4 12.4 19.6 13.4 20.6 15.6 21.4 18.2 19.4 19.3 17 19.6 15.2 19 13.6 20 13.4 21.8 10.2 21.4 7.4 20.6 5.8 19.6 6.6 15.8 6 13.6 5.6 12.4 4.2 10.8 2.8 9.8 1.2 8.2 3.6 7.2 6 7.4 6.2 5.4 7.4 6 9.4 5.6 10.6 4.2 11 2.8Z"/><circle cx="11.6" cy="7.6" r="1.4" fill="currentColor" stroke="none"/><path d="M22.3 19.4c.5.6.5 1.8 0 2.6"/></>,
+  /* La France tracée sur ses vraies côtes et frontières, Corse comprise,
+     Paris en point plein (MAV, 27/10/2026). */
+  france: <><path d="M12 1.7l1.2.6 1.4 1 1 .3 1.4 1.3 1.3.2 2.3 1-.7.9-.3 2.1-.9.3-.8 1.1-.7 1.3 1.3.3.3 1.2-.6 1.5.6 1.4.7 1-1.3 1.3-1 .2-1.4-.6-1-.2-1.5.4-.3 1.7-2-.1-1.6-.4-1.8-.3-1.7-1.1.7-2.2.1-2.2.1-1.6-1.3-1.2-.4-1-1.3-.6-1.6-.7-.7-.5.1-1.1 1.3-.4 1.2-.1 1.4.4.8-.1-.2-.7-.4-1.5.9.1.2.6 1.4.1.6-.4 1.3-1 .7-.7v-1.1z"/><path d="M22.3 18.9l.2 1.2-.4 2.2-.8-.9-.2-1.3z"/><circle cx="11.9" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></>,
   secteur: <><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></>,
   // Technique — élévation d'immeuble, niveaux marqués
   technique: <><path d="M4.5 20.5V6.2l7.5-3.7 7.5 3.7v14.3" /><path d="M3 20.5h18" /><path d="M4.5 10.6h15M4.5 15.2h15" /><path d="M10.2 20.5v-3.4h3.6v3.4" /></>,

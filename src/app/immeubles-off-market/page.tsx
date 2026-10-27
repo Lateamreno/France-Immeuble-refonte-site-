@@ -115,7 +115,7 @@ export default async function ImmeublesOffMarket() {
             </p>
           </TeteMedia>
 
-          <div className="grid grid--3">
+          <div className="grid grid--3 grid--ligne-mob">
             {RAISONS.map((r, i) => (
               <Reveal key={r.titre} as="article" className="card card--medaillon" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
@@ -173,7 +173,7 @@ export default async function ImmeublesOffMarket() {
         </section>
       )}
 
-      <section id="deposer" className="section section--noir">
+      <section id="deposer" className="section section--noir recherche-sec">
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Y accéder</Eyebrow>

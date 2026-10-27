@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { Button } from "@/components/Button";
+import { LigneDefilante } from "@/components/LigneDefilante";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { PREUVES, SITE } from "@/lib/site";
@@ -66,42 +67,44 @@ export default async function BlogPage() {
         </>
       </HeroMedia>
 
-      <section className="section">
-        <div className="container container--narrow">
-          {/*
-            Chaque article porte son visuel : on comprend de quoi il parle
-            avant de lire le titre. `sizes` reste modeste — la vignette ne
-            dépasse jamais 380 px, inutile de servir du 1400.
-          */}
-          <ul className="liste-articles liste-articles--visuels">
+      {/* Les articles sur une ligne qui défile : la liste tient sur un écran
+          (MAV, 27/10/2026). Chaque carte porte son visuel, son titre, son
+          résumé et sa date ; tous les liens restent dans la page. */}
+      <section className="section articles-sec">
+        <div className="container">
+          <div className="section__head">
+            <Eyebrow>Les articles</Eyebrow>
+            <h2>{articles.length} articles sur la vente d’immeubles de rapport</h2>
+          </div>
+          <LigneDefilante className="articles-ligne" marches>
             {articles.map((a, i) => (
-              <li key={a.slug}>
-                <Link href={a.chemin}>
+              <article key={a.slug} className="article-carte">
+                <Link href={a.chemin} className="article-carte__lien">
                   {a.imageUne && (
-                    <span className="liste-articles__visuel">
+                    <span className="article-carte__visuel">
                       <Image
                         src={a.imageUne}
                         alt={a.imageUneAlt ?? ""}
                         width={380}
                         height={254}
-                        sizes="(max-width: 720px) 100vw, 220px"
-                        priority={i < 2}
+                        sizes="(max-width: 760px) 85vw, 380px"
+                        priority={i < 3}
                       />
                     </span>
                   )}
-                  <span className="liste-articles__texte">
-                    <span className="liste-articles__titre">{a.h1}</span>
-                    {a.seoDesc && <span className="liste-articles__resume">{a.seoDesc}</span>}
-                    <span className="liste-articles__date">
+                  <span className="article-carte__corps">
+                    <span className="article-carte__titre">{a.h1}</span>
+                    {a.seoDesc && <span className="article-carte__resume">{a.seoDesc}</span>}
+                    <span className="article-carte__date">
                       <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
                       <span aria-hidden="true"> · </span>
                       {dureeLecture(a.contenuHtml)} min
                     </span>
                   </span>
                 </Link>
-              </li>
+              </article>
             ))}
-          </ul>
+          </LigneDefilante>
         </div>
       </section>
 

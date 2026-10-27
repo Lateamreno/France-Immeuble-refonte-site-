@@ -62,7 +62,7 @@ export default async function Acheter() {
             </p>
           </Reveal>
 
-          <div className="grid grid--3">
+          <div className="grid grid--3 grid--ligne-mob">
             {[
               {
                 n: "01",
@@ -105,7 +105,7 @@ export default async function Acheter() {
         </p>
       </BandeMedia>
 
-      <section id="deposer" className="section section--noir-3">
+      <section id="deposer" className="section section--noir-3 recherche-sec">
         <div className="container split">
           <Reveal className="split__aside">
             <Eyebrow>Ce que ça vous donne</Eyebrow>

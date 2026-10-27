@@ -1,15 +1,19 @@
 # E-mails du site et compte client : réglages à faire
 
-Deux sortes d'e-mails partent du site, tous par **SendGrid**, depuis
+Trois sortes d'e-mails partent du site, tous par **SendGrid**, depuis
 `contact@france-immeuble.fr` :
 
 1. **Les alertes de l'agence** : un e-mail à `contact@` et à `ma.voci@` à
    chaque formulaire rempli (vente, estimation, recherche, contact, demande de
    dossier, compte client et actions dans le compte). Envoyées par le site
    lui-même, même si le BO est en panne.
-2. **Les e-mails du compte client** : seulement le lien de vérification de
-   l'adresse et le lien « mot de passe oublié ». Envoyés par Supabase Auth.
-   Aucun autre e-mail ne part vers le client (contrat BO §9.1).
+2. **Les e-mails du compte client** : le lien de vérification de l'adresse
+   et le lien « mot de passe oublié ». Envoyés par Supabase Auth.
+3. **L'e-mail qui suit une estimation** (MAV, 27/10/2026) : un agent appelle
+   sous 48 h, la liste des pièces à préparer et le lien de l'espace client,
+   ouvert pour lui. Envoyé par le site (`src/lib/compte/accueil.ts`), une fois
+   par adresse et par 24 h au plus. C'est le seul e-mail automatique vers un
+   visiteur.
 
 Le domaine `france-immeuble.fr` est déjà authentifié chez SendGrid (clés
 DKIM `s1` et `s2` en place chez OVH, vérifié le 22/10/2026) : rien à changer
@@ -37,6 +41,11 @@ Projet `france-immeuble-refonte-site` → Settings → Environment Variables :
 | `SITE_NOTIF_FROM` | `contact@france-immeuble.fr` |
 | `SITE_NOTIF_DESTINATAIRES` | `contact@france-immeuble.fr,ma.voci@france-immeuble.fr` |
 
+Facultatif : `SITE_ORIGINE` (par exemple `https://www.france-immeuble.fr`),
+l'adresse des liens envoyés au client. Sans elle, le site prend le domaine de
+production que Vercel lui donne (`VERCEL_PROJECT_PRODUCTION_URL`), jamais
+l'en-tête de la requête, qu'un attaquant pourrait choisir.
+
 Puis redéployer (Deployments → … → Redeploy) pour que les variables soient lues.
 
 ## 3. Supabase (e-mails du compte client)
@@ -63,6 +72,9 @@ Projet **France Immeuble site** (`omtkttpvfjsbnqsajcsp`).
 
 **Authentication → Sign In / Providers → Email**
 
+- Email OTP Expiration : `86400` secondes (24 h). C'est la durée de validité
+  du lien d'accès à l'espace client envoyé après une estimation ; par défaut,
+  une heure seulement.
 - Confirm email : activé.
 - Secure password change : activé.
 - Minimum password length : 8.

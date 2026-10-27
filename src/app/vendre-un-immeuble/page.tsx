@@ -195,17 +195,16 @@ export default async function VendreUnImmeuble() {
         </div>
       </SectionFondue>
 
-      <section className="section section--noir-2">
-        <div className="container split split--sticky">
-          <Reveal className="split__aside">
+      {/* Les quatre étapes sur une frise horizontale : la méthode tient sur un
+          écran (MAV, 27/10/2026). Au téléphone, elles glissent au doigt. */}
+      <section className="section section--noir-2 methode-sec">
+        <div className="container">
+          <Reveal className="section__head">
             <Eyebrow>La méthode</Eyebrow>
             <h2>Comment ça fonctionne&nbsp;?</h2>
-            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="#estimer" icone>Vendre mon immeuble</Button>
-            </div>
           </Reveal>
 
-          <div className="steps">
+          <div className="steps steps--frise">
             {ETAPES.map((e, i) => (
               <Reveal key={e.num} as="article" className="step step--illustre" delayIndex={i}>
                 <span className="step__dot" aria-hidden="true" />
@@ -217,6 +216,9 @@ export default async function VendreUnImmeuble() {
                 <p>{e.texte}</p>
               </Reveal>
             ))}
+          </div>
+          <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+            <Button href="#estimer" icone>Vendre mon immeuble</Button>
           </div>
         </div>
       </section>
@@ -279,7 +281,7 @@ export default async function VendreUnImmeuble() {
         </div>
       </section>
 
-      <section className="section section--noir-3">
+      <section className="section section--noir-3 contact-sec">
         <div className="container split">
           <Reveal>
             <Eyebrow>Contact</Eyebrow>
