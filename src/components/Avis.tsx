@@ -1,6 +1,7 @@
 import { AVIS } from "@/lib/accueil";
 import { PREUVES } from "@/lib/site";
 import { Eyebrow } from "./Eyebrow";
+import { LigneDefilante } from "./LigneDefilante";
 import { Reveal } from "./Reveal";
 import { TeteMedia, type ImageTete } from "./TeteMedia";
 
@@ -33,26 +34,27 @@ const initiales = (nom: string) =>
  * fiche Google ; chaque avis porte sa note et le nom du client en or ; plus de
  * date. Un monogramme remplace la photo, que Google ne nous laisse pas servir.
  *
- * `compact` : trois avis au lieu de douze, pour les pages où ils appuient un
- * argument sans devenir le sujet.
+ * Les avis défilent sur une ligne, en marches comme les atouts de la page
+ * Vendre (MAV, 27/10/2026) : trois avis hauts, les suivants un peu plus bas.
+ * Une ligne tient sur un écran quel que soit le nombre d'avis : toutes les
+ * pages portent donc les douze.
  */
 export function Avis({
   titre = "Témoignages",
   intro,
-  compact = false,
   fond = "creme",
   photo,
   children,
 }: {
   titre?: string;
   intro?: string;
+  /** Ancien réglage (trois avis au lieu de douze), sans effet depuis la ligne qui défile. */
   compact?: boolean;
   fond?: "creme" | "noir-2" | "noir-3";
   /** Photo à côté du titre, fondue dans le fond sombre (accueil, 22/10/2026). */
   photo?: ImageTete;
   children?: React.ReactNode;
 }) {
-  const liste = compact ? AVIS.slice(0, 3) : AVIS;
   const tete = (
     <>
       <Eyebrow>Ils nous font confiance</Eyebrow>
@@ -78,7 +80,7 @@ export function Avis({
   );
 
   return (
-    <section className={`section section--${fond}`}>
+    <section className={`section section--${fond} avis-sec`}>
       <div className="container">
         {photo ? (
           <TeteMedia image={photo} fondu>
@@ -97,12 +99,12 @@ export function Avis({
             {tete}
           </TeteMedia>
         ) : (
-          <Reveal className="section__head">{tete}</Reveal>
+          <Reveal className="section__head avis-sec__tete">{tete}</Reveal>
         )}
 
-        <div className="avis">
-          {liste.map((a, i) => (
-            <Reveal key={a.nom} as="article" className="avis__item" delayIndex={i}>
+        <LigneDefilante className="avis-ligne" marches>
+          {AVIS.map((a) => (
+            <article key={a.nom} className="avis__item">
               <header className="avis__tete">
                 <span className="avis__mono" aria-hidden="true">{initiales(a.nom)}</span>
                 <span className="avis__qui">
@@ -117,9 +119,12 @@ export function Avis({
                 </span>
               </header>
               <p>{a.texte}</p>
-            </Reveal>
+              <a className="avis__suite" href={PREUVES.avisGoogle} target="_blank" rel="noopener">
+                Lire sur Google
+              </a>
+            </article>
           ))}
-        </div>
+        </LigneDefilante>
       </div>
     </section>
   );

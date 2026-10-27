@@ -1527,6 +1527,48 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   }
 }
 @media (min-width:980px){.ligne-cartes.atouts{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}}
+/* En marches, la carte suivante dépasse à droite pour montrer la suite. */
+@media (min-width:760px){.ligne--marches .ligne-cartes.atouts{grid-auto-columns:calc((100% - 2 * var(--g)) / 2.3);}}
+@media (min-width:980px){.ligne--marches .ligne-cartes.atouts{grid-auto-columns:calc((100% - 3 * var(--g)) / 3.3);}}
+
+/* Ligne en marches (LigneDefilante `marches`, MAV, 27/10/2026) : les cartes
+   entièrement visibles sont hautes, les autres descendent et pâlissent. */
+.ligne--marches .ligne-cartes > *{transition:transform .5s var(--ease), opacity .5s var(--ease);}
+.ligne--marches .ligne-cartes > .est-basse{transform:translateY(28px);opacity:.5;}
+@media (prefers-reduced-motion: reduce){.ligne--marches .ligne-cartes > *{transition:none;}}
+
+/* Les avis sur une ligne en marches. */
+.ligne-cartes.avis-ligne{grid-auto-columns:82%;gap:14px;padding-block:4px 48px;margin-bottom:-44px;align-items:stretch;}
+@media (min-width:760px){
+  .ligne-cartes.avis-ligne{--g:clamp(16px,2vw,24px);gap:var(--g);grid-auto-columns:calc((100% - 2 * var(--g)) / 2.3);
+    margin-inline:0;padding-inline:0;scroll-padding-inline:0;}
+}
+@media (min-width:980px){.ligne-cartes.avis-ligne{grid-auto-columns:calc((100% - 3 * var(--g)) / 3.3);}}
+@media (min-width:1200px){.ligne-cartes.avis-ligne{overflow-x:auto;margin-inline:0;}}
+@media (min-width:1200px) and (hover: hover) and (pointer: fine){.ligne-cartes.avis-ligne{cursor:grab;}}
+/* Sur la ligne, un avis tient en huit lignes : la section reste sur un écran.
+   Le texte entier reste dans la page, et l'avis complet est sur Google. */
+.avis-ligne .avis__item p{display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden;flex:none;}
+.avis__suite{margin-top:auto;font-size:var(--fs-small);color:var(--color-bronze);text-decoration:underline;
+  text-decoration-color:color-mix(in srgb, var(--color-bronze) 40%, transparent);text-underline-offset:3px;}
+.avis__suite:hover{text-decoration-color:var(--color-bronze);}
+.avis__suite:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;border-radius:4px;}
+.section--creme .avis__suite{color:var(--color-bronze-profond);}
+/* En-tête des avis sans photo : titre à gauche, note et phrase à droite. */
+@media (min-width:980px){
+  .avis-sec__tete{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--space-l);
+    grid-template-areas:"sur sur" "titre note" "titre lead";align-items:end;max-width:none;}
+  .avis-sec__tete > .eyebrow{grid-area:sur;}
+  .avis-sec__tete > h2{grid-area:titre;align-self:end;}
+  .avis-sec__tete > .avis-note{grid-area:note;margin:0;}
+  .avis-sec__tete > .lead{grid-area:lead;margin:0;}
+}
+/* En marches, les cartes des atouts sont plus étroites : un titre comme
+   « Commercialisation » doit tenir sur sa ligne. */
+@media (min-width:980px){
+  .ligne--marches .atout{padding:28px;}
+  .ligne--marches .atout h3{font-size:clamp(19px,1.45vw,21px);}
+}
 @media (min-width:1200px){.ligne-cartes.atouts{overflow-x:auto;margin-inline:0;}}
 @media (min-width:1200px) and (hover: hover) and (pointer: fine){.ligne-cartes.atouts{cursor:grab;}}
 

@@ -14,8 +14,21 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
  *
  * Quand tout tient à l'écran, il n'y a ni flèche ni glissement : la ligne
  * reste une simple rangée.
+ *
+ * `marches` (MAV, 27/10/2026) : les cartes entièrement visibles restent
+ * hautes, celles qui dépassent à droite ou à gauche descendent un peu et
+ * pâlissent. En défilant, la carte qui sort à gauche descend et la suivante
+ * à droite remonte : il y a toujours une rangée de cartes hautes.
  */
-export function LigneDefilante({ className = "", children }: { className?: string; children: ReactNode }) {
+export function LigneDefilante({
+  className = "",
+  marches = false,
+  children,
+}: {
+  className?: string;
+  marches?: boolean;
+  children: ReactNode;
+}) {
   const piste = useRef<HTMLDivElement>(null);
   const [avant, setAvant] = useState(false);
   const [apres, setApres] = useState(false);
@@ -26,7 +39,16 @@ export function LigneDefilante({ className = "", children }: { className?: strin
     if (!el) return;
     setAvant(el.scrollLeft > 4);
     setApres(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  }, []);
+    if (marches) {
+      const cadre = el.getBoundingClientRect();
+      for (const carte of Array.from(el.children) as HTMLElement[]) {
+        const r = carte.getBoundingClientRect();
+        const entiere = r.left >= cadre.left - 2 && r.right <= cadre.right + 2;
+        carte.classList.toggle("est-haute", entiere);
+        carte.classList.toggle("est-basse", !entiere);
+      }
+    }
+  }, [marches]);
 
   useEffect(() => {
     const el = piste.current;
@@ -50,7 +72,7 @@ export function LigneDefilante({ className = "", children }: { className?: strin
   };
 
   return (
-    <div className="ligne">
+    <div className={marches ? "ligne ligne--marches" : "ligne"}>
       <div
         ref={piste}
         className={`ligne-cartes ${className}`.trim()}

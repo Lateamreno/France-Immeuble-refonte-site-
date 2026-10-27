@@ -234,7 +234,7 @@ export default async function VendreUnImmeuble() {
         surtitre="Nos atouts"
         titre={<>Pourquoi vendre avec France Immeuble&nbsp;?</>}
       >
-          <LigneDefilante className="atouts">
+          <LigneDefilante className="atouts" marches>
             {atouts(ch.investisseurs).map((a) => (
               <article key={a.titre} className="atout">
                 <span className="atout__photo" aria-hidden="true">
