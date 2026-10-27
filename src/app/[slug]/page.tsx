@@ -157,7 +157,7 @@ export default async function ArticlePage({ params }: Params) {
           <div className="container container--narrow article__cta">
             <h2>Vous avez un immeuble à vendre&nbsp;?</h2>
             <p className="lead">
-              Estimation confidentielle sous 48&nbsp;h. Nous présentons votre bien à notre
+              Estimation gratuite et confidentielle. Nous présentons votre bien à notre
               fichier d’investisseurs avant toute diffusion publique.
             </p>
             <div className="btn-row">

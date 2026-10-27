@@ -2,14 +2,14 @@
 import { createHash } from "node:crypto";
 import { configSite } from "../supabase-site";
 import { envoyerAuClient } from "../notifications";
-import { SITE } from "../site";
-import { CATEGORIES } from "./categories";
+import { bouton as bouton_, COULEURS, echap, gabarit, liste, origineLiens, paragraphe, piedTexte, sansLienAuto } from "../courriel";
+import { ELEMENTS_ATTENDUS } from "../dossier/modele";
 import { lienDAcces } from "./auth";
 
 /**
  * Après une estimation complète, partie 2 comprise, le client reçoit un
  * e-mail (MAV, 27/10/2026) :
- * un agent l'appelle sous 48 h, voici les pièces à préparer, et voici son
+ * un agent l'appelle sous 48 h, voici les éléments à préparer, et voici son
  * espace client, créé pour lui, où il verra son estimation.
  *
  * Trois garde-fous :
@@ -27,14 +27,8 @@ import { lienDAcces } from "./auth";
 
 const JOUR = 24 * 60 * 60 * 1000;
 
-/** L'adresse du site dans les liens envoyés par e-mail. */
-export function origineLiens(): string {
-  const fixe = process.env.SITE_ORIGINE?.trim();
-  if (fixe && /^https?:\/\/[^/]+$/.test(fixe)) return fixe;
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
-  if (vercel) return `https://${vercel}`;
-  return SITE.url;
-}
+/** L'adresse du site dans les liens envoyés par e-mail (voir `courriel.ts`). */
+export { origineLiens };
 
 const empreinte = (email: string) => createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
 
@@ -76,50 +70,67 @@ async function noterEnvoi(cle: string): Promise<void> {
   }
 }
 
-const echap = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const t = (v: unknown) => String(v ?? "").trim();
 
-/** Ce que contient l'e-mail : le même texte en HTML et en texte brut. */
+/**
+ * Ce que contient l'e-mail : le même texte en HTML et en texte brut. Sur fond
+ * blanc, avec le logo (MAV, 27/10/2026 : « plus lisibles et sympas », « moins
+ * l'impression que c'est une pub »). La liste est celle de l'écran de fin du
+ * formulaire (retour #64).
+ */
 export function courrielEstimation(l: Record<string, unknown>, lien: string | null) {
   const adresse = [[t(l.numero), t(l.rue)].filter(Boolean).join(" "), [t(l.codePostal), t(l.ville)].filter(Boolean).join(" ")]
     .filter(Boolean)
     .join(", ");
-  const pieces = CATEGORIES.filter((c) => c.cle !== "autre");
-  const sujet = "Votre demande d’estimation · France Immeuble";
+  const sujet = "Votre demande d’estimation";
   const bouton = lien ?? `${origineLiens()}/mon-compte/`;
-  const texteBouton = lien ? "Ouvrir mon espace client" : "Accéder à mon espace client";
+  const texteBouton = "Ouvrir mon espace client";
+  const recu = `Merci pour votre demande. Nous avons bien reçu les informations sur votre immeuble${adresse ? ` situé ${adresse}` : ""}.`;
 
-  const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#EFE9DE">
-<div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#0A0A0A">
-<p style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#7A5C3E;margin:0 0 18px">France Immeuble</p>
-<p style="margin:0 0 14px">Bonjour,</p>
-<p style="margin:0 0 14px">Nous avons bien reçu votre demande d’estimation${adresse ? ` pour l’immeuble situé ${echap(adresse)}` : ""}. Un agent vous appelle sous 48&nbsp;h.</p>
-<p style="margin:0 0 8px">Pour préparer l’estimation, voici les pièces dont nous aurons besoin&nbsp;:</p>
-<ul style="margin:0 0 16px;padding-left:20px">
-${pieces.map((c) => `<li style="margin-bottom:6px"><b>${echap(c.titre)}</b> : ${echap(c.aide)}</li>`).join("\n")}
-</ul>
-<p style="margin:0 0 14px">Vous pouvez nous les envoyer en répondant à cet e-mail, ou les déposer vous-même dans votre espace client. Nous l’avons ouvert pour vous&nbsp;: vous y retrouverez votre estimation dès que l’agent l’aura validée.</p>
-<p style="margin:24px 0;text-align:center"><a href="${echap(bouton)}" style="display:inline-block;background:#C19B6E;color:#0A0A0A;text-decoration:none;font-weight:bold;padding:16px 32px;border-radius:999px">${texteBouton}</a></p>
-${lien ? `<p style="margin:0 0 14px;font-size:13px;color:#615F5B">Ce lien est personnel et ne sert qu’une fois. S’il a expiré, choisissez « Mot de passe oublié » sur la page de connexion avec cette adresse e-mail.</p>` : ""}
-<p style="margin:24px 0 0">L’équipe France Immeuble<br>${SITE.tel} · ${echap(SITE.adresse)}, ${echap(SITE.codePostalVille)}</p>
-<p style="margin:20px 0 0;font-size:12px;color:#615F5B">Vous recevez cet e-mail parce qu’une demande d’estimation a été faite avec cette adresse sur france-immeuble.fr. Si ce n’est pas vous, ignorez-le : rien ne sera fait sans votre accord.</p>
-</div></body></html>`;
+  const html = gabarit({
+    apercu: "Un agent vous appelle sous 48 h. Voici ce qui l’aidera à préparer l’entretien.",
+    corps: [
+      paragraphe("Bonjour,"),
+      paragraphe(
+        `Merci pour votre demande. Nous avons bien reçu les informations sur votre immeuble${adresse ? ` situé ${sansLienAuto(adresse)}` : ""}.`,
+      ),
+      paragraphe("<b>Un agent vous appelle sous 48&nbsp;h.</b>", "font-size:17px"),
+      paragraphe("Pour préparer l’entretien, voici les éléments dont nous aurons besoin&nbsp;:"),
+      liste(ELEMENTS_ATTENDUS.map(echap)),
+      paragraphe(
+        `Vous pouvez nous les envoyer en répondant simplement à cet e-mail, ou les remplir dans votre espace client. Vous y retrouverez ensuite votre estimation.`,
+      ),
+      bouton_(bouton, texteBouton),
+      lien
+        ? paragraphe(
+            "Ce lien vous est réservé et ne sert qu’une fois. Plus tard, connectez-vous avec cette adresse e-mail et « Mot de passe oublié ».",
+            `font-size:13px;color:${COULEURS.doux}`,
+          )
+        : "",
+      paragraphe("À très vite,<br>L’équipe France Immeuble", "margin-top:24px"),
+    ].join("\n"),
+    piedDePage:
+      "Vous recevez cet e-mail parce qu’une demande d’estimation a été faite avec cette adresse sur france-immeuble.fr. Si ce n’est pas vous, ignorez-le : rien ne sera fait sans votre accord.",
+  });
 
   const text = [
     "Bonjour,",
     "",
-    `Nous avons bien reçu votre demande d’estimation${adresse ? ` pour l’immeuble situé ${adresse}` : ""}. Un agent vous appelle sous 48 h.`,
+    recu,
     "",
-    "Pour préparer l’estimation, voici les pièces dont nous aurons besoin :",
-    ...pieces.map((c) => `- ${c.titre} : ${c.aide}`),
+    "Un agent vous appelle sous 48 h.",
     "",
-    "Vous pouvez nous les envoyer en répondant à cet e-mail, ou les déposer vous-même dans votre espace client. Nous l’avons ouvert pour vous : vous y retrouverez votre estimation dès que l’agent l’aura validée.",
+    "Pour préparer l’entretien, voici les éléments dont nous aurons besoin :",
+    ...ELEMENTS_ATTENDUS.map((e) => `- ${e}`),
+    "",
+    "Vous pouvez nous les envoyer en répondant simplement à cet e-mail, ou les remplir dans votre espace client. Vous y retrouverez ensuite votre estimation.",
     "",
     `${texteBouton} : ${bouton}`,
     "",
+    "À très vite,",
     "L’équipe France Immeuble",
-    `${SITE.tel} · ${SITE.adresse}, ${SITE.codePostalVille}`,
+    "",
+    piedTexte(),
     "",
     "Vous recevez cet e-mail parce qu’une demande d’estimation a été faite avec cette adresse sur france-immeuble.fr. Si ce n’est pas vous, ignorez-le.",
   ].join("\n");
@@ -138,9 +149,18 @@ export async function accueillirVendeur(l: Record<string, unknown>): Promise<str
 
   let lien: string | null = null;
   try {
-    const { type, empreinte: jeton } = await lienDAcces(email, {
-      prenom: t(l.prenom), nom: t(l.nom), telephone: t(l.telephone),
-    });
+    const n = (v: unknown) => Math.max(0, Math.min(99, Math.floor(Number(v) || 0)));
+    const { type, empreinte: jeton } = await lienDAcces(
+      email,
+      { prenom: t(l.prenom), nom: t(l.nom), telephone: t(l.telephone) },
+      // De quoi préremplir le dossier ouvert depuis le compte (retour #64).
+      typeof l.ref === "string"
+        ? {
+            ref: l.ref,
+            lots: { habitation: n(l.lotsHabitation), bureau: n(l.lotsBureaux), commerce: n(l.lotsCommerces), local_activite: n(l.lotsActivite) },
+          }
+        : undefined,
+    );
     if (jeton) lien = `${origineLiens()}/mon-compte/activer/?type=${type}&jeton=${encodeURIComponent(jeton)}`;
   } catch (e) {
     // Sans compte, l'e-mail part quand même : la liste des pièces reste utile.

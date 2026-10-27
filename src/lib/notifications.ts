@@ -19,6 +19,8 @@
  */
 
 import type { Issue } from "./leads";
+import { COULEURS, echap, gabarit, piedTexte } from "./courriel";
+import { COLONNES_LOT, lotEnClair } from "./dossier/modele";
 
 type Lead = Record<string, unknown>;
 export type Contexte = { email?: string; prenom?: string; nom?: string; telephone?: string };
@@ -45,9 +47,6 @@ function config() {
 
 const EMAIL = /^[^\s@,]+@[^\s@,]+\.[^\s@,]{2,}$/;
 
-const echap = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
 const texte = (v: unknown) => (v === null || v === undefined ? "" : String(v).trim());
 
 const euros = (v: unknown) => {
@@ -57,9 +56,9 @@ const euros = (v: unknown) => {
 
 /** Libellés des champs, dans l'ordre où l'alerte les présente. */
 const CHAMPS: [string, string, ((v: unknown) => string)?][] = [
-  ["prenom", "Prénom"], ["nom", "Nom"], ["email", "E-mail"], ["telephone", "Téléphone"],
+  ["_qui", "Nom"], ["email", "E-mail"], ["telephone", "Téléphone"],
   ["projet", "Projet"], ["bienTitre", "Bien concerné"],
-  ["numero", "N°"], ["rue", "Rue"], ["codePostal", "Code postal"], ["ville", "Ville"],
+  ["_adresse", "Adresse"],
   ["surface", "Surface habitable totale (m²)"], ["loyerAnnuel", "Loyers annuels HC", euros],
   ["lotsHabitation", "Lots habitation"], ["lotsCommerces", "Lots commerces"],
   ["lotsBureaux", "Lots bureaux"], ["lotsActivite", "Lots entrepôts / activité"],
@@ -70,7 +69,8 @@ const CHAMPS: [string, string, ((v: unknown) => string)?][] = [
   ["rendementMin", "Rendement minimum (%)"], ["destinations", "Destinations"],
   ["action", "Action"], ["reponse", "Réponse"], ["prix", "Prix proposé", euros],
   ["categorie", "Catégorie de pièce"], ["fichier", "Fichier"],
-  ["message", "Message"], ["commentaire", "Commentaire"],
+  ["taxeFonciere", "Taxe foncière annuelle", euros], ["teom", "Dont TEOM récupérée", euros],
+  ["message", "Description"], ["commentaire", "Commentaire"],
 ];
 
 const REPONSES: Record<string, string> = {
@@ -87,6 +87,10 @@ function objet(l: Lead): string {
   const ville = texte(l.ville);
   switch (l.type) {
     case "estimation":
+      if (l.etat === "dossier") {
+        const n = Array.isArray(l.lots) ? l.lots.length : 0;
+        return `Dossier en ligne : ${n} lot${n > 1 ? "s" : ""}${ville ? `, ${ville}` : ""}${qui(l) ? ` (${qui(l)})` : ""}`;
+      }
       return l.etat === "complement"
         ? `Complément d'estimation${ville ? ` : ${ville}` : ""}${qui(l) ? ` (${qui(l)})` : ""}`
         : `Nouvelle ${l.formulaire === "vendre" ? "demande de vente" : "estimation"}${ville ? ` : ${ville}` : ""}${qui(l) ? ` (${qui(l)})` : ""}`;
@@ -124,6 +128,13 @@ function lignes(l: Lead): [string, string][] {
   const out: [string, string][] = [];
   for (const [cle, libelle, format] of CHAMPS) {
     let v: unknown = l[cle];
+    // Le nom et l'adresse sur une ligne chacun : l'alerte se lit d'un coup d'œil.
+    if (cle === "_qui") v = qui(l);
+    if (cle === "_adresse") {
+      v = [[texte(l.numero), texte(l.rue)].filter(Boolean).join(" "), [texte(l.codePostal), texte(l.ville)].filter(Boolean).join(" ")]
+        .filter(Boolean)
+        .join(", ");
+    }
     if (cle === "reponse") v = REPONSES[texte(v)] ?? v;
     if (cle === "categorie") v = PIECES[texte(v)] ?? v;
     if (Array.isArray(v)) v = v.join(", ");
@@ -138,11 +149,46 @@ function recherches(l: Lead): [string, string][][] {
   return rs.map((r) => lignes(r));
 }
 
+/** Le titre de l'alerte, en tête du message : l'objet sans le nom. */
+function titre(l: Lead): string {
+  return objet(l).replace(/ \([^)]*\)$/, "");
+}
+
+/** Les valeurs qu'on touche du doigt : appeler, écrire. */
+function valeurHtml(libelle: string, v: string): string {
+  const lien = `color:${COULEURS.texte};text-decoration:underline`;
+  if (libelle === "Téléphone") return `<a href="tel:${echap(v.replace(/[^\d+]/g, ""))}" style="${lien}">${echap(v)}</a>`;
+  if (libelle === "E-mail") return `<a href="mailto:${echap(v)}" style="${lien}">${echap(v)}</a>`;
+  return echap(v).replace(/\n/g, "<br>");
+}
+
+function tableau(lignes: [string, string][]): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 20px">
+${lignes
+  .map(
+    ([k, v]) => `<tr><td style="padding:9px 14px 9px 0;border-bottom:1px solid ${COULEURS.filet};vertical-align:top;white-space:nowrap;font-size:13px;color:${COULEURS.doux}">${echap(k)}</td><td style="padding:9px 0;border-bottom:1px solid ${COULEURS.filet};vertical-align:top;font-size:15px;color:${COULEURS.texte}">${valeurHtml(k, v)}</td></tr>`,
+  )
+  .join("\n")}
+</table>`;
+}
+
+/** L'état locatif d'un dossier en ligne : un lot par ligne, comme sur la page de saisie. */
+function tableauLots(lots: unknown[]): string {
+  const cellule = (v: string, entete = false) =>
+    `<td style="padding:7px 8px;border-bottom:1px solid ${COULEURS.filet};font-size:${entete ? 11 : 13}px;${entete ? `color:${COULEURS.doux};text-transform:uppercase;letter-spacing:.06em;` : `color:${COULEURS.texte};`}white-space:nowrap">${echap(v)}</td>`;
+  return `<p style="margin:8px 0 8px;font-weight:bold">État locatif</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 20px">
+<tr>${COLONNES_LOT.map((c) => cellule(c, true)).join("")}</tr>
+${lots.map((x) => `<tr>${lotEnClair(x).map((c) => cellule(c)).join("")}</tr>`).join("\n")}
+</table>`;
+}
+
 function corps(l: Lead, issue: Issue): { html: string; text: string } {
   const blocs: { titre: string; lignes: [string, string][] }[] = [
     { titre: "", lignes: lignes(l) },
     ...recherches(l).map((r, i) => ({ titre: `Recherche ${i + 1}`, lignes: r })),
   ];
+  const lots = Array.isArray(l.lots) ? (l.lots as unknown[]) : [];
   // Le routage du site ne vaut que pour une estimation (code postal, valeur, loyer).
   // Depuis le retour #60 (27/10/2026), le loyer n'arrive qu'avec le complément :
   // sur le premier envoi, hors Île-de-France, l'orientation n'est pas encore connue.
@@ -156,24 +202,36 @@ function corps(l: Lead, issue: Issue): { html: string; text: string } {
     issue === "perdu" ? "La demande n'a pu être enregistrée ni par le BO ni dans la file du site. Cet e-mail en est la seule trace : à saisir à la main." : "",
     issue === "refuse" ? "Le BO a refusé ce dépôt ; le site a effacé la pièce et prévenu le propriétaire." : "",
   ].filter(Boolean);
+  const recu = new Date(texte(l.recuLe) || Date.now()).toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+  const alerte = issue === "perdu" || issue === "refuse";
 
-  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#0A0A0A">
+  const html = gabarit({
+    apercu: [qui(l), texte(l.telephone), texte(l.ville)].filter(Boolean).join(" · ") || titre(l),
+    largeur: lots.length ? 720 : 560,
+    corps: `<p style="margin:0 0 4px;font-family:'Courier New',Courier,monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:${COULEURS.orProfond}">Site france-immeuble.fr</p>
+<p style="margin:0 0 20px;font-size:21px;line-height:1.3;font-weight:bold">${echap(titre(l))}</p>
+${alerte ? `<p style="margin:0 0 20px;padding:12px 14px;border-left:3px solid ${COULEURS.or};background:${COULEURS.filet};font-weight:bold">${echap(notes.at(-1) ?? "")}</p>` : ""}
 ${blocs
   .filter((b) => b.lignes.length)
-  .map(
-    (b) => `${b.titre ? `<p style="margin:16px 0 4px;font-weight:bold">${echap(b.titre)}</p>` : ""}<table cellpadding="6" style="border-collapse:collapse">
-${b.lignes.map(([k, v]) => `<tr><td style="color:#555;vertical-align:top;white-space:nowrap">${echap(k)}</td><td>${echap(v).replace(/\n/g, "<br>")}</td></tr>`).join("\n")}
-</table>`,
-  )
+  .map((b) => `${b.titre ? `<p style="margin:8px 0 6px;font-weight:bold">${echap(b.titre)}</p>` : ""}${tableau(b.lignes)}`)
   .join("\n")}
-${notes.map((n) => `<p style="color:#555">${echap(n)}</p>`).join("\n")}
-<p style="color:#888;font-size:12px">Reçu par le site le ${echap(new Date(texte(l.recuLe) || Date.now()).toLocaleString("fr-FR", { timeZone: "Europe/Paris" }))}. Référence ${echap(texte(l.ref))}.</p>
-</div>`;
+${lots.length ? tableauLots(lots) : ""}
+${notes
+  .filter((n) => !alerte || n !== notes.at(-1))
+  .map((n) => `<p style="margin:0 0 8px;font-size:13px;color:${COULEURS.doux}">${echap(n)}</p>`)
+  .join("\n")}
+<p style="margin:16px 0 0;font-size:12px;color:${COULEURS.doux}">Reçu par le site le ${echap(recu)}. Référence ${echap(texte(l.ref))}. « Répondre » écrit au client.</p>`,
+  });
   const text = [
-    ...blocs.flatMap((b) => [b.titre, ...b.lignes.map(([k, v]) => `${k} : ${v}`)].filter(Boolean)),
+    titre(l),
+    "",
+    ...blocs.flatMap((b) => [b.titre, ...b.lignes.map(([k, val]) => `${k} : ${val}`)].filter(Boolean)),
+    ...(lots.length ? ["", "État locatif", ...lots.map((x) => lotEnClair(x).filter(Boolean).join(" · "))] : []),
     "",
     ...notes,
-    `Référence ${texte(l.ref)}`,
+    `Reçu le ${recu}. Référence ${texte(l.ref)}`,
+    "",
+    piedTexte(),
   ].join("\n");
   return { html, text };
 }

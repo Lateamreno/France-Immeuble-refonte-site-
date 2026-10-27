@@ -119,11 +119,16 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
         </>
       </HeroMedia>
 
-      {(etat === "bienvenue" || etat === "nouveau-mot-de-passe" || etat === "choisir-mot-de-passe") && (
+      {(etat === "bienvenue" || etat === "dossier-envoye" || etat === "nouveau-mot-de-passe" || etat === "choisir-mot-de-passe") && (
         <section className="section section--noir compte-bandeau">
           <div className="container container--narrow">
             {etat === "bienvenue" ? (
               <p className="compte-note">Votre adresse est vérifiée : votre compte est ouvert.</p>
+            ) : etat === "dossier-envoye" ? (
+              <p className="compte-note">
+                Votre compte est ouvert et votre agent a reçu votre dossier. Votre estimation
+                s’affichera ici dès qu’il l’aura validée.
+              </p>
             ) : (
               <NouveauMotDePasse premier={etat === "choisir-mot-de-passe"} />
             )}
@@ -259,6 +264,17 @@ function Proprietaire({ d, slugs }: { d: DonneesCompte; slugs: Map<string, strin
         <div className="section__head">
           <Eyebrow>Vendre</Eyebrow>
           <h2>Mes immeubles</h2>
+        </div>
+
+        <div className="compte-dossier">
+          <div>
+            <p className="compte-carte__titre">Mon dossier</p>
+            <p className="compte-carte__texte">
+              L’état locatif de votre immeuble, lot par lot : surfaces Carrez, loyers, DPE, taxe
+              foncière. Votre agent s’en sert pour l’estimation.
+            </p>
+          </div>
+          <Button href="/mon-compte/dossier/">Remplir mon dossier</Button>
         </div>
 
         {d.biens.length === 0 ? (

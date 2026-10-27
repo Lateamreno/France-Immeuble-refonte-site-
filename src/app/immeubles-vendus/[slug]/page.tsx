@@ -274,7 +274,7 @@ export default async function FicheVente({ params }: Params) {
             <Eyebrow bare>Votre immeuble</Eyebrow>
             <h2>Un immeuble comparable à vendre&nbsp;?</h2>
             <p className="lead">
-              Nous l’estimons gratuitement, sous 48&nbsp;h, et le présentons d’abord à notre
+              Nous l’estimons gratuitement et le présentons d’abord à notre
               fichier d’acquéreurs, sans annonce si vous le souhaitez.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>

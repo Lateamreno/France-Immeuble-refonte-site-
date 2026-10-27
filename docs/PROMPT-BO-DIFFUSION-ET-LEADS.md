@@ -205,6 +205,34 @@ visiteur abandonne après le premier écran, le lead est déjà dans le BO.
 « bureaux » et « commerces » étaient inversés par rapport aux noms de champs.
 Vérifier la correspondance avec une saisie témoin.
 
+### Dossier en ligne → l'état locatif de l'immeuble (27/10/2026)
+
+Après l'estimation, le vendeur peut remplir son état locatif sur le site
+(retour #64 de MAV). Il arrive comme un **troisième envoi de l'estimation** :
+`type: "estimation"`, **même `ref`**, `etat: "dossier"`. L'identité et l'adresse
+sont répétées. `compte` (uuid du compte du site) n'est présent que si le
+vendeur était connecté avec une adresse vérifiée.
+
+| Champ | Contenu |
+|---|---|
+| `taxeFonciere` | montant annuel en €, ou null |
+| `teom` | part récupérée sur les locataires, en €, ou null |
+| `commentaire` | texte libre |
+| `lots[]` | un objet par lot, dans l'ordre de saisie |
+| `lots[].numero` | 1, 2, 3… |
+| `lots[].type` | une valeur de l'enum `type_lot` de Plein Bail : `habitation_t1` … `habitation_t5plus`, `habitation_maison`, `habitation` (typologie non précisée), `bureau`, `commerce`, `local_activite`, `parking`, `cave`, `autre` |
+| `lots[].etage` | texte court (« RDC », « 2 ») ou null |
+| `lots[].surfaceCarrez` | m², ou null |
+| `lots[].statut` | `occupe`, `libre`, `conge_en_cours`, `procedure` (enum `lot_statut`), ou null |
+| `lots[].bail` | enum `type_bail` de Plein Bail (`nu_89`, `meuble`, `mobilite`, `nu_48`, `commercial_369`, `professionnel`, `derogatoire`, `precaire`, `civil`, `autre`), null si libre |
+| `lots[].loyerMensuelHC` | € par mois hors charges, null si libre |
+| `lots[].dpe` | `A` à `G`, ou null |
+
+À faire côté BO : rattacher ces lots à l'immeuble créé par le premier envoi
+(même `ref`), sans écraser ce qu'un agent aurait déjà saisi. Tant que le BO ne
+sait pas lire ce dépôt, il peut répondre 200 et l'ignorer : l'agence reçoit
+de toute façon l'alerte par e-mail, avec le tableau des lots.
+
 ### Dépôt de recherche → un contact et une recherche
 
 `type: "recherche"`. En une transaction :

@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE, CALIBRE } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
-import { CATEGORIES } from "@/lib/compte/categories";
+import { ELEMENTS_ATTENDUS } from "@/lib/dossier/modele";
 
 /**
  * Tunnel d'estimation (CLAUDE.md §9, retour #60 de MAV du 27/10/2026).
@@ -118,7 +118,7 @@ export function EstimationForm({
     if (!d.nom.trim()) e.nom = "Indiquez votre nom.";
     if (!emailValide(d.email)) e.email = "Cette adresse e-mail n’est pas valide.";
     const tel = lireTelephone(indicatif, d.telephone);
-    if (!d.telephone.trim()) e.telephone = "Indiquez un numéro pour que l’agent vous rappelle.";
+    if (!d.telephone.trim()) e.telephone = "Indiquez votre numéro de téléphone.";
     else if (!tel.valide) e.telephone = indicatif === "33" ? "Un numéro français compte 10 chiffres." : "Numéro incomplet.";
     if (adresse.manuel) {
       if (!d.rue.trim()) e.rue = "Indiquez la rue.";
@@ -218,13 +218,30 @@ export function EstimationForm({
     setEnvoi(false);
   }
 
+  /**
+   * Bouton « Remplir mon dossier en ligne » de l'écran de fin (retour #64) :
+   * le serveur ouvre le dossier, prérempli avec les lots de la partie 2.
+   */
+  async function ouvrirDossier(): Promise<boolean> {
+    try {
+      const r = await fetch("/api/dossier/ouvrir/", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ref: ref.current, formulaire, ...pourBO(d) }),
+      });
+      return r.ok;
+    } catch {
+      return false;
+    }
+  }
+
   return (
     <div className="form-bloc" ref={bloc}>
       {phase === "saisie" && (
         <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate>
           <div className="step-head">
             <h3>Votre immeuble</h3>
-            <p>Vos coordonnées et l’adresse de l’immeuble. Réponse sous 48&nbsp;h.</p>
+            <p>Vos coordonnées et l’adresse de l’immeuble.</p>
           </div>
 
           <div className="fields fields--2">
@@ -256,10 +273,6 @@ export function EstimationForm({
               {envoi ? "Envoi…" : formulaire === "vendre" ? "Vendre mon immeuble" : "Estimer mon immeuble"}
             </button>
           </div>
-
-          <p className="form-note">
-            Rien n’est diffusé ni publié sans votre accord.
-          </p>
         </form>
       )}
 
@@ -269,8 +282,7 @@ export function EstimationForm({
             <span className="outcome__badge">Demande enregistrée</span>
             <h3 ref={titre} tabIndex={-1}>Parlons de votre immeuble.</h3>
             <p>
-              Votre demande est bien arrivée. Ces chiffres permettent à l’agent de préparer
-              l’estimation avant de vous appeler.
+              Ces chiffres servent à calculer l’estimation. Une valeur approchée suffit.
             </p>
           </div>
 
@@ -314,7 +326,7 @@ export function EstimationForm({
       )}
 
       {phase === "fin" && (
-        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte} />
+        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte} ouvrir={ouvrirDossier} />
       )}
     </div>
   );
@@ -542,9 +554,11 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
   erreurs: Record<string, string>;
 }) {
   const [liste, setListe] = useState<Suggestion[]>([]);
+  // « vide » : la recherche n'a rien trouvé ; « panne » : elle ne répond pas.
+  // Dans les deux cas, la liste ne propose plus que la saisie à la main.
+  const [recherche, setRecherche] = useState<"repos" | "ok" | "vide" | "panne">("repos");
   const [ouvert, setOuvert] = useState(false);
   const [actif, setActif] = useState(-1);
-  const [indisponible, setIndisponible] = useState(false);
   const cache = useRef(new Map<string, Suggestion[]>());
   const idListe = `${uid}-adresses`;
 
@@ -553,29 +567,27 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
   useEffect(() => {
     if (etat.choisie || etat.manuel) return;
     const q = etat.saisie.trim();
-    if (q.length < 3) { setListe([]); return; }
+    if (q.length < 3) { setListe([]); setRecherche("repos"); return; }
     const deja = cache.current.get(q);
-    if (deja) { setListe(deja); setActif(-1); return; }
+    if (deja) { setListe(deja); setRecherche(deja.length ? "ok" : "vide"); setActif(-1); return; }
     const ctrl = new AbortController();
     const t = setTimeout(async () => {
       try {
         const r = await fetch(`/api/adresse/?q=${encodeURIComponent(q)}`, { signal: ctrl.signal });
         const j = (await r.json()) as { suggestions: Suggestion[]; indisponible?: boolean };
-        if (j.indisponible) {
-          setIndisponible(true);
-          setEtat((p) => ({ ...p, manuel: true }));
-          setPlusieurs({ rue: q });
-          return;
-        }
+        if (j.indisponible) { setListe([]); setRecherche("panne"); return; }
         cache.current.set(q, j.suggestions);
         setListe(j.suggestions);
+        setRecherche(j.suggestions.length ? "ok" : "vide");
         setActif(-1);
-      } catch {
-        /* frappe suivante ou réseau coupé : la saisie à la main reste possible */
+      } catch (e) {
+        // Frappe suivante : la requête est annulée, rien à faire. Réseau coupé :
+        // la liste propose la saisie à la main.
+        if (!ctrl.signal.aborted) { void e; setListe([]); setRecherche("panne"); }
       }
     }, 160);
     return () => { clearTimeout(t); ctrl.abort(); };
-  }, [etat.saisie, etat.choisie, etat.manuel, setEtat]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [etat.saisie, etat.choisie, etat.manuel]);
 
   function choisir(s: Suggestion) {
     setEtat({ saisie: s.label, choisie: true, manuel: false });
@@ -584,26 +596,37 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
     setActif(-1);
   }
 
+  /** Dernière ligne de la liste : la saisie à la main (retour #62 de MAV). */
+  function aLaMain() {
+    setEtat((p) => ({ ...p, choisie: false, manuel: true }));
+    setPlusieurs({ numero: "", rue: etat.saisie.trim(), codePostal: "", ville: "" });
+    setOuvert(false);
+    setActif(-1);
+  }
+
+  // Les lignes de la liste : les adresses trouvées, puis la saisie à la main.
+  const lignes = liste.length + 1;
+  const montrer = ouvert && recherche !== "repos";
+
   function clavier(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!ouvert || liste.length === 0) {
-      if (e.key === "ArrowDown" && liste.length) { setOuvert(true); e.preventDefault(); }
+    if (!montrer) {
+      if (e.key === "ArrowDown" && recherche !== "repos") { setOuvert(true); e.preventDefault(); }
       return;
     }
-    if (e.key === "ArrowDown") { e.preventDefault(); setActif((a) => (a + 1) % liste.length); }
-    else if (e.key === "ArrowUp") { e.preventDefault(); setActif((a) => (a <= 0 ? liste.length - 1 : a - 1)); }
+    if (e.key === "ArrowDown") { e.preventDefault(); setActif((a) => (a + 1) % lignes); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setActif((a) => (a <= 0 ? lignes - 1 : a - 1)); }
     else if (e.key === "Enter") {
       // Entrée choisit la ligne active, ou la première : jamais d'envoi à moitié rempli.
       e.preventDefault();
-      choisir(liste[actif >= 0 ? actif : 0]);
+      const i = actif >= 0 ? actif : 0;
+      if (i < liste.length) choisir(liste[i]);
+      else aLaMain();
     } else if (e.key === "Escape") { setOuvert(false); }
   }
 
   if (etat.manuel) {
     return (
       <div className="field--full adresse-manuelle">
-        {indisponible && (
-          <p className="hint">La recherche d’adresse ne répond pas. Saisissez-la, nous la vérifierons.</p>
-        )}
         <div className="fields fields--2">
           <div className="field--full fields-adresse">
             <Champ id={`${uid}-num`} label="N°" err={erreurs.numero}>
@@ -625,7 +648,7 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
               placeholder="Paris" autoComplete="address-level2" aria-invalid={!!erreurs.ville} />
           </Champ>
         </div>
-        {!indisponible && (
+        {recherche !== "panne" && (
           <button type="button" className="lien-discret adresse__bascule"
             onClick={() => setEtat({ saisie: "", choisie: false, manuel: false })}>
             Rechercher l’adresse
@@ -635,24 +658,15 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
     );
   }
 
-  const montrer = ouvert && liste.length > 0;
+  const idMain = `${idListe}-main`;
   return (
     <div className="field field--full adresse">
-      <div className="adresse__tete">
-        <label htmlFor={`${uid}-adresse`}>Adresse de l’immeuble</label>
-        <button type="button" className="lien-discret adresse__bascule"
-          onClick={() => {
-            setEtat((p) => ({ ...p, manuel: true }));
-            if (!etat.choisie) setPlusieurs({ rue: etat.saisie.trim() });
-          }}>
-          Saisir à la main
-        </button>
-      </div>
+      <label htmlFor={`${uid}-adresse`}>Adresse de l’immeuble</label>
       <div className="adresse__boite">
         <input id={`${uid}-adresse`} value={etat.saisie} autoComplete="off" spellCheck={false}
           placeholder="12 rue de la Paix, Paris"
           role="combobox" aria-autocomplete="list" aria-expanded={montrer} aria-controls={idListe}
-          aria-activedescendant={montrer && actif >= 0 ? `${idListe}-${actif}` : undefined}
+          aria-activedescendant={montrer && actif >= 0 ? (actif < liste.length ? `${idListe}-${actif}` : idMain) : undefined}
           aria-invalid={!!erreurs.adresse}
           onChange={(e) => {
             setEtat({ saisie: e.target.value, choisie: false, manuel: false });
@@ -665,6 +679,11 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
         {etat.choisie && <span className="adresse__ok" aria-hidden="true" />}
         {montrer && (
           <ul className="adresse__liste" role="listbox" id={idListe} aria-label="Adresses proposées">
+            {recherche !== "ok" && (
+              <li className="adresse__info" role="presentation">
+                {recherche === "vide" ? "Aucune adresse trouvée." : "La recherche d’adresse ne répond pas."}
+              </li>
+            )}
             {liste.map((s, i) => (
               <li key={s.label} id={`${idListe}-${i}`} role="option" aria-selected={i === actif}
                 className={i === actif ? "est-actif" : undefined}
@@ -675,6 +694,12 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
                 <span className="adresse__ville">{s.codePostal} {s.ville}</span>
               </li>
             ))}
+            <li id={idMain} role="option" aria-selected={actif === liste.length}
+              className={`adresse__main${actif === liste.length ? " est-actif" : ""}`}
+              onMouseDown={(e) => { e.preventDefault(); aLaMain(); }}
+              onMouseEnter={() => setActif(liste.length)}>
+              Saisir l’adresse à la main
+            </li>
           </ul>
         )}
       </div>
@@ -687,17 +712,18 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
 /* Fin du parcours                                                     */
 /* ------------------------------------------------------------------ */
 
-/** Les pièces à préparer : celles du compte, sans la rubrique « Autre ». */
-const PIECES = CATEGORIES.filter((c) => c.cle !== "autre");
-
-function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
+function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
   titre: React.RefObject<HTMLHeadingElement | null>;
   /** false : la demande n'a pu être enregistrée nulle part. */
   stocke: boolean;
   verdict: Verdict | null;
   d: Data;
   dansLeCompte: boolean;
+  /** Ouvre le dossier en ligne ; renvoie false s'il n'a pas pu s'ouvrir. */
+  ouvrir: () => Promise<boolean>;
 }) {
+  const [ouverture, setOuverture] = useState<"" | "envoi" | "erreur">("");
+
   /* Cas extrême : ni le BO ni la file d'attente n'ont répondu. On ne fait pas
      croire au visiteur que sa demande est partie : on lui donne le numéro. */
   if (!stocke || !verdict) {
@@ -739,41 +765,44 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte }: {
   }
 
   const objet = encodeURIComponent(
-    `Pièces pour l’estimation : ${[d.numero, d.rue].filter(Boolean).join(" ")}, ${d.ville}`.trim(),
+    `Éléments pour l’estimation : ${[d.numero, d.rue].filter(Boolean).join(" ")}, ${d.ville}`.trim(),
   );
+  // Texte de MAV (retour #64, 27/10/2026), au mot près ou presque.
   return (
-    <div className="form-shell outcome">
-      <span className="outcome__badge">
-        {verdict.piste === "prioritaire" ? "Dossier prioritaire" : "Dossier retenu"}
-      </span>
+    <div className="form-shell outcome fin">
       <h3 ref={titre} tabIndex={-1}>C’est noté. Un agent vous appelle sous 48&nbsp;h.</h3>
-      <p>
-        {verdict.piste === "prioritaire"
-          ? "Votre immeuble correspond au cœur de ce que nous vendons. L’agent vous rappelle avec une estimation appuyée sur nos ventes comparables."
-          : "Le rendement de votre immeuble intéresse nos acquéreurs. L’agent vous rappelle avec une estimation argumentée."}
-      </p>
-
       <div className="pieces-attendues">
-        <h4>Les pièces dont nous aurons besoin</h4>
+        <p className="pieces-attendues__intro">
+          Pour préparer l’entretien avec votre agent, voici les éléments dont nous aurons besoin&nbsp;:
+        </p>
         <ul>
-          {PIECES.map((c) => (
-            <li key={c.cle}><strong>{c.titre}</strong> <span>{c.aide}</span></li>
-          ))}
+          {ELEMENTS_ATTENDUS.map((e) => <li key={e}>{e}</li>)}
         </ul>
-        {dansLeCompte ? (
-          <p>
-            Déposez-les dans la rubrique Pièces de votre compte, ou envoyez-les à{" "}
-            <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
-          </p>
-        ) : (
-          <p>
-            Nous venons de vous envoyer cette liste par e-mail, avec l’accès à votre espace client,
-            ouvert pour vous. Vous y déposerez les pièces et y retrouverez votre estimation. Vous
-            pouvez aussi les envoyer à{" "}
-            <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
-          </p>
-        )}
       </div>
+      <p>
+        Vous pouvez les réunir d’ici votre entretien, ou nous les envoyer directement à{" "}
+        <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
+      </p>
+      <p>
+        {dansLeCompte
+          ? "Vous pouvez aussi les remplir dès maintenant dans votre compte, où vous retrouverez ensuite votre estimation."
+          : "Si vous le préférez, vous pouvez dès maintenant les remplir dans votre compte client, où vous retrouverez ensuite votre estimation."}
+      </p>
+      <div className="btn-row fin__bouton">
+        <button type="button" className="btn btn--primary" disabled={ouverture === "envoi"}
+          onClick={async () => {
+            setOuverture("envoi");
+            if (await ouvrir()) window.location.assign("/mon-compte/dossier/");
+            else setOuverture("erreur");
+          }}>
+          {ouverture === "envoi" ? "Ouverture…" : "Remplir mon dossier en ligne"}
+        </button>
+      </div>
+      {ouverture === "erreur" && (
+        <p className="err" role="alert">
+          Le dossier n’a pas pu s’ouvrir. Réessayez dans un instant, ou envoyez les éléments par e-mail.
+        </p>
+      )}
     </div>
   );
 }

@@ -118,8 +118,8 @@ export default async function Accueil() {
             <Eyebrow bare>Première étape</Eyebrow>
             <h2>Obtenez votre estimation gratuite</h2>
             <p className="lead">
-              Quelques informations sur le bien, et nous revenons vers vous sous 48&nbsp;h avec une
-              fourchette argumentée.
+              Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
+              gratuite et confidentielle.
             </p>
           </Reveal>
           <EstimationForm formulaire="estimer" />

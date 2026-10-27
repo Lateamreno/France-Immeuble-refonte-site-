@@ -174,7 +174,7 @@ export default async function VendreUnImmeuble() {
             <h3>Nous estimons votre immeuble</h3>
             <span className="porte__filet" aria-hidden="true" />
             <p>
-              Gratuitement et en 48&nbsp;h, à partir de son emplacement, de ses loyers et de sa
+              Gratuitement, à partir de son emplacement, de ses loyers et de sa
               constructibilité. Vous connaissez sa valeur avant de décider.
             </p>
           </li>
@@ -191,7 +191,7 @@ export default async function VendreUnImmeuble() {
         </ol>
         <div className="btn-row sec-fondu__bouton portes__bouton">
           <Button href="#estimer" icone>Vendre mon immeuble</Button>
-          <p className="portes__mention">Estimation offerte · réponse sous 48&nbsp;h</p>
+          <p className="portes__mention">Estimation offerte et confidentielle</p>
         </div>
       </SectionFondue>
 
@@ -268,8 +268,8 @@ export default async function VendreUnImmeuble() {
             <Eyebrow bare>Première étape</Eyebrow>
             <h2>Obtenez votre estimation gratuite</h2>
             <p className="lead">
-              Quelques informations sur le bien, et nous revenons vers vous sous 48&nbsp;h avec une
-              fourchette argumentée.
+              Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
+              gratuite et confidentielle.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
               <Button href={SITE.telHref} variant="outline">

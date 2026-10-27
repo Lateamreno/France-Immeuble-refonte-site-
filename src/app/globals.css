@@ -673,9 +673,16 @@ fieldset.field legend,.lot label{
 .adresse__rue{color:var(--color-creme);}
 .adresse__ville{font-size:var(--fs-small);color:var(--color-gris);}
 .adresse__liste li.est-actif .adresse__ville{color:var(--color-bronze-clair-2);}
-.adresse__tete{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
-.adresse__tete label{white-space:nowrap;}
-.adresse__tete .adresse__bascule{font-size:13px;}
+/* Dernière ligne de la liste : la saisie à la main (retour #62), séparée des
+   adresses par un filet, en or comme un lien. */
+.adresse__liste li.adresse__main{
+  color:var(--color-bronze);font-size:var(--fs-small);
+  border-top:1px solid var(--color-ligne);border-radius:0 0 8px 8px;margin-top:4px;
+}
+.adresse__liste li.adresse__main:first-child{border-top:0;margin-top:0;}
+.adresse__liste li.adresse__main.est-actif{color:var(--color-bronze-clair);}
+.adresse__liste li.adresse__info{cursor:default;color:var(--color-gris);font-size:var(--fs-small);padding-bottom:6px;}
+.adresse__liste li.adresse__info + li.adresse__main{border-top:0;margin-top:0;}
 .adresse-manuelle > .adresse__bascule{align-self:flex-start;}
 /* Première partie : prénom et nom côte à côte même au téléphone, le reste
    en pleine largeur. Tout doit tenir sur un écran (retour #61). */
@@ -689,7 +696,6 @@ fieldset.field legend,.lot label{
   .form-bloc .lots__grille{gap:10px 12px;}
   .form-bloc .step-head{margin-bottom:18px;}
   .form-saisie .field textarea{min-height:88px;height:88px;}
-  .adresse__tete .adresse__bascule{font-size:12px;}
   .form-saisie .field-nav{margin-top:18px;}
   .form-shell{padding:20px 18px;}
 }
@@ -3249,3 +3255,95 @@ fieldset.field legend,.lot label{
 }
 @media (min-width:900px){ .tete-2col:has(> .btn-row) > h2{grid-row:2 / span 2;align-self:start;} .tete-2col:has(> .btn-row){align-items:start;} }
 @media (min-width:980px) and (max-height:820px){ .ligne-cartes.etapes-ligne.etapes-ligne{row-gap:14px;} .etapes-ligne .etape-frise h3{margin-bottom:4px;} .mission-sec__bouton{margin-top:14px;} }
+
+/* ==========================================================================
+   23. DOSSIER DU VENDEUR (/mon-compte/dossier/) — retour #64, MAV, 27/10/2026
+   L'état locatif lot par lot. Sur ordinateur, un tableau : une ligne par lot,
+   les intitulés en tête. Au téléphone, une carte par lot, champs deux par deux.
+   ========================================================================== */
+.fin .pieces-attendues__intro{color:var(--color-creme);margin-bottom:10px;}
+.fin .pieces-attendues ul{gap:9px;}
+.fin .pieces-attendues li{position:relative;padding-left:18px;color:var(--color-creme);opacity:.9;}
+.fin .pieces-attendues li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--color-bronze);}
+.fin > p{font-size:var(--fs-small);line-height:1.55;margin:0;}
+.fin__bouton{margin-top:4px;justify-content:flex-start;}
+.fin__bouton .btn{margin-inline:0;}
+
+.compte-dossier{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-s);
+  border-left:2px solid var(--color-bronze);padding:18px 22px;margin-bottom:var(--space-m);
+  background:color-mix(in srgb, var(--color-bronze) 7%, transparent);
+}
+.compte-dossier > div{flex:1 1 320px;}
+.compte-dossier .btn{margin-inline:0;}
+
+.dossier{display:grid;gap:var(--space-m);}
+.dossier__bloc{
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-card);
+  padding:clamp(18px,2.6vw,32px);
+}
+.dossier__tete{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 18px;margin-bottom:var(--space-s);}
+.dossier__tete h3{margin:0;}
+.dossier__adresse,.dossier__total{
+  margin:0;font-family:var(--font-mono-site);font-size:var(--fs-small);color:var(--color-bronze-clair-2);
+}
+.dossier__total{color:var(--color-gris);}
+.dossier__note{margin:var(--space-s) 0 0;font-size:var(--fs-small);color:var(--color-gris);}
+.dossier__ajouter{margin-top:var(--space-s);font-size:var(--fs-body);}
+.dossier__ajouter::before{content:"+ ";text-decoration:none;display:inline-block;margin-right:2px;}
+.dossier__valider{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.dossier__valider h3{margin:0;}
+.dossier__valider > p{margin:0;color:var(--color-gris);}
+.dossier__valider .field-nav{justify-content:center;margin-top:6px;}
+.dossier__valider .err{margin:0;}
+:is(.dossier-vendeur-sec,.fin) .err{color:var(--color-bronze-clair);font-size:var(--fs-small);}
+.dossier__mdp{width:min(100%,360px);text-align:left;}
+.dossier__etat{margin:0;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.06em;color:var(--color-gris);}
+.mdp{position:relative;}
+.mdp input{padding-right:84px !important;}
+.mdp__voir{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;}
+.dossier-code,.dossier-fin{max-width:560px;margin-inline:auto;}
+.dossier-code .fields{max-width:360px;}
+.dossier-code__champ{font-family:var(--font-mono-site) !important;font-size:1.5rem !important;letter-spacing:.35em;text-align:center;}
+.dossier-code .err{margin:var(--space-s) 0 0;color:var(--color-bronze-clair);font-size:var(--fs-small);}
+.dossier-absent{text-align:center;margin-inline:auto;}
+.dossier-absent .btn-row{justify-content:center;}
+
+/* Les lots */
+.lots-table{display:grid;gap:12px;}
+.lots-table__entete{display:none;}
+.lot-ligne{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px;align-items:end;position:relative;
+  padding:16px;border:1px solid var(--color-ligne);border-radius:12px;background:var(--color-noir-2);
+}
+.lot-ligne__num{
+  grid-column:1/-1;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--color-bronze);
+}
+.lot-ligne__vide{display:none;}
+.lot-champ{gap:5px;min-width:0;}
+.lot-champ input,.lot-champ select{padding:10px 12px;font-size:15px;}
+.lot-champ select:disabled,.lot-champ input:disabled{opacity:.45;}
+.lot-ligne__retirer{
+  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--color-ligne);background:transparent;color:var(--color-gris);font-size:18px;line-height:1;cursor:pointer;
+}
+.lot-ligne__retirer:hover{color:var(--color-bronze);border-color:var(--color-bronze);}
+.lot-ligne__retirer:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+@media(min-width:1100px){
+  .lots-table{gap:0;}
+  .lots-table__entete,.lot-ligne{
+    display:grid;align-items:center;gap:8px;
+    grid-template-columns:52px 1.25fr 1.1fr .7fr .8fr 1.2fr 1.45fr 1fr .62fr 32px;
+  }
+  .lots-table__entete{
+    padding:0 0 8px;border-bottom:1px solid var(--color-ligne);
+    font-family:var(--font-mono-site);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-gris);
+  }
+  .lot-ligne{padding:6px 0;border:0;border-bottom:1px solid var(--color-ligne);border-radius:0;background:transparent;}
+  .lot-ligne__num{grid-column:auto;letter-spacing:.06em;}
+  .lot-ligne__vide{display:block;}
+  .lot-ligne .lot-champ label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .lot-ligne .lot-champ input,.lot-ligne .lot-champ select{padding:8px 10px;font-size:14px;}
+  .lot-ligne__retirer{position:static;width:30px;height:30px;}
+}

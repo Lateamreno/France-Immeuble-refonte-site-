@@ -27,7 +27,7 @@ export type Utilisateur = {
   email: string;
   email_confirmed_at?: string | null;
   user_metadata?: { prenom?: string; nom?: string; telephone?: string };
-  app_metadata?: { rattache_le?: string };
+  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation };
 };
 
 export type Session = {
@@ -55,6 +55,7 @@ const MESSAGES: Record<string, string> = {
   same_password: "Le nouveau mot de passe doit être différent de l’ancien.",
   over_email_send_rate_limit: "Trop d’e-mails envoyés à cette adresse. Réessayez dans une heure.",
   over_request_rate_limit: "Trop de tentatives. Réessayez dans quelques minutes.",
+  otp_expired: "Ce code n’est pas le bon, ou il a expiré.",
   flow_state_expired: "Ce lien a expiré. Demandez-en un nouveau.",
   flow_state_not_found: "Ce lien a déjà servi ou a expiré.",
   bad_code_verifier: "Ce lien a été ouvert sur un autre appareil.",
@@ -206,6 +207,7 @@ export async function marquerRattache(id: string): Promise<void> {
 export async function lienDAcces(
   email: string,
   meta: { prenom?: string; nom?: string; telephone?: string },
+  estimation?: Estimation,
 ): Promise<{ type: "invite" | "magiclink"; empreinte: string }> {
   const cfg = cfgSecrete();
   type Reponse = { id?: string; hashed_token?: string; properties?: { hashed_token?: string } };
@@ -220,18 +222,7 @@ export async function lienDAcces(
     // Le compte porte son origine dans les métadonnées d'administration, que
     // le client ne peut pas modifier : un compte vendeur jamais ouvert est
     // supprimé au bout de 30 jours (`purge.ts`), un compte acquéreur jamais.
-    if (r.id) {
-      try {
-        await gotrue(`admin/users/${r.id}`, {
-          method: "PUT",
-          cle: cfg,
-          jeton: cfg.cle,
-          body: JSON.stringify({ app_metadata: { origine: "estimation" } }),
-        });
-      } catch (e) {
-        console.error("[compte] origine non notée —", e instanceof Error ? e.message : e);
-      }
-    }
+    if (r.id) await noterEstimation(r.id, { origine: "estimation", ...(estimation ? { estimation } : {}) });
     return { type: "invite", empreinte: lire(r) };
   } catch (e) {
     if (!(e instanceof ErreurAuth) || !["email_exists", "user_already_exists", "422"].includes(e.code)) throw e;
@@ -241,8 +232,73 @@ export async function lienDAcces(
       jeton: cfg.cle,
       body: JSON.stringify({ type: "magiclink", email }),
     });
+    if (r.id && estimation) await noterEstimation(r.id, { estimation });
     return { type: "magiclink", empreinte: lire(r) };
   }
+}
+
+/**
+ * La dernière estimation du compte : sa `ref` et les lots annoncés. Le dossier
+ * ouvert depuis le compte s'en sert pour préremplir l'état locatif et pour
+ * porter la même `ref` que l'estimation au BO.
+ */
+export type Estimation = { ref: string; lots: { habitation: number; bureau: number; commerce: number; local_activite: number } };
+
+async function noterEstimation(id: string, app: Record<string, unknown>): Promise<void> {
+  const cfg = cfgSecrete();
+  try {
+    await gotrue(`admin/users/${id}`, {
+      method: "PUT",
+      cle: cfg,
+      jeton: cfg.cle,
+      body: JSON.stringify({ app_metadata: app }),
+    });
+  } catch (e) {
+    console.error("[compte] métadonnées non notées —", e instanceof Error ? e.message : e);
+  }
+}
+
+/**
+ * Un code à 6 chiffres qui prouve l'adresse, pour ouvrir le compte depuis le
+ * dossier du vendeur (retour #64). Même mécanique que `lienDAcces` : compte
+ * créé sans mot de passe s'il n'existe pas (« invite »), lien de connexion
+ * sinon (« magiclink »). Supabase n'envoie rien : c'est notre e-mail qui
+ * porte le code, et Supabase qui le vérifie (`verifierCode`).
+ */
+export async function codeDeConfirmation(
+  email: string,
+  meta: { prenom?: string; nom?: string; telephone?: string },
+): Promise<{ type: "invite" | "magiclink"; code: string }> {
+  const cfg = cfgSecrete();
+  type Reponse = { id?: string; email_otp?: string; properties?: { email_otp?: string } };
+  const lire = (r: Reponse) => r.email_otp ?? r.properties?.email_otp ?? "";
+  try {
+    const r = await gotrue<Reponse>("admin/generate_link", {
+      method: "POST",
+      cle: cfg,
+      jeton: cfg.cle,
+      body: JSON.stringify({ type: "invite", email, data: meta }),
+    });
+    if (r.id) await noterEstimation(r.id, { origine: "estimation" });
+    return { type: "invite", code: lire(r) };
+  } catch (e) {
+    if (!(e instanceof ErreurAuth) || !["email_exists", "user_already_exists", "422"].includes(e.code)) throw e;
+    const r = await gotrue<Reponse>("admin/generate_link", {
+      method: "POST",
+      cle: cfg,
+      jeton: cfg.cle,
+      body: JSON.stringify({ type: "magiclink", email }),
+    });
+    return { type: "magiclink", code: lire(r) };
+  }
+}
+
+/** Vérifie le code reçu par e-mail ; renvoie une session. L'adresse est confirmée par le fait même. */
+export function verifierCode(type: "invite" | "magiclink", email: string, code: string): Promise<Session> {
+  return gotrue<Session>("verify", {
+    method: "POST",
+    body: JSON.stringify({ type, email, token: code }),
+  });
 }
 
 /** Échange l'empreinte d'un lien d'accès contre une session (une seule fois). */
@@ -256,7 +312,7 @@ export function verifierJeton(type: "invite" | "magiclink", empreinte: string): 
 export type UtilisateurAdmin = Utilisateur & {
   created_at?: string;
   last_sign_in_at?: string | null;
-  app_metadata?: { rattache_le?: string; origine?: string };
+  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation };
 };
 
 /** Une page de la liste des comptes (administration, clé secrète du site). */

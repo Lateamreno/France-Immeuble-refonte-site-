@@ -133,8 +133,8 @@ export default function EstimerUnImmeuble() {
             <Eyebrow bare>Première étape</Eyebrow>
             <h2>Obtenez votre estimation gratuite</h2>
             <p className="lead">
-              Quelques informations sur le bien, et nous revenons vers vous sous 48&nbsp;h avec une
-              fourchette argumentée.
+              Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
+              gratuite et confidentielle.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
               <Button href={SITE.telHref} variant="outline">

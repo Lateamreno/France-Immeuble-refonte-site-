@@ -210,7 +210,9 @@ h1, h2, h3, .h-display, .stat-number{
   (`color-mix(in srgb, var(--color-noir) 62%, var(--color-creme))`), jamais par un gris inventé.
 - **Le blanc pur n'est admis que comme couleur de texte sur bouton à fond sombre** (§5), et
   pour le papier des polaroïds de la vitrine d'accueil (token `--color-papier`, MAV, 22/10/2026) :
-  c'est un objet photographié, pas une couleur d'interface.
+  c'est un objet photographié, pas une couleur d'interface. Les **e-mails** du site sont aussi
+  sur fond blanc, texte noir, logo en image (MAV, 27/10/2026 : « moins l'impression que c'est
+  une pub ») : gabarit unique `src/lib/courriel.ts`, logo `public/logo/logo-france-immeuble-email.png`.
 - **Couleurs mortes** : `#D9BF7D`, `#D98F7D`, `#0C2432`, `#BD9091`, `#000000`, `#CCCCCC`,
   `#EFEFEF`, `#F8F8F8`.
 - **Le site actuellement en ligne utilise l'ancienne charte** — ne jamais s'en inspirer.
@@ -466,14 +468,28 @@ Canal d'acquisition n°1 — à ne pas improviser.
   (`src/lib/compte/accueil.ts`, page `/mon-compte/activer/`). **Seulement quand la partie 2
   est remplie** (surface et loyer : de quoi estimer), hors PleinBail. Arrêté après la
   partie 1, le visiteur ne reçoit rien : l'agent l'appelle. Une adresse reçoit au plus un
-  e-mail par 24 h (table `envois_client`, empreinte de l'adresse). C'est le seul e-mail
-  automatique vers un visiteur.
+  e-mail par 24 h (table `envois_client`, empreinte de l'adresse). Le seul autre e-mail vers un
+  visiteur est le code de confirmation qu'il demande en validant son dossier (5 par 24 h au plus).
 - **Comptes vendeurs jamais ouverts supprimés après 30 jours** (`src/lib/compte/purge.ts`,
   tâche quotidienne `/api/lead/relance/`). Les comptes créés par le visiteur lui-même
   (acquéreurs) ne sont jamais purgés (MAV, 27/10/2026).
 - **Aucun prénom dans les messages des formulaires** (MAV, 27/10/2026 : « c'est insultant »).
   Pas de « Merci Claire » ; l'e-mail au client commence par « Bonjour, ».
 - Dépôt de recherche acquéreur en trois étapes courtes : critères, budget, coordonnées.
+- **Le « sous 48 h » ne se dit qu'à la fin du formulaire** (retour #65, MAV, 27/10/2026) : avant,
+  le visiteur doit pouvoir croire que l'estimation arrive en ligne. Aucune promesse de délai dans
+  les accroches, les cartes ou les étapes du formulaire. Seule exception : la meta de l'accueil,
+  gelée (§10).
+- Adresse : la saisie à la main est une ligne de la liste des suggestions (retour #62), affichée
+  aussi quand rien n'est trouvé ou que la recherche ne répond pas.
+- **Écran de fin et dossier en ligne** (retour #64, MAV, 27/10/2026) : « C'est noté. Un agent vous
+  appelle sous 48 h », la liste des éléments à préparer (`ELEMENTS_ATTENDUS`), puis le bouton
+  « Remplir mon dossier en ligne » → `/mon-compte/dossier/` : l'état locatif lot par lot,
+  prérempli avec les lots de la partie 2, options des lots de Plein Bail (`src/lib/dossier/`).
+  Brouillon enregistré sur le serveur (table `dossiers_vendeurs`, cookie httpOnly), vidé dès
+  l'envoi. « Valider et créer mon compte » : le dossier part au BO (`etat: "dossier"`, même
+  `ref`), puis mot de passe et **code reçu par e-mail** : le compte ne s'ouvre qu'avec la preuve
+  de l'adresse (§2). Ne jamais écrire sur l'écran de fin qu'un lien a été envoyé.
 
 ---
 

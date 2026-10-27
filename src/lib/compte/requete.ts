@@ -57,10 +57,10 @@ export async function exigerCompte(req: Request): Promise<Connecte | NextRespons
   return s;
 }
 
-export async function lireJson(req: Request): Promise<Record<string, unknown> | null> {
+export async function lireJson(req: Request, max = 20_000): Promise<Record<string, unknown> | null> {
   try {
     const t = await req.text();
-    if (t.length > 20_000) return null;
+    if (t.length > max) return null;
     const v = JSON.parse(t);
     return v && typeof v === "object" ? (v as Record<string, unknown>) : null;
   } catch {
