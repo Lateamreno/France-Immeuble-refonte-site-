@@ -1528,8 +1528,6 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 @media (min-width:980px){.ligne-cartes.atouts{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}}
 /* En marches, la carte suivante dépasse à droite pour montrer la suite. */
-@media (min-width:760px){.ligne--marches .ligne-cartes.atouts{grid-auto-columns:calc((100% - 2 * var(--g)) / 2.3);}}
-@media (min-width:980px){.ligne--marches .ligne-cartes.atouts{grid-auto-columns:calc((100% - 3 * var(--g)) / 3.3);}}
 
 /* Ligne en profondeur (LigneDefilante `marches`, MAV, 27/10/2026) : les
    cartes entièrement visibles sont au premier plan ; les autres reculent dans
@@ -1537,6 +1535,33 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .ligne--marches .ligne-cartes > *{transition:transform .5s var(--ease), opacity .5s var(--ease);transform-origin:center;}
 .ligne--marches .ligne-cartes > .est-basse{transform:scale(.86);opacity:.5;}
 @media (prefers-reduced-motion: reduce){.ligne--marches .ligne-cartes > *{transition:none;}}
+/* Pleine largeur (retours #53 et #54) : la ligne déborde du conteneur
+   jusqu'aux bords de l'écran ; ses marges intérieures valent l'écart entre le
+   conteneur et l'écran, si bien que le premier plan reste aligné sur la
+   page et que les voisines s'affichent dans les marges. */
+.ligne--marches > .ligne-cartes.ligne-cartes{
+  /* Distance du bord du contenu au bord de l'écran. Calculée sans % : dans
+     scroll-padding, un % vaudrait la largeur de la ligne elle-même. */
+  --bord:calc((100vw - min(100vw, var(--container))) / 2 + var(--gutter));
+  --marge:var(--bord);
+  margin-inline:calc(-1 * var(--bord));padding-inline:var(--marge);scroll-padding-inline:var(--marge);
+  overflow-x:auto;grid-auto-columns:100%;
+}
+.section:has(.ligne--marches){overflow-x:clip;}
+@media (min-width:760px){.ligne--marches > .ligne-cartes.ligne-cartes{grid-auto-columns:calc((100% - var(--g)) / 2);}}
+@media (min-width:980px){.ligne--marches > .ligne-cartes.ligne-cartes{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}}
+@media (min-width:760px){
+  .ligne--marches > .ligne__fleche--avant{left:-58px;}
+  .ligne--marches > .ligne__fleche--apres{right:-58px;}
+}
+/* Au téléphone : une carte au premier plan, les voisines dans une marge de
+   28 px de chaque côté, où se posent aussi les flèches. */
+@media (max-width:759px){
+  .ligne--marches > .ligne-cartes.ligne-cartes{--marge:calc(var(--bord) + 28px);}
+  .ligne--marches > .ligne__fleche{width:34px;height:34px;}
+  .ligne--marches > .ligne__fleche--avant{left:calc(7px - var(--gutter));}
+  .ligne--marches > .ligne__fleche--apres{right:calc(7px - var(--gutter));}
+}
 
 /* Les avis sur une ligne en marches. */
 .ligne-cartes.avis-ligne{grid-auto-columns:82%;gap:14px;padding-block:4px 48px;margin-bottom:-44px;align-items:stretch;}
@@ -1544,7 +1569,7 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
   .ligne-cartes.avis-ligne{--g:clamp(16px,2vw,24px);gap:var(--g);grid-auto-columns:calc((100% - 2 * var(--g)) / 2.3);
     margin-inline:0;padding-inline:0;scroll-padding-inline:0;}
 }
-@media (min-width:980px){.ligne-cartes.avis-ligne{grid-auto-columns:calc((100% - 3 * var(--g)) / 3.3);}}
+@media (min-width:980px){.ligne-cartes.avis-ligne{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}}
 @media (min-width:1200px){.ligne-cartes.avis-ligne{overflow-x:auto;margin-inline:0;}}
 @media (min-width:1200px) and (hover: hover) and (pointer: fine){.ligne-cartes.avis-ligne{cursor:grab;}}
 /* Sur la ligne, un avis tient en huit lignes : la section reste sur un écran.

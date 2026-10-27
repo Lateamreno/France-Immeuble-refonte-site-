@@ -221,11 +221,14 @@ export default async function VendreUnImmeuble() {
         </div>
       </section>
 
-      {/* Le titre est dans la section beige, au-dessus des cartes, sur les
-          toits de Paris fondus dans le fond (MAV, 26/10/2026). La section
-          tient sur un écran : les cartes défilent en une seule ligne. */}
+      {/* Le titre est dans la section beige, au-dessus des cartes (MAV,
+          26/10/2026). Un immeuble détouré en transparence dans le coin bas
+          droit plutôt qu'une photo sur tout le fond (retour #53, 27/10/2026).
+          La section tient sur un écran : les cartes défilent en une ligne
+          qui va d'un bord à l'autre de l'écran. */}
       <SectionFondue
-        image={VISUELS.toitsAeriens.src}
+        image="/media/img-vendez-3.webp"
+        coin={{ width: 1058, height: 582 }}
         surtitre="Nos atouts"
         titre={<>Pourquoi vendre avec France Immeuble&nbsp;?</>}
       >

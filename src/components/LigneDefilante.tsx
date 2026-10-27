@@ -15,11 +15,12 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
  * Quand tout tient à l'écran, il n'y a ni flèche ni glissement : la ligne
  * reste une simple rangée.
  *
- * `marches` (MAV, 27/10/2026) : les cartes entièrement visibles restent au
- * premier plan, celles qui dépassent à droite ou à gauche reculent dans le
- * champ (plus petites, plus pâles). En défilant, la carte qui sort à gauche
- * recule et la suivante à droite avance : il y a toujours une rangée de
- * cartes au premier plan.
+ * `marches` (MAV, 27/10/2026) : la ligne va d'un bord à l'autre de l'écran.
+ * Les cartes posées dans la largeur du conteneur sont au premier plan ; de
+ * part et d'autre, les voisines restent visibles, plus petites et plus pâles.
+ * En défilant, la carte qui sort à gauche recule et reste visible à gauche ;
+ * la suivante à droite avance. Les flèches encadrent le premier plan, à
+ * égale distance de chaque côté.
  */
 export function LigneDefilante({
   className = "",
@@ -41,10 +42,16 @@ export function LigneDefilante({
     setAvant(el.scrollLeft > 4);
     setApres(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
     if (marches) {
+      // La zone du premier plan est la largeur du conteneur : la ligne
+      // déborde jusqu'aux bords de l'écran par ses marges intérieures, où
+      // les cartes voisines restent visibles, plus petites.
       const cadre = el.getBoundingClientRect();
+      const style = getComputedStyle(el);
+      const gauche = cadre.left + parseFloat(style.paddingLeft);
+      const droite = cadre.right - parseFloat(style.paddingRight);
       for (const carte of Array.from(el.children) as HTMLElement[]) {
         const r = carte.getBoundingClientRect();
-        const entiere = r.left >= cadre.left - 2 && r.right <= cadre.right + 2;
+        const entiere = r.left >= gauche - 2 && r.right <= droite + 2;
         carte.classList.toggle("est-haute", entiere);
         carte.classList.toggle("est-basse", !entiere);
       }
@@ -68,7 +75,8 @@ export function LigneDefilante({
     const el = piste.current;
     if (!el) return;
     const carte = el.firstElementChild as HTMLElement | null;
-    const pas = carte ? carte.getBoundingClientRect().width + 12 : el.clientWidth * 0.8;
+    const ecart = parseFloat(getComputedStyle(el).columnGap) || 12;
+    const pas = carte ? carte.getBoundingClientRect().width + ecart : el.clientWidth * 0.8;
     el.scrollBy({ left: sens * pas, behavior: "smooth" });
   };
 
