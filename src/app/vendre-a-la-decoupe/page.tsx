@@ -429,6 +429,11 @@ export default async function Decoupe() {
               négociations locataire par locataire. Nous tenons l’ensemble. Vous validez et vous
               signez.
             </p>
+            <div className="btn-row mission-sec__bouton">
+              <Button href="/estimer-un-immeuble/" icone>
+                Faire étudier mon immeuble
+              </Button>
+            </div>
           </Reveal>
 
           <LigneDefilante className="etapes-ligne">
@@ -472,18 +477,12 @@ export default async function Decoupe() {
             ].map((e) => (
               <article key={e.n} className="etape-frise">
                 <span className="etape-frise__point" aria-hidden="true" />
-                <span className="step__num">Étape {e.n}</span>
+                <span className="step__num">Étape {e.n} · {e.m}</span>
                 <h3>{e.t}</h3>
                 <p>{e.p}</p>
-                <span className="step__meta">{e.m}</span>
               </article>
             ))}
           </LigneDefilante>
-          <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-            <Button href="/estimer-un-immeuble/" icone>
-              Faire étudier mon immeuble
-            </Button>
-          </div>
         </div>
       </section>
 

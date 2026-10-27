@@ -247,7 +247,7 @@ export function EstimationForm({
 
             <Champ id={`${uid}-msg`} label="Description de l’immeuble" full>
               <textarea id={`${uid}-msg`} value={d.message} onChange={(e) => set("message", e.target.value)}
-                placeholder="Époque, étages, état, commerces…" rows={2} />
+                placeholder="Surface Carrez, loyers hors charges, montant de la taxe foncière, destination et nombre de lots…" rows={3} />
             </Champ>
           </div>
 

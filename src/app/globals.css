@@ -688,7 +688,7 @@ fieldset.field legend,.lot label{
   .form-bloc .field{gap:5px;}
   .form-bloc .lots__grille{gap:10px 12px;}
   .form-bloc .step-head{margin-bottom:18px;}
-  .form-saisie .field textarea{min-height:48px;height:48px;}
+  .form-saisie .field textarea{min-height:88px;height:88px;}
   .adresse__tete .adresse__bascule{font-size:12px;}
   .form-saisie .field-nav{margin-top:18px;}
   .form-shell{padding:20px 18px;}
@@ -2730,9 +2730,10 @@ fieldset.field legend,.lot label{
   .accueil-vendre__boutons{position:sticky;bottom:0;z-index:2;flex-wrap:nowrap;gap:10px;
     margin-inline:calc(-1 * var(--gutter));padding:28px var(--gutter) calc(14px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(to top,var(--color-creme) 72%,color-mix(in srgb,var(--color-creme) 0%,transparent));}
-  .btn-row.accueil-vendre__boutons{flex-direction:row;align-items:center;}
-  .btn-row.accueil-vendre__boutons > .btn{width:auto;flex:1 1 0;min-width:0;padding:14px 6px;font-size:14px;letter-spacing:0;white-space:nowrap;}
-  .btn-row.accueil-vendre__boutons > .btn:first-child{flex-grow:1.25;}
+  /* L'un au-dessus de l'autre (MAV, 27/10/2026), un peu moins hauts pour
+     laisser lire le texte qui défile derrière. */
+  .btn-row.accueil-vendre__boutons{gap:8px;}
+  .btn-row.accueil-vendre__boutons > .btn{padding-block:13px;}
   /* Le titre blanc du formulaire reste ; sa phrase d'accroche part au téléphone. */
   .sec-formulaire .form-saisie .step-head p{display:none;}
   .sec-formulaire .form-saisie .step-head{margin-bottom:14px;}
@@ -2994,16 +2995,6 @@ fieldset.field legend,.lot label{
 }
 
 /* Références : une section par région, ses ventes sur une ligne en profondeur. */
-.region-sec + .region-sec{border-top:1px solid color-mix(in srgb, var(--color-noir) 10%, transparent);}
-.region-sec .region-ventes__tete{margin-bottom:var(--space-s);}
-.region-sec .region-ventes__titre{font-size:clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);}
-.region-sec__intro{margin-bottom:var(--space-m);}
-.region-sec .region-ventes__carte{width:clamp(90px, 12vw, 160px);}
-.ligne-cartes.ventes-ligne .vente{min-width:0;}
-@media (min-width:900px) and (max-height:940px){
-  .region-sec__intro .lead{font-size:1rem;}
-  .region-sec .region-ventes__carte{width:clamp(80px, 9vw, 120px);}
-}
 
 /* Blog : les articles en cartes, sur une ligne en profondeur. */
 .article-carte{border:1px solid var(--color-ligne);border-radius:var(--radius-card);overflow:hidden;background:var(--color-noir-2);
@@ -3084,30 +3075,8 @@ fieldset.field legend,.lot label{
   .sec-fondu .atout{min-height:300px;}
   .avis-sec .avis-note__val{font-size:2.4rem;}
 }
-.ligne-cartes.ventes-ligne,.ligne-cartes.articles-ligne{--g:clamp(16px,2vw,24px);gap:var(--g);padding-block:4px 6px;}
-.region-sec > .container{position:relative;}
-.region-sec .region-ventes__tete{display:block;}
-.region-sec .region-ventes__n{max-width:70ch;}
-.region-sec__carte.region-sec__carte{position:absolute;top:0;right:var(--gutter);width:clamp(70px, 9vw, 130px);}
-@media (max-width:759px){ .region-sec__carte.region-sec__carte{width:64px;top:-8px;} .region-sec__intro .lead{font-size:15.5px;line-height:1.5;} }
-@media (min-width:900px) and (max-height:820px){ .region-sec__intro .lead{display:none;} .articles-sec .section__head{margin-bottom:var(--space-s);} }
-@media (min-width:900px){
-  .region-sec__intro.region-sec__intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--space-l);align-items:end;max-width:none;}
-  .region-sec__intro > .eyebrow{grid-column:1 / -1;}
-  .region-sec__intro h2{max-width:none;}
-  .region-sec__intro .lead{margin:0;}
-}
-.ligne-cartes.ventes-ligne .vente__visuel{aspect-ratio:16/10;}
-@media (max-width:759px){
-  .region-sec__intro .lead{display:none;}
-  .region-sec .region-ventes__n{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-}
-@media (min-width:900px){
-  .region-sec__intro.region-sec__intro{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);}
-  .region-sec__intro h2{font-size:clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem);}
-  .region-sec .region-ventes__tete{display:flex;align-items:baseline;gap:18px;margin-bottom:var(--space-xs);}
-  .region-sec .region-ventes__n{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;padding-right:150px;}
-}
+.ligne-cartes.articles-ligne{--g:clamp(16px,2vw,24px);gap:var(--g);padding-block:4px 6px;}
+@media (min-width:900px) and (max-height:820px){ .articles-sec .section__head{margin-bottom:var(--space-s);} }
 
 /* En-tête sur deux colonnes à l'ordinateur : le titre à gauche, l'accroche
    à droite. Gagne la hauteur d'un paragraphe. */
@@ -3135,7 +3104,6 @@ fieldset.field legend,.lot label{
   .recherche-sec .railed{display:none;}
   .sec-fondu .atout{min-height:280px;padding-block:22px;}
   .contact-sec .fiche-contact{gap:12px;margin-top:var(--space-s);}
-  .region-sec .ligne-cartes.ventes-ligne .vente__visuel{aspect-ratio:2/1;}
   .mission-sec .etape-frise p{font-size:.86rem;}
 }
 /* Téléphone : textes de la Découpe et du compte plus serrés. */
@@ -3144,7 +3112,6 @@ fieldset.field legend,.lot label{
   .section--noir-2 > .container--narrow p{font-size:15px;line-height:1.55;}
   .dossier-sec .tableau-wrap + * , .dossier-sec p.small, .dossier-sec .note{font-size:12px;}
   .compte-accueil-sec .compte-atouts{display:none;}
-  .ligne-cartes.ventes-ligne .vente__visuel{aspect-ratio:2/1;}
   .recherche-sec h2{font-size:clamp(26px,7.4vw,30px);}
 }
 @media (max-width:759px){
@@ -3162,7 +3129,6 @@ fieldset.field legend,.lot label{
   .avis-sec .tete-media__visuel img{max-height:190px;}
   .sec-fondu .atout{min-height:260px;}
   .sec-fondu__tete{margin-bottom:18px;}
-  .ligne-cartes.ventes-ligne .vente__corps{padding:14px 16px;gap:4px;}
   .contact-sec textarea{min-height:84px;height:84px;}
   .contact-sec .fields{gap:12px;}
   .contact-sec .form-shell{padding-block:22px;}
@@ -3179,8 +3145,6 @@ fieldset.field legend,.lot label{
   .avis-sec .tete-media__texte .lead{font-size:16px;line-height:1.45;}
   .avis-sec .avis-note{margin-block:4px;}
   .sec-fondu__bouton{margin-top:16px;}
-  .region-sec__intro{margin-bottom:var(--space-s);}
-  .region-sec .region-ventes__tete{margin-bottom:8px;}
 }
 @media (max-width:759px){
   .cas-sec .compare__col{padding:12px 10px;}
@@ -3188,9 +3152,6 @@ fieldset.field legend,.lot label{
   .cas-sec .ecart{margin-top:10px;}
   .dossier-sec .tableau-wrap{margin-bottom:0;}
   .dossier-sec .ecart{margin-top:10px;}
-}
-@media (min-width:900px) and (max-height:820px){
-  .region-sec__intro h2{font-size:clamp(1.7rem, 1.1rem + 1.4vw, 2.2rem);}
 }
 @media (max-width:759px){ .form-recherche .field:has(input[type=email]){grid-column:1 / -1;} }
 @media (max-width:759px){
@@ -3202,3 +3163,89 @@ fieldset.field legend,.lot label{
   .tete-media{margin-bottom:var(--space-s);}
   .tete-media__texte .lead{font-size:1rem;}
 }
+
+/* Références (MAV, 27/10/2026) : sur ordinateur, la liste d'avant. Au
+   téléphone, les cartes de chaque section se suivent sur une ligne qui glisse
+   au doigt ; les titres de région et de département s'effacent au profit
+   d'une ligne de titre propre au téléphone. */
+.region-sec__mob{display:none;}
+@media (min-width:760px){
+  .region-sec + .region-sec{padding-top:0;}
+  .region-sec:has(+ .region-sec){padding-bottom:0;}
+  .region-sec + .region-sec .region-ventes:first-of-type{border-top:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);margin-top:0;}
+}
+@media (max-width:759px){
+  .region-sec__mob{display:flex;flex-direction:column;gap:4px;margin:0 0 var(--space-xs);}
+  .region-sec__mob-titre{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);
+    letter-spacing:-.015em;line-height:1.05;font-size:1.5rem;color:var(--color-noir);}
+  .region-sec__mob-n{font-family:var(--font-mono-site);font-size:12px;color:var(--color-bronze-profond);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .region-sec__intro .lead{display:none;}
+  .ventes-flux{display:grid;grid-auto-flow:column;grid-auto-columns:84%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+    overscroll-behavior-x:contain;margin-inline:calc(-1 * var(--gutter));padding:4px var(--gutter) 6px;scroll-padding-inline:var(--gutter);scrollbar-width:none;}
+  .ventes-flux::-webkit-scrollbar{display:none;}
+  .ventes-flux :is(.region-ventes,.region-ventes__dept,.ventes){display:contents;}
+  .ventes-flux :is(.region-ventes__tete,.region-ventes__dept > h3){display:none;}
+  .ventes-flux .vente{scroll-snap-align:start;min-width:0;}
+  .ventes-flux .vente__visuel{aspect-ratio:2/1;}
+}
+
+/* Méthode de Vendre au téléphone (MAV, 27/10/2026) : les quatre étapes l'une
+   sous l'autre, l'illustration à gauche, reliées par un filet vertical. Une
+   suite courte se lit mieux de haut en bas qu'en glissant. */
+@media (max-width:899px){
+  .methode-sec .steps--frise{--vis-w:64px;display:grid;grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:1fr;
+    gap:16px;overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none;}
+  .methode-sec .steps--frise .step{display:grid;grid-template-columns:var(--vis-w) 1fr;column-gap:16px;align-items:start;}
+  .methode-sec .steps--frise .step > *{grid-column:2;}
+  .methode-sec .steps--frise .step__visuel{grid-column:1;grid-row:1 / span 4;width:var(--vis-w);margin:0;}
+  .methode-sec .steps--frise .step__dot{display:none;}
+  .methode-sec .steps--frise .step::before{left:calc(var(--vis-w) / 2);right:auto;width:1px;height:auto;
+    top:calc(var(--vis-w) * 390 / 445 + 6px);bottom:-12px;}
+  .methode-sec .steps--frise .step__num{margin-bottom:2px;}
+  .methode-sec .steps--frise .step h3{font-size:1.05rem;margin-bottom:4px;}
+  .methode-sec .steps--frise .step p{font-size:14.5px;line-height:1.5;}
+  .methode-sec .section__head{margin-bottom:var(--space-s);}
+  .methode-sec .btn-row{margin-top:var(--space-s) !important;}
+}
+
+/* Mission de la Découpe sur ordinateur (27/10/2026) : les six étapes toutes
+   visibles, trois par ligne, sans rien à faire défiler. Au téléphone et sur
+   tablette, elles restent sur une ligne qui glisse. */
+@media (min-width:980px){
+  .ligne-cartes.etapes-ligne.etapes-ligne{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr));
+    row-gap:var(--space-m);overflow:visible;cursor:auto;margin-inline:0;padding-inline:0;}
+  .etapes-ligne .etape-frise:nth-child(3n)::before{right:0;}
+  .mission-sec .ligne .ligne__fleche{display:none;}
+}
+@media (min-width:980px) and (max-height:940px){
+  .etapes-ligne .etape-frise p{font-size:.86rem;line-height:1.5;}
+  .etapes-ligne .etape-frise h3{margin-bottom:6px;}
+  .ligne-cartes.etapes-ligne.etapes-ligne{row-gap:var(--space-s);}
+}
+.mission-sec__bouton{margin-top:var(--space-s);}
+@media (min-width:900px){
+  .tete-2col > .btn-row{grid-column:2;justify-content:flex-start;}
+  .tete-2col > .lead + .btn-row{margin-top:var(--space-s);}
+}
+/* Description du formulaire : deux lignes à l'ordinateur, trois au téléphone. */
+@media (min-width:640px){ .form-saisie .field textarea{min-height:76px;height:76px;} }
+@media (max-width:639px){
+  .form-saisie .fields{gap:10px;}
+  .form-saisie .field-nav{margin-top:12px;}
+  .form-saisie .form-note{margin-top:8px;}
+  .methode-sec .steps--frise{gap:12px;}
+}
+@media (min-width:980px){
+  .mission-sec .tete-2col.tete-2col{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;}
+  .mission-sec .tete-2col > h2{font-size:clamp(1.8rem, 1.2rem + 1.4vw, 2.4rem);}
+  .mission-sec .tete-2col > .lead{font-size:1rem;line-height:1.55;}
+}
+@media (min-width:980px) and (max-height:820px){
+  .mission-sec .tete-2col > .lead{font-size:.92rem;}
+  .etapes-ligne .etape-frise p{font-size:.82rem;line-height:1.45;}
+  .etapes-ligne .etape-frise{padding-top:26px;}
+  .mission-sec .section__head{margin-bottom:var(--space-s);}
+}
+@media (min-width:900px){ .tete-2col:has(> .btn-row) > h2{grid-row:2 / span 2;align-self:start;} .tete-2col:has(> .btn-row){align-items:start;} }
+@media (min-width:980px) and (max-height:820px){ .ligne-cartes.etapes-ligne.etapes-ligne{row-gap:14px;} .etapes-ligne .etape-frise h3{margin-bottom:4px;} .mission-sec__bouton{margin-top:14px;} }

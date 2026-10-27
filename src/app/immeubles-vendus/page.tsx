@@ -6,7 +6,6 @@ import { Button } from "@/components/Button";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { CarteVente } from "@/components/CarteVente";
-import { LigneDefilante } from "@/components/LigneDefilante";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
@@ -48,14 +47,12 @@ export default async function ImmeublesVendus() {
   const idf = {
     cle: "idf",
     titre: nomRegion("11"),
-    carte: "11" as string | null,
     ventes: gIdf ? gIdf.departements.flatMap((d) => d.ventes) : [],
     detail: gIdf ? gIdf.departements.map((d) => (d.dept ? NOMS_DEPTS_IDF[d.dept] : "")).filter(Boolean).join(", ") : "",
   };
   const regions = {
     cle: "regions",
     titre: "En région",
-    carte: null as string | null,
     ventes: autres.flatMap((g) => g.departements.flatMap((d) => d.ventes)),
     detail: autres.map((g) => nomRegion(g.region)).join(", "),
   };
@@ -89,47 +86,68 @@ export default async function ImmeublesVendus() {
         </>
       </HeroMedia>
 
-      {/* Deux sections d'un écran chacune (MAV, 27/10/2026) : l'Île-de-France,
-          puis les régions, chacune sur une ligne de ventes qui défile.
-          L'Île-de-France garde l'ordre département par département, puis du
-          prix le plus élevé au plus modeste ; les régions se suivent, les plus
-          fournies d'abord. */}
-      {[idf, regions].filter((x) => x.ventes.length > 0).map((bloc, k) => (
-        <section key={bloc.cle} className="section section--creme region-sec" aria-labelledby={`ventes-${bloc.cle}`}>
-          <div className="container">
-            {k === 0 && (
-              <Reveal className="section__head region-sec__intro">
-                <Eyebrow>Les ventes</Eyebrow>
-                <h2>Un échantillon de nos dernières ventes</h2>
-                <p className="lead">
-                  Classées par région, l’Île-de-France département par département, puis du prix le
-                  plus élevé au plus modeste. Les montants sont des prix de vente honoraires inclus.
-                </p>
-              </Reveal>
-            )}
-            <header className="region-ventes__tete">
-              {k === 0 ? (
-                <h3 id={`ventes-${bloc.cle}`} className="region-ventes__titre">{bloc.titre}</h3>
-              ) : (
-                <h2 id={`ventes-${bloc.cle}`} className="region-ventes__titre">{bloc.titre}</h2>
+      {/* Sur ordinateur, la liste d'avant (MAV, 27/10/2026 : « c'était pas mal
+          comme avant ») : région par région, l'Île-de-France département par
+          département, puis du prix le plus élevé au plus modeste. Au
+          téléphone, le même contenu se replie en deux lignes qui glissent au
+          doigt, l'Île-de-France puis les régions, chacune sur un écran. Un
+          seul jeu de cartes dans la page : les mêmes éléments, disposés
+          autrement. */}
+      {[{ bloc: idf, gs: gIdf ? [gIdf] : [] }, { bloc: regions, gs: autres }]
+        .filter((x) => x.gs.length > 0)
+        .map(({ bloc, gs }, k) => (
+          <section key={bloc.cle} className="section section--creme region-sec">
+            <div className="container">
+              {k === 0 && (
+                <Reveal className="section__head region-sec__intro">
+                  <Eyebrow>Les ventes</Eyebrow>
+                  <h2>Un échantillon de nos dernières ventes</h2>
+                  <p className="lead">
+                    Classées par région, l’Île-de-France département par département, puis du prix le
+                    plus élevé au plus modeste. Les montants sont des prix de vente honoraires inclus.
+                  </p>
+                </Reveal>
               )}
-              <p className="region-ventes__n">
-                {bloc.ventes.length} vente{bloc.ventes.length > 1 ? "s" : ""} présentée{bloc.ventes.length > 1 ? "s" : ""}
-                {" · "}
-                {bloc.detail}
+              <p className="region-sec__mob" aria-hidden="true">
+                <span className="region-sec__mob-titre">{bloc.titre}</span>
+                <span className="region-sec__mob-n">
+                  {bloc.ventes.length} vente{bloc.ventes.length > 1 ? "s" : ""} · {bloc.detail}
+                </span>
               </p>
-            </header>
-            {bloc.carte && <CarteRegion region={bloc.carte} className="region-ventes__carte region-sec__carte" />}
-            <LigneDefilante className="ventes-ligne" marches>
-              {bloc.ventes.map((v) => (
-                <article key={v.id} className="vente">
-                  <CarteVente v={v} />
-                </article>
-              ))}
-            </LigneDefilante>
-          </div>
-        </section>
-      ))}
+              <div className="ventes-flux">
+                {gs.map((g) => (
+                  <section key={g.region} className="region-ventes" aria-labelledby={`region-${g.region}`}>
+                    <header className="region-ventes__tete">
+                      <div>
+                        <h2 id={`region-${g.region}`}>{nomRegion(g.region)}</h2>
+                        <p className="region-ventes__n">
+                          {g.total} vente{g.total > 1 ? "s" : ""} présentée{g.total > 1 ? "s" : ""}
+                        </p>
+                      </div>
+                      <CarteRegion region={g.region} className="region-ventes__carte" />
+                    </header>
+                    {g.departements.map((d) => (
+                      <div key={d.dept ?? "tous"} className="region-ventes__dept">
+                        {d.dept && (
+                          <h3>
+                            {NOMS_DEPTS_IDF[d.dept]} <span>({d.dept})</span>
+                          </h3>
+                        )}
+                        <ul className="ventes">
+                          {d.ventes.map((v, i) => (
+                            <Reveal key={v.id} as="li" className="vente" delayIndex={i % 6}>
+                              <CarteVente v={v} />
+                            </Reveal>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
 
       <section className="section section--noir-2">
         <div className="container">

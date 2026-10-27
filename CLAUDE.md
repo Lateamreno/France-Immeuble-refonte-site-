@@ -302,9 +302,13 @@ qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèl
 de la page Vendre. Outils (27/10/2026) : `grid--ligne-mob` (cartes en ligne au téléphone),
 `media--fond-mob` (photo en fond fondu au téléphone), `tete-2col`, `steps--frise`,
 LigneDefilante `marches` pour toute liste longue (références, articles, étapes).
-Exception voulue : « Vendez votre immeuble » de l'accueil dépasse au téléphone, texte entier,
-boutons collés en bas de l'écran pendant qu'il défile (MAV : « Lire la suite », personne ne
-clique).
+Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au téléphone, texte
+entier, les deux boutons l'un au-dessus de l'autre collés en bas de l'écran pendant qu'il
+défile (MAV : « Lire la suite », personne ne clique) ; l'échantillon des Références garde sur
+ordinateur sa longue liste par région et département (MAV : « c'était pas mal comme
+avant »), repliée en deux lignes qui glissent au téléphone. Suites courtes (méthode de
+Vendre) : verticales au téléphone. Suites longues (mission de la Découpe) : grille 3 × 2 sur
+ordinateur, ligne qui glisse au téléphone.
 
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de
 cartes. Elle porte une image, photo d'immeuble ou de personnes, ou immeuble détouré
