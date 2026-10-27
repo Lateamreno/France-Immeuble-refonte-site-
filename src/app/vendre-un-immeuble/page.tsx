@@ -154,22 +154,19 @@ export default async function VendreUnImmeuble() {
         </>
       </HeroMedia>
 
-      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Même
-          construction que les atouts (MAV, 26/10/2026) : photo fondue dans le
-          beige, cartes noires à picto et photo. Chaque carte entière est un
-          lien : l'estimation mène à la page Estimer, la recherche
-          d'acquéreur au formulaire de vente plus bas. */}
+      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Version
+          calme (MAV, 27/10/2026) : un immeuble détouré en transparence dans le
+          coin bas droit, cartes noires à picto centré, sans photo. Chaque
+          carte entière est un lien : l'estimation mène à la page Estimer, la
+          recherche d'acquéreur au formulaire de vente plus bas. */}
       <SectionFondue
-        image="/media/streets-of-paris-PV7Y89Z-1536x1025.webp"
-        position="center 30%"
+        image="/media/img-vendez222-2.webp"
+        coin={{ width: 900, height: 437 }}
         surtitre="Votre projet"
         titre={<>Estimer ou vendre votre immeuble de rapport</>}
       >
         <LigneDefilante className="atouts portes">
-          <article className="atout atout--lien">
-            <span className="atout__photo" aria-hidden="true">
-              <Image src="/media/portes/valeur-calcul.webp" alt="" fill sizes="(max-width: 760px) 80vw, 560px" />
-            </span>
+          <article className="atout atout--lien atout--centre">
             <Picto nom="calculatrice" taille={54} className="atout__picto" />
             <h3>
               <Link href="/estimer-un-immeuble/" className="card__lien">
@@ -183,10 +180,7 @@ export default async function VendreUnImmeuble() {
               constructible pour une valorisation optimale.
             </p>
           </article>
-          <article className="atout atout--lien">
-            <span className="atout__photo" aria-hidden="true">
-              <Image src="/media/portes/acquereur-dossier.webp" alt="" fill sizes="(max-width: 760px) 80vw, 560px" />
-            </span>
+          <article className="atout atout--lien atout--centre">
             <Picto nom="poignee" taille={54} className="atout__picto" />
             <h3>
               <a href="#estimer" className="card__lien">

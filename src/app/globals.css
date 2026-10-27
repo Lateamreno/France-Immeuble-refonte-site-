@@ -1545,12 +1545,26 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 /* Presque monochrome puis teinté chaud : un ciel bleu ne doit pas devenir
    une seconde couleur dans le beige. */
 .sec-fondu__img img{object-fit:cover;filter:grayscale(.75) sepia(.45) contrast(1.05);}
+/* Disposition « coin » : l'immeuble détouré, en transparence, dans le coin
+   bas droit ; il s'efface vers la gauche et passe sous les cartes. */
+.sec-fondu__coin{position:absolute;right:0;bottom:0;z-index:-1;width:min(56vw,820px);
+  opacity:.34;pointer-events:none;filter:grayscale(.6) sepia(.35);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 40%);
+          mask-image:linear-gradient(90deg,transparent 0%,#000 40%);}
+.sec-fondu__coin img{display:block;width:100%;height:auto;}
+@media (max-width:760px){.sec-fondu__coin{width:96vw;opacity:.28;}}
 .sec-fondu__tete{margin-bottom:clamp(24px,4svh,44px);max-width:none;}
 .sec-fondu__tete h2{max-width:22ch;}
 .sec-fondu .eyebrow{color:var(--color-bronze-profond);}
 .sec-fondu .eyebrow::before{background:var(--color-bronze-profond);}
 .sec-fondu__bouton{margin-top:clamp(24px,4svh,44px);}
 .sec-fondu .atout{min-height:clamp(340px,44svh,420px);}
+/* Ombre courte, tenue sous la carte : la ligne qui défile ne la coupe plus. */
+.sec-fondu .atout{box-shadow:0 14px 22px -12px rgba(10,10,10,.45);}
+/* Carte sans photo, contenu centré (MAV, 27/10/2026). */
+.atout--centre{align-items:center;text-align:center;}
+.atout--centre::before{display:none;}
+.atout--centre h3,.atout--centre p{margin-inline:auto;}
 /* Écrans bas (petit téléphone, portable 13 pouces) : on resserre pour que
    titre, cartes et bouton restent sur un seul écran. */
 @media (max-height:720px){
