@@ -15,10 +15,11 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
  * Quand tout tient à l'écran, il n'y a ni flèche ni glissement : la ligne
  * reste une simple rangée.
  *
- * `marches` (MAV, 27/10/2026) : les cartes entièrement visibles restent
- * hautes, celles qui dépassent à droite ou à gauche descendent un peu et
- * pâlissent. En défilant, la carte qui sort à gauche descend et la suivante
- * à droite remonte : il y a toujours une rangée de cartes hautes.
+ * `marches` (MAV, 27/10/2026) : les cartes entièrement visibles restent au
+ * premier plan, celles qui dépassent à droite ou à gauche reculent dans le
+ * champ (plus petites, plus pâles). En défilant, la carte qui sort à gauche
+ * recule et la suivante à droite avance : il y a toujours une rangée de
+ * cartes au premier plan.
  */
 export function LigneDefilante({
   className = "",

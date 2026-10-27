@@ -154,10 +154,11 @@ export default async function VendreUnImmeuble() {
         </>
       </HeroMedia>
 
-      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Version
-          calme (MAV, 27/10/2026) : un immeuble détouré en transparence dans le
-          coin bas droit, cartes noires à picto centré, sans photo. Chaque
-          carte entière est un lien : l'estimation mène à la page Estimer, la
+      {/* Les deux portes d'entrée : estimer, ou chercher un acquéreur. Sans
+          carte (MAV, 27/10/2026) : picto, titre et texte posés sur le beige,
+          côte à côte sur ordinateur, l'un sous l'autre au téléphone ; un
+          immeuble détouré en transparence dans le coin bas droit. Chaque bloc
+          entier est un lien : l'estimation mène à la page Estimer, la
           recherche d'acquéreur au formulaire de vente plus bas. */}
       <SectionFondue
         image="/media/img-vendez222-2.webp"
@@ -165,36 +166,36 @@ export default async function VendreUnImmeuble() {
         surtitre="Votre projet"
         titre={<>Estimer ou vendre votre immeuble de rapport</>}
       >
-        <LigneDefilante className="atouts portes">
-          <article className="atout atout--lien atout--centre">
-            <Picto nom="calculatrice" taille={54} className="atout__picto" />
+        <div className="portes-libres">
+          <article className="porte">
+            <Picto nom="calculatrice" taille={52} className="porte__picto" />
             <h3>
-              <Link href="/estimer-un-immeuble/" className="card__lien">
+              <Link href="/estimer-un-immeuble/" className="porte__lien">
                 Vous souhaitez connaître la valeur de votre immeuble&nbsp;?
               </Link>
             </h3>
-            <span className="atout__filet" aria-hidden="true" />
+            <span className="porte__filet" aria-hidden="true" />
             <p>
               Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
               géographique et locatif de votre immeuble ainsi que sur son caractère
               constructible pour une valorisation optimale.
             </p>
           </article>
-          <article className="atout atout--lien atout--centre">
-            <Picto nom="poignee" taille={54} className="atout__picto" />
+          <article className="porte">
+            <Picto nom="poignee" taille={52} className="porte__picto" />
             <h3>
-              <a href="#estimer" className="card__lien">
+              <a href="#estimer" className="porte__lien">
                 Vous cherchez un acquéreur pour votre immeuble&nbsp;?
               </a>
             </h3>
-            <span className="atout__filet" aria-hidden="true" />
+            <span className="porte__filet" aria-hidden="true" />
             <p>
               Nous trouvons parmi notre réseau d’investisseurs privés, de foncières, de family
               offices, de marchands de biens et d’institutionnels le meilleur acheteur pour
               votre immeuble.
             </p>
           </article>
-        </LigneDefilante>
+        </div>
         <div className="btn-row sec-fondu__bouton">
           <Button href="#estimer" icone>Vendre mon immeuble</Button>
         </div>
