@@ -1626,6 +1626,9 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
    titre, filet et texte posés sur le beige. Côte à côte sur ordinateur, un
    filet fin les sépare ; l'un sous l'autre au téléphone. Le bloc entier est
    cliquable, le filet or s'allonge au survol et au focus. */
+/* Titre centré au-dessus des deux blocs (MAV, 27/10/2026). */
+.portes-sec .sec-fondu__tete{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.portes-sec .sec-fondu__tete h2{max-width:24ch;}
 .portes-libres{display:grid;gap:clamp(22px,3vw,40px);}
 .porte{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;
   padding-inline:clamp(4px,2vw,40px);}

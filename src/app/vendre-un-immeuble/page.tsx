@@ -163,6 +163,7 @@ export default async function VendreUnImmeuble() {
       <SectionFondue
         image="/media/img-vendez222-2.webp"
         coin={{ width: 900, height: 437 }}
+        className="portes-sec"
         surtitre="Votre projet"
         titre={<>Estimer ou vendre votre immeuble de rapport</>}
       >
