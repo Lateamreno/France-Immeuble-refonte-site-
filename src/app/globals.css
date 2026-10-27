@@ -2731,7 +2731,8 @@ fieldset.field legend,.lot label{
     margin-inline:calc(-1 * var(--gutter));padding:28px var(--gutter) calc(14px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(to top,var(--color-creme) 72%,color-mix(in srgb,var(--color-creme) 0%,transparent));}
   .btn-row.accueil-vendre__boutons{flex-direction:row;align-items:center;}
-  .btn-row.accueil-vendre__boutons > .btn{width:auto;flex:1 1 0;min-width:0;padding:15px 10px;font-size:15px;white-space:nowrap;}
+  .btn-row.accueil-vendre__boutons > .btn{width:auto;flex:1 1 0;min-width:0;padding:14px 6px;font-size:14px;letter-spacing:0;white-space:nowrap;}
+  .btn-row.accueil-vendre__boutons > .btn:first-child{flex-grow:1.25;}
   /* Le titre blanc du formulaire reste ; sa phrase d'accroche part au téléphone. */
   .sec-formulaire .form-saisie .step-head p{display:none;}
   .sec-formulaire .form-saisie .step-head{margin-bottom:14px;}
