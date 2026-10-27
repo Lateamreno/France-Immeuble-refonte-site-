@@ -58,9 +58,9 @@ const CHAMPS: [string, string, ((v: unknown) => string)?][] = [
   ["prenom", "Prénom"], ["nom", "Nom"], ["email", "E-mail"], ["telephone", "Téléphone"],
   ["projet", "Projet"], ["bienTitre", "Bien concerné"],
   ["numero", "N°"], ["rue", "Rue"], ["codePostal", "Code postal"], ["ville", "Ville"],
-  ["surface", "Surface (m²)"], ["loyerAnnuel", "Loyers annuels HC", euros],
+  ["surface", "Surface habitable totale (m²)"], ["loyerAnnuel", "Loyers annuels HC", euros],
   ["lotsHabitation", "Lots habitation"], ["lotsCommerces", "Lots commerces"],
-  ["lotsBureaux", "Lots bureaux"], ["lotsActivite", "Lots activité"],
+  ["lotsBureaux", "Lots bureaux"], ["lotsActivite", "Lots entrepôts / activité"],
   ["occupation", "Occupation"], ["travaux", "Travaux"], ["echeance", "Échéance de vente"],
   ["valeurEstimee", "Valeur estimée par le propriétaire", euros],
   ["cible", "Profil"], ["departements", "Départements"], ["villes", "Villes"],
@@ -142,7 +142,11 @@ function corps(l: Lead, issue: Issue): { html: string; text: string } {
     ...recherches(l).map((r, i) => ({ titre: `Recherche ${i + 1}`, lignes: r })),
   ];
   // Le routage du site ne vaut que pour une estimation (code postal, valeur, loyer).
-  const piste = l.type === "estimation" ? (l.verdict as { piste?: string } | undefined)?.piste : undefined;
+  // Depuis le retour #60 (27/10/2026), le loyer n'arrive qu'avec le complément :
+  // sur le premier envoi, hors Île-de-France, l'orientation n'est pas encore connue.
+  const v = l.type === "estimation" ? (l.verdict as { piste?: string; idf?: boolean } | undefined) : undefined;
+  const enAttente = l.etat === "principal" && !texte(l.loyerAnnuel) && !v?.idf;
+  const piste = v?.piste ? (enAttente ? "à préciser, le loyer arrive avec le complément" : v.piste) : undefined;
   const notes = [
     piste ? `Orientation calculée par le site : ${piste}` : "",
     l.compte ? "Envoyé depuis un compte client vérifié." : "",

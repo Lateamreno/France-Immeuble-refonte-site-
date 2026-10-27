@@ -260,7 +260,7 @@ export default async function VendreUnImmeuble() {
         intro="Des propriétaires qui nous ont confié la vente de leur immeuble de rapport."
       />
 
-      <section id="estimer" className="section section--noir">
+      <section id="estimer" className="section section--noir section--ecran sec-formulaire">
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>

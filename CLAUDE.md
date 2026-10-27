@@ -295,8 +295,8 @@ blanc, département et prix de vente en or) est validée et gardée de côté :
 `forme="vignettes"` sur `VitrineAccueil`.
 
 **Sections d'un écran** (MAV, 26/10/2026) : chaque section, ordinateur et téléphone, remplit
-au moins la hauteur de l'écran (`min-height:100svh`, contenu centré verticalement), comme le
-hero, pour que ce qui se lit ensemble arrive ensemble. Pas de défilement forcé par section :
+au moins la hauteur de l'écran **sous la barre de menu** (`min-height:var(--ecran)`, soit
+`100svh - --header-h`, MAV, 27/10/2026 ; contenu centré verticalement), comme le hero, pour que ce qui se lit ensemble arrive ensemble. Pas de défilement forcé par section :
 on se cale sur la hauteur d'écran. Une section plus haute que l'écran est à resserrer (ligne
 qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèle sur les atouts
 de la page Vendre.
@@ -434,9 +434,13 @@ Canal d'acquisition n°1 — à ne pas improviser.
 
 - Formulaire d'estimation **multi-étapes** : une question par écran, barre de progression,
   validation par étape.
-- Structure : étape 1 (prénom, nom, email, téléphone, adresse, descriptif) → étape 2 (lots
-  habitation / bureaux / commerces / activité, surface Carrez, loyer HC annuel, travaux à
-  prévoir, échéance de vente) → message de succès inline.
+- Structure (MAV, 27/10/2026) : partie 1 (prénom, nom, e-mail vérifié, téléphone avec
+  indicatif pays, +33 par défaut et 0 accepté, adresse suggérée par la Base Adresse Nationale
+  via `/api/adresse/`, description) : **le lead part dès cette partie**. Le visiteur ne sait
+  pas qu'il y a une suite. Partie 2 (lots habitation / bureaux / commerces / entrepôts,
+  surface habitable totale, loyer HC total, travaux, « je veux vendre ») → écran final :
+  un agent appelle sous 48 h, liste des pièces à préparer, envoi par e-mail ou dépôt dans
+  l'espace client. Les entrepôts vont dans le champ `lotsActivite` du BO.
 - ⚠️ **Bug à ne pas reproduire** : dans le formulaire actuel, les libellés « bureaux » et
   « commerces » sont **inversés** par rapport aux noms de champs. Vérifier la correspondance.
 - Soumission via **route handler serveur** → endpoint du BO (§2). Jamais d'écriture directe

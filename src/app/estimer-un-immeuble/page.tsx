@@ -127,7 +127,7 @@ export default function EstimerUnImmeuble() {
         </div>
       </section>
 
-      <section id="estimer" className="section section--noir">
+      <section id="estimer" className="section section--noir section--ecran sec-formulaire">
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>

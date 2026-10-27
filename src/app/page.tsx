@@ -16,6 +16,7 @@ import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
 import { VitrineAccueil } from "@/components/VitrineAccueil";
 import { Avis } from "@/components/Avis";
+import { Depliable } from "@/components/Depliable";
 
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
@@ -52,17 +53,19 @@ export default async function Accueil() {
             <Button href={SITE.telHref} variant="outline">{SITE.tel}</Button>
           </div>
 
-          {/* Les trois compteurs étaient au troisième écran, un par écran.
-              Ils disent ce que le réseau cherche : c'est la preuve du site. */}
+          {/* Trois chiffres qui se comprennent d'un coup d'œil (retour #55,
+              MAV, 27/10/2026) : les ventes et les acheteurs viennent du BO, la
+              zone dit où nous vendons, en toutes lettres pour le référencement. */}
           <div className="hero-proof">
-            {recherches.map((r) => (
-              <Chiffre key={r.lbl} picto={r.picto} valeur={r.val} libelle={r.lbl} />
-            ))}
+            <Chiffre picto="immeubles" valeur={nombre(toutes.length)} libelle="immeubles vendus" />
+            <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="acheteurs dans notre réseau" />
+            <Chiffre picto="france" valeur="Paris" libelle="Île-de-France et toute la France" />
           </div>
         </>
       </HeroMedia>
 
-      <section className="section section--creme">
+      {/* Sur un seul écran (retour #56, MAV, 27/10/2026). */}
+      <section className="section section--creme section--ecran accueil-vendre">
         <div className="container split">
           <Reveal>
             <Eyebrow>Vendre</Eyebrow>
@@ -72,12 +75,7 @@ export default async function Accueil() {
             <p className="lead lead--or" style={{ marginTop: "var(--space-s)" }}>
               Estimation et commercialisation conçues pour les immeubles
             </p>
-            <p style={{ marginTop: "var(--space-s)" }}>
-              Obtenez une estimation basée sur des critères propres aux immeubles comme la
-              rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
-              estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
-              recherchons parmi notre réseau les acheteurs susceptibles d’être intéressés.
-            </p>
+            <Depliable suite={
             <p style={{ marginTop: "var(--space-s)" }}>
               Une fois identifiés, nous leur transmettons un dossier contenant tous les éléments
               nécessaires à l’étude de votre immeuble. Nous effectuons également les visites et
@@ -86,7 +84,14 @@ export default async function Accueil() {
                 De l’estimation à l’acte de vente, nos experts vous accompagnent dans la vente de
                 votre immeuble.
               </strong>
+            </p>}>
+            <p style={{ marginTop: "var(--space-s)" }}>
+              Obtenez une estimation basée sur des critères propres aux immeubles comme la
+              rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
+              estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
+              recherchons parmi notre réseau les acheteurs susceptibles d’être intéressés.
             </p>
+            </Depliable>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
               <Button href="#estimer" icone>Estimer mon immeuble</Button>
               <Button href="/vendre-un-immeuble/" variant="ghost-dark">En savoir plus</Button>
@@ -107,7 +112,7 @@ export default async function Accueil() {
         </div>
       </section>
 
-      <section id="estimer" className="section section--noir">
+      <section id="estimer" className="section section--noir section--ecran sec-formulaire">
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
@@ -115,10 +120,6 @@ export default async function Accueil() {
             <p className="lead">
               Quelques informations sur le bien, et nous revenons vers vous sous 48&nbsp;h avec une
               fourchette argumentée.
-            </p>
-            <p className="small muted" style={{ marginTop: "var(--space-s)" }}>
-              Désolé, face à l&apos;augmentation des demandes, nous ne sommes actuellement plus en
-              mesure de prendre en charge les immeubles de province hors préfectures.
             </p>
           </Reveal>
           <EstimationForm formulaire="estimer" />
@@ -154,7 +155,7 @@ export default async function Accueil() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section vitrine-sec">
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Biens vendus</Eyebrow>
