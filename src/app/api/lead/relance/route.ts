@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { relancerFile } from "@/lib/leads";
 import { nettoyerMorceaux } from "@/lib/compte/stockage";
+import { purgerComptesInutilises } from "@/lib/compte/purge";
 
 /**
  * Relance de la file d'attente des leads — appelée par la tâche planifiée de
@@ -10,6 +11,9 @@ import { nettoyerMorceaux } from "@/lib/compte/stockage";
  * autre requête est refusée. La route ne renvoie que des compteurs, jamais le
  * contenu d'un lead : l'appeler sans autorisation ne ferait que réessayer des
  * dépôts que le BO dédoublonne de toute façon.
+ *
+ * Elle supprime aussi les comptes vendeurs jamais ouverts depuis 30 jours
+ * (`compte/purge.ts`).
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +31,13 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[pièces] nettoyage des morceaux impossible —", e);
     }
-    return NextResponse.json({ ok: true, ...r, morceauxEffaces });
+    let comptesSupprimes = 0;
+    try {
+      comptesSupprimes = await purgerComptesInutilises();
+    } catch (e) {
+      console.error("[compte] purge impossible —", e);
+    }
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

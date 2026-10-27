@@ -92,9 +92,17 @@ export async function POST(req: Request) {
   }
 
   // Après une estimation, le client reçoit la liste des pièces et l'accès à
-  // son espace, ouvert pour lui (MAV, 27/10/2026). Au premier envoi
-  // seulement, hors compte connecté, et après la réponse au navigateur.
-  if (body.type === "estimation" && body.etat === "principal" && !compte && issue !== "perdu") {
+  // son espace, ouvert pour lui (MAV, 27/10/2026). Seulement quand il a donné
+  // de quoi estimer (la seconde partie : surface et loyer), hors compte
+  // connecté, hors PleinBail, et après la réponse au navigateur. S'il s'arrête
+  // après la première partie, rien ne part vers lui : l'agent l'appelle.
+  const surface = nombreOuNull(body.surface);
+  const loyer = nombreOuNull(body.loyerAnnuel);
+  const estimable = surface !== null && surface > 0 && loyer !== null && loyer >= 0;
+  if (
+    body.type === "estimation" && body.etat === "complement" && estimable &&
+    verdict.piste !== "pleinbail" && !compte && issue !== "perdu"
+  ) {
     after(async () => {
       const r = await accueillirVendeur(lead);
       if (r === "echec") console.error("[lead] e-mail au client non parti");

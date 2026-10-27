@@ -459,9 +459,14 @@ Canal d'acquisition n°1 — à ne pas improviser.
   (`src/lib/notifications.ts`). Réglages : `docs/COMPTE-CONFIGURATION.md`.
 - **E-mail au client après une estimation et compte créé pour lui** (MAV, 27/10/2026) :
   un agent appelle sous 48 h, liste des pièces, lien d'accès à l'espace client
-  (`src/lib/compte/accueil.ts`, page `/mon-compte/activer/`). Une adresse reçoit au plus un
+  (`src/lib/compte/accueil.ts`, page `/mon-compte/activer/`). **Seulement quand la partie 2
+  est remplie** (surface et loyer : de quoi estimer), hors PleinBail. Arrêté après la
+  partie 1, le visiteur ne reçoit rien : l'agent l'appelle. Une adresse reçoit au plus un
   e-mail par 24 h (table `envois_client`, empreinte de l'adresse). C'est le seul e-mail
   automatique vers un visiteur.
+- **Comptes vendeurs jamais ouverts supprimés après 30 jours** (`src/lib/compte/purge.ts`,
+  tâche quotidienne `/api/lead/relance/`). Les comptes créés par le visiteur lui-même
+  (acquéreurs) ne sont jamais purgés (MAV, 27/10/2026).
 - **Aucun prénom dans les messages des formulaires** (MAV, 27/10/2026 : « c'est insultant »).
   Pas de « Merci Claire » ; l'e-mail au client commence par « Bonjour, ».
 - Dépôt de recherche acquéreur en trois étapes courtes : critères, budget, coordonnées.

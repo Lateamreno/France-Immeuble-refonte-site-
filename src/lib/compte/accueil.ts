@@ -7,7 +7,8 @@ import { CATEGORIES } from "./categories";
 import { lienDAcces } from "./auth";
 
 /**
- * Après une estimation, le client reçoit un e-mail (MAV, 27/10/2026) :
+ * Après une estimation complète, partie 2 comprise, le client reçoit un
+ * e-mail (MAV, 27/10/2026) :
  * un agent l'appelle sous 48 h, voici les pièces à préparer, et voici son
  * espace client, créé pour lui, où il verra son estimation.
  *

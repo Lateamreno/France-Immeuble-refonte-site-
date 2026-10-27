@@ -11,9 +11,11 @@ Trois sortes d'e-mails partent du site, tous par **SendGrid**, depuis
    et le lien « mot de passe oublié ». Envoyés par Supabase Auth.
 3. **L'e-mail qui suit une estimation** (MAV, 27/10/2026) : un agent appelle
    sous 48 h, la liste des pièces à préparer et le lien de l'espace client,
-   ouvert pour lui. Envoyé par le site (`src/lib/compte/accueil.ts`), une fois
-   par adresse et par 24 h au plus. C'est le seul e-mail automatique vers un
-   visiteur.
+   ouvert pour lui. Envoyé par le site (`src/lib/compte/accueil.ts`) quand la
+   seconde partie du formulaire est remplie, une fois par adresse et par 24 h
+   au plus. C'est le seul e-mail automatique vers un visiteur. Un compte ainsi
+   créé et jamais ouvert est supprimé au bout de 30 jours ; la variable
+   `CRON_SECRET` de Vercel protège la tâche quotidienne qui s'en charge.
 
 Le domaine `france-immeuble.fr` est déjà authentifié chez SendGrid (clés
 DKIM `s1` et `s2` en place chez OVH, vérifié le 22/10/2026) : rien à changer

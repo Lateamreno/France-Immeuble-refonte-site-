@@ -208,7 +208,7 @@ export async function lienDAcces(
   meta: { prenom?: string; nom?: string; telephone?: string },
 ): Promise<{ type: "invite" | "magiclink"; empreinte: string }> {
   const cfg = cfgSecrete();
-  type Reponse = { hashed_token?: string; properties?: { hashed_token?: string } };
+  type Reponse = { id?: string; hashed_token?: string; properties?: { hashed_token?: string } };
   const lire = (r: Reponse) => r.hashed_token ?? r.properties?.hashed_token ?? "";
   try {
     const r = await gotrue<Reponse>("admin/generate_link", {
@@ -217,6 +217,21 @@ export async function lienDAcces(
       jeton: cfg.cle,
       body: JSON.stringify({ type: "invite", email, data: meta }),
     });
+    // Le compte porte son origine dans les métadonnées d'administration, que
+    // le client ne peut pas modifier : un compte vendeur jamais ouvert est
+    // supprimé au bout de 30 jours (`purge.ts`), un compte acquéreur jamais.
+    if (r.id) {
+      try {
+        await gotrue(`admin/users/${r.id}`, {
+          method: "PUT",
+          cle: cfg,
+          jeton: cfg.cle,
+          body: JSON.stringify({ app_metadata: { origine: "estimation" } }),
+        });
+      } catch (e) {
+        console.error("[compte] origine non notée —", e instanceof Error ? e.message : e);
+      }
+    }
     return { type: "invite", empreinte: lire(r) };
   } catch (e) {
     if (!(e instanceof ErreurAuth) || !["email_exists", "user_already_exists", "422"].includes(e.code)) throw e;
@@ -236,6 +251,22 @@ export function verifierJeton(type: "invite" | "magiclink", empreinte: string): 
     method: "POST",
     body: JSON.stringify({ type, token_hash: empreinte }),
   });
+}
+
+export type UtilisateurAdmin = Utilisateur & {
+  created_at?: string;
+  last_sign_in_at?: string | null;
+  app_metadata?: { rattache_le?: string; origine?: string };
+};
+
+/** Une page de la liste des comptes (administration, clé secrète du site). */
+export async function listerUtilisateurs(page: number, parPage = 200): Promise<UtilisateurAdmin[]> {
+  const cfg = cfgSecrete();
+  const r = await gotrue<{ users?: UtilisateurAdmin[] }>(`admin/users?page=${page}&per_page=${parPage}`, {
+    cle: cfg,
+    jeton: cfg.cle,
+  });
+  return r.users ?? [];
 }
 
 export async function supprimerUtilisateur(id: string): Promise<void> {
