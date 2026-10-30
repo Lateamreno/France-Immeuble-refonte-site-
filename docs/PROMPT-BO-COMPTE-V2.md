@@ -51,7 +51,19 @@ juste après un dépôt contenant une ligne `de = 'agent'`, une proposition ou u
 offre transmise. La route ne renvoie que des compteurs. Si vous préférez ne pas
 détenir ce secret, dites-le : on passera par un déclencheur dans la base du site.
 
-## 5. Données du secteur (estimation détaillée)
+## 5. Ce que votre tableau du 30/10 laisse « à faire », côté site
+
+Le site est prêt à afficher ces données dès qu'elles arrivent. Proposition de noms, à
+confirmer dans le contrat :
+
+- **Dates de la frise** : colonnes `mandat_le`, `offre_acceptee_le`, `compromis_le`, `acte_le`
+  (date, nullables) sur `compte_biens`. Le site les affichera sous chaque étape.
+- **Estimation détaillée** : sur `compte_estimations`, `valeur_basse`, `valeur_haute`,
+  `loyer_marche` (€/m²/an), `delai_jours`, et une table `compte_comparables` (commune, lots,
+  surface, prix au m², année ; jamais d'adresse ni de nom).
+- **Retours de visite**, **mandat**, **rendez-vous confirmés**, **documents des biens** : voir §3.
+
+## 6. Données du secteur (estimation détaillée)
 
 Le site calcule aujourd'hui les repères du département à partir des ventes déjà
 publiées (prix médian au m², rendement, délai jusqu'à l'offre, écart à
