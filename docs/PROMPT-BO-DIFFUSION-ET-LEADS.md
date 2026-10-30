@@ -221,7 +221,7 @@ vendeur était connecté avec une adresse vérifiée.
 | `lots[]` | un objet par lot, dans l'ordre de saisie |
 | `lots[].numero` | 1, 2, 3… |
 | `lots[].type` | une valeur de l'enum `type_lot` de Plein Bail : `habitation_t1` … `habitation_t5plus`, `habitation_maison`, `habitation` (typologie non précisée), `bureau`, `commerce`, `local_activite`, `parking`, `cave`, `autre` |
-| `lots[].etage` | texte court (« RDC », « 2 ») ou null |
+| `lots[].etat` | `bon`, `moyen`, `rafraichissement`, `travaux` (enum `etat_lot` de Plein Bail), ou null |
 | `lots[].surfaceCarrez` | m², ou null |
 | `lots[].statut` | `occupe`, `libre`, `conge_en_cours`, `procedure` (enum `lot_statut`), ou null |
 | `lots[].bail` | enum `type_bail` de Plein Bail (`nu_89`, `meuble`, `mobilite`, `nu_48`, `commercial_369`, `professionnel`, `derogatoire`, `precaire`, `civil`, `autre`), null si libre |

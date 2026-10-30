@@ -2,10 +2,11 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import {
-  bauxPour, DPE, LOTS_MAX, lotVide, motDePasseValide, STATUTS, totaux, TYPES_LOT, TYPOLOGIES,
+  bauxPour, DPE, ETATS, LOTS_MAX, PICTO_TYPE, lotVide, motDePasseValide, STATUTS, totaux, TYPES_LOT, TYPOLOGIES,
   type Dossier, type Lot,
 } from "@/lib/dossier/modele";
 import { SITE } from "@/lib/site";
+import { Picto } from "@/components/Picto";
 
 /**
  * L'état locatif du vendeur, lot par lot (retour #64 de MAV, 27/10/2026).
@@ -249,7 +250,7 @@ export function DossierForm({
         </div>
         <div className="lots-table" role="list">
           <div className="lots-table__entete" aria-hidden="true">
-            <span>Lot</span><span>Type</span><span>Typologie</span><span>Étage</span><span>Carrez (m²)</span>
+            <span>Lot</span><span>Type</span><span>Typologie</span><span>Carrez (m²)</span><span>État</span>
             <span>Occupation</span><span>Bail</span><span>Loyer HC / mois (€)</span><span>DPE</span><span />
           </div>
           {d.lots.map((l, i) => (
@@ -313,7 +314,10 @@ function LigneLot({ i, uid, l, onChange, onRetirer }: {
   const libre = l.statut === "libre";
   return (
     <div className="lot-ligne" role="listitem">
-      <span className="lot-ligne__num">Lot {i + 1}</span>
+      <span className="lot-ligne__num">
+        <Picto nom={PICTO_TYPE[l.type] ?? "autre"} taille={22} className="lot-ligne__picto" />
+        Lot {i + 1}
+      </span>
       <Choix id={id("type")} label="Type" valeur={l.type} options={TYPES_LOT} onChange={(v) => onChange("type", v)} />
       {l.type === "habitation" ? (
         <Choix id={id("typo")} label="Typologie" valeur={l.typologie} options={TYPOLOGIES} vide="Choisir"
@@ -321,8 +325,9 @@ function LigneLot({ i, uid, l, onChange, onRetirer }: {
       ) : (
         <span className="lot-ligne__vide" aria-hidden="true" />
       )}
-      <Texte id={id("etage")} label="Étage" valeur={l.etage} onChange={(v) => onChange("etage", v)} max={12} />
       <Nombre id={id("surf")} label="Carrez (m²)" valeur={l.surface} onChange={(v) => onChange("surface", v)} />
+      <Choix id={id("etat")} label="État" valeur={l.etat} options={ETATS} vide="Choisir"
+        onChange={(v) => onChange("etat", v)} />
       <Choix id={id("statut")} label="Occupation" valeur={l.statut} options={STATUTS} vide="Choisir"
         onChange={(v) => onChange("statut", v)} />
       <Choix id={id("bail")} label="Bail" valeur={libre ? "" : l.bail} options={bauxPour(l.type)} vide={libre ? "Sans bail" : "Choisir"}
@@ -353,17 +358,6 @@ function Choix({ id, label, valeur, options, onChange, vide, desactive }: {
         {vide !== undefined && <option value="">{vide}</option>}
         {options.map((o) => <option key={o.cle} value={o.cle}>{o.libelle}</option>)}
       </select>
-    </div>
-  );
-}
-
-function Texte({ id, label, valeur, onChange, placeholder, max }: {
-  id: string; label: string; valeur: string; onChange: (v: string) => void; placeholder?: string; max?: number;
-}) {
-  return (
-    <div className="field lot-champ">
-      <label htmlFor={id}>{label}</label>
-      <input id={id} value={valeur} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} maxLength={max} />
     </div>
   );
 }

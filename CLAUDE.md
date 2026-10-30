@@ -286,6 +286,9 @@ titre blanc avec les **mots importants en or** (`<span className="accent">`), co
 description blanche, petite flèche or discrète vers le bas. La barre de menu, fixe, est
 transparente au-dessus du hero et devient noire floutée au défilement.
 
+**Exception : l'espace client** (`/mon-compte/…`, MAV, 30/10/2026) n'a pas de hero. C'est un
+outil, il s'ouvre directement sur son contenu (« pas besoin de hero ni rien »).
+
 Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto or **sans
 cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
 
@@ -482,7 +485,7 @@ Canal d'acquisition n°1 — à ne pas improviser.
   gelée (§10).
 - Adresse : la saisie à la main est une ligne de la liste des suggestions (retour #62), affichée
   aussi quand rien n'est trouvé ou que la recherche ne répond pas.
-- **Écran de fin et dossier en ligne** (retour #64, MAV, 27/10/2026) : « C'est noté. Un agent vous
+- **Écran de fin et dossier en ligne** (retours #64 et #67 à #70 : pas de hero, pas d’étage, une colonne état, un picto par type de lot, MAV, 27 et 30/10/2026) : « C'est noté. Un agent vous
   appelle sous 48 h », la liste des éléments à préparer (`ELEMENTS_ATTENDUS`), puis le bouton
   « Remplir mon dossier en ligne » → `/mon-compte/dossier/` : l'état locatif lot par lot,
   prérempli avec les lots de la partie 2, options des lots de Plein Bail (`src/lib/dossier/`).

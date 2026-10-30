@@ -3278,6 +3278,14 @@ fieldset.field legend,.lot label{
 .compte-dossier .btn{margin-inline:0;}
 
 .dossier{display:grid;gap:var(--space-m);}
+/* Sans hero (retour #67) : le titre commence sous la barre de menu. */
+.dossier-vendeur-sec{padding-top:calc(var(--header-h) + clamp(16px,4svh,56px));}
+.dossier-vendeur__tete{margin-bottom:var(--space-m);max-width:68ch;}
+.dossier-vendeur__tete h1{font-size:clamp(30px,4vw,48px);margin:0 0 12px;}
+.dossier-vendeur__tete p{color:var(--color-gris);margin:0;}
+.dossier-absent h1{font-size:clamp(26px,3.4vw,40px);margin-bottom:14px;}
+.lot-ligne__num{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.lot-ligne__picto{color:var(--color-bronze);flex:none;}
 .dossier__bloc{
   background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-card);
   padding:clamp(18px,2.6vw,32px);
@@ -3334,7 +3342,7 @@ fieldset.field legend,.lot label{
   .lots-table{gap:0;}
   .lots-table__entete,.lot-ligne{
     display:grid;align-items:center;gap:8px;
-    grid-template-columns:52px 1.25fr 1.1fr .7fr .8fr 1.2fr 1.45fr 1fr .62fr 32px;
+    grid-template-columns:80px 1.2fr 1fr .72fr 1fr 1.1fr 1.35fr .95fr .6fr 32px;
   }
   .lots-table__entete{
     padding:0 0 8px;border-bottom:1px solid var(--color-ligne);

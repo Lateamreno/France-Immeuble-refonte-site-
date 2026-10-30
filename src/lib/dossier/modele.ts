@@ -44,6 +44,20 @@ export const TYPOLOGIES: Option[] = [
   { cle: "habitation_maison", libelle: "Maison" },
 ];
 
+/** L'état du lot (enum `etat_lot` de Plein Bail), demandé par MAV au retour #69. */
+export const ETATS: Option[] = [
+  { cle: "bon", libelle: "Bon état" },
+  { cle: "moyen", libelle: "État moyen" },
+  { cle: "rafraichissement", libelle: "À rafraîchir" },
+  { cle: "travaux", libelle: "Travaux à prévoir" },
+];
+
+/** Le picto de chaque type de lot (retour #70). */
+export const PICTO_TYPE: Record<string, "logement" | "business" | "commerce" | "entrepot" | "parking" | "cave" | "autre"> = {
+  habitation: "logement", bureau: "business", commerce: "commerce", local_activite: "entrepot",
+  parking: "parking", cave: "cave", autre: "autre",
+};
+
 export const STATUTS: Option[] = [
   { cle: "occupe", libelle: "Loué" },
   { cle: "libre", libelle: "Libre" },
@@ -79,7 +93,7 @@ export const DPE = ["A", "B", "C", "D", "E", "F", "G"] as const;
 export type Lot = {
   type: string;
   typologie: string;
-  etage: string;
+  etat: string;
   surface: string;
   statut: string;
   bail: string;
@@ -98,7 +112,7 @@ export type Dossier = {
 export type Comptes = { habitation: number; bureau: number; commerce: number; local_activite: number };
 
 export const lotVide = (type = "habitation"): Lot => ({
-  type, typologie: "", etage: "", surface: "", statut: "", bail: "", loyer: "", dpe: "",
+  type, typologie: "", etat: "", surface: "", statut: "", bail: "", loyer: "", dpe: "",
 });
 
 export const LOTS_MAX = 120;
@@ -132,7 +146,7 @@ export function nettoyer(v: unknown): Dossier {
     return {
       type,
       typologie: type === "habitation" ? dans(l.typologie, TYPOLOGIES) : "",
-      etage: String(l.etage ?? "").replace(/[^\dA-Za-zÀ-ÿ -]/g, "").slice(0, 12),
+      etat: dans(l.etat, ETATS),
       surface: saisieNombre(l.surface),
       statut: dans(l.statut, STATUTS),
       bail: dans(l.bail, bauxPour(type)),
@@ -170,7 +184,7 @@ export function pourBO(d: Dossier) {
     lots: d.lots.map((l, i) => ({
       numero: i + 1,
       type: l.type === "habitation" && l.typologie ? l.typologie : l.type,
-      etage: l.etage.trim() || null,
+      etat: l.etat || null,
       surfaceCarrez: enNombre(l.surface),
       statut: l.statut || null,
       bail: l.statut === "libre" ? null : l.bail || null,
@@ -197,15 +211,15 @@ export function lotEnClair(x: unknown): string[] {
     String(l.type ?? "").startsWith("habitation_")
       ? `Habitation, ${libelle(TYPOLOGIES, String(l.type))}`
       : libelle(TYPES_LOT, String(l.type ?? "")) || String(l.type ?? ""),
-    String(l.etage ?? ""),
     surface != null ? `${surface.toLocaleString("fr-FR")} m²` : "",
+    libelle(ETATS, String(l.etat ?? "")),
     libelle(STATUTS, String(l.statut ?? "")),
     libelle(TOUS_BAUX, String(l.bail ?? "")),
     loyer != null ? `${Math.round(loyer).toLocaleString("fr-FR")} €` : "",
     String(l.dpe ?? ""),
   ];
 }
-export const COLONNES_LOT = ["Lot", "Type", "Étage", "Carrez", "Occupation", "Bail", "Loyer HC / mois", "DPE"];
+export const COLONNES_LOT = ["Lot", "Type", "Carrez", "État", "Occupation", "Bail", "Loyer HC / mois", "DPE"];
 
 /** Totaux affichés sous le tableau : surface Carrez et loyers annuels. */
 export function totaux(d: Dossier) {

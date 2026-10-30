@@ -17,9 +17,18 @@ export type NomPicto =
   | "secteur" | "technique" | "financier" | "constructibilite" | "cible"
   | "reseau" | "stats" | "augmentation" | "poignee" | "best" | "business"
   | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier"
-  | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles" | "france";
+  | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles" | "france"
+  | "logement" | "commerce" | "entrepot" | "parking" | "cave" | "autre";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
+  /* Types de lots de l'état locatif (retour #70, MAV, 27/10/2026). Le bureau
+     reprend la mallette « business ». */
+  logement: <><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.4v11.1h13V9.4"/><path d="M10 20.5V15h4v5.5"/></>,
+  commerce: <><path d="M3.5 9.5 5 4.5h14l1.5 5"/><path d="M3.5 9.5a2.1 2.1 0 0 0 4.25 0 2.1 2.1 0 0 0 4.25 0 2.1 2.1 0 0 0 4.25 0 2.1 2.1 0 0 0 4.25 0"/><path d="M5 11.6v8.9h14v-8.9"/><path d="M9.5 20.5v-5h5v5"/></>,
+  entrepot: <><path d="M2.5 20.5V9L12 4l9.5 5v11.5"/><path d="M6.5 20.5v-8h11v8"/><path d="M6.5 15.2h11M6.5 17.9h11"/></>,
+  parking: <><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M9.5 16.5v-9h3.2a2.6 2.6 0 0 1 0 5.2H9.5"/></>,
+  cave: <><path d="M5 20.5V11a7 7 0 0 1 14 0v9.5"/><path d="M3.5 20.5h17"/><path d="M9.5 20.5v-6a2.5 2.5 0 0 1 5 0v6"/></>,
+  autre: <><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01" strokeWidth="2.2"/></>,
   // Dossier et cible — le dossier pensé pour un acheteur précis
   dossierCible: <><path d="M11.5 21.5H6A1.5 1.5 0 0 1 4.5 20V4A1.5 1.5 0 0 1 6 2.5h8l4.5 4.5v4"/><path d="M14 2.5V7h4.5"/><path d="M7.5 10h6M7.5 13h4M7.5 16h2.5" strokeWidth="1"/><circle cx="17" cy="17" r="4.3"/><circle cx="17" cy="17" r="2"/><circle cx="17" cy="17" r=".7" fill="currentColor" stroke="none"/></>,
   // Deux bulles — la conversation avec le conseiller

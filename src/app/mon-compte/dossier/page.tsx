@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { HeroMedia } from "@/components/HeroMedia";
-import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { DossierForm } from "@/components/dossier/DossierForm";
 import { sessionCourante, uuidDe } from "@/lib/compte/auth";
 import { creerDossier, dossierCourant, type LigneDossier } from "@/lib/dossier/serveur";
-import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 
 /**
@@ -57,26 +54,21 @@ export default async function PageDossier() {
 
   return (
     <>
-      <HeroMedia image={VISUELS.interieurToits.src} alt={VISUELS.interieurToits.alt}>
-        <>
-          <Eyebrow>Mon compte</Eyebrow>
-          <h1>
-            Votre <span className="accent">dossier</span> en ligne
-          </h1>
-          <p className="lead">
-            Remplissez ce que vous avez sous la main, lot par lot. Tout est enregistré au fur et à
-            mesure&nbsp;: vous pouvez revenir plus tard.
-          </p>
-        </>
-      </HeroMedia>
 
+      {/* Pas de hero : c'est un écran de travail, il s'ouvre sur le tableau (retour #67). */}
       <section className="section section--noir-2 dossier-vendeur-sec">
         <div className="container">
           {l ? (
+            <>
+            <header className="dossier-vendeur__tete">
+              <h1>Votre <span className="accent">dossier</span> en ligne</h1>
+              <p>Remplissez ce que vous avez sous la main, lot par lot. Tout est enregistré au fur et à mesure&nbsp;: vous pouvez revenir plus tard.</p>
+            </header>
             <DossierForm initial={l.donnees} adresse={adresse} connecte={connecte} dejaValide={!!l.valide_le && !connecte} />
+            </>
           ) : (
             <div className="container--narrow dossier-absent">
-              <h2>Ce dossier n’est plus disponible ici</h2>
+              <h1>Ce dossier n’est plus disponible ici</h1>
               <p className="lead">
                 Il a peut-être déjà été envoyé, ou il a été ouvert sur un autre appareil. Connectez-vous
                 pour le retrouver, ou faites estimer votre immeuble.
