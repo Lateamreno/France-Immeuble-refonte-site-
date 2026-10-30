@@ -61,6 +61,9 @@ export type Saisie = {
   donnees: Record<string, unknown>; envoye_le: string;
 };
 
+/** Un immeuble à vendre mis en favori (0014). `bien` : l'identifiant de `biens_a_vendre`. */
+export type Favori = { bien: string; ajoute_le: string };
+
 export type DonneesCompte = {
   recherches: Recherche[];
   propositions: Proposition[];
@@ -72,6 +75,7 @@ export type DonneesCompte = {
   messages: Message[];
   agent: Agent | null;
   saisies: Saisie[];
+  favoris: Favori[];
 };
 
 async function lire<T>(jeton: string, requete: string): Promise<T[]> {
@@ -99,7 +103,7 @@ async function lire<T>(jeton: string, requete: string): Promise<T[]> {
  * interroger la base deux fois.
  */
 export const donneesCompte = cache(async (jeton: string): Promise<DonneesCompte> => {
-  const [recherches, propositions, demandes, biens, estimations, documents, offres, messages, agents, saisies] = await Promise.all([
+  const [recherches, propositions, demandes, biens, estimations, documents, offres, messages, agents, saisies, favoris] = await Promise.all([
     lire<Recherche>(jeton, "compte_recherches?select=*&order=maj_le.desc"),
     lire<Proposition>(jeton, "compte_propositions?select=*&order=propose_le.desc.nullslast"),
     lire<Demande>(jeton, "compte_demandes?select=*&order=demande_le.desc.nullslast"),
@@ -110,8 +114,9 @@ export const donneesCompte = cache(async (jeton: string): Promise<DonneesCompte>
     lire<Message>(jeton, "compte_messages?select=*&order=envoye_le.asc"),
     lire<Agent>(jeton, "compte_agent?select=*&limit=1"),
     lire<Saisie>(jeton, "compte_saisies?select=ref,type,donnees,envoye_le&order=envoye_le.desc&limit=200"),
+    lire<Favori>(jeton, "compte_favoris?select=bien,ajoute_le&order=ajoute_le.desc&limit=200"),
   ]);
-  return { recherches, propositions, demandes, biens, estimations, documents, offres, messages, agent: agents[0] ?? null, saisies };
+  return { recherches, propositions, demandes, biens, estimations, documents, offres, messages, agent: agents[0] ?? null, saisies, favoris };
 });
 
 /** true si la ligne `cle` de `table` appartient au compte du jeton. */

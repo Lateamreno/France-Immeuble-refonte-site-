@@ -174,14 +174,23 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   copie de l'alerte, copie gardée dans `compte_saisies` jusqu'au retour du BO). E-mails au client :
   `src/lib/compte/avis.ts` (une fois par ligne, table `compte_avis`), préférences dans
   `app_metadata.notifications`. Demande au BO : `docs/PROMPT-BO-COMPTE-V2.md`.
-- **Décisions de MAV du 30/10 au soir** : alerte de rendez-vous à l'agent attitré et ma.voci@,
-  sans contact@ (option `agentAuLieuDeContact`) ; photo de l'agent copiée une fois dans le seau
+- **Décisions de MAV du 30/10 au soir et du 31/10** : alerte de rendez-vous à l'agent attitré et
+  ma.voci@ sans contact@, et sans agent attitré à contact@ seulement (option `regleRendezVous`) ; photo de l'agent copiée une fois dans le seau
   privé `photos-agents` (migration 0013) et servie par `/api/compte/photo-agent/`
   (`src/lib/compte/photo-agent.ts`) ; le BO appelle `/api/compte/avis/` avec `AVIS_SECRET`, un
   secret à part de `CRON_SECRET` ; pièces jointes aux messages (cinq, 25 Mo, même seau que les
   pièces du §10, contrôle du contenu réel, `.doc`/`.xls` refusés, macros et PDF à code refusés :
   `contenuSuspect` dans `src/lib/compte/pieces.ts`) ; le client change lui-même ses coordonnées,
   l'e-mail avec un code envoyé à la nouvelle adresse, l'ancienne prévenue (type `coordonnees`).
+- **Immeubles à vendre avec le compte** (MAV, 31/10/2026, « comme Plein Bail ») : recherche dans
+  l'adresse de la page (`src/lib/recherche-biens.ts` : localisation, type, prix, rendement, surface,
+  lots, sans offre, tris ; page filtrée en `noindex`), cœur des favoris sur les cartes et la fiche
+  (table `compte_favoris`, migration 0014, type `favori` au BO sans e-mail), « Enregistrer la
+  recherche » vers `recherche_compte`, fiche avec panneau d'offre au curseur et simulation de crédit
+  (`src/components/biens/PanneauOffre.tsx`, `offre_acquereur` avec `annonce`), état financier et
+  comparaison avec nos ventes du département. Pages en cache ; l'état du visiteur est lu par
+  `/api/compte/etat-biens/`. Sans compte, favori et offre mènent à la connexion puis reviennent
+  sur la page. Rubrique « Mes favoris » dans le compte.
 
 ### Garde-fous non négociables
 
@@ -629,8 +638,8 @@ Expression dominante : **« immeuble de rapport »** (14 000+ impressions/an) �
 partout. Secondaire : « vente en bloc » (contexte juridique). À éviter : « immeuble entier »
 (~600 imp/an), sauf contexte définitionnel.
 
-Réassurance : 365 immeubles traités depuis 2018 (chiffre `immeubles_traites` déposé par le BO
-dans `chiffres`, affiché en tête de l'accueil, MAV 27/10/2026) · 1 500 acheteurs en base (chiffre déposé par le BO) · 28 avis Google
+Réassurance : 1 170 immeubles traités depuis 2018 (chiffre `immeubles_traites` déposé par le BO
+dans `chiffres`, affiché en tête de l'accueil, MAV 27/10/2026 ; 1 170 validé par MAV le 31/10/2026) · 1 500 acheteurs en base (chiffre déposé par le BO) · 28 avis Google
 à 4,9/5 · honoraires 5 % du prix net vendeur · modèle off-market · mandats semi-exclusifs avec
 période de test interne 2-4 semaines.
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Picto } from "./Picto";
 import { prix, type BienAVendre } from "@/lib/biens";
+import { BoutonFavori } from "./biens/BoutonFavori";
 
 /** « 4,1 % », « 520 m² » — formats français, espace insécable. */
 const pct = (n: number) => `${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
@@ -11,13 +12,15 @@ const m2 = (n: number) => `${Math.round(n).toLocaleString("fr-FR").replace(/ /
  * Vignette d'un bien à vendre — même jeu d'informations que PleinBail.
  *
  * Toute la carte est un lien : un seul arrêt de tabulation, une seule cible au
- * doigt, et le titre porte le nom accessible du lien.
+ * doigt, et le titre porte le nom accessible du lien. Le cœur des favoris
+ * (MAV, 31/10/2026) est posé à côté du lien, pas dedans : deux cibles distinctes.
  */
-export function CarteBien({ b, rang = 0 }: { b: BienAVendre; rang?: number }) {
+export function CarteBien({ b, rang = 0, favori = true }: { b: BienAVendre; rang?: number; favori?: boolean }) {
   const nouveau = Date.now() - new Date(b.publieLe).getTime() < 14 * 86_400_000;
   const image = b.images[0];
 
   return (
+    <div className="bien-carte-cadre">
     <Link href={`/immeubles-a-vendre/${b.slug}/`} className="bien-carte">
       <span className="bien-carte__visuel">
         {image ? (
@@ -72,5 +75,7 @@ export function CarteBien({ b, rang = 0 }: { b: BienAVendre; rang?: number }) {
         )}
       </span>
     </Link>
+    {favori && <BoutonFavori bien={b.id} className="bien-carte__favori" />}
+    </div>
   );
 }

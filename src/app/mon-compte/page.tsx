@@ -32,8 +32,8 @@ export const metadata: Metadata = {
 /** Les pièces qui comptent pour l'estimation ; « Autre », plans et photos sont en plus. */
 const ESSENTIELLES = CATEGORIES.filter((c) => !["autre", "plans", "photos"].includes(c.cle));
 
-export default async function MonCompte({ searchParams }: { searchParams: Promise<{ etat?: string }> }) {
-  const { etat } = await searchParams;
+export default async function MonCompte({ searchParams }: { searchParams: Promise<{ etat?: string; retour?: string }> }) {
+  const { etat, retour } = await searchParams;
   const session = await sessionCourante();
 
   if (!session) {
@@ -50,7 +50,7 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
               <li>Le dépôt des pièces de votre immeuble, directement au coffre de l’agence.</li>
             </ul>
           </div>
-          <Acces etat={etat} />
+          <Acces etat={etat} retour={retour} />
         </div>
       </section>
     );

@@ -10,6 +10,9 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { SITE } from "@/lib/site";
 import { bienAVendre, prix } from "@/lib/biens";
+import { secteurDe } from "@/lib/compte/secteur";
+import { PanneauOffre } from "@/components/biens/PanneauOffre";
+import { BoutonFavori } from "@/components/biens/BoutonFavori";
 
 /**
  * Fiche d'un immeuble à vendre.
@@ -18,6 +21,11 @@ import { bienAVendre, prix } from "@/lib/biens";
  * coordonnées : la commune et le département situent, la visite fait le reste.
  * La demande de dossier part avec la référence du bien, pour que l'agent sache
  * de quel immeuble on parle sans avoir à le demander.
+ *
+ * Comme Plein Bail (MAV, 31/10/2026) : favoris, offre au curseur avec
+ * simulation de crédit, état financier, et la comparaison avec nos ventes du
+ * département. La page reste en cache ; ce qui dépend du visiteur (favori,
+ * offre déjà faite) est lu par le navigateur.
  */
 export const revalidate = 600;
 
@@ -66,6 +74,11 @@ export default async function FicheBien({ params }: Params) {
     b.dpe !== null ? ["DPE", b.dpe] : null,
   ].filter((f): f is [string, string] => f !== null);
 
+  const secteur = await secteurDe(b.dept);
+  const ecartM2 = secteur?.prixM2 && b.prixM2 ? ((b.prixM2 - secteur.prixM2) / secteur.prixM2) * 100 : null;
+  const netVendeur = b.prixHai / 1.05;
+  const notaire = b.prixHai * 0.075;
+
   const paragraphes = (b.description ?? "")
     .split(/\n{2,}|\r\n\r\n/)
     .map((p) => p.trim())
@@ -97,6 +110,7 @@ export default async function FicheBien({ params }: Params) {
 
           {b.images.length > 0 ? (
             <div className={`galerie galerie--${Math.min(b.images.length, 5)}`}>
+              <BoutonFavori bien={b.id} className="galerie__favori" />
               {b.images.slice(0, 5).map((src, i) => (
                 <span key={src} className="galerie__case">
                   <Image
@@ -119,8 +133,8 @@ export default async function FicheBien({ params }: Params) {
       </section>
 
       <section className="section section--creme">
-        <div className="container split split--sticky">
-          <div className="split__aside">
+        <div className="container fiche-annonce">
+          <div className="fiche-annonce__principal">
             <Reveal>
               <Eyebrow>L’immeuble</Eyebrow>
               <dl className="faits">
@@ -137,9 +151,7 @@ export default async function FicheBien({ params }: Params) {
                 </p>
               )}
             </Reveal>
-          </div>
 
-          <div>
             {paragraphes.length > 0 && (
               <Reveal className="fiche-bien__texte">
                 <Eyebrow>Description</Eyebrow>
@@ -148,11 +160,51 @@ export default async function FicheBien({ params }: Params) {
                 ))}
               </Reveal>
             )}
+
+            <Reveal>
+              <Eyebrow>État financier</Eyebrow>
+              <div className="tableau-defile">
+                <table className="etat-financier">
+                  <tbody>
+                    <tr><th scope="row">Prix net vendeur</th><td>{prix(netVendeur)}</td></tr>
+                    <tr><th scope="row">Honoraires (5 % du net vendeur)</th><td>{prix(b.prixHai - netVendeur)}</td></tr>
+                    <tr className="etat-financier__total"><th scope="row">Prix honoraires inclus</th><td>{prix(b.prixHai)}</td></tr>
+                    <tr><th scope="row">Frais de notaire estimés (7,5 %)</th><td>{prix(notaire)}</td></tr>
+                    <tr className="etat-financier__total"><th scope="row">Coût total de l’opération</th><td>{prix(b.prixHai + notaire)}</td></tr>
+                    {b.loyerHcAn !== null && <tr><th scope="row">Loyers annuels hors charges</th><td>{prix(b.loyerHcAn)}</td></tr>}
+                    {b.loyerHcAn !== null && <tr><th scope="row">Rendement brut</th><td>{pct((b.loyerHcAn / b.prixHai) * 100)}</td></tr>}
+                    {b.loyerHcAn !== null && <tr><th scope="row">Rendement acte en main</th><td>{pct((b.loyerHcAn / (b.prixHai + notaire)) * 100)}</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+              <p className="faits__note">
+                Rendement brut : loyers ÷ prix honoraires inclus. Acte en main : loyers ÷ (prix + frais de notaire estimés).
+              </p>
+            </Reveal>
+
+            {secteur && (
+              <Reveal>
+                <Eyebrow>{`Nos ventes : ${secteur.nom}`}</Eyebrow>
+                <dl className="faits faits--marche">
+                  <div><dt>Immeubles vendus par l’agence</dt><dd>{secteur.ventes}</dd></div>
+                  {secteur.prixM2 && <div><dt>Prix médian au m²</dt><dd>{prix(secteur.prixM2)}{ecartM2 !== null && <small> · ce bien {ecartM2 > 0 ? "+" : ""}{Math.round(ecartM2)} %</small>}</dd></div>}
+                  {secteur.rendement && <div><dt>Rendement médian</dt><dd>{pct(secteur.rendement)}</dd></div>}
+                  {secteur.delaiJours && <div><dt>Délai médian jusqu’à l’offre</dt><dd>{Math.round(secteur.delaiJours)} jours</dd></div>}
+                </dl>
+                <p className="faits__note">Ventes réalisées par France Immeuble dans le département, publiées dans nos références.</p>
+              </Reveal>
+            )}
+
             <p className="fiche-bien__adresse">
               L’adresse exacte, l’état locatif lot par lot et les documents sont transmis avec le
               dossier, sur demande.
             </p>
           </div>
+
+          <aside className="fiche-annonce__cote" aria-label="Prix et offre">
+            <PanneauOffre annonce={b.id} prix={b.prixHai} surface={b.surface} loyerAn={b.loyerHcAn}
+              statut={b.statut} telephone={SITE.tel} telHref={SITE.telHref} />
+          </aside>
         </div>
       </section>
 

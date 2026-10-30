@@ -33,6 +33,7 @@ export default async function BiensProposes({ searchParams }: { searchParams: Pr
   return (
     <>
       <TeteCompte surtitre="Acheter" titre="Biens proposés">
+        <Link href="/mon-compte/favoris/" className="lien-discret">Mes favoris</Link>
         <Link href="/mon-compte/recherches/" className="btn btn--primary">Mes recherches</Link>
       </TeteCompte>
 

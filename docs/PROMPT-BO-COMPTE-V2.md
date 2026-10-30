@@ -49,10 +49,22 @@ avoir vérifié que la ligne appartient au compte et que le chemin commence par
   fichier caché. À ranger avec le contact (au coffre de l'immeuble s'il y en a un), puis à
   effacer du seau.
 
+## 2 quater. Immeubles à vendre du site : favoris et offres (MAV, 31/10)
+
+La page Immeubles à vendre fonctionne maintenant avec le compte, comme Plein Bail :
+
+- `favori` : `{ type, ref, compte, bien, action: "ajouter" | "retirer", bienTitre }`. `bien` est
+  l'`id` de `biens_a_vendre` (celui que vous déposez). C'est un signal d'intérêt pour l'agent,
+  sans e-mail à l'agence. 503 tant que vous ne le lisez pas.
+- `offre_acquereur` peut désigner une annonce au lieu d'une proposition :
+  `{ ..., "annonce": "<id de biens_a_vendre>" }` à la place de `proposition`. Le reste du format
+  du §13 est inchangé. Merci de rattacher l'offre au bien de l'annonce.
+- « Enregistrer la recherche » depuis cette page envoie le `recherche_compte` habituel (§9.4).
+
 ## 2 ter. Rendez-vous : destinataires de l'alerte (MAV, 30/10)
 
 Quand le client a un agent attitré, l'alerte d'une demande de rendez-vous part à l'agent et
-à ma.voci@, sans contact@. Sans agent attitré, elle part à contact@ et à ma.voci@.
+à ma.voci@, sans contact@. Sans agent attitré, elle part à contact@ seulement (MAV, 31/10).
 
 ## 4. Prévenir le site après un dépôt (validé par MAV le 30/10)
 

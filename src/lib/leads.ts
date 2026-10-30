@@ -143,12 +143,16 @@ export type Issue = "bo" | "file" | "perdu" | "refuse";
  */
 export async function deposerLead(
   lead: Record<string, unknown>,
-  { refusDefinitif = false, contexte = {}, alerte = {} }: { refusDefinitif?: boolean; contexte?: Contexte; alerte?: OptionsAlerte } = {},
+  { refusDefinitif = false, contexte = {}, alerte = {}, silencieux = false }: {
+    refusDefinitif?: boolean; contexte?: Contexte; alerte?: OptionsAlerte;
+    /** Un signal (un favori), pas un formulaire : pas d'e-mail à l'agence, sauf si rien n'a pu être gardé. */
+    silencieux?: boolean;
+  } = {},
 ): Promise<Issue> {
   const issue = await transmettre(lead, refusDefinitif);
   // Une alerte à l'agence par formulaire reçu, quelle que soit l'issue : si
   // rien n'a pu être enregistré, cet e-mail en devient la seule trace.
-  await alerter(lead, issue, contexte, alerte);
+  if (!silencieux || issue === "perdu") await alerter(lead, issue, contexte, alerte);
   return issue;
 }
 

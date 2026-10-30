@@ -15,7 +15,10 @@ const MESSAGES_ETAT: Record<string, string> = {
  * Connexion, création de compte et mot de passe oublié (§9.1). Tout passe par
  * nos routes serveur ; le navigateur ne reçoit jamais de jeton.
  */
-export function Acces({ etat }: { etat?: string }) {
+/** Après la connexion, retour sur la page d'où l'on venait (un chemin du site, rien d'autre). */
+const retourSur = (r?: string) => (r && /^\/(?!\/)[\w\-./?=&%#,]*$/.test(r) ? r : "/mon-compte/");
+
+export function Acces({ etat, retour }: { etat?: string; retour?: string }) {
   const uid = useId();
   const [onglet, setOnglet] = useState<Onglet>(etat === "lien-expire" ? "oubli" : "connexion");
   const [email, setEmail] = useState("");
@@ -40,7 +43,7 @@ export function Acces({ etat }: { etat?: string }) {
           : await envoyer("/api/compte/mot-de-passe/", { email });
     setEnvoi(false);
     if (!r.ok) return setErreur(r.erreur ?? "");
-    if (onglet === "connexion") window.location.assign("/mon-compte/");
+    if (onglet === "connexion") window.location.assign(retourSur(retour));
     else setFait(onglet);
   }
 

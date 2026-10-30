@@ -31,8 +31,11 @@ export type Contexte = { email?: string; prenom?: string; nom?: string; telephon
  */
 export type OptionsAlerte = {
   copie?: string[];
-  /** Rendez-vous (MAV, 30/10/2026) : quand l'agent attitré est en copie, contact@ ne reçoit pas l'alerte. */
-  agentAuLieuDeContact?: boolean;
+  /**
+   * Rendez-vous (MAV, 31/10/2026) : avec un agent attitré, l'alerte part à
+   * l'agent et à ma.voci@, sans contact@ ; sans agent, à contact@ seulement.
+   */
+  regleRendezVous?: boolean;
   historique?: { de: "client" | "agent"; auteur: string | null; texte: string; envoye_le: string }[];
 };
 
@@ -150,6 +153,8 @@ function objet(l: Lead): string {
       return `Offre d'achat en ligne : ${euros(l.montant)}${qui(l) ? ` (${qui(l)})` : ""}`;
     case "profil_investisseur":
       return `Profil investisseur${qui(l) ? ` : ${qui(l)}` : ""}`;
+    case "favori":
+      return `Favori ${l.action === "retirer" ? "retiré" : "ajouté"} : ${texte(l.bienTitre)}${qui(l) ? ` (${qui(l)})` : ""}`;
     case "coordonnees":
       return `Coordonnées modifiées par le client${qui(l) ? ` : ${qui(l)}` : ""}`;
     case "compte_supprime":
@@ -328,7 +333,10 @@ export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {},
   const repondreA = texte(l.email);
   // L'agent attitré en copie, sans doublon avec les destinataires habituels.
   const copie = (options.copie ?? []).map((x) => x.trim().toLowerCase()).filter((x) => EMAIL.test(x));
-  const habituels = options.agentAuLieuDeContact && copie.length ? cfg.a.filter((x) => !/^contact@/i.test(x)) : cfg.a;
+  const accueil = cfg.a.filter((x) => /^contact@/i.test(x));
+  const habituels = !options.regleRendezVous ? cfg.a
+    : copie.length ? cfg.a.filter((x) => !/^contact@/i.test(x))
+    : accueil.length ? accueil : cfg.a;
   const a = [...habituels, ...copie]
     .filter((x, i, t) => t.findIndex((y) => y.toLowerCase() === x.toLowerCase()) === i);
   try {

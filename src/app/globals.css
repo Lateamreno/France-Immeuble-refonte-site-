@@ -3824,3 +3824,170 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 .compte-contenu .step-head h3{font-size:1.15rem;font-family:var(--font-body);font-variation-settings:normal;font-weight:600;letter-spacing:0;line-height:1.3;}
 .compte-contenu .field-nav{justify-content:flex-start;}
 .compte-contenu .field-nav .btn{margin-inline:0;}
+
+/* ==========================================================================
+   24. IMMEUBLES À VENDRE avec le compte (MAV, 31/10/2026, sur le modèle de Plein Bail)
+   Barre de recherche sombre posée sur la section crème, puces des filtres,
+   tris, cœur des favoris ; fiche avec panneau d'offre et simulation.
+   ========================================================================== */
+.biens-recherche{padding-top:var(--space-l);}
+.recherche-biens{
+  position:relative;z-index:3;margin-bottom:var(--space-s);
+  background:var(--color-noir-2);color:var(--color-creme);border-radius:var(--radius-card);
+  padding:clamp(16px,2vw,22px);box-shadow:0 18px 44px color-mix(in srgb, var(--color-noir) 22%, transparent);
+}
+.recherche-biens__barre{display:grid;gap:14px;align-items:end;}
+@media (min-width:1100px){
+  .recherche-biens__barre{grid-template-columns:minmax(0,2.2fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) auto;}
+  .recherche-biens__barre > .recherche-biens__champ + .recherche-biens__champ{border-left:1px solid var(--color-ligne);padding-left:14px;}
+}
+@media (min-width:640px) and (max-width:1099px){
+  .recherche-biens__barre{grid-template-columns:1fr 1fr;}
+  .recherche-biens__champ--lieu,.recherche-biens__actions{grid-column:1 / -1;}
+}
+.recherche-biens__champ{position:relative;display:flex;flex-direction:column;gap:7px;min-width:0;}
+.recherche-biens__lbl{
+  display:flex;align-items:center;gap:7px;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--color-gris);white-space:nowrap;
+}
+.recherche-biens__lbl svg{color:var(--color-bronze);flex:none;}
+.recherche-biens__lbl b{margin-left:auto;color:var(--color-bronze-clair);font-weight:600;letter-spacing:.04em;}
+.recherche-biens input:not([type=range]):not([type=checkbox]),.recherche-biens select{
+  width:100%;min-width:0;background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-pill);
+  padding:11px 16px;color:var(--color-creme);font:inherit;font-size:15px;
+}
+.recherche-biens input::placeholder{color:color-mix(in srgb, var(--color-gris) 70%, var(--color-noir-3));}
+.recherche-biens input:focus-visible,.recherche-biens select:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.recherche-biens__champ--rdt .curseur{margin:8px 0 6px;}
+.recherche-biens__actions{display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+.recherche-biens__actions .btn{margin-inline:0;padding:13px 26px;gap:10px;}
+.recherche-biens__actions .lien-discret{text-align:center;}
+.recherche-biens__plus{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;margin-top:16px;padding-top:16px;border-top:1px solid var(--color-ligne);}
+.recherche-biens__plus .recherche-biens__champ{width:min(180px,100%);}
+.recherche-biens__case{display:flex;align-items:center;gap:10px;color:var(--color-creme);font-size:15px;padding-bottom:10px;cursor:pointer;}
+.recherche-biens__case input{width:18px;height:18px;accent-color:var(--color-bronze);}
+.recherche-biens__enregistrer{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px 14px;margin-top:14px;}
+.enregistrer-recherche{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:var(--radius-pill);cursor:pointer;
+  background:var(--color-noir);border:1px solid var(--color-bronze-profond);color:var(--color-bronze);font:500 14px/1 var(--font-body);
+}
+.enregistrer-recherche:hover{border-color:var(--color-bronze);}
+.enregistrer-recherche:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.recherche-biens__enregistrer .compte-confirme,.recherche-biens__enregistrer .compte-erreur{margin:0;}
+/* Localisation : lieux choisis en pastilles, suggestions en liste */
+.lieux{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:46px;padding:5px 6px 5px 8px;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:24px;
+}
+.lieux:focus-within{border-color:var(--color-bronze);}
+.recherche-biens .lieux input{flex:1;min-width:120px;border:0 !important;background:none !important;padding:6px 8px !important;}
+.recherche-biens .lieux input:focus-visible{outline:none;}
+.lieu{display:inline-flex;align-items:center;gap:4px;padding:5px 6px 5px 12px;border-radius:var(--radius-pill);background:color-mix(in srgb, var(--color-bronze) 18%, var(--color-noir-3));color:var(--color-bronze-clair);font-size:13px;white-space:nowrap;}
+.lieu button{border:0;background:none;color:inherit;cursor:pointer;font-size:16px;line-height:1;width:20px;height:20px;border-radius:50%;}
+.lieu button:focus-visible{outline:2px solid var(--color-bronze-clair);}
+.lieux__liste{
+  position:absolute;left:0;right:0;top:100%;margin:6px 0 0;padding:6px;list-style:none;z-index:5;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:14px;box-shadow:0 18px 40px color-mix(in srgb, var(--color-noir) 40%, transparent);
+}
+.lieux__liste li{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--color-creme);}
+.lieux__liste li:hover{background:var(--color-noir-2);}
+.lieux__liste small{color:var(--color-gris);white-space:nowrap;}
+/* Puces des filtres actifs et tris */
+.puces-filtres{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 var(--space-s);}
+.puce-filtre{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:var(--radius-pill);background:var(--color-noir);color:var(--color-creme);font-size:14px;text-decoration:none;}
+.puce-filtre span{color:var(--color-bronze);}
+.puce-filtre:hover{background:var(--color-noir-3);}
+.resultats-tete{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 20px;margin-bottom:var(--space-s);}
+.resultats-tete__nb{margin:0;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.resultats-tete__nb strong{color:var(--color-noir);font-family:var(--font-mono-site);}
+.tris{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:100%;}
+.tris::-webkit-scrollbar{display:none;}
+.tris > span{font-size:14px;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));margin-right:4px;}
+.tri{white-space:nowrap;padding:6px 12px;border-radius:var(--radius-pill);font-size:14px;color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));text-decoration:none;}
+.tri:hover{color:var(--color-noir);}
+.tri.est-actif{background:var(--color-noir);color:var(--color-creme);}
+.vide--recherche{text-align:center;padding-block:var(--space-l);}
+/* Le cœur des favoris */
+.bien-carte-cadre{position:relative;display:flex;width:100%;}
+.bien-carte__badges{right:58px;}
+.favori{
+  display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;cursor:pointer;
+  border:1px solid color-mix(in srgb, var(--color-creme) 30%, transparent);
+  background:color-mix(in srgb, var(--color-noir) 62%, transparent);color:var(--color-creme);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:transform .15s ease,color .15s ease;
+}
+.favori:hover{transform:scale(1.06);}
+.favori.est-actif{color:var(--color-bronze);border-color:var(--color-bronze);}
+.favori:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.favori:disabled{opacity:.7;}
+.bien-carte__favori{position:absolute;top:10px;right:10px;z-index:2;}
+.galerie{position:relative;}
+.galerie__favori{position:absolute;top:14px;right:14px;z-index:2;width:46px;height:46px;}
+.favori--libelle{width:auto;height:auto;display:inline-flex;gap:10px;padding:13px 22px;border-radius:var(--radius-pill);font:500 15px/1 var(--font-body);}
+.favori--plein{background:var(--color-noir);border-color:var(--color-bronze-profond);color:var(--color-bronze);-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:center;width:100%;}
+.favori--plein.est-actif{background:color-mix(in srgb, var(--color-bronze) 16%, var(--color-noir));}
+/* Fiche : contenu à gauche, panneau d'offre collant à droite */
+.fiche-annonce{display:grid;gap:var(--space-l);align-items:start;}
+.fiche-annonce__principal{display:flex;flex-direction:column;gap:var(--space-l);min-width:0;}
+@media (min-width:1000px){
+  .fiche-annonce{grid-template-columns:minmax(0,1fr) minmax(340px,410px);}
+  .fiche-annonce__cote{position:sticky;top:calc(var(--header-h) + 20px);}
+}
+.faits--marche dd small{font-family:var(--font-body);font-size:13px;color:var(--color-bronze-profond);}
+.tableau-defile{overflow-x:auto;margin-top:var(--space-s);}
+.etat-financier{width:100%;border-collapse:collapse;font-size:15px;}
+.etat-financier th{text-align:left;font-weight:400;padding:11px 0;color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));border-bottom:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);}
+.etat-financier td{text-align:right;padding:11px 0 11px 16px;font-family:var(--font-mono-site);font-weight:600;white-space:nowrap;border-bottom:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);}
+.etat-financier__total th,.etat-financier__total td{color:var(--color-noir);font-weight:700;}
+.panneau-offre{
+  background:var(--color-noir-2);color:var(--color-creme);border-radius:var(--radius-card);padding:clamp(18px,2vw,26px);
+  display:flex;flex-direction:column;gap:18px;border:1px solid var(--color-ligne);
+  box-shadow:0 22px 50px color-mix(in srgb, var(--color-noir) 24%, transparent);
+}
+.panneau-offre__prix{text-align:center;}
+.panneau-offre__lbl{margin:0;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-gris);text-align:center;}
+.panneau-offre__montant{margin:4px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);font-size:clamp(1.8rem,1.4rem + 1.2vw,2.3rem);color:var(--color-bronze);text-align:center;line-height:1.05;}
+.panneau-offre__montant small{font-size:.5em;color:var(--color-bronze-clair);}
+.panneau-offre__note{margin:6px 0 0;font-size:13px;line-height:1.45;color:var(--color-gris);text-align:center;}
+.panneau-offre__boutons{display:flex;flex-direction:column;gap:10px;align-items:stretch;}
+.panneau-offre__boutons .btn{margin-inline:0;padding:13px 22px;}
+.panneau-offre__boutons .lien-discret{text-align:center;}
+.panneau-offre__tel{font-family:var(--font-mono-site);}
+.panneau-offre__deja{margin:0;padding:12px 14px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 10%, transparent);font-size:14px;}
+.panneau-offre__simulation{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--color-ligne);padding-top:18px;}
+.panneau-offre__simulation .btn{margin-inline:0;}
+.panneau-offre__details{display:flex;flex-direction:column;gap:12px;}
+.panneau-offre__fait{border-top:1px solid var(--color-ligne);padding-top:18px;text-align:center;}
+.offre-saisie{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;}
+.offre-saisie button{width:44px;height:44px;border-radius:50%;border:1px solid var(--color-ligne);background:var(--color-noir-3);color:var(--color-bronze);font-size:22px;cursor:pointer;}
+.offre-saisie button:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.offre-saisie input{min-width:0;text-align:center;background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-pill);color:var(--color-creme);font:600 18px/1 var(--font-mono-site);padding:0 10px;}
+.offre-saisie input:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;}
+.kpi > div{border:1px solid var(--color-ligne);border-radius:12px;padding:9px 8px;text-align:center;min-width:0;}
+.kpi dt{font-size:11px;color:var(--color-gris);}
+.kpi dd{margin:3px 0 0;font:700 15px/1.2 var(--font-mono-site);color:var(--color-creme);overflow-wrap:anywhere;}
+.kpi dd small{display:block;margin-top:2px;font:400 10.5px/1.25 var(--font-body);color:var(--color-gris);}
+.kpi--plus dd{color:var(--color-bronze);}
+.kpi--moins dd{color:var(--color-bronze-clair-2);}
+.reglage{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;}
+.reglage label{font-size:13px;color:var(--color-gris);}
+.reglage output{font:600 13px/1 var(--font-mono-site);color:var(--color-creme);}
+.reglage .curseur{grid-column:1 / -1;height:22px;}
+@media (max-width:420px){.kpi{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.recherche-biens__filtres-mob{display:none;}
+@media (max-width:639px){
+  .recherche-biens:not(.est-deplie) .recherche-biens__barre > .recherche-biens__champ:not(.recherche-biens__champ--lieu),
+  .recherche-biens:not(.est-deplie) .recherche-biens__actions > .lien-discret,
+  .recherche-biens:not(.est-deplie) .recherche-biens__plus{display:none;}
+  .recherche-biens__actions{flex-direction:row;flex-wrap:wrap;}
+  .recherche-biens__actions .btn{flex:1 1 auto;}
+  .recherche-biens__actions > .lien-discret{flex-basis:100%;}
+  .recherche-biens__filtres-mob{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:1 1 auto;padding:12px 16px;
+    border-radius:var(--radius-pill);background:var(--color-noir);border:1px solid var(--color-bronze-profond);
+    color:var(--color-bronze);font:500 15px/1 var(--font-body);cursor:pointer;
+  }
+  .recherche-biens__enregistrer{justify-content:center;}
+}
+.tris > span{white-space:nowrap;}
