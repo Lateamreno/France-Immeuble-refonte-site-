@@ -27,8 +27,14 @@ export type Utilisateur = {
   email: string;
   email_confirmed_at?: string | null;
   user_metadata?: { prenom?: string; nom?: string; telephone?: string };
-  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences };
+  app_metadata?: {
+    rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences;
+    nouvel_email?: ChangementEmail | null;
+  };
 };
+
+/** Un changement d'adresse en attente de son code (empreinte seulement, jamais le code). */
+export type ChangementEmail = { email: string; empreinte: string; expire: number; essais: number; envois: number[] };
 
 /** Les e-mails de notification que le client accepte (MAV, 30/10/2026). Tous actifs par défaut. */
 export type Preferences = { messages?: boolean; biens?: boolean; offres?: boolean };
@@ -201,6 +207,25 @@ export async function modifierPreferences(id: string, prefs: Required<Preference
   });
 }
 
+/**
+ * Mise à jour d'un compte par le serveur, après vérification de la session :
+ * coordonnées (`user_metadata`), adresse e-mail déjà prouvée par un code,
+ * changement d'adresse en attente (`app_metadata`, que le client ne peut pas écrire).
+ */
+export async function modifierCompte(id: string, champs: {
+  user_metadata?: { prenom: string; nom: string; telephone: string };
+  email?: string;
+  app_metadata?: Record<string, unknown>;
+}): Promise<Utilisateur> {
+  const cfg = cfgSecrete();
+  return gotrue<Utilisateur>(`admin/users/${id}`, {
+    method: "PUT",
+    cle: cfg,
+    jeton: cfg.cle,
+    body: JSON.stringify({ ...champs, ...(champs.email ? { email_confirm: true } : {}) }),
+  });
+}
+
 /** Un compte lu par son identifiant (notifications envoyées par le serveur). */
 export async function utilisateurParId(id: string): Promise<Utilisateur | null> {
   const cfg = cfgSecrete();
@@ -339,7 +364,10 @@ export function verifierJeton(type: "invite" | "magiclink", empreinte: string): 
 export type UtilisateurAdmin = Utilisateur & {
   created_at?: string;
   last_sign_in_at?: string | null;
-  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences };
+  app_metadata?: {
+    rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences;
+    nouvel_email?: ChangementEmail | null;
+  };
 };
 
 /** Une page de la liste des comptes (administration, clé secrète du site). */

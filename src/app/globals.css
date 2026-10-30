@@ -3791,3 +3791,36 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 /* Le dossier vendeur, ouvert dans le cadre du compte. */
 .compte-contenu .dossier-vendeur-sec{padding:0;background:none;min-height:0;}
 .compte-contenu .dossier-vendeur-sec > .container{padding-inline:0;max-width:none;}
+.carte-agent__photo{width:58px;height:58px;border-radius:50%;object-fit:cover;flex:none;border:2px solid var(--color-bronze-profond);}
+.coordonnees-email{border-top:1px solid var(--color-ligne);padding-top:var(--space-xs);display:flex;flex-direction:column;gap:8px;}
+.coordonnees-email .field__lbl{margin:0;}
+.coordonnees-email__actuel{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:0;color:var(--color-creme);overflow-wrap:anywhere;}
+/* Pièces jointes d'un message */
+.joindre{
+  width:46px;height:46px;flex:none;border-radius:50%;border:1px solid var(--color-ligne);background:var(--color-noir-3);
+  color:var(--color-bronze);display:grid;place-items:center;cursor:pointer;
+}
+.joindre:hover:not(:disabled){border-color:var(--color-bronze-profond);}
+.joindre:disabled{opacity:.4;cursor:default;}
+.joindre:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.pieces-jointes{display:flex;flex-direction:column;gap:6px;}
+.pieces-jointes:has(.pieces-jointes__liste:empty){display:none;}
+.pieces-jointes__liste{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+.pieces-jointes__liste li{
+  display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:5px 6px 5px 10px;border-radius:var(--radius-pill);
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);color:var(--color-creme);font-size:13px;
+}
+.pieces-jointes__liste li svg{color:var(--color-bronze);flex:none;}
+.pieces-jointes__liste li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.pieces-jointes__retirer{width:22px;height:22px;border-radius:50%;border:0;background:none;color:var(--color-gris);cursor:pointer;font-size:16px;line-height:1;flex:none;}
+.pieces-jointes__retirer:hover{color:var(--color-creme);}
+.fil-reponse__saisie{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+.fil-reponse__saisie textarea{width:100%;}
+.fil__pieces{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+.fil__pieces li{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--color-bronze-clair);overflow-wrap:anywhere;}
+.fil__pieces li svg{color:var(--color-bronze);flex:none;}
+/* Les formulaires repris dans le compte (mot de passe) : titre à l'échelle du panneau, bouton à gauche. */
+.compte-contenu .step-head{margin-bottom:var(--space-xs);}
+.compte-contenu .step-head h3{font-size:1.15rem;font-family:var(--font-body);font-variation-settings:normal;font-weight:600;letter-spacing:0;line-height:1.3;}
+.compte-contenu .field-nav{justify-content:flex-start;}
+.compte-contenu .field-nav .btn{margin-inline:0;}

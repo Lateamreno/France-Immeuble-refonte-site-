@@ -9,7 +9,11 @@ import { configSite } from "../supabase-site";
  */
 export const SEAU = "depots-proprietaires";
 
-/** Formats du §10.2, par extension : le type annoncé par le navigateur ne fait pas foi. */
+/**
+ * Formats du §10.2, par extension : le type annoncé par le navigateur ne fait pas foi.
+ * Les anciens Word et Excel (.doc, .xls) sont refusés depuis le 30/10/2026 : ce sont
+ * eux qui portent les macros. Un PDF ou un .docx les remplace.
+ */
 export const FORMATS: Record<string, string> = {
   pdf: "application/pdf",
   jpg: "image/jpeg",
@@ -18,9 +22,7 @@ export const FORMATS: Record<string, string> = {
   webp: "image/webp",
   heic: "image/heic",
   heif: "image/heif",
-  doc: "application/msword",
   docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  xls: "application/vnd.ms-excel",
   xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   odt: "application/vnd.oasis.opendocument.text",
   ods: "application/vnd.oasis.opendocument.spreadsheet",
@@ -89,6 +91,40 @@ export async function lireDocumentClient(objet: string): Promise<Uint8Array | nu
   if (r.status === 404 || r.status === 400) return null;
   if (!r.ok) throw new Error(`stockage ${r.status}`);
   return new Uint8Array(await r.arrayBuffer());
+}
+
+/** true si l'objet est dans le seau des dépôts (pièce jointe annoncée par un message). */
+export async function objetExiste(objet: string): Promise<boolean> {
+  const c = cfg();
+  const r = await fetch(`${c.url}/storage/v1/object/info/${SEAU}/${chemin(objet)}`, {
+    headers: { apikey: c.cle, Authorization: `Bearer ${c.cle}` },
+    cache: "no-store",
+  }).catch(() => null);
+  return !!r?.ok;
+}
+
+/** Le seau privé des photos d'agents, copiées une fois depuis l'adresse donnée par le BO. */
+export const SEAU_AGENTS = "photos-agents";
+
+export async function lirePhotoAgent(objet: string): Promise<{ octets: Uint8Array; type: string } | null> {
+  const c = cfg();
+  const r = await fetch(`${c.url}/storage/v1/object/${SEAU_AGENTS}/${chemin(objet)}`, {
+    headers: { apikey: c.cle, Authorization: `Bearer ${c.cle}` },
+    cache: "no-store",
+  }).catch(() => null);
+  if (!r?.ok) return null;
+  return { octets: new Uint8Array(await r.arrayBuffer()), type: r.headers.get("content-type") ?? "image/jpeg" };
+}
+
+export async function poserPhotoAgent(objet: string, octets: Uint8Array, type: string): Promise<void> {
+  const c = cfg();
+  const r = await fetch(`${c.url}/storage/v1/object/${SEAU_AGENTS}/${chemin(objet)}`, {
+    method: "POST",
+    headers: { apikey: c.cle, Authorization: `Bearer ${c.cle}`, "Content-Type": type, "x-upsert": "true" },
+    body: octets as BodyInit,
+    cache: "no-store",
+  });
+  if (!r.ok) throw new Error(`stockage ${r.status}`);
 }
 
 /** Efface des objets du seau. Ne lève pas : un effacement raté est journalisé. */

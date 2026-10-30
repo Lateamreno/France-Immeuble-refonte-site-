@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Picto } from "@/components/Picto";
 import { Repondre } from "@/components/compte/Messagerie";
 import { TeteCompte } from "@/components/compte/Ecrans";
 import { ecranCompte, sujetDe } from "@/lib/compte/ecran";
@@ -38,6 +39,11 @@ export default async function Conversation({ params }: { params: Promise<{ conve
                 <div className="fil__bulle">
                   <p className="fil__auteur">{m.de === "agent" ? m.auteur ?? "France Immeuble" : "Vous"} · {heure(m.envoye_le)}{m.enCours ? " · en cours d’envoi" : ""}</p>
                   <p className="fil__texte">{m.texte}</p>
+                  {m.pieces.length > 0 && (
+                    <ul className="fil__pieces" aria-label="Pièces jointes">
+                      {m.pieces.map((n) => <li key={n}><Picto nom="trombone" taille={14} />{n}</li>)}
+                    </ul>
+                  )}
                 </div>
               </li>
             </Fragment>
@@ -45,7 +51,7 @@ export default async function Conversation({ params }: { params: Promise<{ conve
         })}
       </ol>
       <Repondre conversation={c.id} />
-      <p className="compte-form__aide">Votre message part à l’agence, et une copie vous arrive par e-mail avec l’historique.</p>
+      <p className="compte-form__aide">Votre message part à l’agence, et une copie vous arrive par e-mail avec l’historique. Les pièces jointes sont rangées dans votre dossier à l’agence.</p>
     </>
   );
 }

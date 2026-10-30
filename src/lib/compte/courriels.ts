@@ -86,3 +86,34 @@ export function nouvelleOffre(immeuble: string, montant: string | null, bien: st
   const text = ["Bonjour,", "", `Votre agent vous a transmis une offre pour votre immeuble de ${immeuble}${montant ? `, à ${montant}` : ""}.`, "", lien, "", piedTexte()].join("\n");
   return { sujet: `Une offre pour votre immeuble de ${immeuble}`, html, text };
 }
+
+/** Le code qui prouve une nouvelle adresse (changement depuis Mon profil). */
+export function codeNouvelleAdresse(code: string): Courriel {
+  const html = gabarit({
+    apercu: `Votre code : ${code}`,
+    corps: [
+      paragraphe("Bonjour,"),
+      paragraphe("Pour utiliser cette adresse dans votre espace France Immeuble, saisissez ce code&nbsp;:"),
+      `<p style="margin:8px 0 24px;font-family:'Courier New',Courier,monospace;font-size:30px;letter-spacing:.3em;font-weight:bold">${echap(code)}</p>`,
+      paragraphe("Il reste valable 15 minutes. Si vous n’avez rien demandé, ignorez cet e-mail : rien ne change."),
+    ].join("\n"),
+    piedDePage: pied(false),
+  });
+  const text = ["Bonjour,", "", "Pour utiliser cette adresse dans votre espace France Immeuble, saisissez ce code :", code, "", "Il reste valable 15 minutes. Si vous n'avez rien demandé, ignorez cet e-mail.", "", piedTexte()].join("\n");
+  return { sujet: `Votre code : ${code}`, html, text };
+}
+
+/** Prévenir l'ancienne adresse qu'elle n'ouvre plus le compte. */
+export function adresseChangee(nouvelle: string): Courriel {
+  const html = gabarit({
+    apercu: "L’adresse de votre espace client a changé.",
+    corps: [
+      paragraphe("Bonjour,"),
+      paragraphe(`L’adresse de votre espace France Immeuble est désormais <b>${echap(nouvelle)}</b>. Cette adresse-ci ne sert plus à vous connecter.`),
+      paragraphe("Si vous n’êtes pas à l’origine de ce changement, appelez-nous tout de suite."),
+    ].join("\n"),
+    piedDePage: pied(false),
+  });
+  const text = ["Bonjour,", "", `L'adresse de votre espace France Immeuble est désormais ${nouvelle}.`, "Si vous n'êtes pas à l'origine de ce changement, appelez-nous tout de suite.", "", piedTexte()].join("\n");
+  return { sujet: "L’adresse de votre espace client a changé", html, text };
+}

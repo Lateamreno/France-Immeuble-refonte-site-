@@ -6,7 +6,7 @@ export { CATEGORIES, estCategorie, type CleCategorie } from "./categories";
 /** Vérifie un dépôt annoncé ; renvoie un message d'erreur, ou null. */
 export function controlerAnnonce(nom: string, taille: number): string | null {
   if (!FORMATS[extension(nom)]) {
-    return "Format refusé. Envoyez un PDF, une image (JPEG, PNG, WebP, HEIC), un fichier Word, Excel ou OpenDocument.";
+    return "Format refusé. Envoyez un PDF, une image (JPEG, PNG, WebP, HEIC), un fichier Word ou Excel récent (.docx, .xlsx) ou OpenDocument.";
   }
   if (!Number.isFinite(taille) || taille <= 0) return "Le fichier est vide.";
   if (taille > TAILLE_MAX) return "Le fichier dépasse 25 Mo.";
@@ -14,6 +14,27 @@ export function controlerAnnonce(nom: string, taille: number): string | null {
 }
 
 export const nombreDeMorceaux = (taille: number) => Math.max(1, Math.ceil(taille / TAILLE_MORCEAU));
+
+/**
+ * Ce qu'un fichier peut cacher pour s'exécuter chez l'agent qui l'ouvre :
+ * macros d'un Word ou d'un Excel (même renommé en .docx), code ou fichier
+ * caché dans un PDF. Le site n'ouvre jamais les pièces ; ce contrôle protège
+ * les postes de l'agence. Renvoie un message, ou null si rien n'est trouvé.
+ */
+export function contenuSuspect(nom: string, o: Uint8Array): string | null {
+  const ext = extension(nom);
+  const texteBrut = () => Buffer.from(o.buffer, o.byteOffset, o.byteLength).toString("latin1");
+  if (["docx", "xlsx"].includes(ext) && /vbaProject\.bin|vbaData\.xml/i.test(texteBrut())) {
+    return "Ce fichier contient des macros. Enregistrez-le en PDF, puis renvoyez-le.";
+  }
+  if (["odt", "ods"].includes(ext) && /Basic\/|Scripts\//.test(texteBrut())) {
+    return "Ce fichier contient des macros. Enregistrez-le en PDF, puis renvoyez-le.";
+  }
+  if (ext === "pdf" && /\/(JavaScript|Launch|EmbeddedFile|RichMedia)\b/.test(texteBrut())) {
+    return "Ce PDF contient du code ou un fichier caché. Imprimez-le en PDF, puis renvoyez-le.";
+  }
+  return null;
+}
 
 /**
  * Le contenu correspond-il à l'extension ? On lit les premiers octets : un
@@ -30,7 +51,6 @@ export function contenuConforme(nom: string, o: Uint8Array): boolean {
     case "webp": return ascii(0, "RIFF") && ascii(8, "WEBP");
     case "heic": case "heif": return ascii(4, "ftyp");
     case "docx": case "xlsx": case "odt": case "ods": return debut(0x50, 0x4b, 0x03, 0x04);
-    case "doc": case "xls": return debut(0xd0, 0xcf, 0x11, 0xe0);
     default: return false;
   }
 }

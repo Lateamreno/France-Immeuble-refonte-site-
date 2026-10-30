@@ -7,7 +7,7 @@ import type { DonneesCompte, Message } from "./donnees";
  * s'affiche « en cours d'envoi » depuis la copie du site (contrat §12.2).
  */
 
-export type LigneFil = Pick<Message, "de" | "auteur" | "texte" | "envoye_le"> & { cle: string; enCours?: boolean };
+export type LigneFil = Pick<Message, "de" | "auteur" | "texte" | "envoye_le" | "pieces"> & { cle: string; enCours?: boolean };
 
 export type Conversation = {
   id: string;
@@ -38,17 +38,20 @@ export function conversations(d: DonneesCompte): Conversation[] {
   };
 
   for (const m of d.messages) {
-    ouvrir(m.conversation, m.titre, m.bien_cle, null).fil.push({ cle: m.cle, de: m.de, auteur: m.auteur, texte: m.texte, envoye_le: m.envoye_le });
+    ouvrir(m.conversation, m.titre, m.bien_cle, null).fil.push({ cle: m.cle, de: m.de, auteur: m.auteur, texte: m.texte, envoye_le: m.envoye_le, pieces: m.pieces ?? [] });
   }
   for (const s of d.saisies) {
     if (s.type !== "message") continue;
-    const x = s.donnees as { conversation?: string; titre?: string; texte?: string; bien?: string; proposition?: string };
+    const x = s.donnees as { conversation?: string; titre?: string; texte?: string; bien?: string; proposition?: string; pieces?: { nom?: string }[] };
     if (!x.conversation || !x.texte) continue;
     const c = ouvrir(x.conversation, x.titre ?? null, x.bien ?? null, x.proposition ?? null);
     if (x.proposition && !c.proposition) c.proposition = x.proposition;
     const revenu = c.fil.some((l) => l.de === "client" && !l.enCours && meme(l.texte, x.texte!) &&
       new Date(l.envoye_le).getTime() >= new Date(s.envoye_le).getTime() - 120_000);
-    if (!revenu) c.fil.push({ cle: s.ref, de: "client", auteur: null, texte: x.texte, envoye_le: s.envoye_le, enCours: true });
+    if (!revenu) {
+      const pieces = (x.pieces ?? []).map((p) => p?.nom ?? "").filter(Boolean);
+      c.fil.push({ cle: s.ref, de: "client", auteur: null, texte: x.texte, envoye_le: s.envoye_le, pieces, enCours: true });
+    }
   }
 
   const liste = [...parId.values()];

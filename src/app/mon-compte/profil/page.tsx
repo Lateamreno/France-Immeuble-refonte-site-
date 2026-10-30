@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Deconnexion, FermerCompte, NouveauMotDePasse } from "@/components/compte/Actions";
-import { Preferences, ProfilInvestisseur } from "@/components/compte/Profil";
+import { Coordonnees, Preferences, ProfilInvestisseur } from "@/components/compte/Profil";
 import { Panneau, TeteCompte } from "@/components/compte/Ecrans";
 import { ecranCompte } from "@/lib/compte/ecran";
 import { profils } from "@/lib/compte/profil";
@@ -19,15 +18,8 @@ export default async function MonProfil() {
       <TeteCompte surtitre="Mon compte" titre="Mon profil" />
       <div className="compte-grille-profil">
         <Panneau titre="Mes coordonnées" picto="profil">
-          <dl className="coordonnees">
-            <div><dt>Nom</dt><dd>{[u.user_metadata?.prenom, u.user_metadata?.nom].filter(Boolean).join(" ") || "À compléter"}</dd></div>
-            <div><dt>E-mail</dt><dd>{u.email}</dd></div>
-            <div><dt>Téléphone</dt><dd>{u.user_metadata?.telephone || "À compléter"}</dd></div>
-          </dl>
-          <p className="compte-form__aide">
-            Un changement ? <Link href="/mon-compte/messages/?nouveau=1&titre=Mes%20coordonn%C3%A9es" className="lien-discret">Écrivez-nous</Link>,
-            votre agent met votre fiche à jour.
-          </p>
+          <Coordonnees prenom={u.user_metadata?.prenom ?? ""} nom={u.user_metadata?.nom ?? ""}
+            telephone={u.user_metadata?.telephone ?? ""} email={u.email} />
         </Panneau>
 
         <Panneau titre="Notifications" picto="mail" className="ancre" >

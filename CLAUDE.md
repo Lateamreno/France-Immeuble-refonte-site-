@@ -173,8 +173,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   notifications, mot de passe). Envois : `src/lib/compte/envois.ts` (lead au BO, agent attitré en
   copie de l'alerte, copie gardée dans `compte_saisies` jusqu'au retour du BO). E-mails au client :
   `src/lib/compte/avis.ts` (une fois par ligne, table `compte_avis`), préférences dans
-  `app_metadata.notifications`. La photo de l'agent n'est pas affichée (hors domaine, §16) : ses
-  initiales. Demande au BO : `docs/PROMPT-BO-COMPTE-V2.md`.
+  `app_metadata.notifications`. Demande au BO : `docs/PROMPT-BO-COMPTE-V2.md`.
+- **Décisions de MAV du 30/10 au soir** : alerte de rendez-vous à l'agent attitré et ma.voci@,
+  sans contact@ (option `agentAuLieuDeContact`) ; photo de l'agent copiée une fois dans le seau
+  privé `photos-agents` (migration 0013) et servie par `/api/compte/photo-agent/`
+  (`src/lib/compte/photo-agent.ts`) ; le BO appelle `/api/compte/avis/` avec `AVIS_SECRET`, un
+  secret à part de `CRON_SECRET` ; pièces jointes aux messages (cinq, 25 Mo, même seau que les
+  pièces du §10, contrôle du contenu réel, `.doc`/`.xls` refusés, macros et PDF à code refusés :
+  `contenuSuspect` dans `src/lib/compte/pieces.ts`) ; le client change lui-même ses coordonnées,
+  l'e-mail avec un code envoyé à la nouvelle adresse, l'ancienne prévenue (type `coordonnees`).
 
 ### Garde-fous non négociables
 

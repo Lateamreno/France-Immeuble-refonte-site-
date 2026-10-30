@@ -31,6 +31,8 @@ export type Contexte = { email?: string; prenom?: string; nom?: string; telephon
  */
 export type OptionsAlerte = {
   copie?: string[];
+  /** Rendez-vous (MAV, 30/10/2026) : quand l'agent attitré est en copie, contact@ ne reçoit pas l'alerte. */
+  agentAuLieuDeContact?: boolean;
   historique?: { de: "client" | "agent"; auteur: string | null; texte: string; envoye_le: string }[];
 };
 
@@ -84,8 +86,8 @@ const CHAMPS: [string, string, ((v: unknown) => string)?][] = [
   ["date", "Date souhaitée"], ["creneau", "Créneau"], ["objet", "Objet"],
   ["achat_en", "Achète en"], ["societe", "Société"], ["siren", "SIREN"],
   ["immeubles_detenus", "Immeubles détenus"], ["budget", "Budget", euros],
-  ["presentation", "Présentation"],
-  ["titre", "Conversation"], ["texte", "Message"],
+  ["presentation", "Présentation"], ["ancien_email", "Ancienne adresse"],
+  ["titre", "Conversation"], ["texte", "Message"], ["pieces", "Pièces jointes"],
   ["message", "Description"], ["commentaire", "Commentaire"],
 ];
 
@@ -148,6 +150,8 @@ function objet(l: Lead): string {
       return `Offre d'achat en ligne : ${euros(l.montant)}${qui(l) ? ` (${qui(l)})` : ""}`;
     case "profil_investisseur":
       return `Profil investisseur${qui(l) ? ` : ${qui(l)}` : ""}`;
+    case "coordonnees":
+      return `Coordonnées modifiées par le client${qui(l) ? ` : ${qui(l)}` : ""}`;
     case "compte_supprime":
       return `Compte client fermé${qui(l) ? ` : ${qui(l)}` : ""}`;
     default:
@@ -176,6 +180,7 @@ function lignes(l: Lead): [string, string][] {
     if (cle === "reponse") v = REPONSES[texte(v)] ?? v;
     if (cle === "categorie") v = PIECES[texte(v)] ?? v;
     if (CODES[cle]) v = CODES[cle][texte(v)] ?? v;
+    if (cle === "pieces" && Array.isArray(v)) v = (v as { nom?: string }[]).map((x) => texte(x?.nom)).filter(Boolean);
     if (cle === "date" && l.type === "rendez_vous") v = dateFr(v);
     if (Array.isArray(v)) v = v.join(", ");
     const s = format ? format(v) : texte(v);
@@ -322,7 +327,9 @@ export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {},
   const { html, text } = corps(l, issue, options.historique);
   const repondreA = texte(l.email);
   // L'agent attitré en copie, sans doublon avec les destinataires habituels.
-  const a = [...cfg.a, ...(options.copie ?? []).map((x) => x.trim().toLowerCase()).filter((x) => EMAIL.test(x))]
+  const copie = (options.copie ?? []).map((x) => x.trim().toLowerCase()).filter((x) => EMAIL.test(x));
+  const habituels = options.agentAuLieuDeContact && copie.length ? cfg.a.filter((x) => !/^contact@/i.test(x)) : cfg.a;
+  const a = [...habituels, ...copie]
     .filter((x, i, t) => t.findIndex((y) => y.toLowerCase() === x.toLowerCase()) === i);
   try {
     const r = await fetch(`${cfg.api}/v3/mail/send`, {

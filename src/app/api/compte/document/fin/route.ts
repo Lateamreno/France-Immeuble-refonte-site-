@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { deposerLead } from "@/lib/leads";
 import { appartient } from "@/lib/compte/donnees";
-import { contenuConforme, controlerAnnonce, estCategorie } from "@/lib/compte/pieces";
+import { contenuConforme, contenuSuspect, controlerAnnonce, estCategorie } from "@/lib/compte/pieces";
 import { deposerObjet, effacerObjets, extension, FORMATS, lireObjet, nomDeFichier, TAILLE_MAX } from "@/lib/compte/stockage";
 import { exigerCompte, lireJson, refus, texte, UUID, contexteDe } from "@/lib/compte/requete";
 
@@ -16,6 +16,10 @@ export const maxDuration = 60;
  * - 422 : refusée ; on l'efface nous-mêmes et on le dit au propriétaire.
  * - autre : le dépôt attend dans la file et la pièce dans le seau, jusqu'à ce
  *   que le BO réponde. Le propriétaire est prévenu que c'est en cours.
+ *
+ * `pour: "message"` : pièce jointe d'un message (§12.3). Mêmes contrôles, la
+ * pièce est posée dans le seau et son chemin rendu au navigateur ; elle part
+ * au BO avec le message, qui la range puis l'efface.
  */
 export async function POST(req: Request) {
   const s = await exigerCompte(req);
@@ -30,10 +34,13 @@ export async function POST(req: Request) {
   if (!UUID.test(depot) || !Number.isInteger(morceaux) || morceaux < 1 || morceaux > 7) {
     return refus("Dépôt illisible.", 422);
   }
-  if (!UUID.test(bien) || !(await appartient(s.jeton, "compte_biens", bien))) {
-    return refus("Immeuble introuvable.", 404);
+  const pourMessage = b?.pour === "message";
+  if (!pourMessage) {
+    if (!UUID.test(bien) || !(await appartient(s.jeton, "compte_biens", bien))) {
+      return refus("Immeuble introuvable.", 404);
+    }
+    if (!estCategorie(categorie)) return refus("Catégorie inconnue.", 422);
   }
-  if (!estCategorie(categorie)) return refus("Catégorie inconnue.", 422);
 
   const cheminsMorceaux = Array.from({ length: morceaux }, (_, i) => `${compte}/morceaux/${depot}/${i}`);
   const parts: Uint8Array[] = [];
@@ -59,6 +66,8 @@ export async function POST(req: Request) {
   if (!contenuConforme(nom, fichier)) {
     return refus("Le contenu du fichier ne correspond pas à son format. Vérifiez la pièce.", 422);
   }
+  const suspect = contenuSuspect(nom, fichier);
+  if (suspect) return refus(suspect, 422);
 
   const chemin = `${compte}/${depot}-${nomDeFichier(nom)}`;
   try {
@@ -67,6 +76,7 @@ export async function POST(req: Request) {
     console.error("[pièces] pièce non déposée —", e);
     return refus("Envoi interrompu. Réessayez.", 503);
   }
+  if (pourMessage) return NextResponse.json({ ok: true, chemin, nom: nom.slice(0, 120) });
 
   const issue = await deposerLead(
     { type: "document", ref: depot, compte, bien, categorie, chemin, nom },

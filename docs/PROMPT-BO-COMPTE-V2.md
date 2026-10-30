@@ -36,7 +36,25 @@ titulaire, écriture par vous. Le site sert les PDF par son propre serveur, apr�
 avoir vérifié que la ligne appartient au compte et que le chemin commence par
 `<compte>/`.
 
-## 4. Prévenir le site après un dépôt (facultatif, recommandé)
+## 2 bis. Deux envois de plus (31/10)
+
+- `coordonnees` : le client change lui-même son prénom, son nom, son téléphone ou son
+  e-mail depuis Mon profil (MAV, 30/10). `{ type, ref, compte, prenom, nom, telephone, email,
+  ancien_email? }`. `ancien_email` n'est présent que si l'adresse a changé (elle a été prouvée
+  par un code envoyé à la nouvelle adresse). Merci de mettre la fiche contact à jour ; 503
+  tant que vous ne le lisez pas.
+- `message` porte désormais des `pieces` (§12.3) : cinq au plus, sous `<compte>/` dans le seau
+  `depots-proprietaires`. Le site a vérifié le format réel de chaque fichier et refusé les
+  anciens .doc/.xls, les .docx/.xlsx/.odt à macros et les PDF qui contiennent du code ou un
+  fichier caché. À ranger avec le contact (au coffre de l'immeuble s'il y en a un), puis à
+  effacer du seau.
+
+## 2 ter. Rendez-vous : destinataires de l'alerte (MAV, 30/10)
+
+Quand le client a un agent attitré, l'alerte d'une demande de rendez-vous part à l'agent et
+à ma.voci@, sans contact@. Sans agent attitré, elle part à contact@ et à ma.voci@.
+
+## 4. Prévenir le site après un dépôt (validé par MAV le 30/10)
 
 Le site envoie lui-même les e-mails « Nouveau message », « Un immeuble vous est
 proposé », « Une offre pour votre immeuble ». Il les envoie à chaque action d'un
@@ -44,12 +62,19 @@ client et une fois par jour. Pour que le client soit prévenu dans la minute :
 
 ```
 POST https://www.france-immeuble.fr/api/compte/avis/
-Authorization: Bearer <CRON_SECRET du site>
+Authorization: Bearer <AVIS_SECRET>
 ```
 
 juste après un dépôt contenant une ligne `de = 'agent'`, une proposition ou une
-offre transmise. La route ne renvoie que des compteurs. Si vous préférez ne pas
-détenir ce secret, dites-le : on passera par un déclencheur dans la base du site.
+offre transmise. `AVIS_SECRET` est un secret à part, posé par MAV dans les deux
+projets Vercel : il n'ouvre que cette route (la relance des leads garde son propre
+secret). La route ne renvoie que des compteurs ; un appel en trop est sans effet.
+
+## 4 bis. Photo de l'agent
+
+Gardez `agent_photo` en adresse https publique de la photo. Le site la télécharge une
+seule fois, la range chez lui et la sert lui-même. Une nouvelle photo = une nouvelle
+adresse (le site garde la photo par adresse).
 
 ## 5. Ce que votre tableau du 30/10 laisse « à faire », côté site
 

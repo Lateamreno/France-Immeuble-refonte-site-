@@ -1,10 +1,8 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { envoyer } from "./envoyer";
+import { FORMATS_ACCEPTES, televerser } from "./envoyer";
 
-const TAILLE_MORCEAU = 4 * 1024 * 1024;
-const ACCEPT = ".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,.doc,.docx,.xls,.xlsx,.odt,.ods";
 
 /**
  * « Déposer » une pièce dans une catégorie (§10.1).
@@ -28,27 +26,7 @@ export function DepotPiece({ bien, categorie, titre }: { bien: string; categorie
     setEtat("envoi");
     setProgres(0);
     setMessage("");
-    const debut = await envoyer("/api/compte/document/debut/", { bien, categorie, nom: f.name, taille: f.size });
-    if (!debut.ok) { setEtat("erreur"); setMessage(debut.erreur ?? ""); return; }
-    const depot = String(debut.depot);
-    const n = Number(debut.morceaux);
-    for (let i = 0; i < n; i++) {
-      const morceau = f.slice(i * TAILLE_MORCEAU, (i + 1) * TAILLE_MORCEAU);
-      let ok = false;
-      for (let essai = 0; essai < 3 && !ok; essai++) {
-        try {
-          const r = await fetch(
-            `/api/compte/document/morceau/?depot=${depot}&n=${i}&nom=${encodeURIComponent(f.name)}`,
-            { method: "PUT", body: morceau, credentials: "same-origin", headers: { "content-type": "application/octet-stream" } },
-          );
-          ok = r.ok;
-        } catch { ok = false; }
-      }
-      if (!ok) { setEtat("erreur"); setMessage("L’envoi a été interrompu. Vérifiez votre connexion et réessayez."); return; }
-      setProgres(Math.round(((i + 1) / n) * 90));
-    }
-    const fin = await envoyer("/api/compte/document/fin/", { depot, morceaux: n, bien, categorie, nom: f.name });
-    setProgres(100);
+    const fin = await televerser(f, { bien, categorie }, setProgres);
     if (!fin.ok) { setEtat("erreur"); setMessage(fin.erreur ?? ""); return; }
     setEtat(fin.stocke === "bo" ? "ok" : "attente");
   }
@@ -59,7 +37,7 @@ export function DepotPiece({ bien, categorie, titre }: { bien: string; categorie
         ref={champ}
         id={`${uid}-f`}
         type="file"
-        accept={ACCEPT}
+        accept={FORMATS_ACCEPTES}
         className="depot__champ"
         aria-label={`Déposer : ${titre}`}
         onChange={(e) => {

@@ -5,6 +5,7 @@ import { envoyerDuCompte, tropDEnvois } from "@/lib/compte/envois";
 import { copieDuMessage } from "@/lib/compte/courriels";
 import { envoyerAuClient } from "@/lib/notifications";
 import { exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
+import { effacerObjets, extension, FORMATS, objetExiste } from "@/lib/compte/stockage";
 
 export const runtime = "nodejs";
 
@@ -47,6 +48,20 @@ export async function POST(req: Request) {
     return refus("Ce bien ne vous a pas été proposé.", 404);
   }
 
+  // Les pièces jointes ont été posées par /api/compte/document/fin/ (pour: message),
+  // sous le dossier de CE compte. Un chemin d'ailleurs, ou absent du seau, est refusé.
+  const brutes = Array.isArray(b.pieces) ? b.pieces.slice(0, 6) : [];
+  if (brutes.length > 5) return refus("Cinq pièces au plus par message.", 422);
+  const motif = new RegExp(`^${s.utilisateur.id}/[0-9a-f-]{36}-[a-z0-9-]+\\.([a-z0-9]{2,5})$`);
+  const pieces: { chemin: string; nom: string }[] = [];
+  for (const x of brutes as Record<string, unknown>[]) {
+    const chemin = texte(x?.chemin, 300);
+    if (!motif.test(chemin) || !FORMATS[extension(chemin)] || !(await objetExiste(chemin))) {
+      return refus("Une pièce jointe est introuvable. Joignez-la de nouveau.", 422);
+    }
+    pieces.push({ chemin, nom: texte(x?.nom, 120) || chemin.split("/").pop()! });
+  }
+
   const historique = (existante?.fil ?? []).map((l) => ({ de: l.de, auteur: l.auteur, texte: l.texte, envoye_le: l.envoye_le }));
   const { issue } = await envoyerDuCompte(s, d, "message", {
     conversation,
@@ -54,11 +69,17 @@ export async function POST(req: Request) {
     texte: message,
     ...(bien ? { bien } : {}),
     ...(proposition ? { proposition } : {}),
-    pieces: [],
+    pieces,
   }, { historique });
-  if (issue === "perdu") return refus("Envoi impossible pour le moment. Réessayez.", 503);
+  if (issue === "perdu") {
+    await effacerObjets(pieces.map((x) => x.chemin));
+    return refus("Envoi impossible pour le moment. Réessayez.", 503);
+  }
 
-  const c = copieDuMessage(titre, [...historique, { de: "client", auteur: null, texte: message, envoye_le: new Date().toISOString() }], conversation);
+  const c = copieDuMessage(titre, [...historique, {
+    de: "client", auteur: null, envoye_le: new Date().toISOString(),
+    texte: pieces.length ? `${message}\n\nPièces jointes : ${pieces.map((x) => x.nom).join(", ")}` : message,
+  }], conversation);
   await envoyerAuClient({ a: s.utilisateur.email, sujet: c.sujet, html: c.html, text: c.text });
   return NextResponse.json({ ok: true, conversation });
 }

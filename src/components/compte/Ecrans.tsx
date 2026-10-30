@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Picto, type NomPicto } from "@/components/Picto";
+import { PhotoAgent } from "./PhotoAgent";
 import type { Agent } from "@/lib/compte/donnees";
 import { ETAPES_VENTE } from "@/lib/compte/vente";
 
@@ -58,14 +59,14 @@ export function Frise({ rang, compacte = false }: { rang: number; compacte?: boo
 }
 
 /**
- * L'agent attitré, connu après le premier appel (§12.4). Sa photo, servie par
- * le BO hors de notre domaine, n'est pas affichée (§16) : ses initiales.
+ * L'agent attitré, connu après le premier appel (§12.4). Sa photo est copiée
+ * une fois dans le site et servie par lui (§16) ; ses initiales à défaut.
  */
 export function CarteAgent({ agent }: { agent: Agent }) {
   const initiales = (agent.agent_nom ?? "FI").split(/\s+/).map((m) => m[0]).join("").slice(0, 2).toUpperCase();
   return (
     <div className="carte-agent">
-      <span className="carte-agent__initiales" aria-hidden="true">{initiales}</span>
+      <PhotoAgent initiales={initiales} photo={!!agent.agent_photo} />
       <div className="carte-agent__texte">
         <p className="carte-agent__nom">{agent.agent_nom ?? "Votre agent"}</p>
         {agent.agent_poste && <p className="carte-agent__poste">{agent.agent_poste}</p>}
