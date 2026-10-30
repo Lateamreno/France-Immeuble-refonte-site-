@@ -137,6 +137,29 @@ CRM : c'est la vraie mise à l'épreuve de l'architecture.
 acquéreur**, uniquement ce que cet acquéreur a déjà le droit de voir. La RLS garantit qu'il
 ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 
+### Espace client v2 — décisions de MAV du 30/10/2026
+
+- Le menu du site reste en haut ; l'espace s'ouvre dessous comme une application, sans hero.
+  Organisation (A, B ou C) à choisir sur maquettes.
+- **Messagerie** : plusieurs conversations nommées par client, rattachables à un immeuble (achat
+  ou vente) par le client ou par l'agence. Chaque message part aussi par e-mail, à l'agence et au
+  client, avec l'historique.
+- **Rendez-vous** : une demande sur calendrier, confirmée par l'agent. E-mail immédiat au
+  commercial attitré (sinon contact@) et à ma.voci@.
+- **Vendeur** : offres reçues en détail, document d'offre compris (nom inclus) ; retours de visite
+  **anonymisés**. Estimation détaillée avec curseur de prix et données du secteur. Frise :
+  estimation, mandat, commercialisation, visites, offres, compromis, acte. Mandat signé dans
+  DocuSign, le compte montre son état et le PDF.
+- **Acheteur** : documents d'un bien ouverts dès l'envoi du dossier ; offre en ligne avec curseur
+  de prix (comme Plein Bail), envoyée à l'agent qui confirme ; profil investisseur facultatif
+  joint aux offres.
+- **Agent attitré** attribué après le premier appel. L'appel ouvre l'envoi des dossiers en
+  priorité et l'off-market. Sans appel, l'acquéreur est en **D** dans le BO : ne jamais l'afficher
+  au client.
+- Notifications par e-mail (nouveau bien, offre, message), désactivables, gabarit blanc.
+- **Tout ce que le client saisit doit remplir le BO**, pas seulement partir par e-mail. Le BO ne
+  répond 200 qu'une fois l'envoi enregistré ; sinon le site le garde en file et réessaie.
+
 ### Garde-fous non négociables
 
 - **RLS activée sur toutes les tables**, sans exception. La clé `anon` est publique par
