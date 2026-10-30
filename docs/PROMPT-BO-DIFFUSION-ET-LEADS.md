@@ -229,9 +229,13 @@ vendeur était connecté avec une adresse vérifiée.
 | `lots[].dpe` | `A` à `G`, ou null |
 
 À faire côté BO : rattacher ces lots à l'immeuble créé par le premier envoi
-(même `ref`), sans écraser ce qu'un agent aurait déjà saisi. Tant que le BO ne
-sait pas lire ce dépôt, il peut répondre 200 et l'ignorer : l'agence reçoit
-de toute façon l'alerte par e-mail, avec le tableau des lots.
+(même `ref`), sans écraser ce qu'un agent aurait déjà saisi.
+
+⚠️ **Règle (MAV, 30/10/2026) : tout ce que le client saisit sur le site doit
+remplir le BO.** L'e-mail à l'agence n'est qu'une alerte. Le BO ne répond 200
+que lorsque l'envoi est réellement enregistré. S'il ne sait pas encore le lire,
+il répond une erreur (503 par exemple) : le site garde l'envoi dans sa file
+d'attente et le réessaie jusqu'à ce que le BO sache le ranger. Rien ne se perd.
 
 ### Dépôt de recherche → un contact et une recherche
 
