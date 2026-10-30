@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
-import { VISUELS } from "@/lib/visuels";
 
 export const metadata: Metadata = {
   title: "Votre espace client · France Immeuble",
@@ -20,8 +18,9 @@ export default async function Activer({ searchParams }: { searchParams: Promise<
   const { type, jeton } = await searchParams;
   const valide = (type === "invite" || type === "magiclink") && !!jeton && /^[A-Za-z0-9_-]{10,200}$/.test(jeton);
   return (
-    <HeroMedia image={VISUELS.interieurToits.src} alt={VISUELS.interieurToits.alt}>
-      <>
+    // Pas de hero dans l'espace client (MAV, 30/10/2026) : un écran simple, un bouton.
+    <section className="section section--noir-2 compte-entree">
+      <div className="container container--narrow">
         <Eyebrow>Espace client</Eyebrow>
         <h1>
           Votre <span className="accent">espace</span> France Immeuble
@@ -47,7 +46,7 @@ export default async function Activer({ searchParams }: { searchParams: Promise<
             </div>
           </>
         )}
-      </>
-    </HeroMedia>
+      </div>
+    </section>
   );
 }

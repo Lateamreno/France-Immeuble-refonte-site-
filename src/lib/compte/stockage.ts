@@ -76,6 +76,21 @@ export async function lireObjet(objet: string): Promise<Uint8Array | null> {
   return new Uint8Array(await r.arrayBuffer());
 }
 
+/** Le seau privé où le BO dépose les documents remis au client (offres : contrat §12.1). */
+export const SEAU_CLIENTS = "documents-clients";
+
+/** Un document du seau des clients, lu par le serveur. null s'il n'existe pas. */
+export async function lireDocumentClient(objet: string): Promise<Uint8Array | null> {
+  const c = cfg();
+  const r = await fetch(`${c.url}/storage/v1/object/${SEAU_CLIENTS}/${chemin(objet)}`, {
+    headers: { apikey: c.cle, Authorization: `Bearer ${c.cle}` },
+    cache: "no-store",
+  });
+  if (r.status === 404 || r.status === 400) return null;
+  if (!r.ok) throw new Error(`stockage ${r.status}`);
+  return new Uint8Array(await r.arrayBuffer());
+}
+
 /** Efface des objets du seau. Ne lève pas : un effacement raté est journalisé. */
 export async function effacerObjets(objets: string[]): Promise<void> {
   if (objets.length === 0) return;

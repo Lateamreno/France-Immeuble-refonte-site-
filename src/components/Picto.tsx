@@ -18,7 +18,8 @@ export type NomPicto =
   | "reseau" | "stats" | "augmentation" | "poignee" | "best" | "business"
   | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier"
   | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles" | "france"
-  | "logement" | "commerce" | "entrepot" | "parking" | "cave" | "autre";
+  | "logement" | "commerce" | "entrepot" | "parking" | "cave" | "autre"
+  | "loupe" | "reglages" | "agenda" | "profil" | "valide" | "plus" | "sortie" | "trombone";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
   /* Types de lots de l'état locatif (retour #70, MAV, 27/10/2026). Le bureau
@@ -29,6 +30,15 @@ const TRACES: Record<NomPicto, React.ReactNode> = {
   parking: <><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M9.5 16.5v-9h3.2a2.6 2.6 0 0 1 0 5.2H9.5"/></>,
   cave: <><path d="M5 20.5V11a7 7 0 0 1 14 0v9.5"/><path d="M3.5 20.5h17"/><path d="M9.5 20.5v-6a2.5 2.5 0 0 1 5 0v6"/></>,
   autre: <><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01" strokeWidth="2.2"/></>,
+  /* Menu de l'espace client (MAV, 30/10/2026). */
+  loupe: <><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></>,
+  reglages: <><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></>,
+  agenda: <><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></>,
+  profil: <><circle cx="12" cy="8" r="3.6"/><path d="M5 20.5c.8-4 3.4-6 7-6s6.2 2 7 6"/></>,
+  valide: <><path d="m5 12.5 4.5 4.5L19 7.5"/></>,
+  plus: <><path d="M12 5v14M5 12h14"/></>,
+  sortie: <><path d="M9 20.5H5.5a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2H9"/><path d="M15 16.5 19.5 12 15 7.5M19.5 12H9"/></>,
+  trombone: <><path d="m20 11.5-8.2 8.2a5 5 0 0 1-7.1-7.1l8.6-8.6a3.4 3.4 0 0 1 4.8 4.8l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"/></>,
   // Dossier et cible — le dossier pensé pour un acheteur précis
   dossierCible: <><path d="M11.5 21.5H6A1.5 1.5 0 0 1 4.5 20V4A1.5 1.5 0 0 1 6 2.5h8l4.5 4.5v4"/><path d="M14 2.5V7h4.5"/><path d="M7.5 10h6M7.5 13h4M7.5 16h2.5" strokeWidth="1"/><circle cx="17" cy="17" r="4.3"/><circle cx="17" cy="17" r="2"/><circle cx="17" cy="17" r=".7" fill="currentColor" stroke="none"/></>,
   // Deux bulles — la conversation avec le conseiller

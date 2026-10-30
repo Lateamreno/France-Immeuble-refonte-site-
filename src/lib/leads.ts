@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import { configSite } from "./supabase-site";
 import { effacerObjets } from "./compte/stockage";
-import { alerter, type Contexte } from "./notifications";
+import { alerter, type Contexte, type OptionsAlerte } from "./notifications";
 
 /**
  * Leads : du site vers le BO, sans jamais en perdre un — CLAUDE.md §2 et §9.
@@ -143,12 +143,12 @@ export type Issue = "bo" | "file" | "perdu" | "refuse";
  */
 export async function deposerLead(
   lead: Record<string, unknown>,
-  { refusDefinitif = false, contexte = {} }: { refusDefinitif?: boolean; contexte?: Contexte } = {},
+  { refusDefinitif = false, contexte = {}, alerte = {} }: { refusDefinitif?: boolean; contexte?: Contexte; alerte?: OptionsAlerte } = {},
 ): Promise<Issue> {
   const issue = await transmettre(lead, refusDefinitif);
   // Une alerte à l'agence par formulaire reçu, quelle que soit l'issue : si
   // rien n'a pu être enregistré, cet e-mail en devient la seule trace.
-  await alerter(lead, issue, contexte);
+  await alerter(lead, issue, contexte, alerte);
   return issue;
 }
 

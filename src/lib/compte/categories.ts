@@ -9,6 +9,8 @@ export const CATEGORIES = [
   { cle: "diagnostics", titre: "Diagnostics", aide: "DPE, amiante, plomb, électricité, gaz, même anciens." },
   { cle: "taxe", titre: "Taxe foncière", aide: "Le dernier avis." },
   { cle: "charges", titre: "Charges et travaux", aide: "Appels de charges, devis, factures récentes." },
+  { cle: "plans", titre: "Plans", aide: "Plans des étages, des lots, cadastre." },
+  { cle: "photos", titre: "Photos", aide: "Façade, parties communes, lots. Elles vont directement à votre agent." },
   { cle: "autre", titre: "Autre pièce", aide: "Tout document utile à la vente." },
 ] as const;
 

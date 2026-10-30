@@ -25,6 +25,15 @@ import { COLONNES_LOT, lotEnClair } from "./dossier/modele";
 type Lead = Record<string, unknown>;
 export type Contexte = { email?: string; prenom?: string; nom?: string; telephone?: string };
 
+/**
+ * Ce qui accompagne une alerte sans partir au BO : l'agent attitré en copie
+ * (rendez-vous, messages : MAV, 30/10/2026) et l'historique de la conversation.
+ */
+export type OptionsAlerte = {
+  copie?: string[];
+  historique?: { de: "client" | "agent"; auteur: string | null; texte: string; envoye_le: string }[];
+};
+
 function config() {
   const cle = process.env.SENDGRID_API_KEY?.trim();
   const de = process.env.SITE_NOTIF_FROM?.trim();
@@ -70,15 +79,36 @@ const CHAMPS: [string, string, ((v: unknown) => string)?][] = [
   ["action", "Action"], ["reponse", "Réponse"], ["prix", "Prix proposé", euros],
   ["categorie", "Catégorie de pièce"], ["fichier", "Fichier"],
   ["taxeFonciere", "Taxe foncière annuelle", euros], ["teom", "Dont TEOM récupérée", euros],
+  ["montant", "Montant proposé", euros], ["financement", "Financement"], ["apport", "Apport", euros],
+  ["validite_jours", "Validité de l’offre (jours)"], ["conditions", "Conditions"],
+  ["date", "Date souhaitée"], ["creneau", "Créneau"], ["objet", "Objet"],
+  ["achat_en", "Achète en"], ["societe", "Société"], ["siren", "SIREN"],
+  ["immeubles_detenus", "Immeubles détenus"], ["budget", "Budget", euros],
+  ["presentation", "Présentation"],
+  ["titre", "Conversation"], ["texte", "Message"],
   ["message", "Description"], ["commentaire", "Commentaire"],
 ];
+
+/** Les codes du contrat (§13) en clair. */
+const CODES: Record<string, Record<string, string>> = {
+  creneau: { matin: "Matin", apres_midi: "Après-midi", soir: "En fin de journée" },
+  objet: { visite: "Visite", estimation: "Estimation", signature: "Signature", autre: "Autre" },
+  financement: { comptant: "Comptant", pret: "Prêt", mixte: "Apport et prêt" },
+  achat_en: { nom_propre: "En nom propre", societe: "En société" },
+};
 
 const REPONSES: Record<string, string> = {
   interesse: "Intéressé", visite: "Demande une visite", pas_pour_moi: "Pas pour moi",
 };
 const PIECES: Record<string, string> = {
   titre: "Titre de propriété", baux: "Baux", diagnostics: "Diagnostics",
-  taxe: "Taxe foncière", charges: "Charges et travaux", autre: "Autre pièce",
+  taxe: "Taxe foncière", charges: "Charges et travaux", plans: "Plans", photos: "Photos", autre: "Autre pièce",
+};
+
+const dateFr = (v: unknown) => {
+  const d = new Date(`${texte(v)}T12:00:00Z`);
+  return Number.isNaN(d.getTime()) ? texte(v)
+    : d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Paris" });
 };
 
 const qui = (l: Lead) => [texte(l.prenom), texte(l.nom)].filter(Boolean).join(" ");
@@ -110,6 +140,14 @@ function objet(l: Lead): string {
       return `Prix proposé par un propriétaire : ${euros(l.prix)}${qui(l) ? ` (${qui(l)})` : ""}`;
     case "document":
       return `Pièce déposée : ${PIECES[texte(l.categorie)] ?? texte(l.categorie)}${qui(l) ? ` (${qui(l)})` : ""}`;
+    case "message":
+      return `Message du compte : ${texte(l.titre) || "conversation"}${qui(l) ? ` (${qui(l)})` : ""}`;
+    case "rendez_vous":
+      return `Demande de rendez-vous : ${dateFr(l.date)}${qui(l) ? ` (${qui(l)})` : ""}`;
+    case "offre_acquereur":
+      return `Offre d'achat en ligne : ${euros(l.montant)}${qui(l) ? ` (${qui(l)})` : ""}`;
+    case "profil_investisseur":
+      return `Profil investisseur${qui(l) ? ` : ${qui(l)}` : ""}`;
     case "compte_supprime":
       return `Compte client fermé${qui(l) ? ` : ${qui(l)}` : ""}`;
     default:
@@ -137,6 +175,8 @@ function lignes(l: Lead): [string, string][] {
     }
     if (cle === "reponse") v = REPONSES[texte(v)] ?? v;
     if (cle === "categorie") v = PIECES[texte(v)] ?? v;
+    if (CODES[cle]) v = CODES[cle][texte(v)] ?? v;
+    if (cle === "date" && l.type === "rendez_vous") v = dateFr(v);
     if (Array.isArray(v)) v = v.join(", ");
     const s = format ? format(v) : texte(v);
     if (s) out.push([libelle, s]);
@@ -183,7 +223,30 @@ ${lots.map((x) => `<tr>${lotEnClair(x).map((c) => cellule(c)).join("")}</tr>`).j
 </table>`;
 }
 
-function corps(l: Lead, issue: Issue): { html: string; text: string } {
+/** Le fil d'une conversation, du plus ancien au plus récent (MAV : « avec l'historique »). */
+export function filHtml(fil: NonNullable<OptionsAlerte["historique"]>): string {
+  if (!fil.length) return "";
+  return `<p style="margin:8px 0 8px;font-weight:bold">Historique</p>
+${fil
+  .map((m) => {
+    const quand = new Date(m.envoye_le).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" });
+    const nom = m.de === "agent" ? m.auteur || "France Immeuble" : "Le client";
+    return `<div style="margin:0 0 10px;padding:10px 14px;border-left:3px solid ${m.de === "agent" ? COULEURS.or : COULEURS.filet};background:${m.de === "agent" ? "transparent" : COULEURS.filet}">
+<p style="margin:0 0 4px;font-size:12px;color:${COULEURS.doux}">${echap(nom)} · ${echap(quand)}</p>
+<p style="margin:0;font-size:14px;color:${COULEURS.texte}">${echap(m.texte).replace(/\n/g, "<br>")}</p></div>`;
+  })
+  .join("\n")}`;
+}
+
+export function filTexte(fil: NonNullable<OptionsAlerte["historique"]>): string[] {
+  return fil.flatMap((m) => [
+    `${m.de === "agent" ? m.auteur || "France Immeuble" : "Le client"}, ${new Date(m.envoye_le).toLocaleString("fr-FR", { timeZone: "Europe/Paris" })} :`,
+    m.texte,
+    "",
+  ]);
+}
+
+function corps(l: Lead, issue: Issue, historique: NonNullable<OptionsAlerte["historique"]> = []): { html: string; text: string } {
   const blocs: { titre: string; lignes: [string, string][] }[] = [
     { titre: "", lignes: lignes(l) },
     ...recherches(l).map((r, i) => ({ titre: `Recherche ${i + 1}`, lignes: r })),
@@ -216,6 +279,7 @@ ${blocs
   .map((b) => `${b.titre ? `<p style="margin:8px 0 6px;font-weight:bold">${echap(b.titre)}</p>` : ""}${tableau(b.lignes)}`)
   .join("\n")}
 ${lots.length ? tableauLots(lots) : ""}
+${filHtml(historique)}
 ${notes
   .filter((n) => !alerte || n !== notes.at(-1))
   .map((n) => `<p style="margin:0 0 8px;font-size:13px;color:${COULEURS.doux}">${echap(n)}</p>`)
@@ -227,6 +291,7 @@ ${notes
     "",
     ...blocs.flatMap((b) => [b.titre, ...b.lignes.map(([k, val]) => `${k} : ${val}`)].filter(Boolean)),
     ...(lots.length ? ["", "État locatif", ...lots.map((x) => lotEnClair(x).filter(Boolean).join(" · "))] : []),
+    ...(historique.length ? ["", "Historique", ...filTexte(historique)] : []),
     "",
     ...notes,
     `Reçu le ${recu}. Référence ${texte(l.ref)}`,
@@ -240,7 +305,7 @@ ${notes
  * Envoie l'alerte d'un formulaire. Ne lève jamais : une alerte ratée est
  * journalisée, le formulaire, lui, a déjà suivi son chemin.
  */
-export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {}): Promise<boolean> {
+export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {}, options: OptionsAlerte = {}): Promise<boolean> {
   const cfg = config();
   if (!cfg) return false;
   // Le compte connu du site complète ce que le formulaire ne porte pas.
@@ -254,14 +319,17 @@ export async function alerter(lead: Lead, issue: Issue, contexte: Contexte = {})
     email: texte(lead.email) || contexte.email,
     telephone: texte(lead.telephone) || contexte.telephone,
   };
-  const { html, text } = corps(l, issue);
+  const { html, text } = corps(l, issue, options.historique);
   const repondreA = texte(l.email);
+  // L'agent attitré en copie, sans doublon avec les destinataires habituels.
+  const a = [...cfg.a, ...(options.copie ?? []).map((x) => x.trim().toLowerCase()).filter((x) => EMAIL.test(x))]
+    .filter((x, i, t) => t.findIndex((y) => y.toLowerCase() === x.toLowerCase()) === i);
   try {
     const r = await fetch(`${cfg.api}/v3/mail/send`, {
       method: "POST",
       headers: { Authorization: `Bearer ${cfg.cle}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        personalizations: [{ to: cfg.a.map((email) => ({ email })) }],
+        personalizations: [{ to: a.map((email) => ({ email })) }],
         from: { email: cfg.de, name: "Site France Immeuble" },
         ...(EMAIL.test(repondreA) ? { reply_to: { email: repondreA, ...(qui(l) ? { name: qui(l) } : {}) } } : {}),
         subject: (objet(l) + MENTION[issue]).slice(0, 200),

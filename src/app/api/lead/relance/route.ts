@@ -3,6 +3,8 @@ import { relancerFile } from "@/lib/leads";
 import { nettoyerMorceaux } from "@/lib/compte/stockage";
 import { purgerComptesInutilises } from "@/lib/compte/purge";
 import { purgerDossiers } from "@/lib/dossier/serveur";
+import { aviserClients } from "@/lib/compte/avis";
+import { purgerSaisies } from "@/lib/compte/saisies";
 
 /**
  * Relance de la file d'attente des leads — appelée par la tâche planifiée de
@@ -44,7 +46,14 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[dossier] purge impossible —", e);
     }
-    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, dossiersEffaces });
+    let avis = { messages: 0, biens: 0, offres: 0 };
+    try {
+      avis = await aviserClients();
+      await purgerSaisies();
+    } catch (e) {
+      console.error("[avis] annonce impossible —", e);
+    }
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, dossiersEffaces, avis });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

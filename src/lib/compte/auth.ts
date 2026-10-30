@@ -27,8 +27,11 @@ export type Utilisateur = {
   email: string;
   email_confirmed_at?: string | null;
   user_metadata?: { prenom?: string; nom?: string; telephone?: string };
-  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation };
+  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences };
 };
+
+/** Les e-mails de notification que le client accepte (MAV, 30/10/2026). Tous actifs par défaut. */
+export type Preferences = { messages?: boolean; biens?: boolean; offres?: boolean };
 
 export type Session = {
   access_token: string;
@@ -184,6 +187,30 @@ function cfgSecrete(): ConfigSite {
   return cfg;
 }
 
+/**
+ * Les préférences de notification, dans les métadonnées d'administration :
+ * seul notre serveur les écrit, après avoir vérifié la session.
+ */
+export async function modifierPreferences(id: string, prefs: Required<Preferences>): Promise<void> {
+  const cfg = cfgSecrete();
+  await gotrue(`admin/users/${id}`, {
+    method: "PUT",
+    cle: cfg,
+    jeton: cfg.cle,
+    body: JSON.stringify({ app_metadata: { notifications: prefs } }),
+  });
+}
+
+/** Un compte lu par son identifiant (notifications envoyées par le serveur). */
+export async function utilisateurParId(id: string): Promise<Utilisateur | null> {
+  const cfg = cfgSecrete();
+  try {
+    return await gotrue<Utilisateur>(`admin/users/${id}`, { cle: cfg, jeton: cfg.cle });
+  } catch {
+    return null;
+  }
+}
+
 export async function marquerRattache(id: string): Promise<void> {
   const cfg = cfgSecrete();
   await gotrue(`admin/users/${id}`, {
@@ -312,7 +339,7 @@ export function verifierJeton(type: "invite" | "magiclink", empreinte: string): 
 export type UtilisateurAdmin = Utilisateur & {
   created_at?: string;
   last_sign_in_at?: string | null;
-  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation };
+  app_metadata?: { rattache_le?: string; origine?: string; estimation?: Estimation; notifications?: Preferences };
 };
 
 /** Une page de la liste des comptes (administration, clé secrète du site). */

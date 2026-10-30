@@ -226,3 +226,5 @@ body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
   background: #fff6f5; color: var(--red);
   font-size: 13px; line-height: 1.45;
 }
+/* Dans l'espace client au téléphone, les onglets du bas restent visibles. */
+@media (max-width:959px){ body:has(.compte-barre) .rv-fab{ bottom:calc(84px + env(safe-area-inset-bottom)); } }

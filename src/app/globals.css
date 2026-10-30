@@ -3396,3 +3396,398 @@ fieldset.field legend,.lot label{
 .split:has(.fin-dossier){grid-template-columns:minmax(0,1fr);}
 .split:has(.fin-dossier) > :first-child{display:none;}
 .fin-dossier{margin-top:var(--space-m);scroll-margin-top:calc(var(--header-h) + 12px);}
+
+/* ==========================================================================
+   23. ESPACE CLIENT V2 (option B, MAV, 30/10/2026)
+   Le menu du site reste en haut ; dessous, une application : menu à gauche
+   sur ordinateur, cinq onglets en bas au téléphone. Pas de hero.
+   ========================================================================== */
+body:has(.compte-appli) .site-footer{display:none;}
+.compte-appli{
+  --menu-l:248px;--barre-h:64px;
+  display:grid;min-height:var(--ecran);background:var(--color-noir);
+}
+.compte-menu{display:none;}
+.compte-contenu{
+  min-width:0;padding:clamp(20px,3vw,40px) var(--gutter) calc(var(--barre-h) + 40px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:var(--space-s);
+  width:100%;max-width:1180px;
+}
+@media (min-width:960px){
+  /* Le fond du menu court sur toute la hauteur, même quand le contenu est long. */
+  .compte-appli{
+    grid-template-columns:var(--menu-l) minmax(0,1fr);
+    background:linear-gradient(90deg,var(--color-noir-2) calc(var(--menu-l) - 1px),var(--color-ligne) calc(var(--menu-l) - 1px) var(--menu-l),var(--color-noir) var(--menu-l));
+  }
+  .compte-menu{
+    display:flex;flex-direction:column;justify-content:space-between;gap:var(--space-m);
+    position:sticky;top:var(--header-h);height:var(--ecran);overflow-y:auto;
+    padding:var(--space-m) 14px;background:var(--color-noir-2);border-right:1px solid var(--color-ligne);
+  }
+  .compte-menu nav{display:flex;flex-direction:column;gap:4px;}
+  .compte-contenu{padding:var(--space-m) clamp(24px,3.4vw,56px) var(--space-xl);}
+  .compte-barre{display:none !important;}
+}
+.compte-menu__i{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;
+  color:var(--color-gris);text-decoration:none;font-size:15px;position:relative;
+  transition:background .18s ease,color .18s ease;
+}
+.compte-menu__i svg{color:var(--color-bronze-profond);flex:none;}
+.compte-menu__i:hover{color:var(--color-creme);background:var(--color-noir-3);}
+.compte-menu__i.est-actif{color:var(--color-creme);background:var(--color-noir-3);}
+.compte-menu__i.est-actif::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;border-radius:2px;background:var(--color-bronze);}
+.compte-menu__i.est-actif svg{color:var(--color-bronze);}
+.compte-menu__i .pastille{margin-left:auto;}
+.compte-menu__i:focus-visible,.compte-barre__i:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.compte-menu__retour{display:flex;align-items:center;gap:10px;padding:10px 14px;color:var(--color-gris);font-size:var(--fs-small);text-decoration:none;}
+.compte-menu__retour:hover{color:var(--color-bronze);}
+
+/* Les cinq onglets du téléphone, collés en bas. */
+.compte-barre{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb, var(--color-noir) 92%, transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--color-ligne);
+}
+.compte-barre__i{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;
+  color:var(--color-gris);text-decoration:none;border-radius:12px;position:relative;
+}
+.compte-barre__i small{font-size:11px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.compte-barre__i.est-actif{color:var(--color-bronze);}
+.compte-barre__i .pastille{position:absolute;top:2px;left:calc(50% + 6px);}
+
+.pastille{
+  display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:var(--radius-pill);
+  background:var(--color-bronze);color:var(--color-noir);font:600 11px/1 var(--font-mono-site);
+}
+.pastille--texte{height:auto;padding:4px 9px;letter-spacing:.08em;text-transform:uppercase;}
+
+/* En-tête d'écran : un surtitre, un titre, ses actions. */
+.compte-tete{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--space-2xs);}
+.compte-tete .eyebrow{margin:0;}
+.compte-tete__retour{color:var(--color-gris);font-size:var(--fs-small);text-decoration:none;width:max-content;}
+.compte-tete__retour:hover{color:var(--color-bronze);}
+.compte-tete__ligne{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-xs) var(--space-s);}
+.compte-tete h1{font-size:clamp(1.75rem,1.3rem + 1.6vw,2.6rem);margin:0;color:var(--color-creme);}
+.compte-tete__actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;}
+.compte-tete__actions .btn{margin-inline:0;padding:13px 26px;}
+@media (max-width:640px){.compte-tete__actions .btn{display:none;}}
+
+.compte-panneau{
+  background:var(--color-noir-2);border:1px solid var(--color-ligne);border-radius:var(--radius-card);
+  padding:clamp(18px,2.2vw,28px);min-width:0;
+}
+.compte-panneau__tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:var(--space-xs);}
+.compte-panneau__titre{
+  display:flex;align-items:center;gap:10px;margin:0;
+  font-family:var(--font-mono-site);font-variation-settings:normal;font-weight:500;letter-spacing:.15em;
+  text-transform:uppercase;font-size:var(--fs-eyebrow);line-height:1.4;color:var(--color-bronze);
+}
+.compte-panneau__pied{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:var(--space-xs);}
+.compte-panneau__pied .btn{margin-inline:0;}
+.compte-panneau__pied--colonne{flex-direction:column;align-items:stretch;margin-top:0;}
+.compte-panneau__pied--colonne .lien-discret{text-align:center;}
+.compte-calme{margin:0;color:var(--color-gris);max-width:62ch;}
+.compte-contenu .compte-note{margin:0;}
+.compte-replie > summary{cursor:pointer;color:var(--color-bronze);font-weight:600;}
+.compte-replie[open] > summary{margin-bottom:var(--space-s);}
+.compte-vide-bloc{display:flex;gap:var(--space-s);align-items:flex-start;color:var(--color-gris);}
+.compte-vide-bloc svg{color:var(--color-bronze-profond);flex:none;margin-top:2px;}
+.compte-vide-bloc p{margin:0 0 8px;max-width:60ch;}
+
+/* Chiffres clés : libellé mono, valeur en or. */
+.compte-chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px var(--space-s);margin:0;}
+.compte-chiffres dt{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.1em;text-transform:uppercase;color:var(--color-gris);}
+.compte-chiffres dd{margin:3px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" 700;font-size:1.3rem;color:var(--color-bronze);}
+
+/* Accueil */
+.compte-grille-accueil,.compte-grille-profil{display:grid;gap:var(--space-s);}
+@media (min-width:1100px){
+  .compte-grille-accueil{grid-template-columns:1.25fr 1fr;}
+  .compte-grille-profil{grid-template-columns:1fr 1fr;}
+}
+.afaire{list-style:none;margin:0;padding:0;}
+.afaire li + li{border-top:1px solid var(--color-ligne);}
+.afaire a{display:flex;align-items:center;gap:14px;padding:13px 0;color:var(--color-creme);text-decoration:none;}
+.afaire a svg{color:var(--color-bronze);flex:none;}
+.afaire a span:first-of-type{flex:1;}
+.afaire__ouvrir{color:var(--color-bronze);font-size:1.3rem;line-height:1;}
+.afaire a:hover{color:var(--color-bronze-clair);}
+.carte-appel{
+  background:linear-gradient(150deg, color-mix(in srgb, var(--color-bronze) 16%, var(--color-noir-2)), var(--color-noir-2) 70%);
+  border-color:var(--color-bronze-profond);
+}
+.carte-appel__texte{margin:0 0 var(--space-s);color:var(--color-creme);font-size:var(--fs-lead);line-height:1.45;}
+.carte-appel__texte strong{color:var(--color-bronze);font-weight:600;}
+.appel{display:flex;flex-direction:column;gap:var(--space-xs);align-items:flex-start;}
+.appel .btn{margin-inline:0;}
+
+.carte-agent{display:flex;gap:16px;align-items:center;}
+.carte-agent__initiales{
+  width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--color-bronze-clair-2),var(--color-bronze-profond));
+  color:var(--color-noir);font:700 18px/1 var(--font-mono-site);letter-spacing:.06em;
+}
+.carte-agent__nom{margin:0;color:var(--color-creme);font-weight:600;font-size:1.05rem;}
+.carte-agent__poste{margin:2px 0 0;color:var(--color-gris);font-size:var(--fs-small);}
+.carte-agent__liens{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 0;}
+.carte-agent__liens a{display:inline-flex;align-items:center;gap:6px;color:var(--color-bronze);text-decoration:none;font-size:var(--fs-small);overflow-wrap:anywhere;}
+
+/* Les ventes du vendeur */
+.compte-ventes{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-xs);}
+.compte-ventes--grandes{gap:var(--space-s);}
+.compte-ventes--grandes:empty{display:none;}
+.vente-carte{
+  display:flex;flex-direction:column;gap:var(--space-s);padding:clamp(18px,2.2vw,26px);border-radius:14px;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);color:inherit;text-decoration:none;
+  transition:border-color .2s ease, transform .2s ease;
+}
+.compte-ventes--grandes .vente-carte{background:var(--color-noir-2);border-radius:var(--radius-card);}
+.vente-carte:hover{border-color:var(--color-bronze-profond);}
+.vente-carte__tete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.vente-carte__nom{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" 800;font-size:1.25rem;color:var(--color-creme);}
+.vente-carte__type{margin:2px 0 0;color:var(--color-gris);font-size:var(--fs-small);}
+.vente-carte__ouvrir{color:var(--color-bronze);font-size:var(--fs-small);font-weight:600;}
+
+/* La frise d'une vente : sept étapes, la courante en or. */
+.frise{
+  list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  position:relative;counter-reset:etape;
+}
+.frise__etape{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;min-width:0;}
+.frise__etape::before{
+  content:"";position:absolute;top:7px;left:-50%;right:50%;height:2px;background:var(--color-ligne);
+}
+.frise__etape:first-child::before{display:none;}
+.frise__etape--faite::before,.frise__etape--en-cours::before{background:linear-gradient(90deg,var(--color-bronze-profond),var(--color-bronze));}
+.frise__point{
+  position:relative;z-index:1;width:16px;height:16px;border-radius:50%;
+  background:var(--color-noir-2);border:2px solid var(--color-ligne);
+}
+.frise__etape--faite .frise__point{background:var(--color-bronze-profond);border-color:var(--color-bronze-profond);}
+.frise__etape--en-cours .frise__point{
+  background:var(--color-bronze);border-color:var(--color-bronze-clair);
+  box-shadow:0 0 0 5px color-mix(in srgb, var(--color-bronze) 22%, transparent);
+}
+.frise__nom{font-size:12px;line-height:1.25;color:var(--color-gris);hyphens:manual;overflow-wrap:anywhere;padding-inline:2px;}
+.frise__etape--faite .frise__nom{color:var(--color-creme);}
+.frise__etape--en-cours .frise__nom{color:var(--color-bronze);font-weight:600;}
+.frise__legende{margin:var(--space-s) 0 0;color:var(--color-gris);}
+.frise__legende strong{color:var(--color-creme);}
+/* Compacte, et au téléphone : les points, et seul le nom de l'étape courante. */
+.frise--compacte .frise__nom{display:none;}
+.frise--compacte .frise__etape--en-cours .frise__nom{display:block;white-space:nowrap;position:absolute;top:24px;font-size:11px;}
+.frise--compacte{padding-bottom:22px;}
+@media (max-width:640px){
+  .frise:not(.frise--compacte) .frise__nom{font-size:10px;}
+  .frise:not(.frise--compacte) .frise__etape:not(.frise__etape--en-cours) .frise__nom{opacity:.75;}
+}
+@media (max-width:420px){
+  .frise:not(.frise--compacte){padding-bottom:22px;}
+  .frise:not(.frise--compacte) .frise__nom{display:none;}
+  .frise:not(.frise--compacte) .frise__etape--en-cours .frise__nom{display:block;white-space:nowrap;position:absolute;top:24px;font-size:11px;opacity:1;}
+}
+.frise__etape:first-child.frise__etape--en-cours .frise__nom{left:0;}
+.frise__etape:last-child.frise__etape--en-cours .frise__nom{right:0;}
+
+/* Les rubriques d'un immeuble : une ligne d'onglets qui glisse au téléphone. */
+.onglets-bien{
+  display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--color-ligne);
+  margin:0 calc(var(--gutter) * -1);padding:0 var(--gutter);
+}
+.onglets-bien::-webkit-scrollbar{display:none;}
+@media (min-width:960px){.onglets-bien{margin:0;padding:0;}}
+.onglet-bien{
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:12px 14px;
+  color:var(--color-gris);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:15px;
+}
+.onglet-bien:hover{color:var(--color-creme);}
+.onglet-bien.est-actif{color:var(--color-creme);border-bottom-color:var(--color-bronze);}
+.onglet-bien:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:-2px;border-radius:6px;}
+
+/* Offres reçues */
+.offres{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-s);}
+.offre{display:flex;flex-direction:column;gap:var(--space-s);border-left:2px solid var(--color-bronze);}
+.offre--refusee{border-left-color:var(--color-ligne);opacity:.8;}
+.offre__tete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.offre__montant{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);font-size:clamp(1.6rem,1.3rem + 1vw,2.2rem);color:var(--color-bronze);line-height:1.05;}
+.offre__qui{margin:6px 0 0;color:var(--color-creme);}
+.compte-badge--acceptee,.compte-badge--compromis{background:var(--color-bronze);color:var(--color-noir);border-color:var(--color-bronze);}
+.compte-badge--refusee{border-color:var(--color-ligne);color:var(--color-gris);}
+
+.etapes-mandat{list-style:none;margin:0 0 var(--space-s);padding:0;display:grid;gap:10px;}
+.etapes-mandat li{display:flex;align-items:center;gap:12px;color:var(--color-gris);}
+.etapes-mandat li::before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid var(--color-ligne);flex:none;}
+.etapes-mandat li.est-faite{color:var(--color-creme);}
+.etapes-mandat li.est-faite::before{background:var(--color-bronze);border-color:var(--color-bronze);}
+.compte-piece__nom{display:inline-flex;align-items:center;gap:8px;}
+.compte-piece__nom svg{color:var(--color-bronze);}
+
+/* Curseurs (offre, estimation) */
+.curseur__valeur{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:var(--space-xs);}
+.curseur__montant{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);font-size:clamp(2rem,1.5rem + 1.6vw,2.9rem);color:var(--color-bronze);line-height:1;}
+.curseur__note{color:var(--color-creme);font-family:var(--font-mono-site);font-size:var(--fs-small);}
+.curseur{
+  -webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0;cursor:pointer;
+}
+.curseur::-webkit-slider-runnable-track{
+  height:6px;border-radius:6px;
+  background:linear-gradient(90deg,var(--color-bronze-profond),var(--color-bronze) var(--rempli,50%),var(--color-ligne) var(--rempli,50%));
+}
+.curseur::-moz-range-track{height:6px;border-radius:6px;background:var(--color-ligne);}
+.curseur::-moz-range-progress{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--color-bronze-profond),var(--color-bronze));}
+.curseur::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-10px;border-radius:50%;
+  background:var(--color-bronze-clair);border:3px solid var(--color-bronze);box-shadow:0 4px 14px color-mix(in srgb, var(--color-bronze) 40%, transparent);
+}
+.curseur::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--color-bronze-clair);border:3px solid var(--color-bronze);}
+.curseur:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;border-radius:8px;}
+.curseur__bornes{display:flex;justify-content:space-between;gap:8px;margin:6px 0 var(--space-s);color:var(--color-gris);font-family:var(--font-mono-site);font-size:11px;}
+.curseur-estimation{padding:0;border:0;background:none;}
+.curseur-estimation .compte-chiffres{margin-bottom:var(--space-xs);}
+.curseur-offre{display:flex;flex-direction:column;gap:var(--space-xs);}
+.curseur-offre .btn{margin-inline:0;}
+
+/* Formulaires du compte */
+.compte-form{display:flex;flex-direction:column;gap:var(--space-xs);}
+.compte-form__titre{margin:0;font-weight:600;color:var(--color-creme);font-size:1.1rem;}
+.compte-form__actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;}
+.compte-form__actions .btn{margin-inline:0;}
+.compte-form__aide{margin:0;color:var(--color-gris);font-size:var(--fs-small);}
+.compte-contenu select{
+  width:100%;padding:13px 14px;border-radius:12px;background:var(--color-noir-3);color:var(--color-creme);
+  border:1px solid var(--color-ligne);font:inherit;
+}
+@media(min-width:640px){.fields--3{grid-template-columns:repeat(3,1fr);}}
+fieldset.field{border:0;margin:0;padding:0;min-width:0;}
+fieldset.field legend{margin-bottom:8px;padding:0;}
+
+/* Biens proposés */
+.filtres{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.filtres::-webkit-scrollbar{display:none;}
+.filtres .choice{white-space:nowrap;text-decoration:none;display:inline-flex;gap:8px;align-items:center;}
+.filtres .choice small{color:var(--color-gris);font-family:var(--font-mono-site);}
+.filtres .choice[aria-current="true"]{background:var(--color-bronze);border-color:var(--color-bronze);color:var(--color-noir);}
+.filtres .choice[aria-current="true"] small{color:var(--color-noir);}
+.biens-proposes{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-xs);grid-template-columns:repeat(auto-fill,minmax(270px,1fr));}
+.bien-propose{
+  display:flex;flex-direction:column;gap:10px;height:100%;padding:20px;border-radius:var(--radius-card);
+  background:var(--color-noir-2);border:1px solid var(--color-ligne);color:inherit;text-decoration:none;
+  transition:border-color .2s ease;
+}
+.bien-propose:hover{border-color:var(--color-bronze-profond);}
+.bien-propose--vendu,.bien-propose--retire{opacity:.6;}
+.bien-propose__tete{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.bien-propose__nom{margin:0;color:var(--color-creme);font-weight:600;line-height:1.35;}
+.bien-propose__chiffres{display:flex;gap:14px;margin:auto 0 0;font-family:var(--font-mono-site);font-weight:600;color:var(--color-creme);}
+.bien-propose__chiffres span + span{color:var(--color-bronze);}
+.bien-propose__pied{margin:0;color:var(--color-gris);font-size:12px;}
+.fiche-bien{display:grid;gap:var(--space-s);align-items:start;}
+.fiche-bien__principal,.fiche-bien__cote{display:flex;flex-direction:column;gap:var(--space-s);min-width:0;}
+@media (min-width:1100px){
+  .fiche-bien{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);}
+  .fiche-bien__cote{position:sticky;top:calc(var(--header-h) + 24px);}
+}
+.compte-mini-biens,.compte-mini-fils{list-style:none;margin:0;padding:0;}
+.compte-mini-biens li + li,.compte-mini-fils li + li{border-top:1px solid var(--color-ligne);}
+.compte-mini-biens a{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;padding:12px 0;color:inherit;text-decoration:none;}
+.mini-bien__nom{color:var(--color-creme);flex:1 1 240px;}
+.mini-bien__chiffres{font-family:var(--font-mono-site);color:var(--color-bronze);font-size:var(--fs-small);}
+.compte-mini-fils a{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;color:inherit;text-decoration:none;}
+.mini-fil__titre{color:var(--color-creme);font-weight:600;}
+.mini-fil__extrait{grid-column:1;color:var(--color-gris);font-size:var(--fs-small);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mini-fil__date{grid-column:2;grid-row:1;color:var(--color-gris);font-family:var(--font-mono-site);font-size:11px;}
+.compte-mini-fils a.est-a-lire .mini-fil__titre::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--color-bronze);margin-left:8px;vertical-align:middle;}
+
+/* Messagerie */
+.fils{list-style:none;margin:0;padding:0;background:var(--color-noir-2);border:1px solid var(--color-ligne);border-radius:var(--radius-card);overflow:hidden;}
+.fils li + li{border-top:1px solid var(--color-ligne);}
+.fil-ligne{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 14px;padding:16px clamp(16px,2vw,24px);
+  color:inherit;text-decoration:none;position:relative;
+}
+.fil-ligne:hover{background:var(--color-noir-3);}
+.fil-ligne__titre{color:var(--color-creme);font-weight:600;}
+.fil-ligne__sujet{grid-column:1;color:var(--color-bronze);font-size:12px;font-family:var(--font-mono-site);letter-spacing:.04em;}
+.fil-ligne__extrait{grid-column:1;color:var(--color-gris);font-size:var(--fs-small);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fil-ligne__date{grid-column:2;grid-row:1;color:var(--color-gris);font-family:var(--font-mono-site);font-size:11px;}
+.fil-ligne .pastille{grid-column:2;grid-row:2;justify-self:end;}
+.fil-ligne.est-a-lire{border-left:2px solid var(--color-bronze);}
+.fil-ligne.est-a-lire .fil-ligne__extrait{color:var(--color-creme);}
+.fil{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+.fil__jour{text-align:center;color:var(--color-gris);font-family:var(--font-mono-site);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:var(--space-xs) 0 6px;}
+.fil__bloc{display:flex;flex-direction:column;}
+.fil__bloc--client{align-items:flex-end;}
+.fil__bulle{max-width:min(620px,88%);padding:12px 16px;border-radius:16px;border:1px solid var(--color-ligne);background:var(--color-noir-2);}
+.fil__bloc--agent .fil__bulle{border-top-left-radius:4px;border-left:2px solid var(--color-bronze);}
+.fil__bloc--client .fil__bulle{border-top-right-radius:4px;background:color-mix(in srgb, var(--color-bronze) 14%, var(--color-noir-2));border-color:var(--color-bronze-profond);}
+.fil__auteur{margin:0 0 4px;font-size:12px;color:var(--color-gris);font-family:var(--font-mono-site);}
+.fil__texte{margin:0;color:var(--color-creme);white-space:pre-wrap;overflow-wrap:anywhere;}
+.fil-reponse{
+  position:sticky;bottom:calc(var(--barre-h) + env(safe-area-inset-bottom) + 8px);z-index:5;
+  display:flex;gap:12px;align-items:flex-end;padding:12px;border-radius:var(--radius-card);
+  background:var(--color-noir-2);border:1px solid var(--color-ligne);box-shadow:0 -10px 30px color-mix(in srgb, var(--color-noir) 70%, transparent);
+}
+@media (min-width:960px){.fil-reponse{bottom:16px;}}
+.fil-reponse textarea{flex:1;min-height:52px;resize:vertical;background:var(--color-noir-3);color:var(--color-creme);border:1px solid var(--color-ligne);border-radius:12px;padding:12px 14px;font:inherit;}
+.fil-reponse .btn{margin-inline:0;padding:14px 24px;}
+.fil-reponse .compte-erreur{position:absolute;top:-28px;left:12px;margin:0;}
+@media (max-width:640px){
+  .fil-reponse{padding:8px;gap:8px;align-items:center;}
+  .fil-reponse textarea{min-height:46px;height:46px;padding:11px 12px;resize:none;}
+  .fil-reponse textarea:focus{height:110px;}
+  .fil-reponse .btn{padding:12px 18px;}
+}
+
+/* Rendez-vous : un calendrier, puis le moment et l'objet. */
+.rdv{display:grid;gap:var(--space-s);margin-top:var(--space-s);}
+@media (min-width:1100px){.rdv{grid-template-columns:minmax(300px,380px) minmax(0,1fr);align-items:start;}}
+.calendrier{background:var(--color-noir-3);}
+.calendrier__tete{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-xs);}
+.calendrier__mois{margin:0;color:var(--color-creme);font-weight:600;text-transform:capitalize;}
+.calendrier__fleche{width:36px;height:36px;border-radius:50%;border:1px solid var(--color-ligne);background:none;color:var(--color-bronze);font-size:20px;cursor:pointer;}
+.calendrier__fleche:disabled{opacity:.3;cursor:default;}
+.calendrier__grille{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.calendrier__jsem{text-align:center;color:var(--color-gris);font-family:var(--font-mono-site);font-size:11px;padding-bottom:4px;}
+.calendrier__jour{
+  aspect-ratio:1;border-radius:50%;border:1px solid transparent;background:none;color:var(--color-creme);
+  font:500 14px/1 var(--font-body);cursor:pointer;
+}
+.calendrier__jour:hover:not(:disabled){border-color:var(--color-bronze-profond);}
+.calendrier__jour:disabled{color:var(--color-ligne);cursor:default;}
+.calendrier__jour[aria-pressed="true"]{background:var(--color-bronze);color:var(--color-noir);font-weight:700;}
+.calendrier__jour:focus-visible,.calendrier__fleche:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.rdv__details{display:flex;flex-direction:column;gap:var(--space-xs);}
+.rdv__details .btn{margin-inline:0;align-self:flex-start;}
+.rdv__recap{margin:0;color:var(--color-bronze);font-family:var(--font-mono-site);font-size:var(--fs-small);}
+.rdv__recap::first-letter{text-transform:uppercase;}
+
+/* Profil */
+.coordonnees{display:grid;gap:12px;margin:0 0 var(--space-xs);}
+.coordonnees dt{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.1em;text-transform:uppercase;color:var(--color-gris);}
+.coordonnees dd{margin:2px 0 0;color:var(--color-creme);overflow-wrap:anywhere;}
+.preferences ul{list-style:none;margin:10px 0 0;padding:0;}
+.preferences li{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--color-ligne);color:var(--color-creme);}
+.interrupteur{
+  width:48px;height:28px;border-radius:var(--radius-pill);border:1px solid var(--color-ligne);background:var(--color-noir-3);
+  position:relative;cursor:pointer;flex:none;transition:background .2s ease;
+}
+.interrupteur span{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--color-gris);transition:transform .2s ease, background .2s ease;}
+.interrupteur[aria-checked="true"]{background:var(--color-bronze-profond);border-color:var(--color-bronze);}
+.interrupteur[aria-checked="true"] span{transform:translateX(20px);background:var(--color-bronze-clair);}
+.interrupteur:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.ancre{position:relative;}
+.ancre__cible{position:absolute;top:calc(var(--header-h) * -1 - 16px);}
+.compte-contenu .compte-fermer{margin-top:var(--space-s);}
+.compte-contenu .form-shell{background:none;border:0;padding:0;box-shadow:none;}
+
+/* Écran de connexion et d'activation : sans hero, sur un écran. */
+.compte-entree{min-height:var(--ecran);display:flex;align-items:center;}
+.compte-entree h1{font-size:clamp(2rem,1.4rem + 2.4vw,3.2rem);margin:var(--space-xs) 0 var(--space-s);}
+.compte-entree .lead{color:var(--color-creme);}
+
+/* Le dossier vendeur, ouvert dans le cadre du compte. */
+.compte-contenu .dossier-vendeur-sec{padding:0;background:none;min-height:0;}
+.compte-contenu .dossier-vendeur-sec > .container{padding-inline:0;max-width:none;}

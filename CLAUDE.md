@@ -164,6 +164,17 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - Notifications par e-mail (nouveau bien, offre, message), désactivables, gabarit blanc.
 - **Tout ce que le client saisit doit remplir le BO**, pas seulement partir par e-mail. Le BO ne
   répond 200 qu'une fois l'envoi enregistré ; sinon le site le garde en file et réessaie.
+- **Livré le 30/10/2026** : cadre `src/components/compte/Coquille.tsx` (menu à gauche, cinq
+  onglets en bas au téléphone, pied de page du site masqué), écrans `/mon-compte/` (accueil
+  « À faire »), `immeubles/[cle]/?onglet=` (vue d'ensemble, estimation au curseur et données du
+  département tirées des ventes publiées, offres avec PDF servi par `/api/compte/offre-document/`,
+  documents, état locatif, mandat), `biens/[cle]/` (offre au curseur), `recherches/`,
+  `messages/[conversation]/`, `rendez-vous/` (calendrier), `profil/` (profil investisseur,
+  notifications, mot de passe). Envois : `src/lib/compte/envois.ts` (lead au BO, agent attitré en
+  copie de l'alerte, copie gardée dans `compte_saisies` jusqu'au retour du BO). E-mails au client :
+  `src/lib/compte/avis.ts` (une fois par ligne, table `compte_avis`), préférences dans
+  `app_metadata.notifications`. La photo de l'agent n'est pas affichée (hors domaine, §16) : ses
+  initiales. Demande au BO : `docs/PROMPT-BO-COMPTE-V2.md`.
 
 ### Garde-fous non négociables
 
