@@ -28,10 +28,10 @@ export async function POST(req: Request) {
 
     // Un second clic sur le bouton retrouve le même dossier.
     const deja = await dossierCourant(compte);
-    if (deja && deja.ref === ref && !deja.valide_le) return NextResponse.json({ ok: true });
+    if (deja && deja.ref === ref && !deja.valide_le) return NextResponse.json({ ok: true, donnees: deja.donnees });
 
     const lots = (k: string) => Math.max(0, Math.min(99, Math.floor(Number(b[k]) || 0)));
-    await creerDossier({
+    const cree = await creerDossier({
       ref,
       email,
       compte,
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         local_activite: lots("lotsActivite"),
       },
     });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, donnees: cree.donnees });
   } catch (e) {
     return erreurEnReponse(e);
   }

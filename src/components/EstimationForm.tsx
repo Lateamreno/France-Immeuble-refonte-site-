@@ -4,7 +4,9 @@ import { useEffect, useId, useRef, useState } from "react";
 import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE, CALIBRE } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
-import { ELEMENTS_ATTENDUS } from "@/lib/dossier/modele";
+import { ELEMENTS_ATTENDUS, dossierInitial, PICTO_TYPE, TYPES_LOT, type Dossier } from "@/lib/dossier/modele";
+import { DossierForm } from "./dossier/DossierForm";
+import { Picto } from "./Picto";
 
 /**
  * Tunnel d'estimation (CLAUDE.md §9, retour #60 de MAV du 27/10/2026).
@@ -222,16 +224,18 @@ export function EstimationForm({
    * Bouton « Remplir mon dossier en ligne » de l'écran de fin (retour #64) :
    * le serveur ouvre le dossier, prérempli avec les lots de la partie 2.
    */
-  async function ouvrirDossier(): Promise<boolean> {
+  async function ouvrirDossier(): Promise<Dossier | null> {
     try {
       const r = await fetch("/api/dossier/ouvrir/", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ ref: ref.current, formulaire, ...pourBO(d) }),
       });
-      return r.ok;
+      if (!r.ok) return null;
+      const j = (await r.json()) as { donnees?: Dossier };
+      return j.donnees ?? null;
     } catch {
-      return false;
+      return null;
     }
   }
 
@@ -719,10 +723,12 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
   verdict: Verdict | null;
   d: Data;
   dansLeCompte: boolean;
-  /** Ouvre le dossier en ligne ; renvoie false s'il n'a pas pu s'ouvrir. */
-  ouvrir: () => Promise<boolean>;
+  /** Ouvre le dossier en ligne ; renvoie null s'il n'a pas pu s'ouvrir. */
+  ouvrir: () => Promise<Dossier | null>;
 }) {
   const [ouverture, setOuverture] = useState<"" | "envoi" | "erreur">("");
+  const [dossier, setDossier] = useState<Dossier | null>(null);
+  const tableau = useRef<HTMLDivElement>(null);
 
   /* Cas extrême : ni le BO ni la file d'attente n'ont répondu. On ne fait pas
      croire au visiteur que sa demande est partie : on lui donne le numéro. */
@@ -767,43 +773,91 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
   const objet = encodeURIComponent(
     `Éléments pour l’estimation : ${[d.numero, d.rue].filter(Boolean).join(" ")}, ${d.ville}`.trim(),
   );
+  const apercu = dossierInitial({
+    habitation: nombre(d.lotsHabitation) || 0, bureau: nombre(d.lotsBureaux) || 0,
+    commerce: nombre(d.lotsCommerces) || 0, local_activite: nombre(d.lotsActivite) || 0,
+  }).lots;
+  const adresse = [[d.numero, d.rue].filter(Boolean).join(" "), [d.codePostal, d.ville].filter(Boolean).join(" ")]
+    .filter(Boolean).join(", ");
+
+  async function deplier() {
+    if (ouverture === "envoi") return;
+    setOuverture("envoi");
+    const donnees = await ouvrir();
+    if (!donnees) { setOuverture("erreur"); return; }
+    setOuverture("");
+    setDossier(donnees);
+    requestAnimationFrame(() => tableau.current?.scrollIntoView({ block: "start" }));
+  }
+
   // Texte de MAV (retour #64, 27/10/2026), au mot près ou presque.
   return (
-    <div className="form-shell outcome fin">
-      <h3 ref={titre} tabIndex={-1}>C’est noté. Un agent vous appelle sous 48&nbsp;h.</h3>
-      <div className="pieces-attendues">
-        <p className="pieces-attendues__intro">
-          Pour préparer l’entretien avec votre agent, voici les éléments dont nous aurons besoin&nbsp;:
+    <>
+      <div className="form-shell outcome fin">
+        <h3 ref={titre} tabIndex={-1}>C’est noté. Un agent vous appelle sous 48&nbsp;h.</h3>
+        <div className="pieces-attendues">
+          <p className="pieces-attendues__intro">
+            Pour préparer l’entretien avec votre agent, voici les éléments dont nous aurons besoin&nbsp;:
+          </p>
+          <ul>
+            {ELEMENTS_ATTENDUS.map((e) => <li key={e}>{e}</li>)}
+          </ul>
+        </div>
+        <p>
+          Vous pouvez les envoyer à{" "}
+          <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>
+          {dansLeCompte
+            ? ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte."
+            : ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte client."}
         </p>
-        <ul>
-          {ELEMENTS_ATTENDUS.map((e) => <li key={e}>{e}</li>)}
-        </ul>
+
+        {/* Retour #66 : les premières lignes de l'état locatif, déjà préremplies
+            avec les lots annoncés ; le bas se fond dans un voile flou. Un clic
+            n'importe où, ou le bouton, déplie le tableau complet sur place. */}
+        {!dossier && (
+          <div className="fin-apercu">
+            <p className="fin-apercu__titre">
+              Votre état locatif · {apercu.length} lot{apercu.length > 1 ? "s" : ""} à remplir
+            </p>
+            <div className="fin-apercu__cadre" onClick={deplier} role="presentation">
+              <div className="fin-apercu__ligne fin-apercu__entete" aria-hidden="true">
+                <span>Lot</span><span>Type</span><span>Typologie</span><span>Carrez</span><span>État</span><span>Loyer HC</span>
+              </div>
+              {apercu.slice(0, 5).map((l, i) => (
+                <div key={i} className={`fin-apercu__ligne${i >= 2 ? " fin-apercu__ligne--floue" : ""}`} aria-hidden="true">
+                  <span className="fin-apercu__num">
+                    <Picto nom={PICTO_TYPE[l.type] ?? "autre"} taille={18} />Lot {i + 1}
+                  </span>
+                  <span className="fin-apercu__champ fin-apercu__type">{TYPES_LOT.find((t) => t.cle === l.type)?.libelle}</span>
+                  <span className="fin-apercu__champ">{l.type === "habitation" ? "Choisir" : ""}</span>
+                  <span className="fin-apercu__champ"></span>
+                  <span className="fin-apercu__champ">Choisir</span>
+                  <span className="fin-apercu__champ"></span>
+                  <span className="fin-apercu__fleche" />
+                </div>
+              ))}
+              <div className="fin-apercu__voile">
+                <button type="button" className="btn btn--primary" disabled={ouverture === "envoi"}
+                  onClick={(e) => { e.stopPropagation(); deplier(); }}>
+                  {ouverture === "envoi" ? "Ouverture…" : "Voir tout et remplir"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {ouverture === "erreur" && (
+          <p className="err" role="alert">
+            Le tableau n’a pas pu s’ouvrir. Réessayez dans un instant, ou envoyez les éléments par e-mail.
+          </p>
+        )}
       </div>
-      <p>
-        Vous pouvez les réunir d’ici votre entretien, ou nous les envoyer directement à{" "}
-        <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>.
-      </p>
-      <p>
-        {dansLeCompte
-          ? "Vous pouvez aussi les remplir dès maintenant dans votre compte, où vous retrouverez ensuite votre estimation."
-          : "Si vous le préférez, vous pouvez dès maintenant les remplir dans votre compte client, où vous retrouverez ensuite votre estimation."}
-      </p>
-      <div className="btn-row fin__bouton">
-        <button type="button" className="btn btn--primary" disabled={ouverture === "envoi"}
-          onClick={async () => {
-            setOuverture("envoi");
-            if (await ouvrir()) window.location.assign("/mon-compte/dossier/");
-            else setOuverture("erreur");
-          }}>
-          {ouverture === "envoi" ? "Ouverture…" : "Remplir mon dossier en ligne"}
-        </button>
-      </div>
-      {ouverture === "erreur" && (
-        <p className="err" role="alert">
-          Le dossier n’a pas pu s’ouvrir. Réessayez dans un instant, ou envoyez les éléments par e-mail.
-        </p>
+
+      {dossier && (
+        <div className="fin-dossier" ref={tableau}>
+          <DossierForm initial={dossier} adresse={adresse} connecte={dansLeCompte} dejaValide={false} />
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

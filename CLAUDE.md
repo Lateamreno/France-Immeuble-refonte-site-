@@ -140,7 +140,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 ### Espace client v2 — décisions de MAV du 30/10/2026
 
 - Le menu du site reste en haut ; l'espace s'ouvre dessous comme une application, sans hero.
-  Organisation (A, B ou C) à choisir sur maquettes.
+  Organisation : option B (voir plus bas).
 - **Messagerie** : plusieurs conversations nommées par client, rattachables à un immeuble (achat
   ou vente) par le client ou par l'agence. Chaque message part aussi par e-mail, à l'agence et au
   client, avec l'historique.
@@ -156,6 +156,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Agent attitré** attribué après le premier appel. L'appel ouvre l'envoi des dossiers en
   priorité et l'off-market. Sans appel, l'acquéreur est en **D** dans le BO : ne jamais l'afficher
   au client.
+  Avant cet appel, l'accueil de l'acheteur porte une carte : un appel de quelques minutes avec un
+  agent ouvre les biens off-market et l'envoi des dossiers en priorité, avec un bouton pour
+  demander l'appel (MAV, 30/10/2026 : « quelques minutes », pas de durée chiffrée).
+- Organisation retenue : **option B** (un seul compte, rubriques selon le profil, une page par
+  immeuble à vendre avec ses onglets ; cinq onglets en bas au téléphone).
 - Notifications par e-mail (nouveau bien, offre, message), désactivables, gabarit blanc.
 - **Tout ce que le client saisit doit remplir le BO**, pas seulement partir par e-mail. Le BO ne
   répond 200 qu'une fois l'envoi enregistré ; sinon le site le garde en file et réessaie.
@@ -508,7 +513,9 @@ Canal d'acquisition n°1 — à ne pas improviser.
   gelée (§10).
 - Adresse : la saisie à la main est une ligne de la liste des suggestions (retour #62), affichée
   aussi quand rien n'est trouvé ou que la recherche ne répond pas.
-- **Écran de fin et dossier en ligne** (retours #64 et #67 à #70 : pas de hero, pas d’étage, une colonne état, un picto par type de lot, MAV, 27 et 30/10/2026) : « C'est noté. Un agent vous
+- **Écran de fin et dossier en ligne** (retour #66 : aperçu des premières lignes, bas flouté,
+  « Voir tout et remplir » déplie le tableau sur place ; au téléphone une ligne courte par lot ;
+  retours #64 et #67 à #70 : pas de hero, pas d’étage, une colonne état, un picto par type de lot, MAV, 27 et 30/10/2026) : « C'est noté. Un agent vous
   appelle sous 48 h », la liste des éléments à préparer (`ELEMENTS_ATTENDUS`), puis le bouton
   « Remplir mon dossier en ligne » → `/mon-compte/dossier/` : l'état locatif lot par lot,
   prérempli avec les lots de la partie 2, options des lots de Plein Bail (`src/lib/dossier/`).
