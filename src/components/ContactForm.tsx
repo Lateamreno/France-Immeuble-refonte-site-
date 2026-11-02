@@ -18,8 +18,10 @@ import { PropositionCompte } from "./compte/PropositionCompte";
 const PROJETS = [
   "Je souhaite acheter un immeuble",
   "Je souhaite vendre un immeuble",
-  "Je souhaite travailler en interagence",
+  "Autre",
 ] as const;
+/** Retour #71 (MAV, 02/11/2026) : acheter, vendre ou autre. Vendre ouvre le formulaire de vente. */
+export const PROJET_VENDRE = PROJETS[1];
 
 /**
  * `bien` : posé depuis une fiche « à vendre ». Le projet est pré-rempli et la
@@ -29,7 +31,11 @@ const PROJETS = [
  * (contrat BO du 21/10/2026). Le formulaire général, repris du WordPress, garde
  * ses trois champs.
  */
-export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } = {}) {
+export function ContactForm({ bien, onVendre }: {
+  bien?: { ref: string; titre: string };
+  /** Page Contact : choisir « vendre » remplace ce formulaire par celui de la vente. */
+  onVendre?: () => void;
+} = {}) {
   const uid = useId();
   const [telephone, setTelephone] = useState("");
   const [prenom, setPrenom] = useState("");
@@ -183,6 +189,7 @@ export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } 
             id={`${uid}-projet`}
             value={projet}
             onChange={(e) => {
+              if (e.target.value === PROJET_VENDRE && onVendre) { onVendre(); return; }
               setProjet(e.target.value);
               setErreurs((p) => ({ ...p, projet: "" }));
             }}
@@ -190,7 +197,7 @@ export function ContactForm({ bien }: { bien?: { ref: string; titre: string } } 
             <option value="" disabled>
               Veuillez sélectionner une option
             </option>
-            {PROJETS.map((p) => (
+            {(bien ? PROJETS.filter((x) => x !== PROJET_VENDRE) : PROJETS).map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>

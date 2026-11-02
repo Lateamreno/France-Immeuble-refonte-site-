@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageFond } from "@/components/PageFond";
 import { VISUELS } from "@/lib/visuels";
 import { Reveal } from "@/components/Reveal";
-import { ContactForm } from "@/components/ContactForm";
+import { ContactProjet } from "@/components/ContactProjet";
 import { Picto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
@@ -68,10 +68,7 @@ export default function ContactezNous() {
             </ul>
           </Reveal>
 
-          <div>
-            <h2 style={{ marginBottom: "var(--space-s)" }}>Votre message</h2>
-            <ContactForm />
-          </div>
+          <ContactProjet />
         </div>
       </section>
       </PageFond>

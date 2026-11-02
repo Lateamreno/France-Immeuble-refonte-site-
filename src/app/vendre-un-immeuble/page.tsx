@@ -4,6 +4,7 @@ import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { SectionFondue } from "@/components/SectionFondue";
 import { Button } from "@/components/Button";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
@@ -309,6 +310,8 @@ export default async function VendreUnImmeuble() {
           <ContactForm />
         </div>
       </section>
+      {/* Retour #77 : le bouton toujours à portée au téléphone, sauf sur le hero et le formulaire. */}
+      <BoutonFixeMobile href="#estimer" libelle="Vendre mon immeuble" cible="estimer" />
     </>
   );
 }

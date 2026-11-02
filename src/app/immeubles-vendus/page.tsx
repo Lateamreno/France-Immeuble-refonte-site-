@@ -96,7 +96,7 @@ export default async function ImmeublesVendus() {
       {[{ bloc: idf, gs: gIdf ? [gIdf] : [] }, { bloc: regions, gs: autres }]
         .filter((x) => x.gs.length > 0)
         .map(({ bloc, gs }, k) => (
-          <section key={bloc.cle} className="section section--creme region-sec">
+          <section key={bloc.cle} className="section section--noir region-sec region-sec--noir">
             <div className="container">
               {k === 0 && (
                 <Reveal className="section__head region-sec__intro">

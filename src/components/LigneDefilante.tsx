@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
  * Une ligne de cartes qui défile sans barre de défilement (MAV, 22/10/2026).
@@ -45,13 +45,17 @@ export function LigneDefilante({
       // La zone du premier plan est la largeur du conteneur : la ligne
       // déborde jusqu'aux bords de l'écran par ses marges intérieures, où
       // les cartes voisines restent visibles, plus petites.
-      const cadre = el.getBoundingClientRect();
+      // Retour #76 (MAV, 02/11/2026) : chaque carte est posée dans une case
+      // (`ligne-case`) qui ne change jamais de taille ; seule la carte, dedans,
+      // rétrécit. Avant, la carte elle-même rétrécissait : le navigateur calait
+      // l'arrêt du défilement sur sa taille réduite, la carte regrandissait,
+      // il recalait, et la ligne sautait sous le doigt.
       const style = getComputedStyle(el);
-      const gauche = cadre.left + parseFloat(style.paddingLeft);
-      const droite = cadre.right - parseFloat(style.paddingRight);
+      const gauche = el.scrollLeft + parseFloat(style.paddingLeft);
+      const droite = el.scrollLeft + el.clientWidth - parseFloat(style.paddingRight);
       for (const carte of Array.from(el.children) as HTMLElement[]) {
-        const r = carte.getBoundingClientRect();
-        const entiere = r.left >= gauche - 2 && r.right <= droite + 2;
+        const debut = carte.offsetLeft;
+        const entiere = debut >= gauche - 2 && debut + carte.offsetWidth <= droite + 2;
         carte.classList.toggle("est-haute", entiere);
         carte.classList.toggle("est-basse", !entiere);
       }
@@ -61,13 +65,17 @@ export function LigneDefilante({
   useEffect(() => {
     const el = piste.current;
     if (!el) return;
+    // Une mesure par image au plus : au doigt, « scroll » arrive bien plus souvent.
+    let image = 0;
+    const planifier = () => { if (!image) image = requestAnimationFrame(() => { image = 0; mesurer(); }); };
     mesurer();
-    el.addEventListener("scroll", mesurer, { passive: true });
-    const ro = new ResizeObserver(mesurer);
+    el.addEventListener("scroll", planifier, { passive: true });
+    const ro = new ResizeObserver(planifier);
     ro.observe(el);
     return () => {
-      el.removeEventListener("scroll", mesurer);
+      el.removeEventListener("scroll", planifier);
       ro.disconnect();
+      cancelAnimationFrame(image);
     };
   }, [mesurer]);
 
@@ -118,7 +126,9 @@ export function LigneDefilante({
           glisse.current = null;
         }}
       >
-        {children}
+        {marches
+          ? Children.map(children, (c) => (c == null || c === false ? c : <div className="ligne-case">{c}</div>))
+          : children}
       </div>
       <button type="button" className="ligne__fleche ligne__fleche--avant" aria-label="Cartes précédentes"
         hidden={!avant} onClick={() => defiler(-1)}>

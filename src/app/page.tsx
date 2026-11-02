@@ -66,8 +66,8 @@ export default async function Accueil() {
 
       {/* Sur un seul écran (retour #56, MAV, 27/10/2026). */}
       <section className="section section--creme section--ecran accueil-vendre">
-        <div className="container split">
-          <Reveal>
+        <div className="container split accueil-vendre__grille">
+          <Reveal className="accueil-vendre__tete">
             <Eyebrow>Vendre</Eyebrow>
             <h2>
               Vendez votre immeuble <span className="accent">au meilleur prix</span>
@@ -75,7 +75,10 @@ export default async function Accueil() {
             <p className="lead lead--or" style={{ marginTop: "var(--space-s)" }}>
               Estimation et commercialisation conçues pour les immeubles
             </p>
-            <p style={{ marginTop: "var(--space-s)" }}>
+          </Reveal>
+          {/* Au téléphone, le carnet se glisse entre l'accroche et le texte. */}
+          <Reveal className="accueil-vendre__corps">
+            <p>
               Obtenez une estimation basée sur des critères propres aux immeubles comme la
               rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
               estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
@@ -98,16 +101,30 @@ export default async function Accueil() {
             </div>
           </Reveal>
 
-          {/* Le carnet des témoignages. Le fichier d'origine est coupé à droite :
-              l'image va jusqu'au bord de l'écran, la coupe s'y confond (MAV). */}
-          <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord media--fond-mob">
-            <Image
-              src="/media/05_Notebook-Mock-up-1.webp"
-              alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
-              width={800}
-              height={820}
-              sizes="(max-width: 900px) 100vw, 760px"
-            />
+          {/* Le carnet et son témoignage (retour #78, MAV, 02/11/2026 : « on voit
+              plus l'image avec le livre et le commentaire »). Le fichier est
+              coupé à droite, si bien que le texte écrit dans le carnet ne se lit
+              jamais en entier : le témoignage est repris en vrai texte, posé
+              sur l'image, lisible et indexable. Au téléphone, le carnet ouvre
+              la section au lieu de se fondre derrière le texte. */}
+          <Reveal delayIndex={1} className="accueil-carnet">
+            <span className="accueil-carnet__image">
+              <Image
+                src="/media/05_Notebook-Mock-up-1.webp"
+                alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
+                width={800}
+                height={820}
+                sizes="(max-width: 900px) 92vw, 640px"
+              />
+            </span>
+            <figure className="accueil-carnet__citation">
+              <blockquote>
+                Nous avons fait estimer un immeuble par France Immeuble (entre autres) et leur
+                dossier était le plus adapté à la vente d’un immeuble entier. La vente s’est
+                réalisée rapidement dans de très bonnes conditions.
+              </blockquote>
+              <figcaption>Famille M., vendeurs</figcaption>
+            </figure>
           </Reveal>
         </div>
       </section>

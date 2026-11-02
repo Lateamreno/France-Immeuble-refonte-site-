@@ -371,7 +371,8 @@ outil, il s'ouvre directement sur son contenu (« pas besoin de hero ni rien »)
 sous **toute la page** (« pas juste sur la première partie où il y a le titre »), collée pendant
 le défilement, voile sombre, le titre puis le contenu tout de suite. Les sections de la page n'ont
 plus de fond propre. Pour `/immeubles-a-vendre/` (la recherche, cartes sur fond sombre) et
-`/contactez-nous/` (le formulaire, retour #72).
+`/contactez-nous/` (le formulaire, retour #72 ; projet acheter, vendre ou autre, et « vendre »
+ouvre le formulaire de vente habituel, retour #71). Références sur fond noir (retour #73).
 
 Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto or **sans
 cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).
@@ -391,12 +392,17 @@ qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèl
 de la page Vendre. Outils (27/10/2026) : `grid--ligne-mob` (cartes en ligne au téléphone),
 `media--fond-mob` (photo en fond fondu au téléphone), `tete-2col`, `steps--frise`,
 LigneDefilante `marches` pour toute liste longue (références, articles, étapes).
-Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au téléphone, texte
+Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au téléphone (retour #78,
+02/11/2026 : le carnet entre l'accroche et le texte, son témoignage repris en vrai texte), texte
 entier, les deux boutons l'un au-dessus de l'autre collés en bas de l'écran pendant qu'il
 défile (MAV : « Lire la suite », personne ne clique) ; l'échantillon des Références garde sur
 ordinateur sa longue liste par région et département (MAV : « c'était pas mal comme
 avant »), repliée en deux lignes qui glissent au téléphone. Suites courtes (méthode de
-Vendre) : verticales au téléphone. Suites longues (mission de la Découpe) : grille 3 × 2 sur
+Vendre) : une étape par écran au téléphone, illustrations agrandies (retours #75 et #77,
+02/11/2026). **Bouton fixe en bas au téléphone** sur Vendre (`BoutonFixeMobile`, retour #77) :
+visible partout sauf sur le hero, le formulaire et le pied de page ; les boutons des sections
+ne le doublent pas. Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
+carte rétrécit (retour #76 : l'arrêt du défilement ne saute plus). Suites longues (mission de la Découpe) : grille 3 × 2 sur
 ordinateur, ligne qui glisse au téléphone.
 
 **Sections crème** (MAV, 22/10/2026) : une section crème ne reste pas un aplat de texte et de

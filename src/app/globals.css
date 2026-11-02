@@ -1638,9 +1638,12 @@ fieldset.field legend,.lot label{
 /* Ligne en profondeur (LigneDefilante `marches`, MAV, 27/10/2026) : les
    cartes entièrement visibles sont au premier plan ; les autres reculent dans
    le champ, plus petites et plus pâles, centrées sur la même ligne. */
-.ligne--marches .ligne-cartes > *{transition:transform .5s var(--ease), opacity .5s var(--ease);transform-origin:center;}
-.ligne--marches .ligne-cartes > .est-basse{transform:scale(.86);opacity:.5;}
-@media (prefers-reduced-motion: reduce){.ligne--marches .ligne-cartes > *{transition:none;}}
+/* La case garde sa taille (c'est elle qui cale l'arrêt du défilement) ; la carte dedans rétrécit
+   (retour #76, 02/11/2026). */
+.ligne--marches .ligne-case{display:flex;min-width:0;}
+.ligne--marches .ligne-case > *{flex:1 1 auto;min-width:0;transition:transform .5s var(--ease), opacity .5s var(--ease);transform-origin:center;}
+.ligne--marches .ligne-case.est-basse > *{transform:scale(.86);opacity:.5;}
+@media (prefers-reduced-motion: reduce){.ligne--marches .ligne-case > *{transition:none;}}
 /* Pleine largeur (retours #53 et #54) : la ligne déborde du conteneur
    jusqu'aux bords de l'écran ; ses marges intérieures valent l'écart entre le
    conteneur et l'écran, si bien que le premier plan reste aligné sur la
@@ -4464,3 +4467,107 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .page-fond .contact-sec{min-height:0;padding-top:clamp(20px,3vw,36px);}
 /* Sur l'image, les textes posés à nu gagnent une ombre douce. */
 .page-fond .resultats-tete__nb,.page-fond .hors-recherche__titre span{text-shadow:0 1px 12px rgba(10,10,10,.6);}
+/* Contact → vendre (retour #71) */
+.contact-vendre{display:flex;flex-direction:column;gap:var(--space-s);}
+.contact-vendre h2{margin:0;}
+.contact-vendre__intro{margin:0;color:color-mix(in srgb, var(--color-creme) 80%, var(--color-noir));}
+.contact-vendre__retour{align-self:center;background:none;border:0;cursor:pointer;font:inherit;font-size:14px;}
+/* Références sur fond noir (retour #73, MAV, 02/11/2026) */
+.region-sec--noir .vente{border-color:var(--color-ligne);background:var(--color-noir-2);}
+.region-sec--noir .vente__ville{color:var(--color-creme);}
+.region-sec--noir .vente:hover .vente__ville{color:var(--color-bronze);}
+.region-sec--noir .vente__dept{color:var(--color-gris);}
+.region-sec--noir .vente__rue,.region-sec--noir .vente__faits,.region-sec--noir .vente__suite{color:color-mix(in srgb, var(--color-creme) 72%, var(--color-noir));}
+.region-sec--noir .vente__prix,.region-sec--noir .vente__rdt,.region-sec--noir .region-ventes__n{color:var(--color-bronze);}
+.region-sec--noir .vente__pied{border-top-color:var(--color-ligne);}
+.region-sec--noir .vente__sansphoto{background:var(--color-noir-3);color:var(--color-bronze);}
+.region-sec--noir .region-ventes{border-top-color:var(--color-ligne);}
+.region-sec--noir .region-ventes__dept h3 span{color:var(--color-gris);}
+.region-sec--noir .region-ventes__carte path{fill:color-mix(in srgb, var(--color-creme) 6%, transparent);stroke:color-mix(in srgb, var(--color-creme) 18%, transparent);}
+.region-sec--noir .region-ventes__carte path.carte-region__active{fill:color-mix(in srgb, var(--color-bronze) 60%, transparent);stroke:var(--color-bronze);}
+.region-sec--noir .region-sec__mob-n{color:var(--color-bronze);}
+@media (max-width:759px){ .region-sec--noir + .region-sec--noir .region-ventes:first-of-type{border-top-color:var(--color-ligne);} }
+/* Bouton « Vendre mon immeuble » fixé en bas au téléphone (retour #77, MAV, 02/11/2026).
+   Les boutons des sections ne sont plus doublés à l'écran : ils se cachent au téléphone,
+   sauf dans le hero et la section du formulaire. */
+.bouton-fixe-mob{display:none;}
+@media (max-width:899px){
+  .bouton-fixe-mob{
+    display:block;position:fixed;left:0;right:0;bottom:0;z-index:45;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,transparent,color-mix(in srgb, var(--color-noir) 88%, transparent) 40%);
+    transform:translateY(110%);transition:transform .25s var(--ease);pointer-events:none;
+  }
+  .bouton-fixe-mob.est-visible{transform:none;pointer-events:auto;}
+  .bouton-fixe-mob .btn{margin:0;}
+  body:has(.bouton-fixe-mob) .sec-fondu__bouton,body:has(.bouton-fixe-mob) .methode-sec .btn-row{display:none;}
+  body:has(.bouton-fixe-mob.est-visible) .rv-fab{bottom:calc(84px + env(safe-area-inset-bottom));}
+}
+@media (prefers-reduced-motion:reduce){ .bouton-fixe-mob{transition:none;} }
+
+/* Méthode de Vendre (retours #75 et #77) : illustrations plus grandes ; au téléphone,
+   une étape par écran, le bouton fixe restant visible pendant les quatre. */
+.methode-sec .steps--frise{--vis-w:176px;}
+@media (max-height:820px) and (min-width:900px){ .methode-sec .steps--frise{--vis-w:150px;} }
+@media (max-width:899px){
+  .methode-sec .steps--frise{--vis-w:190px;gap:0;}
+  .methode-sec .steps--frise .step{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    min-height:calc(var(--ecran) - 90px);padding:24px 0 96px;
+  }
+  .methode-sec .steps--frise .step > *{grid-column:auto;}
+  .methode-sec .steps--frise .step__visuel{width:var(--vis-w);margin:0 0 18px;}
+  .methode-sec .steps--frise .step::before{display:none;}
+  .methode-sec .steps--frise .step + .step{border-top:1px solid var(--color-ligne);}
+  .methode-sec .steps--frise .step__num{font-size:13px;margin-bottom:8px;}
+  .methode-sec .steps--frise .step h3{font-size:1.5rem;margin-bottom:10px;}
+  .methode-sec .steps--frise .step p{font-size:16px;max-width:30ch;}
+}
+.ligne-cartes{position:relative;}
+/* Accueil, « Vendez votre immeuble » (retour #78, MAV, 02/11/2026) : le carnet entier dans sa
+   colonne, et son témoignage en vrai texte posé dessus. */
+.accueil-carnet{position:relative;display:flex;flex-direction:column;align-items:flex-end;}
+.accueil-carnet__image{display:block;width:100%;max-width:560px;}
+.accueil-carnet__image img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 40px color-mix(in srgb, var(--color-noir) 22%, transparent));}
+.accueil-carnet__citation{
+  position:relative;margin:-22% 0 0;align-self:flex-start;width:min(360px,86%);
+  padding:20px 22px 18px;border-left:2px solid var(--color-bronze);border-radius:0 var(--radius-card) var(--radius-card) 0;
+  background:var(--color-noir);color:var(--color-creme);
+  box-shadow:0 18px 40px color-mix(in srgb, var(--color-noir) 28%, transparent);
+}
+.accueil-carnet__citation::before{content:"“";position:absolute;top:-18px;left:16px;font:900 64px/1 var(--font-display);color:var(--color-bronze);}
+.accueil-carnet__citation blockquote{margin:0;font-size:15px;line-height:1.55;}
+.accueil-carnet__citation figcaption{margin-top:10px;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);}
+@media (min-width:900px){
+  .accueil-vendre .accueil-carnet__image img{max-height:calc(var(--ecran) - 200px);width:auto;max-width:100%;margin-left:auto;}
+}
+@media (max-width:899px){
+  .accueil-vendre .container.split{display:flex;flex-direction:column;}
+  .accueil-vendre .accueil-carnet{order:-1;align-items:center;margin:0 0 var(--space-m);}
+  .accueil-vendre .accueil-carnet__image{max-width:300px;margin-right:-12vw;align-self:flex-end;}
+  .accueil-vendre .accueil-carnet__citation{margin-top:-30%;width:88%;}
+  .accueil-carnet__citation blockquote{font-size:14.5px;}
+}
+/* Accueil « Vendez votre immeuble » : l'accroche, le carnet, le texte (retour #78). */
+.accueil-vendre__corps{margin-top:var(--space-s);}
+@media (min-width:900px){
+  .accueil-vendre .container.accueil-vendre__grille{
+    grid-template-columns:7fr 5fr;grid-template-areas:"tete carnet" "corps carnet";
+    grid-template-rows:auto 1fr;row-gap:0;align-items:start;
+  }
+  .accueil-vendre__tete{grid-area:tete;}
+  .accueil-vendre__corps{grid-area:corps;}
+  .accueil-vendre .accueil-carnet{grid-area:carnet;align-self:center;}
+}
+@media (max-width:899px){
+  .accueil-vendre .accueil-carnet{order:0;margin:var(--space-s) 0 0;}
+  .accueil-vendre__tete{order:-1;}
+  .accueil-vendre__corps{order:1;}
+  .accueil-vendre .accueil-carnet__image{max-width:250px;margin-right:-10vw;}
+  .accueil-vendre .accueil-carnet__citation{margin-top:-26%;}
+}
+@media (max-width:899px){
+  /* Le haut du fichier du carnet est vide : on le rentre sous l'accroche. */
+  .accueil-vendre .accueil-carnet{margin-top:0;}
+  .accueil-vendre .accueil-carnet__image{margin-top:-18%;}
+}
