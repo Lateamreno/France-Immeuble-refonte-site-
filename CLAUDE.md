@@ -192,8 +192,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `/api/compte/etat-biens/`. Sans compte, favori et offre mènent à la connexion puis reviennent
   sur la page. Rubrique « Mes favoris » dans le compte.
 - **Moteur et fiche « comme Plein Bail »** (MAV, 31/10/2026, spec Plein Bail du 30/10, lot 59) :
-  l'adresse est l'état de la recherche (`ou=r:11&ou=d:78&ou=v:Lyon`, `td`, `pmin`, `pmax`, `smin`,
-  `smax`, `rdt`, `dpemin`, `dpemax`, `trav`, `omin`, `omax`, `lots`, `tv`, `dispo`, `tri`), une seule
+  l'adresse est l'état de la recherche (`ou=d:78&ou=v:Lyon`, `dest`, `pmin`, `pmax`, `rdt`, `tri`).
+  **Les critères sont ceux d'une recherche du BO, et rien d'autre** (MAV, 02/11/2026 : « il faut
+  que les critères d'affichage soient les mêmes que ceux de notre BO de telle façon qu'ils puissent
+  enregistrer leur recherche ») : départements et villes (une région ajoute ses départements),
+  destinations (Logement, Commerce, Bureau, Logistique, Hôtel, Parking, lues dans `biens_lots`),
+  prix, rendement ; à l'enregistrement, un ou plusieurs profils (une recherche par profil, le reste
+  à l'identique) et un commentaire. Pas de type de ville, de surface, de DPE ni d'occupation
+  dans la barre. La vignette off-market est toujours la première, quels que soient les critères
+  et le tri. Une seule
   traduction filtres → résultats (`filtrer` dans `src/lib/recherche-biens.ts`), une seule puce pour
   les localisations, « En dehors de votre recherche » sous six résultats, rangées compactes au
   téléphone. Calculs partagés dans `src/lib/annonce.ts` (frais de notaire réels, rendements brut,
@@ -357,6 +364,9 @@ transparente au-dessus du hero et devient noire floutée au défilement.
 
 **Exception : l'espace client** (`/mon-compte/…`, MAV, 30/10/2026) n'a pas de hero. C'est un
 outil, il s'ouvre directement sur son contenu (« pas besoin de hero ni rien »).
+**Bandeau titre** (`HeroMedia compact`, MAV, 02/11/2026) : le titre et l'image de fond, sans
+pleine hauteur ni flèche, pour les pages qui montrent leur contenu tout de suite :
+`/immeubles-a-vendre/` (la recherche) et `/contactez-nous/` (le formulaire, retour #72).
 
 Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto or **sans
 cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).

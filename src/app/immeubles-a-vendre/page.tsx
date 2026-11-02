@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -45,7 +44,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function ImmeublesAVendre({ searchParams }: Props) {
   const [biens, communesOff] = await Promise.all([biensAVendre(), offMarket()]);
   const nbOffMarket = communesOff.reduce((s, c) => s + c.nombre, 0);
-  const enVente = biens.filter((b) => b.statut === "en_vente").length;
   const criteres = lireCriteres(await searchParams);
   const resultats = filtrer(biens, criteres);
   const actives = puces(criteres);
@@ -59,7 +57,6 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
   for (const b of biens) parDept[b.dept] = (parDept[b.dept] ?? 0) + 1;
   const prixEnLigne = biens.map((b) => b.prixHai);
   const bornesPrix = prixEnLigne.length ? { min: Math.min(...prixEnLigne), max: Math.max(...prixEnLigne) } : null;
-  const avecPopulation = biens.some((b) => b.communePopulation != null);
   const ailleurs = horsRecherche(biens, criteres, resultats);
   const tris = TRIS.map(([k, nom]) => ({ cle: k, nom, lien: lienRecherche({ ...criteres, tri: k }) }));
 
@@ -72,22 +69,11 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
         ])}
       />
 
-      <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt}>
-        <>
-          <Eyebrow>Nos biens · à vendre</Eyebrow>
-          <h1>
-            Les immeubles que nous <span className="accent">commercialisons</span>
-          </h1>
-          <p className="lead">
-            Immeubles de rapport à vendre : surface, lots, loyers, rendement et prix. Tout ce qu’il
-            faut pour décider s’il vaut le déplacement. L’adresse est communiquée à la demande.
-          </p>
-          {biens.length > 0 && (
-            <div className="hero-proof">
-              <Chiffre picto="immeubles" valeur={enVente} libelle={`immeuble${enVente > 1 ? "s" : ""} en vente`} />
-            </div>
-          )}
-        </>
+      {/* Pas de grand hero ici (MAV, 02/11/2026) : le titre sur l'image de fond, puis la recherche. */}
+      <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt} compact>
+        <h1>
+          Les immeubles que nous <span className="accent">commercialisons</span>
+        </h1>
       </HeroMedia>
 
       <section id="resultats" className="section section--creme biens-recherche">
@@ -95,7 +81,7 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
           {biens.length > 0 ? (
             <>
               <RechercheBiens key={versParams(criteres)} criteres={criteres} villes={[...parVille.values()]}
-                departementsPresents={parDept} bornesPrix={bornesPrix} avecPopulation={avecPopulation}
+                departementsPresents={parDept} bornesPrix={bornesPrix}
                 pourCompte={versRechercheCompte(criteres, biens)} />
 
               {actives.length > 0 && (
@@ -125,17 +111,16 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
                 <TriMobile options={tris} actif={criteres.tri} />
               </div>
 
-              {resultats.length > 0 ? (
-                <ul className="biens-liste biens-liste--resultats">
-                  {/* Première vignette : l'off-market (retour #74, MAV, 02/11/2026). */}
-                  <li><CarteOffMarket nombre={nbOffMarket} /></li>
-                  {resultats.map((b, i) => (
-                    <li key={b.id}>
-                      <CarteBien b={b} rang={i} />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
+              {/* La vignette off-market reste la première, quels que soient les critères et le tri (MAV, 02/11/2026). */}
+              <ul className="biens-liste biens-liste--resultats">
+                <li><CarteOffMarket nombre={nbOffMarket} /></li>
+                {resultats.map((b, i) => (
+                  <li key={b.id}>
+                    <CarteBien b={b} rang={i} />
+                  </li>
+                ))}
+              </ul>
+              {resultats.length === 0 && (
                 <div className="vide vide--recherche">
                   <span className="vide__picto" aria-hidden="true"><Picto nom="loupe" taille={40} /></span>
                   <h2>Aucun immeuble en ligne ne correspond</h2>

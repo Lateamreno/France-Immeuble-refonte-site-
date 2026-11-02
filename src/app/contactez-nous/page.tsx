@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Eyebrow } from "@/components/Eyebrow";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { Reveal } from "@/components/Reveal";
@@ -33,16 +32,11 @@ export default function ContactezNous() {
         ])}
       />
 
-      <HeroMedia image={VISUELS.skylineCrepuscule.src} alt={VISUELS.skylineCrepuscule.alt}>
-        <>
-          <Eyebrow>Contact</Eyebrow>
-          <h1>
-            Contactez-<span className="accent">nous</span>
-          </h1>
-          <p className="lead">
-            Un immeuble à vendre ou à acheter&nbsp;? nous répondons à toutes vos questions
-          </p>
-        </>
+      {/* Retour #72 (MAV, 02/11/2026) : pas de grand hero, le formulaire tout de suite ; le titre et l'image de fond restent. */}
+      <HeroMedia image={VISUELS.skylineCrepuscule.src} alt={VISUELS.skylineCrepuscule.alt} compact>
+        <h1>
+          Contactez-<span className="accent">nous</span>
+        </h1>
       </HeroMedia>
 
       <section className="section section--noir contact-sec">

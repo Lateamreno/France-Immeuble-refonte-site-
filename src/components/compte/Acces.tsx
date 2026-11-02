@@ -16,7 +16,7 @@ const MESSAGES_ETAT: Record<string, string> = {
  * nos routes serveur ; le navigateur ne reçoit jamais de jeton.
  */
 /** Après la connexion, retour sur la page d'où l'on venait (un chemin du site, rien d'autre). */
-const retourSur = (r?: string) => (r && /^\/(?!\/)[\w\-./?=&%#,]*$/.test(r) ? r : "/mon-compte/");
+const retourSur = (r?: string) => (r && /^\/(?!\/)[\w\-./?=&%#,:]*$/.test(r) ? r : "/mon-compte/");
 
 export function Acces({ etat, retour }: { etat?: string; retour?: string }) {
   const uid = useId();

@@ -145,3 +145,27 @@ export function mensualite(montant: number, tauxAnnuelPct: number, annees: numbe
 /** Le lien Google Maps de la commune : code postal et ville, jamais l'adresse. */
 export const lienCarte = (b: BienAVendre) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${b.codePostal ?? ""} ${b.ville} France`.trim())}`;
+
+/**
+ * Les destinations des recherches du BO (contrat §6) : la barre de recherche
+ * du site parle la même langue, pour que toute recherche s'enregistre telle
+ * quelle (MAV, 02/11/2026).
+ */
+export type Destination = "Logement" | "Commerce" | "Bureau" | "Logistique" | "Hôtel" | "Parking";
+export const DESTINATIONS: Destination[] = ["Logement", "Commerce", "Bureau", "Logistique", "Hôtel", "Parking"];
+const DESTINATION_DU_LOT: Record<string, Destination> = {
+  habitation: "Logement", commerce: "Commerce", bureau: "Bureau", activite: "Logistique", parking: "Parking",
+};
+
+/** Les destinations d'un bien : celles de ses lots, sinon celles qu'on lit dans son type. */
+export function destinationsDe(b: BienAVendre): Destination[] {
+  const d = new Set<Destination>();
+  for (const t of b.typesLots ?? []) if (DESTINATION_DU_LOT[t]) d.add(DESTINATION_DU_LOT[t]);
+  if (d.size === 0) {
+    const dom = dominanteDe(b);
+    d.add(dom === "bureau" ? "Bureau" : dom === "commercial" ? "Commerce" : "Logement");
+    if (estMixte(b)) { d.add("Logement"); d.add("Commerce"); }
+    if (/h[oô]tel/i.test(b.type)) d.add("Hôtel");
+  }
+  return DESTINATIONS.filter((x) => d.has(x));
+}

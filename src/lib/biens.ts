@@ -355,6 +355,8 @@ export type BienAVendre = {
   travaux: string | null;
   images: string[];
   publieLe: string;
+  /** Les types des lots déposés dans `biens_lots` (habitation, commerce…), pour les destinations. */
+  typesLots: string[];
 } & ComplementsAnnonce;
 
 /**
@@ -444,6 +446,7 @@ function versBien(l: LigneBien, base: string): BienAVendre {
       /^https?:\/\//.test(i) ? i : `${base}/storage/v1/object/public/biens/${i.replace(/^\/+/, "")}`,
     ),
     publieLe: l.publie_le,
+    typesLots: [],
     codePostal: l.code_postal ?? null,
     communePopulation: l.commune_population ?? null,
     loyerPotentielAn: nombre(l.loyer_hc_an_potentiel),
@@ -480,10 +483,32 @@ export async function biensAVendre(): Promise<BienAVendre[]> {
     );
     if (!res.ok) return [];
     const lignes = (await res.json()) as LigneBien[];
-    return lignes.map((l) => versBien(l, cfg.url));
+    const biens = lignes.map((l) => versBien(l, cfg.url));
+    // Les types de lots de chaque bien : la recherche filtre par destination
+    // (Logement, Commerce, Bureau…), comme les recherches du BO.
+    const types = await typesDesLots(cfg);
+    for (const b of biens) b.typesLots = types.get(b.id) ?? [];
+    return biens;
   } catch {
     return [];
   }
+}
+
+async function typesDesLots(cfg: { url: string; cle: string }): Promise<Map<string, string[]>> {
+  const m = new Map<string, string[]>();
+  try {
+    const res = await fetch(`${cfg.url}/rest/v1/biens_lots?select=bien,type`, {
+      headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
+      next: { revalidate: 600, tags: ["biens"] },
+    });
+    if (!res.ok) return m;
+    for (const l of (await res.json()) as { bien: string; type: string }[]) {
+      const t = m.get(l.bien) ?? [];
+      if (!t.includes(l.type)) t.push(l.type);
+      m.set(l.bien, t);
+    }
+  } catch { /* sans lots, la destination se lit dans le type du bien */ }
+  return m;
 }
 
 export async function bienAVendre(slug: string): Promise<BienAVendre | null> {

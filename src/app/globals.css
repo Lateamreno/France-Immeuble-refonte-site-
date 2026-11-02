@@ -4391,3 +4391,52 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
   .carte-offmarket__titre{font-size:1.3rem;}
 }
 .carte-action .kpi dd{font-size:13px;white-space:nowrap;}
+/* Bandeau titre (hero compact) : le titre et l'image de fond, le contenu tout de suite après
+   (MAV, 02/11/2026 : Immeubles à vendre ; retour #72 : Contact). */
+.hero-media.hero-media--compact{min-height:0;}
+.hero-media--compact > .container{padding-top:calc(var(--header-h) + clamp(28px,4vw,56px)) !important;padding-bottom:clamp(28px,4vw,52px) !important;}
+.hero-media--compact h1{margin:0;font-size:clamp(1.9rem,1.2rem + 2vw,3rem);}
+.hero-media--compact .eyebrow{margin-bottom:10px;}
+/* Variante sombre de la liste des immeubles à vendre (proposée à MAV le 02/11/2026,
+   `est-sombre` sur la section) : même page, fond noir, cartes noir 3. */
+.biens-recherche.est-sombre{background:var(--color-noir-2);color:var(--color-creme);}
+.est-sombre .recherche-biens{background:var(--color-noir);border:1px solid var(--color-ligne);}
+.est-sombre .resultats-tete__nb{color:var(--color-gris);}
+.est-sombre .resultats-tete__nb strong{color:var(--color-creme);}
+.est-sombre .tri{color:var(--color-gris);}
+.est-sombre .tri:hover{color:var(--color-creme);}
+.est-sombre .tri.est-actif{background:var(--color-bronze);color:var(--color-noir);}
+.est-sombre .tri-mobile select{border:1px solid var(--color-ligne);}
+.est-sombre .puce-filtre{background:var(--color-noir-3);}
+.est-sombre .bien-carte{background:var(--color-noir-3);border-color:var(--color-ligne);color:var(--color-creme);}
+.est-sombre .bien-carte:hover{border-color:var(--color-bronze-profond);box-shadow:0 14px 34px rgba(10,10,10,.4);}
+.est-sombre .bien-carte__titre,.est-sombre .bien-carte__prix{color:var(--color-creme);}
+.est-sombre .bien-carte__titre svg{color:var(--color-bronze);}
+.est-sombre .bien-carte__dept,.est-sombre .bien-carte__pm2{color:var(--color-gris);}
+.est-sombre .bien-carte__faits,.est-sombre .bien-carte__loyer{color:color-mix(in srgb, var(--color-creme) 74%, var(--color-noir));}
+.est-sombre .bien-carte__rdt{color:var(--color-bronze);}
+.est-sombre .bien-carte__ligne--3{border-top-color:var(--color-ligne);}
+.est-sombre .hors-recherche__titre::before,.est-sombre .hors-recherche__titre::after{border-top-color:var(--color-ligne);}
+.est-sombre .hors-recherche__titre span{color:var(--color-bronze);}
+.est-sombre .vide h2{color:var(--color-creme);}
+@media (max-width:699px){
+  .est-sombre .biens-liste--resultats > li{border-bottom-color:var(--color-ligne);}
+  .est-sombre .biens-liste--resultats .bien-carte{background:none;}
+}
+/* Barre sans « Plus de filtres » : le bouton seul dans sa colonne ; l'enregistrement en dessous. */
+.recherche-biens__actions{justify-content:center;}
+.lieu--resume{border:0;cursor:pointer;font:inherit;font-size:13px;padding:6px 12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+.lieu--resume:focus-visible{outline:2px solid var(--color-bronze-clair);}
+.recherche-biens__profil{display:flex;flex-direction:column;gap:10px;flex:1 1 100%;}
+.recherche-biens__profil .choices{justify-content:flex-end;}
+.recherche-biens__commentaire{
+  width:100%;background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:16px;
+  padding:10px 14px;color:var(--color-creme);font:inherit;font-size:14px;resize:vertical;
+}
+.recherche-biens__commentaire:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.mes-zones__vider{align-self:flex-start;background:none;border:0;cursor:pointer;font:inherit;font-size:14px;}
+@media (max-width:639px){.recherche-biens__profil .choices{justify-content:center;}}
+@media (min-width:1100px){.recherche-biens__barre .lieux{min-height:0;padding-block:2px;}}
+/* Contact (retour #72) : le formulaire tout de suite sous le titre ; au téléphone il passe avant les coordonnées. */
+.hero-media--compact + .contact-sec{min-height:0;padding-top:clamp(28px,4vw,56px);}
+@media (max-width:759px){ .contact-sec .split > :last-child{order:-1;} }

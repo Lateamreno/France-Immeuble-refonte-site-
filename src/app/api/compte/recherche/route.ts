@@ -46,13 +46,18 @@ export async function POST(req: Request) {
     cle,
     action,
   };
+  // Plusieurs profils choisis (barre des immeubles à vendre, MAV 02/11/2026) :
+  // une recherche par profil, le reste des critères à l'identique, comme le BO.
+  const cibles = action === "enregistrer" && !texte(b.cle, 36) && Array.isArray(b.cibles)
+    ? [...new Set((b.cibles as unknown[]).map((x) => texte(x, 40)))]
+    : [texte(b.cible, 40)];
   if (action === "enregistrer") {
-    const cible = texte(b.cible, 40);
     const departements = liste(b.departements, 20).filter((d) => /^(\d{2}|2[AB]|97\d)$/.test(d));
-    if (!CIBLES.has(cible)) return refus("Choisissez votre profil d’acquéreur.", 422);
+    if (cibles.length === 0 || cibles.length > CIBLES.size || !cibles.every((c) => CIBLES.has(c))) {
+      return refus("Choisissez votre profil d’acquéreur.", 422);
+    }
     if (departements.length === 0) return refus("Indiquez au moins un département.", 422);
     Object.assign(lead, {
-      cible,
       departements,
       villes: liste(b.villes, 20),
       prixMin: nombre(b.prixMin),
@@ -62,6 +67,18 @@ export async function POST(req: Request) {
       commentaire: texte(b.commentaire, 1000),
     });
   }
+
+  if (action === "enregistrer" && cibles.length > 1) {
+    const cles: string[] = [];
+    for (const cible of cibles) {
+      const c = crypto.randomUUID();
+      const issue = await deposerLead({ ...lead, ref: crypto.randomUUID(), cle: c, cible }, { contexte: contexteDe(s.utilisateur) });
+      if (issue === "perdu") return refus("Envoi impossible pour le moment. Réessayez.", 503);
+      cles.push(c);
+    }
+    return NextResponse.json({ ok: true, cles });
+  }
+  if (action === "enregistrer") lead.cible = cibles[0];
 
   const issue = await deposerLead(lead, { contexte: contexteDe(s.utilisateur) });
   if (issue === "perdu") return refus("Envoi impossible pour le moment. Réessayez.", 503);
