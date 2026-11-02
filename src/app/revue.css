@@ -228,3 +228,5 @@ body.rv-armed { outline: 3px solid var(--red); outline-offset: -3px; }
 }
 /* Dans l'espace client au téléphone, les onglets du bas restent visibles. */
 @media (max-width:959px){ body:has(.compte-barre) .rv-fab{ bottom:calc(84px + env(safe-area-inset-bottom)); } }
+/* La barre d'offre de la fiche d'un immeuble à vendre, au téléphone (lot 59). */
+@media (max-width:899px), (max-height:659px){ body:has(.barre-offre) .rv-fab{ bottom:calc(128px + env(safe-area-inset-bottom)); } }

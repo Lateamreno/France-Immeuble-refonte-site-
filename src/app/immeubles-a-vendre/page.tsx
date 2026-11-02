@@ -10,9 +10,10 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
-import { biensAVendre } from "@/lib/biens";
-import { filtrer, lireCriteres, puces, TRIS, versParams, versRechercheCompte } from "@/lib/recherche-biens";
-import { RechercheBiens } from "@/components/biens/RechercheBiens";
+import { biensAVendre, offMarket } from "@/lib/biens";
+import { CarteOffMarket } from "@/components/biens/CarteOffMarket";
+import { filtrer, horsRecherche, lienRecherche, lireCriteres, puces, TRIS, versParams, versRechercheCompte } from "@/lib/recherche-biens";
+import { RechercheBiens, TriMobile } from "@/components/biens/RechercheBiens";
 import Link from "next/link";
 
 /**
@@ -22,9 +23,9 @@ import Link from "next/link";
  * biens dans la base du site, que cette page lit. Rien n'est saisi ici.
  * Jeu d'informations de PleinBail, sans l'adresse (§2).
  *
- * Recherche comme Plein Bail (MAV, 31/10/2026) : les critères sont dans
- * l'adresse (`?dep=92&pmax=3000000&rdt=5&tri=rendement`), le filtre se fait
- * côté serveur. Une page filtrée n'est pas indexée ; la page nue reste la
+ * Recherche comme Plein Bail (MAV, 31/10/2026, spec du 30/10) : les critères
+ * sont dans l'adresse (`?ou=r:11&ou=d:78&pmax=3000000&rdt=5&tri=rendement`), le
+ * filtre se fait côté serveur. Une page filtrée n'est pas indexée ; la page nue reste la
  * seule adresse canonique. Favoris et offres passent par le compte.
  */
 const metadata: Metadata = {
@@ -42,7 +43,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function ImmeublesAVendre({ searchParams }: Props) {
-  const biens = await biensAVendre();
+  const [biens, communesOff] = await Promise.all([biensAVendre(), offMarket()]);
+  const nbOffMarket = communesOff.reduce((s, c) => s + c.nombre, 0);
   const enVente = biens.filter((b) => b.statut === "en_vente").length;
   const criteres = lireCriteres(await searchParams);
   const resultats = filtrer(biens, criteres);
@@ -55,7 +57,11 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
   }
   const parDept: Record<string, number> = {};
   for (const b of biens) parDept[b.dept] = (parDept[b.dept] ?? 0) + 1;
-  const types = [...new Set(biens.map((b) => b.type))].sort();
+  const prixEnLigne = biens.map((b) => b.prixHai);
+  const bornesPrix = prixEnLigne.length ? { min: Math.min(...prixEnLigne), max: Math.max(...prixEnLigne) } : null;
+  const avecPopulation = biens.some((b) => b.communePopulation != null);
+  const ailleurs = horsRecherche(biens, criteres, resultats);
+  const tris = TRIS.map(([k, nom]) => ({ cle: k, nom, lien: lienRecherche({ ...criteres, tri: k }) }));
 
   return (
     <>
@@ -88,13 +94,15 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
         <div className="container">
           {biens.length > 0 ? (
             <>
-              <RechercheBiens criteres={criteres} villes={[...parVille.values()]} types={types}
-                departementsPresents={parDept} pourCompte={versRechercheCompte(criteres, biens)} />
+              <RechercheBiens key={versParams(criteres)} criteres={criteres} villes={[...parVille.values()]}
+                departementsPresents={parDept} bornesPrix={bornesPrix} avecPopulation={avecPopulation}
+                pourCompte={versRechercheCompte(criteres, biens)} />
 
               {actives.length > 0 && (
                 <div className="puces-filtres">
                   {actives.map((p) => (
-                    <Link key={p.libelle} href={p.sans} scroll={false} className="puce-filtre" aria-label={`Retirer le filtre ${p.libelle}`}>
+                    <Link key={p.libelle} href={p.sans} scroll={false} className={`puce-filtre${p.lieu ? " puce-filtre--lieu" : ""}`}
+                      aria-label={`Retirer le filtre ${p.libelle}`}>
                       {p.libelle} <span aria-hidden="true">×</span>
                     </Link>
                   ))}
@@ -104,21 +112,23 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
 
               <div className="resultats-tete">
                 <p className="resultats-tete__nb" aria-live="polite">
-                  <strong>{resultats.length}</strong> immeuble{resultats.length > 1 ? "s" : ""} {actives.length ? "correspondant à votre recherche" : "à vendre"}
+                  <strong>{resultats.length}</strong> immeuble{resultats.length > 1 ? "s" : ""} de rapport {actives.length ? (resultats.length > 1 ? "correspondent" : "correspond") : "à vendre"}
                 </p>
                 <nav className="tris" aria-label="Trier les résultats">
-                  <span>Trier :</span>
-                  {TRIS.map(([k, nom]) => (
-                    <Link key={k} href={`/immeubles-a-vendre/${versParams({ ...criteres, tri: k })}#resultats`} scroll={false}
-                      className={`tri${criteres.tri === k ? " est-actif" : ""}`} aria-current={criteres.tri === k ? "true" : undefined}>
-                      {nom}
+                  {tris.map((t) => (
+                    <Link key={t.cle} href={t.lien} scroll={false}
+                      className={`tri${criteres.tri === t.cle ? " est-actif" : ""}`} aria-current={criteres.tri === t.cle ? "true" : undefined}>
+                      {t.nom}
                     </Link>
                   ))}
                 </nav>
+                <TriMobile options={tris} actif={criteres.tri} />
               </div>
 
               {resultats.length > 0 ? (
-                <ul className="biens-liste">
+                <ul className="biens-liste biens-liste--resultats">
+                  {/* Première vignette : l'off-market (retour #74, MAV, 02/11/2026). */}
+                  <li><CarteOffMarket nombre={nbOffMarket} /></li>
                   {resultats.map((b, i) => (
                     <li key={b.id}>
                       <CarteBien b={b} rang={i} />
@@ -136,6 +146,22 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
                   <div className="btn-row" style={{ marginTop: "var(--space-m)", justifyContent: "center" }}>
                     <Button href="/immeubles-a-vendre/#resultats" variant="ghost-dark">Voir tous les immeubles</Button>
                   </div>
+                </div>
+              )}
+
+              {ailleurs && (
+                <div className="hors-recherche">
+                  <p className="hors-recherche__titre"><span>En dehors de votre recherche</span></p>
+                  <ul className="biens-liste biens-liste--resultats">
+                    {ailleurs.biens.map((b) => (
+                      <li key={b.id}><CarteBien b={b} rang={9} /></li>
+                    ))}
+                  </ul>
+                  {ailleurs.lien && (
+                    <div className="btn-row" style={{ marginTop: "var(--space-m)", justifyContent: "center" }}>
+                      <Button href={ailleurs.lien} variant="ghost-dark">Voir toutes ces annonces</Button>
+                    </div>
+                  )}
                 </div>
               )}
             </>

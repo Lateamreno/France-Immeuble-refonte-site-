@@ -347,12 +347,64 @@ export type BienAVendre = {
   loyerHcAn: number | null;
   prixHai: number;
   rendement: number | null;
+  /** Occupation par surface, en %. */
   occupation: number | null;
   prixM2: number | null;
+  /** La pire classe DPE des lots ; `dpeMin` la meilleure. */
   dpe: string | null;
   travaux: string | null;
   images: string[];
   publieLe: string;
+} & ComplementsAnnonce;
+
+/**
+ * Le reste du jeu de Plein Bail (migration 0015, MAV 31/10/2026). Tout est
+ * facultatif : la page affiche ce que le BO dépose et cache le reste.
+ */
+export type ComplementsAnnonce = {
+  codePostal: string | null;
+  communePopulation: number | null;
+  /** Loyer réel des lots occupés et loyer de marché des lots vides, par an. */
+  loyerPotentielAn: number | null;
+  /** En % : loyer potentiel / (prix + travaux). */
+  rendementPotentiel: number | null;
+  travauxTotal: number | null;
+  dpeMin: string | null;
+  ges: string | null;
+  gesMin: string | null;
+  occupationLots: number | null;
+  typeDominant: "habitation" | "commercial" | "bureau" | null;
+  mixte: boolean | null;
+  monopropriete: boolean | null;
+  taxeFonciere: number | null;
+  taxeFonciereRecup: number | null;
+  chargesCopro: number | null;
+  chargesCoproRecup: number | null;
+  prixNetVendeur: number | null;
+  honoraires: number | null;
+  prixPrecedent: number | null;
+  prixBaisseLe: string | null;
+  remonteLe: string | null;
+};
+
+/** Un lot de l'état locatif (table `biens_lots`). Jamais de nom de locataire. */
+export type LotAnnonce = {
+  numero: string;
+  type: "habitation" | "commerce" | "bureau" | "activite" | "parking" | "cave" | "autre";
+  typologie: string | null;
+  etage: string | null;
+  statut: "occupe" | "libre";
+  bail: string | null;
+  bailDebut: string | null;
+  bailFin: string | null;
+  surface: number | null;
+  loyerHcMois: number | null;
+  chargesMois: number | null;
+  loyerMarcheMois: number | null;
+  disponibleLe: string | null;
+  etat: "bon" | "a_rafraichir" | "a_renover" | null;
+  travaux: number | null;
+  dpe: string | null;
 };
 
 type LigneBien = {
@@ -362,23 +414,28 @@ type LigneBien = {
   loyer_hc_an: number | null; prix_hai: number; rendement: number | null;
   occupation: number | null; prix_m2: number | null; dpe: string | null;
   travaux: string | null; images: string[]; publie_le: string;
+  code_postal?: string | null; commune_population?: number | null;
+  loyer_hc_an_potentiel?: number | string | null; rendement_potentiel?: number | string | null;
+  travaux_total?: number | string | null; dpe_min?: string | null; ges?: string | null; ges_min?: string | null;
+  occupation_lots?: number | string | null; type_dominant?: ComplementsAnnonce["typeDominant"];
+  mixte?: boolean | null; monopropriete?: boolean | null;
+  taxe_fonciere?: number | string | null; taxe_fonciere_recuperable?: number | string | null;
+  charges_copro?: number | string | null; charges_copro_recuperables?: number | string | null;
+  prix_net_vendeur?: number | string | null; honoraires?: number | string | null;
+  prix_precedent?: number | string | null; prix_baisse_le?: string | null; remonte_le?: string | null;
 };
-
-const COLONNES =
-  "id,slug,statut,titre,description,ville,dept,type,surface,lots,annee_construction," +
-  "loyer_hc_an,prix_hai,rendement,occupation,prix_m2,dpe,travaux,images,publie_le";
 
 function versBien(l: LigneBien, base: string): BienAVendre {
   return {
     id: l.id, slug: l.slug, statut: l.statut, titre: l.titre, description: l.description,
     ville: l.ville, dept: l.dept, type: l.type,
-    surface: l.surface === null ? null : Number(l.surface),
+    surface: nombre(l.surface),
     lots: l.lots, anneeConstruction: l.annee_construction,
-    loyerHcAn: l.loyer_hc_an === null ? null : Number(l.loyer_hc_an),
+    loyerHcAn: nombre(l.loyer_hc_an),
     prixHai: Number(l.prix_hai),
-    rendement: l.rendement === null ? null : Number(l.rendement),
-    occupation: l.occupation === null ? null : Number(l.occupation),
-    prixM2: l.prix_m2 === null ? null : Number(l.prix_m2),
+    rendement: nombre(l.rendement),
+    occupation: nombre(l.occupation),
+    prixM2: nombre(l.prix_m2),
     dpe: l.dpe, travaux: l.travaux,
     // Un chemin de coffre devient une URL publique de NOTRE projet ; une URL
     // complète est acceptée telle quelle. next/image ne servira que celles de
@@ -387,6 +444,20 @@ function versBien(l: LigneBien, base: string): BienAVendre {
       /^https?:\/\//.test(i) ? i : `${base}/storage/v1/object/public/biens/${i.replace(/^\/+/, "")}`,
     ),
     publieLe: l.publie_le,
+    codePostal: l.code_postal ?? null,
+    communePopulation: l.commune_population ?? null,
+    loyerPotentielAn: nombre(l.loyer_hc_an_potentiel),
+    rendementPotentiel: nombre(l.rendement_potentiel),
+    travauxTotal: nombre(l.travaux_total),
+    dpeMin: l.dpe_min ?? null, ges: l.ges ?? null, gesMin: l.ges_min ?? null,
+    occupationLots: nombre(l.occupation_lots),
+    typeDominant: l.type_dominant ?? null,
+    mixte: l.mixte ?? null, monopropriete: l.monopropriete ?? null,
+    taxeFonciere: nombre(l.taxe_fonciere), taxeFonciereRecup: nombre(l.taxe_fonciere_recuperable),
+    chargesCopro: nombre(l.charges_copro), chargesCoproRecup: nombre(l.charges_copro_recuperables),
+    prixNetVendeur: nombre(l.prix_net_vendeur), honoraires: nombre(l.honoraires),
+    prixPrecedent: nombre(l.prix_precedent), prixBaisseLe: l.prix_baisse_le ?? null,
+    remonteLe: l.remonte_le ?? null,
   };
 }
 
@@ -400,7 +471,8 @@ export async function biensAVendre(): Promise<BienAVendre[]> {
   if (!cfg) return [];
   try {
     const res = await fetch(
-      `${cfg.url}/rest/v1/biens_a_vendre?select=${COLONNES}&order=publie_le.desc`,
+      // `*` : une base où la migration 0015 n'est pas passée répond quand même.
+      `${cfg.url}/rest/v1/biens_a_vendre?select=*&order=publie_le.desc`,
       {
         headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
         next: { revalidate: 600, tags: ["biens"] },
@@ -417,6 +489,48 @@ export async function biensAVendre(): Promise<BienAVendre[]> {
 export async function bienAVendre(slug: string): Promise<BienAVendre | null> {
   const tous = await biensAVendre();
   return tous.find((b) => b.slug === slug) ?? null;
+}
+
+type LigneLot = {
+  numero: string; type: LotAnnonce["type"]; typologie: string | null; etage: string | null;
+  statut: LotAnnonce["statut"]; bail: string | null; bail_debut: string | null; bail_fin: string | null;
+  surface: number | string | null; loyer_hc_mois: number | string | null; charges_mois: number | string | null;
+  loyer_marche_mois: number | string | null; disponible_le: string | null; etat: LotAnnonce["etat"];
+  travaux: number | string | null; dpe: string | null; ordre: number | null;
+};
+
+/** Ordre naturel des désignations : « Lot 2 » avant « Lot 10 ». */
+const parNumero = new Intl.Collator("fr", { numeric: true, sensitivity: "base" });
+
+/**
+ * L'état locatif d'un bien, lot par lot (table `biens_lots`, migration 0015).
+ * Ne lance jamais : sans lots déposés, la fiche le dit et renvoie au dossier.
+ */
+export async function lotsDuBien(id: string): Promise<LotAnnonce[]> {
+  const cfg = configSitePublique();
+  if (!cfg) return [];
+  try {
+    const res = await fetch(
+      `${cfg.url}/rest/v1/biens_lots?select=*&bien=eq.${encodeURIComponent(id)}`,
+      {
+        headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
+        next: { revalidate: 600, tags: ["biens"] },
+      },
+    );
+    if (!res.ok) return [];
+    const lignes = (await res.json()) as LigneLot[];
+    return lignes
+      .sort((a, b) => (a.ordre ?? 1e9) - (b.ordre ?? 1e9) || parNumero.compare(a.numero, b.numero))
+      .map((l) => ({
+        numero: l.numero, type: l.type, typologie: l.typologie, etage: l.etage, statut: l.statut,
+        bail: l.bail, bailDebut: l.bail_debut, bailFin: l.bail_fin,
+        surface: nombre(l.surface), loyerHcMois: nombre(l.loyer_hc_mois), chargesMois: nombre(l.charges_mois),
+        loyerMarcheMois: nombre(l.loyer_marche_mois), disponibleLe: l.disponible_le, etat: l.etat,
+        travaux: nombre(l.travaux), dpe: l.dpe,
+      }));
+  } catch {
+    return [];
+  }
 }
 
 /**

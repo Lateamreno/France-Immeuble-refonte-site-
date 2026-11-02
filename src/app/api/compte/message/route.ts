@@ -4,6 +4,7 @@ import { conversations } from "@/lib/compte/messagerie";
 import { envoyerDuCompte, tropDEnvois } from "@/lib/compte/envois";
 import { copieDuMessage } from "@/lib/compte/courriels";
 import { envoyerAuClient } from "@/lib/notifications";
+import { biensAVendre } from "@/lib/biens";
 import { exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
 import { effacerObjets, extension, FORMATS, objetExiste } from "@/lib/compte/stockage";
 
@@ -31,6 +32,9 @@ export async function POST(req: Request) {
   let titre: string;
   let bien = texte(b.bien, 36);
   let proposition = texte(b.proposition, 36);
+  // Une question posée depuis la fiche d'un immeuble à vendre (lot 59).
+  const annonce = demandee ? "" : texte(b.annonce, 80);
+  if (annonce && !(await biensAVendre()).some((x) => x.id === annonce)) return refus("Cet immeuble n’est plus en vente.", 404);
   const existante = demandee ? toutes.find((c) => c.id === demandee) : undefined;
   if (demandee) {
     if (!UUID.test(demandee) || !existante) return refus("Conversation introuvable.", 404);
@@ -69,6 +73,7 @@ export async function POST(req: Request) {
     texte: message,
     ...(bien ? { bien } : {}),
     ...(proposition ? { proposition } : {}),
+    ...(annonce ? { annonce } : {}),
     pieces,
   }, { historique });
   if (issue === "perdu") {

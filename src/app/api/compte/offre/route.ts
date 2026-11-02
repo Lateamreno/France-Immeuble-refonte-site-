@@ -43,7 +43,17 @@ export async function POST(req: Request) {
   const financement = texte(b.financement, 10);
   if (!FINANCEMENTS.has(financement)) return refus("Dites-nous comment vous financez l’achat.", 422);
   const apport = financement === "comptant" ? null : entier(b.apport, 0, 1_000_000_000);
-  const validite = entier(b.validite_jours, 1, 60) ?? 10;
+  const validite = entier(b.validite_jours, 1, 60) ?? 15;
+  // Depuis la fiche (lot 59, comme Plein Bail) : l'identité de l'offrant et les conditions.
+  const prenom = texte(b.prenom, 80), nom = texte(b.nom, 80), societe = texte(b.societe, 120);
+  const montantFinance = financement === "comptant" ? null : entier(b.montant_finance, 0, 1_000_000_000);
+  const conditionPret = b.condition_pret === true, conditionVisite = b.condition_visite === true;
+  const autre = texte(b.conditions, annonce ? 500 : 1500);
+  const conditions = [
+    conditionPret ? `Sous condition d’obtention d’un prêt${montantFinance ? ` de ${montantFinance.toLocaleString("fr-FR")} €` : ""}.` : "",
+    conditionVisite ? "Sous réserve d’une visite concluante." : "",
+    autre,
+  ].filter(Boolean).join("\n");
   if (tropDEnvois(d, "offre_acquereur", 3, 24, (x) => (x.proposition ?? x.annonce) === cible)) {
     return refus("Vous avez déjà fait plusieurs offres sur ce bien aujourd’hui. Votre agent revient vers vous.", 429);
   }
@@ -51,9 +61,14 @@ export async function POST(req: Request) {
   const { issue } = await envoyerDuCompte(s, d, "offre_acquereur", {
     ...(proposition ? { proposition } : { annonce }),
     montant,
-    conditions: texte(b.conditions, 1500),
+    conditions,
     financement,
     ...(apport != null ? { apport } : {}),
+    ...(montantFinance != null ? { montant_finance: montantFinance } : {}),
+    ...(b.condition_pret !== undefined ? { condition_pret: conditionPret } : {}),
+    ...(b.condition_visite !== undefined ? { condition_visite: conditionVisite } : {}),
+    ...(prenom || nom ? { offrant: { prenom, nom, ...(societe ? { societe } : {}) } } : {}),
+    ...(b.profil_joint !== undefined ? { profil_joint: b.profil_joint === true } : {}),
     validite_jours: validite,
     pieces: [],
     // Pour l'alerte de l'agence seulement : de quel bien il s'agit.

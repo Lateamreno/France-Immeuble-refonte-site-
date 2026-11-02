@@ -12,6 +12,9 @@ export type EtatCompte = {
   favoris?: string[];
   offres?: { annonce: string; montant: number; envoye_le: string }[];
   profil?: boolean;
+  /** Pour préremplir l'offre ; jamais mis en cache (réponse privée). */
+  prenom?: string;
+  nom?: string;
 };
 
 let promesse: Promise<EtatCompte> | null = null;

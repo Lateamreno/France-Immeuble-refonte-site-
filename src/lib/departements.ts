@@ -22,3 +22,20 @@ export const DEPARTEMENTS: Record<string, string> = {
   "94": "Val-de-Marne", "95": "Val-d’Oise", "971": "Guadeloupe", "972": "Martinique", "973": "Guyane",
   "974": "La Réunion", "976": "Mayotte",
 };
+
+/** Les régions (codes INSEE, ceux de `REGIONS_FR`) et leurs départements. */
+export const REGIONS: Record<string, { nom: string; departements: string[] }> = {
+  "11": { nom: "Île-de-France", departements: ["75", "77", "78", "91", "92", "93", "94", "95"] },
+  "24": { nom: "Centre-Val de Loire", departements: ["18", "28", "36", "37", "41", "45"] },
+  "27": { nom: "Bourgogne-Franche-Comté", departements: ["21", "25", "39", "58", "70", "71", "89", "90"] },
+  "28": { nom: "Normandie", departements: ["14", "27", "50", "61", "76"] },
+  "32": { nom: "Hauts-de-France", departements: ["02", "59", "60", "62", "80"] },
+  "44": { nom: "Grand Est", departements: ["08", "10", "51", "52", "54", "55", "57", "67", "68", "88"] },
+  "52": { nom: "Pays de la Loire", departements: ["44", "49", "53", "72", "85"] },
+  "53": { nom: "Bretagne", departements: ["22", "29", "35", "56"] },
+  "75": { nom: "Nouvelle-Aquitaine", departements: ["16", "17", "19", "23", "24", "33", "40", "47", "64", "79", "86", "87"] },
+  "76": { nom: "Occitanie", departements: ["09", "11", "12", "30", "31", "32", "34", "46", "48", "65", "66", "81", "82"] },
+  "84": { nom: "Auvergne-Rhône-Alpes", departements: ["01", "03", "07", "15", "26", "38", "42", "43", "63", "69", "73", "74"] },
+  "93": { nom: "Provence-Alpes-Côte d’Azur", departements: ["04", "05", "06", "13", "83", "84"] },
+  "94": { nom: "Corse", departements: ["2A", "2B"] },
+};

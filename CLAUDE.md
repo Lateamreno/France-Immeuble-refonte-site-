@@ -187,10 +187,24 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   lots, sans offre, tris ; page filtrée en `noindex`), cœur des favoris sur les cartes et la fiche
   (table `compte_favoris`, migration 0014, type `favori` au BO sans e-mail), « Enregistrer la
   recherche » vers `recherche_compte`, fiche avec panneau d'offre au curseur et simulation de crédit
-  (`src/components/biens/PanneauOffre.tsx`, `offre_acquereur` avec `annonce`), état financier et
+  (`offre_acquereur` avec `annonce`), état financier et
   comparaison avec nos ventes du département. Pages en cache ; l'état du visiteur est lu par
   `/api/compte/etat-biens/`. Sans compte, favori et offre mènent à la connexion puis reviennent
   sur la page. Rubrique « Mes favoris » dans le compte.
+- **Moteur et fiche « comme Plein Bail »** (MAV, 31/10/2026, spec Plein Bail du 30/10, lot 59) :
+  l'adresse est l'état de la recherche (`ou=r:11&ou=d:78&ou=v:Lyon`, `td`, `pmin`, `pmax`, `smin`,
+  `smax`, `rdt`, `dpemin`, `dpemax`, `trav`, `omin`, `omax`, `lots`, `tv`, `dispo`, `tri`), une seule
+  traduction filtres → résultats (`filtrer` dans `src/lib/recherche-biens.ts`), une seule puce pour
+  les localisations, « En dehors de votre recherche » sous six résultats, rangées compactes au
+  téléphone. Calculs partagés dans `src/lib/annonce.ts` (frais de notaire réels, rendements brut,
+  net et acte en main, libellés d'occupation et de DPE). Fiche : galerie en carrousel, tuiles avec
+  leur formule, état locatif (`biens_lots`, migration 0015), état financier, mentions
+  réglementaires, biens similaires ; carte d'action collante dès 900 px de large et 660 px de haut
+  (`src/components/biens/CarteAction.tsx`), barre « Voir le n° · Contacter · Faire une offre » en
+  bas au téléphone, offre en feuille. Adapté à la charte : bronze seul, DPE en dégradé bronze,
+  pas de carte de quartier (aucune tuile tierce), pas de carte vendeur (l'agence vend), l'écart
+  au marché se mesure à nos ventes du département. Demande au BO : `docs/PROMPT-BO-ANNONCES.md`.
+  Première vignette de la liste : l'off-market (retour #74, MAV, 02/11/2026).
 
 ### Garde-fous non négociables
 

@@ -23,5 +23,7 @@ export async function GET() {
     favoris: d.favoris.map((f) => f.bien),
     offres,
     profil: d.saisies.some((x) => x.type === "profil_investisseur"),
+    prenom: s.utilisateur.user_metadata?.prenom ?? "",
+    nom: s.utilisateur.user_metadata?.nom ?? "",
   }, { headers: entete });
 }

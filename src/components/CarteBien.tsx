@@ -1,81 +1,84 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Picto } from "./Picto";
-import { prix, type BienAVendre } from "@/lib/biens";
+import type { BienAVendre } from "@/lib/biens";
+import {
+  classeDpe, eur, estNouveau, etiquetteDpe, libelleOccupation, loyerAffiche, m2, pct, prixBaisse, rendementAffiche,
+} from "@/lib/annonce";
 import { BoutonFavori } from "./biens/BoutonFavori";
 
-/** « 4,1 % », « 520 m² » — formats français, espace insécable. */
-const pct = (n: number) => `${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
-const m2 = (n: number) => `${Math.round(n).toLocaleString("fr-FR").replace(/ /g, " ")} m²`;
-
 /**
- * Vignette d'un bien à vendre — même jeu d'informations que PleinBail.
+ * Carte d'un immeuble à vendre, sur le modèle de Plein Bail (spec §8) : sur
+ * ordinateur une carte à photo 16/10 dans une grille ; au téléphone une rangée
+ * compacte (vignette carrée de 96 px). Un seul code : le CSS change la mise en
+ * page, pas les informations.
  *
- * Toute la carte est un lien : un seul arrêt de tabulation, une seule cible au
- * doigt, et le titre porte le nom accessible du lien. Le cœur des favoris
- * (MAV, 31/10/2026) est posé à côté du lien, pas dedans : deux cibles distinctes.
+ * Photo : badge « Nouveau » ou « Prix baissé » en haut à gauche, cœur en haut
+ * à droite, rendement et occupation en bas à gauche, étiquette DPE en bas à
+ * droite (affichage dû jusque dans les listes), bandeau « Sous offre ».
+ * Toute la carte est un lien ; le cœur est posé à côté, deux cibles distinctes.
  */
 export function CarteBien({ b, rang = 0, favori = true }: { b: BienAVendre; rang?: number; favori?: boolean }) {
-  const nouveau = Date.now() - new Date(b.publieLe).getTime() < 14 * 86_400_000;
   const image = b.images[0];
+  const r = rendementAffiche(b);
+  const loyer = loyerAffiche(b);
+  const occ = libelleOccupation(b);
+  const dpe = etiquetteDpe(b.dpeMin, classeDpe(b));
+  const baisse = prixBaisse(b);
+  const faits = [b.type, b.surface != null ? m2(Math.round(b.surface)) : null, b.lots != null ? `${b.lots} lots` : null]
+    .filter(Boolean).join(" · ");
 
   return (
-    <div className="bien-carte-cadre">
-    <Link href={`/immeubles-a-vendre/${b.slug}/`} className="bien-carte">
-      <span className="bien-carte__visuel">
-        {image ? (
-          <Image
-            src={image}
-            alt=""
-            fill
-            sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-            className="bien-carte__img"
-            priority={rang < 3}
-          />
-        ) : (
-          <span className="bien-carte__sansphoto" aria-hidden="true">
-            <Picto nom="immeubles" taille={40} />
+    <div className={`bien-carte-cadre${b.statut === "sous_offre" ? " est-sous-offre" : ""}`}>
+      <Link href={`/immeubles-a-vendre/${b.slug}/`} className="bien-carte">
+        <span className="bien-carte__visuel">
+          {image ? (
+            <Image src={image} alt={`${b.type} à ${b.ville}`} fill
+              sizes="(max-width: 699px) 96px, (max-width: 1100px) 50vw, 380px"
+              className="bien-carte__img" priority={rang < 3} />
+          ) : (
+            <span className="bien-carte__sansphoto" aria-hidden="true"><Picto nom="immeubles" taille={40} /></span>
+          )}
+          <span className="bien-carte__badges">
+            {baisse ? <span className="badge badge--clair">Prix baissé</span>
+              : estNouveau(b) ? <span className="badge badge--sombre">Nouveau</span> : null}
           </span>
-        )}
-        <span className="bien-carte__badges">
-          {b.statut === "sous_offre" && <span className="badge badge--offre">Sous offre</span>}
-          {b.statut === "en_vente" && nouveau && <span className="badge">Nouveau</span>}
-          {b.occupation !== null && (
-            <span className="badge badge--sombre">
-              {b.occupation >= 99.5 ? "Occupé 100 %" : `Occupé ${pct(b.occupation)}`}
+          <span className="bien-carte__bas">
+            <span className="bien-carte__bas-g">
+              {r != null && <span className="badge badge--sombre">Rendement {pct(r, 1)}</span>}
+              {occ && <span className="badge">{occ}</span>}
             </span>
-          )}
+            <span className={`dpe-etiquette dpe-etiquette--${(classeDpe(b) ?? "nc").toLowerCase()}`} title="Diagnostic de performance énergétique">
+              {dpe === "DPE n.c." ? dpe : <>DPE {dpe}</>}
+            </span>
+          </span>
+          {b.statut === "sous_offre" && <span className="bien-carte__bandeau">Sous offre</span>}
         </span>
-      </span>
 
-      <span className="bien-carte__corps">
-        {/* La ville est le titre de la carte. Le titre envoyé par le BO
-            (« Immeuble de rapport — 8 lots — 381 m² — Alès (30) ») répète la
-            ville et la ligne de faits juste en dessous : il reste sur la fiche,
-            où il n'apparaît qu'une fois. */}
-        <span className="bien-carte__titre">
-          {b.ville} <span className="bien-carte__dept">({b.dept})</span>
+        <span className="bien-carte__corps">
+          <span className="bien-carte__ligne">
+            <span className="bien-carte__titre">
+              <Picto nom="secteur" taille={14} aria-hidden="true" />{b.ville} <span className="bien-carte__dept">({b.dept})</span>
+            </span>
+            <span className="bien-carte__prix">{eur(b.prixHai)}</span>
+          </span>
+          <span className="bien-carte__ligne">
+            <span className="bien-carte__faits">{faits}</span>
+            {r != null && <span className="bien-carte__rdt">Renta brute {pct(r, 1)}</span>}
+          </span>
+          <span className="bien-carte__ligne bien-carte__ligne--3">
+            {loyer != null ? <span className="bien-carte__loyer">Loyer {eur(loyer)}/an HC</span> : <span />}
+            {b.prixM2 != null && <span className="bien-carte__pm2">{eur(b.prixM2)}/m²</span>}
+          </span>
+          {/* Au téléphone : les badges passent sous le texte, la vignette garde le DPE. */}
+          <span className="bien-carte__badges-mob">
+            {b.statut === "sous_offre" && <span className="badge badge--clair">Sous offre</span>}
+            {r != null && <span className="badge badge--sombre">Rendement {pct(r, 1)}</span>}
+            {occ && <span className="badge">{occ}</span>}
+          </span>
         </span>
-        <span className="bien-carte__faits">
-          {[b.type, b.surface !== null ? m2(b.surface) : null, b.lots !== null ? `${b.lots} lots` : null]
-            .filter(Boolean)
-            .join(" · ")}
-        </span>
-        {b.loyerHcAn !== null && (
-          <span className="bien-carte__loyer">Loyer {prix(b.loyerHcAn)}/an HC</span>
-        )}
-        <span className="bien-carte__pied">
-          <span className="bien-carte__prix">{prix(b.prixHai)}</span>
-          {b.rendement !== null && (
-            <span className="bien-carte__rdt">{pct(b.rendement)} brut</span>
-          )}
-        </span>
-        {b.prixM2 !== null && (
-          <span className="bien-carte__pm2">{prix(b.prixM2)}/m²</span>
-        )}
-      </span>
-    </Link>
-    {favori && <BoutonFavori bien={b.id} className="bien-carte__favori" />}
+      </Link>
+      {favori && <BoutonFavori bien={b.id} className="bien-carte__favori" />}
     </div>
   );
 }

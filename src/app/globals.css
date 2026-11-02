@@ -3975,19 +3975,419 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 .reglage output{font:600 13px/1 var(--font-mono-site);color:var(--color-creme);}
 .reglage .curseur{grid-column:1 / -1;height:22px;}
 @media (max-width:420px){.kpi{grid-template-columns:repeat(2,minmax(0,1fr));}}
-.recherche-biens__filtres-mob{display:none;}
+.tris > span{white-space:nowrap;}
+
+/* ==========================================================================
+   25. MOTEUR ET FICHE façon Plein Bail (lot 59, MAV 31/10/2026, spec du 30/10)
+   ========================================================================== */
+/* --- Barre ---------------------------------------------------------------- */
+.recherche-biens__prix{display:contents;}
+@media (min-width:1100px){
+  .recherche-biens__barre{grid-template-columns:minmax(0,2.1fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) auto;}
+  .recherche-biens__barre .recherche-biens__champ:not(.recherche-biens__champ--lieu){border-left:1px solid var(--color-ligne);padding-left:14px;}
+}
 @media (max-width:639px){
-  .recherche-biens:not(.est-deplie) .recherche-biens__barre > .recherche-biens__champ:not(.recherche-biens__champ--lieu),
-  .recherche-biens:not(.est-deplie) .recherche-biens__actions > .lien-discret,
-  .recherche-biens:not(.est-deplie) .recherche-biens__plus{display:none;}
-  .recherche-biens__actions{flex-direction:row;flex-wrap:wrap;}
-  .recherche-biens__actions .btn{flex:1 1 auto;}
-  .recherche-biens__actions > .lien-discret{flex-basis:100%;}
-  .recherche-biens__filtres-mob{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:1 1 auto;padding:12px 16px;
-    border-radius:var(--radius-pill);background:var(--color-noir);border:1px solid var(--color-bronze-profond);
-    color:var(--color-bronze);font:500 15px/1 var(--font-body);cursor:pointer;
-  }
+  .recherche-biens__barre{grid-template-columns:minmax(0,1fr);gap:12px;}
+  .recherche-biens__prix{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .recherche-biens__enregistrer{justify-content:center;}
 }
-.tris > span{white-space:nowrap;}
+.recherche-biens__actions .btn{text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.recherche-biens__plus-lien{background:none;border:0;cursor:pointer;font:inherit;}
+.recherche-biens__menu{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0;cursor:pointer;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-pill);
+  padding:11px 16px;color:var(--color-creme);font:inherit;font-size:15px;text-align:left;
+}
+.recherche-biens__menu > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.recherche-biens__menu > span:last-child{color:var(--color-bronze);}
+.recherche-biens__menu:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.recherche-biens__deroulant{
+  position:absolute;left:0;top:100%;z-index:6;margin-top:6px;min-width:240px;padding:12px 14px;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:14px;
+  box-shadow:0 18px 40px color-mix(in srgb, var(--color-noir) 40%, transparent);
+}
+.recherche-biens__deroulant .recherche-biens__case{padding:7px 0;}
+.recherche-biens__deroulant-titre{margin:0 0 4px;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);}
+.recherche-biens__aide{margin:8px 0 0;font-size:12.5px;line-height:1.4;color:var(--color-gris);}
+.prix-fleches{position:relative;}
+.recherche-biens .prix-fleches input{padding-right:34px;}
+.prix-fleches__btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;}
+.prix-fleches__btn button{border:0;background:none;color:var(--color-bronze);cursor:pointer;font-size:12px;line-height:1;padding:1px 3px;}
+.lieu--plus{border:0;cursor:pointer;padding:5px 10px;font:600 13px/1 var(--font-mono-site);}
+.lieux__ajout{
+  flex:none;width:32px;height:32px;border-radius:50%;cursor:pointer;margin-left:auto;
+  border:1px solid var(--color-bronze-profond);background:var(--color-noir-2);color:var(--color-bronze);font-size:20px;line-height:1;
+}
+.lieux__ajout:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.recherche-biens .lieux input{min-width:90px;}
+.lieux__liste li.est-actif{background:var(--color-noir-2);}
+/* --- Plus de filtres ---------------------------------------------------- */
+.recherche-biens__plus{flex-direction:column;align-items:stretch;border-top:1px dashed var(--color-ligne);}
+.recherche-biens__villes{border:0;margin:0;padding:0;}
+.recherche-biens__villes legend{margin-bottom:8px;}
+.tuiles-ville{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+@media (max-width:639px){.tuiles-ville{grid-template-columns:1fr 1fr;}}
+.tuile-ville{
+  display:flex;flex-direction:column;gap:3px;align-items:flex-start;padding:10px 12px;border-radius:12px;cursor:pointer;text-align:left;
+  background:var(--color-noir-3);border:1px solid var(--color-ligne);color:var(--color-creme);font:inherit;font-size:14px;
+}
+.tuile-ville small{font-size:12px;color:var(--color-gris);}
+.tuile-ville[aria-pressed=true]{border-color:var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 14%, var(--color-noir-3));}
+.tuile-ville:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.recherche-biens__ligne{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;}
+.recherche-biens__plus .recherche-biens__champ--court{width:min(210px,100%);}
+.recherche-biens__plus .recherche-biens__champ--occ{width:min(320px,100%);}
+.recherche-biens__paire{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.recherche-biens__case--seule{padding-bottom:12px;}
+@media (max-width:639px){.recherche-biens__plus .recherche-biens__champ--court{width:calc(50% - 11px);}}
+/* Double curseur : deux pouces sur une seule piste, remplie entre les deux. */
+.double-curseur{position:relative;height:28px;}
+.double-curseur::before{
+  content:"";position:absolute;left:0;right:0;top:11px;height:6px;border-radius:6px;
+  background:linear-gradient(90deg,var(--color-ligne) var(--de),var(--color-bronze-profond) var(--de),var(--color-bronze) var(--rempli),var(--color-ligne) var(--rempli));
+}
+.double-curseur input{position:absolute;inset:0;width:100%;height:28px;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none;}
+.double-curseur input::-webkit-slider-runnable-track{background:none;height:6px;}
+.double-curseur input::-moz-range-track{background:none;}
+.double-curseur input::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;pointer-events:auto;cursor:pointer;width:24px;height:24px;margin-top:-9px;border-radius:50%;
+  background:var(--color-bronze-clair);border:3px solid var(--color-bronze);
+}
+.double-curseur input::-moz-range-thumb{pointer-events:auto;cursor:pointer;width:20px;height:20px;border-radius:50%;background:var(--color-bronze-clair);border:3px solid var(--color-bronze);}
+.double-curseur input:focus-visible{outline:none;}
+.double-curseur input:focus-visible::-webkit-slider-thumb{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+/* --- Mes zones de recherche -------------------------------------------------- */
+.mes-zones{
+  width:min(540px,calc(100vw - 32px));max-height:calc(100svh - 32px);padding:0;border:1px solid var(--color-ligne);border-radius:var(--radius-card);
+  background:var(--color-noir-2);color:var(--color-creme);
+}
+.mes-zones::backdrop{background:color-mix(in srgb, var(--color-noir) 70%, transparent);}
+.mes-zones__corps{display:flex;flex-direction:column;gap:18px;padding:clamp(18px,3vw,26px);}
+.mes-zones__tete{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.mes-zones__tete h2{margin:0;font-size:1.35rem;}
+.mes-zones__fermer{border:0;background:none;color:var(--color-gris);font-size:28px;line-height:1;cursor:pointer;width:40px;height:40px;border-radius:50%;}
+.mes-zones__fermer:focus-visible{outline:2px solid var(--color-bronze-clair);}
+.mes-zones__ajout{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px 12px;align-items:center;}
+.mes-zones__ajout label{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.12em;text-transform:uppercase;color:var(--color-gris);}
+.mes-zones__ajout select,.mes-zones__ajout input{
+  width:100%;min-width:0;background:var(--color-noir-3);border:1px solid var(--color-ligne);border-radius:var(--radius-pill);
+  padding:10px 14px;color:var(--color-creme);font:inherit;font-size:15px;
+}
+.mes-zones__ajout .btn{margin:0;padding:10px 18px;}
+.mes-zones__ajout .btn:disabled{opacity:.4;cursor:not-allowed;}
+.mes-zones__ville{display:grid;gap:6px;}
+@media (max-width:520px){
+  .mes-zones__ajout{grid-template-columns:minmax(0,1fr) auto;}
+  .mes-zones__ajout label{grid-column:1 / -1;margin-top:4px;}
+}
+.mes-zones__liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--color-ligne);}
+.mes-zones__liste li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--color-ligne);}
+.mes-zones__liste li > svg{color:var(--color-bronze);flex:none;}
+.mes-zones__liste li > span{flex:1;display:flex;flex-direction:column;}
+.mes-zones__liste small{color:var(--color-gris);font-size:12px;}
+.mes-zones__liste button{border:0;background:none;color:var(--color-gris);cursor:pointer;width:36px;height:36px;border-radius:50%;}
+.mes-zones__liste button:hover{color:var(--color-bronze);}
+.mes-zones__vide{margin:0;color:var(--color-gris);font-size:14px;}
+.mes-zones .btn--wide{margin:0;}
+/* --- Puces, tri ---------------------------------------------------------- */
+.puce-filtre--lieu{background:var(--color-bronze);color:var(--color-noir);}
+.puce-filtre--lieu span{color:var(--color-noir);}
+.puce-filtre--lieu:hover{background:var(--color-bronze-clair-2);}
+.tri-mobile{display:none;}
+.tri-mobile select{
+  background:var(--color-noir);color:var(--color-creme);border:0;border-radius:var(--radius-pill);
+  padding:9px 34px 9px 16px;font:500 14px/1 var(--font-body);
+}
+@media (max-width:699px){
+  .tris{display:none;}
+  .tri-mobile{display:block;}
+  .resultats-tete{flex-wrap:nowrap;}
+}
+/* --- Cartes de résultat --------------------------------------------------- */
+.biens-liste--resultats{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-m);}
+.bien-carte__visuel{aspect-ratio:16/10;overflow:hidden;}
+.bien-carte__corps{gap:6px;}
+.bien-carte__ligne{display:flex;justify-content:space-between;align-items:baseline;gap:10px;min-width:0;}
+.bien-carte__ligne > :last-child{text-align:right;white-space:nowrap;}
+.bien-carte__ligne > :first-child{min-width:0;}
+.bien-carte__titre{font-size:1.12rem;display:inline-flex;align-items:baseline;gap:5px;min-width:0;}
+.bien-carte__titre svg{color:var(--color-bronze-profond);align-self:center;flex:none;}
+.bien-carte__ligne--3{padding-top:6px;margin-top:auto;border-top:1px solid color-mix(in srgb, var(--color-noir) 10%, transparent);}
+.bien-carte__bas{position:absolute;left:10px;right:10px;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;}
+.bien-carte__bas-g{display:flex;flex-wrap:wrap;gap:6px;}
+.est-sous-offre .bien-carte__bas{bottom:42px;}
+.bien-carte__bandeau{
+  position:absolute;left:0;right:0;bottom:0;padding:8px;text-align:center;
+  background:color-mix(in srgb, var(--color-noir) 86%, transparent);color:var(--color-bronze-clair);
+  font:600 var(--fs-eyebrow)/1 var(--font-mono-site);letter-spacing:.2em;text-transform:uppercase;
+}
+.badge--clair{background:var(--color-bronze-clair);color:var(--color-noir);}
+.bien-carte__badges-mob{display:none;}
+/* Étiquette DPE : dégradé monochrome bronze, du clair (A) au profond (G). */
+.dpe-etiquette{
+  flex:none;display:inline-flex;align-items:center;padding:4px 8px;border-radius:6px;
+  font:700 11.5px/1 var(--font-mono-site);letter-spacing:.04em;white-space:nowrap;
+  background:var(--color-noir);color:var(--color-creme);
+}
+.dpe-etiquette--a,.dpe-etiquette--b{background:var(--color-bronze-clair);color:var(--color-noir);}
+.dpe-etiquette--c,.dpe-etiquette--d{background:var(--color-bronze-clair-2);color:var(--color-noir);}
+.dpe-etiquette--e{background:var(--color-bronze);color:var(--color-noir);}
+.dpe-etiquette--f{background:var(--color-bronze-hover);color:var(--color-creme);}
+.dpe-etiquette--g{background:var(--color-bronze-profond);color:var(--color-creme);}
+.dpe-etiquette--nc{background:color-mix(in srgb, var(--color-noir) 78%, transparent);color:var(--color-creme);font-weight:500;}
+/* Au téléphone : une rangée compacte par bien, séparée par un filet. */
+@media (max-width:699px){
+  .biens-liste--resultats{grid-template-columns:minmax(0,1fr);gap:0;}
+  .biens-liste--resultats > li{border-bottom:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);}
+  .biens-liste--resultats .bien-carte{flex-direction:row;align-items:flex-start;gap:12px;padding:12px 0;border:0;border-radius:0;background:none;}
+  .biens-liste--resultats .bien-carte:hover{transform:none;box-shadow:none;}
+  .biens-liste--resultats .bien-carte__visuel{flex:none;width:96px;height:96px;aspect-ratio:1;border-radius:12px;}
+  .biens-liste--resultats .bien-carte__badges,
+  .biens-liste--resultats .bien-carte__bas-g,
+  .biens-liste--resultats .bien-carte__bandeau{display:none;}
+  .biens-liste--resultats .bien-carte__bas{left:auto;right:5px;bottom:5px;}
+  .biens-liste--resultats .dpe-etiquette{padding:3px 5px;font-size:10px;}
+  .biens-liste--resultats .bien-carte__corps{
+    padding:0 44px 0 0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 8px;align-items:baseline;
+    grid-template-areas:"ville ville" "faits faits" "prix pm2" "loyer loyer" "badges badges";
+  }
+  .biens-liste--resultats .bien-carte__ligne{display:contents;}
+  .biens-liste--resultats .bien-carte__titre{grid-area:ville;font-size:1rem;}
+  .biens-liste--resultats .bien-carte__titre svg{display:none;}
+  .biens-liste--resultats .bien-carte__faits{grid-area:faits;font-size:13px;}
+  .biens-liste--resultats .bien-carte__prix{grid-area:prix;font-size:15px;}
+  .biens-liste--resultats .bien-carte__pm2{grid-area:pm2;text-align:left;}
+  .biens-liste--resultats .bien-carte__loyer{grid-area:loyer;font-size:13px;}
+  .biens-liste--resultats .bien-carte__rdt{display:none;}
+  .biens-liste--resultats .bien-carte__ligne--3 > span:empty{display:none;}
+  .biens-liste--resultats .bien-carte__badges-mob{grid-area:badges;display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+  .biens-liste--resultats .bien-carte__badges-mob .badge{font-size:10.5px;padding:4px 8px;}
+  .biens-liste--resultats .bien-carte__favori{top:12px;right:0;width:36px;height:36px;background:var(--color-noir);}
+}
+/* --- En dehors de votre recherche ---------------------------------------- */
+.hors-recherche{margin-top:var(--space-l);}
+.hors-recherche__titre{display:flex;align-items:center;gap:14px;margin:0 0 var(--space-m);}
+.hors-recherche__titre::before,.hors-recherche__titre::after{content:"";flex:1;border-top:1px dashed color-mix(in srgb, var(--color-noir) 30%, transparent);}
+.hors-recherche__titre span{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.18em;text-transform:uppercase;color:var(--color-bronze-profond);}
+/* --- Fiche : deux colonnes dès 900 px de large ET 660 px de haut --------- */
+.fiche-pb{padding-top:clamp(20px,3vw,36px);}
+.fiche-pb__grille{display:grid;gap:var(--space-l);align-items:start;}
+.fiche-pb__principal{display:flex;flex-direction:column;gap:var(--space-m);min-width:0;}
+.seulement-large{display:none;}
+.seulement-compact{display:block;}
+@media (min-width:900px) and (min-height:660px){
+  .fiche-pb__grille{grid-template-columns:minmax(0,1fr) 356px;}
+  .fiche-pb__cote{position:sticky;top:calc(var(--header-h) + 16px);max-height:calc(100svh - var(--header-h) - 28px);overflow-y:auto;scrollbar-width:thin;}
+  .seulement-large{display:block;}
+  .seulement-compact{display:none !important;}
+}
+/* La colonne rétrécit par paliers de hauteur au lieu de défiler. */
+@media (min-width:900px) and (min-height:660px) and (max-height:860px){
+  .carte-action{gap:10px;padding:16px;}
+  .carte-action .btn{padding-block:10px;}
+  .carte-action__montant{font-size:1.6rem;}
+  .carte-action .kpi dd{font-size:13.5px;}
+  .carte-action .kpi > div{padding:6px;}
+  .carte-action .reglage .curseur{height:18px;}
+  .carte-action .simulation{gap:8px;}
+}
+@media (max-width:899px), (max-height:659px){
+  .fiche-pb{padding-bottom:150px;}
+}
+.fiche-pb__tete{display:flex;flex-direction:column;gap:10px;}
+.fiche-pb__tete h1{font-size:clamp(1.6rem,1.2rem + 1.6vw,2.4rem);color:var(--color-noir);max-width:28ch;text-wrap:balance;margin:0;}
+.fiche-pb__badges{display:flex;flex-wrap:wrap;gap:6px;}
+.badge--contour{background:none;border:1px solid color-mix(in srgb, var(--color-noir) 30%, transparent);color:var(--color-noir);}
+.fiche-pb__lieu{display:inline-flex;align-items:center;gap:7px;color:var(--color-bronze-profond);font-weight:500;text-decoration:underline;text-underline-offset:3px;width:fit-content;}
+.fiche-pb__lieu svg{color:var(--color-bronze-profond);}
+.fiche-pb__sous-offre{margin:0;padding:12px 16px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 14%, var(--color-creme));color:var(--color-noir);font-size:15px;}
+.fiche-pb__bloc{display:flex;flex-direction:column;gap:12px;}
+.fiche-pb__h2{font-size:clamp(1.25rem,1.05rem + .8vw,1.6rem);color:var(--color-noir);margin:0;}
+.fiche-pb__similaires{padding-top:0;}
+.fiche-pb__similaires h2{color:var(--color-noir);margin-bottom:var(--space-m);}
+/* Galerie */
+.galerie-pb{display:flex;flex-direction:column;gap:8px;}
+.galerie-pb__cadre{position:relative;border-radius:var(--radius-card);overflow:hidden;background:var(--color-noir-3);}
+.galerie-pb__piste{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:16/10;}
+.galerie-pb__piste::-webkit-scrollbar{display:none;}
+.galerie-pb__piste:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:-3px;}
+.galerie-pb__diapo{position:relative;flex:0 0 100%;scroll-snap-align:start;}
+.galerie-pb__img{object-fit:cover;}
+.galerie-pb__haut{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;}
+.galerie-pb__haut > *{pointer-events:auto;}
+.galerie-pb__badges{display:flex;flex-wrap:wrap;gap:6px;}
+.galerie-pb__actions{display:flex;gap:8px;}
+.galerie-pb__partage{position:relative;}
+.galerie-pb__menu{
+  position:absolute;right:0;top:calc(100% + 6px);z-index:4;display:flex;flex-direction:column;min-width:170px;padding:6px;
+  background:var(--color-noir-2);border:1px solid var(--color-ligne);border-radius:12px;box-shadow:0 14px 34px rgba(10,10,10,.3);
+}
+.galerie-pb__menu > *{display:block;padding:9px 12px;border-radius:8px;border:0;background:none;color:var(--color-creme);font:inherit;font-size:14px;text-align:left;cursor:pointer;text-decoration:none;}
+.galerie-pb__menu > *:hover{background:var(--color-noir-3);}
+.galerie-pb__fleche{
+  position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;cursor:pointer;
+  border:1px solid color-mix(in srgb, var(--color-creme) 30%, transparent);background:color-mix(in srgb, var(--color-noir) 60%, transparent);
+  color:var(--color-creme);font-size:26px;line-height:1;
+}
+.galerie-pb__fleche--g{left:12px;}
+.galerie-pb__fleche--d{right:12px;}
+.galerie-pb__fleche:disabled{opacity:0;pointer-events:none;}
+.galerie-pb__fleche:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+@media (hover:none){.galerie-pb__cadre > .galerie-pb__fleche{display:none;}}
+.galerie-pb__bas{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;}
+.galerie-pb__bas > *{pointer-events:auto;}
+.galerie-pb__compteur{padding:5px 10px;border-radius:var(--radius-pill);background:color-mix(in srgb, var(--color-noir) 70%, transparent);color:var(--color-creme);font:600 12px/1 var(--font-mono-site);}
+.galerie-pb__plein-btn{padding:7px 14px;border-radius:var(--radius-pill);border:0;background:color-mix(in srgb, var(--color-noir) 70%, transparent);color:var(--color-creme);font:500 13px/1 var(--font-body);cursor:pointer;}
+.galerie-pb__plein-btn:focus-visible{outline:2px solid var(--color-bronze-clair);}
+.galerie-pb__vignettes{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.galerie-pb__vignettes::-webkit-scrollbar{display:none;}
+.galerie-pb__vignette{position:relative;flex:0 0 76px;height:52px;border-radius:8px;overflow:hidden;border:2px solid transparent;padding:0;cursor:pointer;background:var(--color-noir-3);opacity:.7;}
+.galerie-pb__vignette[aria-current=true]{border-color:var(--color-bronze);opacity:1;}
+.galerie-pb__vignette:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+.galerie-pb--vide{position:relative;aspect-ratio:16/10;display:grid;place-items:center;border-radius:var(--radius-card);color:var(--color-bronze-profond);background:color-mix(in srgb, var(--color-bronze) 10%, var(--color-creme));}
+.galerie-plein{width:100vw;height:100svh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:var(--color-noir);}
+.galerie-plein::backdrop{background:var(--color-noir);}
+.galerie-plein__piste{height:100%;aspect-ratio:auto;}
+.galerie-plein__img{object-fit:contain;}
+.galerie-plein__fermer{position:absolute;top:14px;right:14px;width:46px;height:46px;border-radius:50%;border:1px solid var(--color-ligne);background:var(--color-noir-2);color:var(--color-creme);font-size:28px;line-height:1;cursor:pointer;}
+.galerie-plein__compteur{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);}
+/* Tuiles chiffrées */
+.tuiles-pb{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;}
+@media (max-width:640px){.tuiles-pb{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.tuile-pb{position:relative;padding:12px 14px;border-radius:14px;background:color-mix(in srgb, var(--color-noir) 4%, var(--color-creme));border:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);min-width:0;}
+.tuile-pb dt{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;font-size:12.5px;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.tuile-pb dd{margin:6px 0 0;font:700 clamp(1rem,.9rem + .4vw,1.2rem)/1.2 var(--font-mono-site);color:var(--color-noir);overflow-wrap:anywhere;}
+.tuile-pb dd small{display:block;margin-top:4px;font:400 12px/1.3 var(--font-body);color:var(--color-bronze-profond);}
+.tuile-pb__info summary{list-style:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none;
+  border:1px solid color-mix(in srgb, var(--color-noir) 30%, transparent);font:italic 600 11px/1 var(--font-body);color:var(--color-noir);}
+.tuile-pb__info summary::-webkit-details-marker{display:none;}
+.tuile-pb__info summary:focus-visible{outline:2px solid var(--color-bronze);outline-offset:2px;}
+.tuile-pb__info[open] summary{background:var(--color-noir);color:var(--color-creme);}
+.tuile-pb__info p{position:absolute;left:8px;right:8px;top:36px;z-index:3;margin:0;padding:10px 12px;border-radius:10px;background:var(--color-noir);color:var(--color-creme);font-size:12.5px;line-height:1.45;box-shadow:0 12px 28px rgba(10,10,10,.25);}
+.tuile-pb__dpe{display:flex;flex-wrap:wrap;gap:6px;}
+/* État locatif */
+.etat-locatif{width:100%;border-collapse:collapse;font-size:14px;min-width:620px;}
+.etat-locatif th,.etat-locatif td{text-align:left;padding:10px 8px;border-bottom:1px solid color-mix(in srgb, var(--color-noir) 12%, transparent);vertical-align:top;color:var(--color-noir);}
+.etat-locatif thead th{font:500 11.5px/1.2 var(--font-mono-site);letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));}
+.etat-locatif tbody th{font-weight:600;}
+.etat-locatif small{display:block;margin-top:3px;font:400 12px/1.3 var(--font-body);color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));}
+.etat-locatif .nombre{text-align:right;font-family:var(--font-mono-site);white-space:nowrap;}
+.etat-locatif__type{display:inline-flex;align-items:center;gap:6px;}
+.etat-locatif__type svg{color:var(--color-bronze-profond);}
+.etat-locatif__libre{color:var(--color-bronze-profond);font-weight:600;}
+.etat-locatif tfoot th,.etat-locatif tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--color-noir);}
+.replie summary{cursor:pointer;color:var(--color-bronze-profond);font-size:14px;font-weight:500;}
+.replie ul{margin:8px 0 0;padding-left:18px;font-size:14px;color:color-mix(in srgb, var(--color-noir) 70%, var(--color-creme));}
+.replie--ligne{margin-top:4px;}
+.replie--ligne summary{font-size:12.5px;}
+.replie--ligne span{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;}
+/* État financier */
+.etat-financier-pb{display:flex;flex-direction:column;gap:6px;}
+.etat-financier-pb h3{margin:14px 0 0;font-size:1.05rem;color:var(--color-noir);}
+.etat-financier-pb .tableau-defile{margin-top:0;}
+.etat-financier thead th{text-align:right;font:500 11.5px/1.2 var(--font-mono-site);letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-noir) 58%, var(--color-creme));border-bottom:1px solid color-mix(in srgb, var(--color-noir) 20%, transparent);}
+.etat-financier--3{min-width:520px;}
+.legende-pb{margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.encadre-travaux{margin-top:12px;padding:14px 16px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 10%, var(--color-creme));color:var(--color-noir);font-size:14.5px;}
+.encadre-travaux p{margin:0 0 6px;}
+.encadre-travaux__titre{font-weight:700;}
+.encadre-travaux ul{margin:0;padding-left:18px;}
+.mentions-pb p{margin:0;font-size:13px;line-height:1.55;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.mentions-pb a{color:var(--color-bronze-profond);}
+/* Carte d'action */
+.carte-action{
+  background:var(--color-noir-2);color:var(--color-creme);border-radius:var(--radius-card);padding:clamp(16px,2vw,22px);
+  display:flex;flex-direction:column;gap:14px;border:1px solid var(--color-ligne);
+  box-shadow:0 22px 50px color-mix(in srgb, var(--color-noir) 24%, transparent);
+}
+.carte-action__identite{margin:0;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--color-gris);}
+.carte-action__prix{text-align:center;}
+.carte-action__lbl{margin:0;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-gris);text-align:center;}
+.carte-action__montant{margin:4px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" var(--display-wght);font-size:clamp(1.7rem,1.4rem + 1vw,2.1rem);color:var(--color-bronze);text-align:center;line-height:1.05;}
+.carte-action__montant small{font-size:.5em;color:var(--color-bronze-clair);}
+.carte-action__note{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:var(--color-gris);text-align:center;}
+.carte-action__deja{margin:0;padding:10px 12px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 10%, transparent);font-size:13.5px;}
+.carte-action__boutons{display:flex;flex-direction:column;gap:8px;}
+.carte-action__duo,.barre-offre__duo{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.carte-action .btn,.barre-offre .btn{margin:0;padding:12px 14px;gap:8px;}
+.carte-action__duo .btn,.barre-offre__duo .btn{background:var(--color-noir);}
+.carte-action__tel{font-family:var(--font-mono-site);font-size:13px;}
+.carte-action__simulation{border-top:1px solid var(--color-ligne);padding-top:14px;}
+.simulation{display:flex;flex-direction:column;gap:10px;}
+.kpi--triple dd.kpi__sous{margin-top:4px;font:500 10.5px/1.3 var(--font-body);color:var(--color-gris);}
+/* Barre collante au téléphone */
+.barre-offre{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;gap:8px;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb, var(--color-noir) 94%, transparent);border-top:1px solid var(--color-ligne);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+/* Feuille : monte du bas au téléphone, au centre sur ordinateur */
+.feuille{
+  width:min(560px,100vw);max-width:100vw;max-height:92svh;margin:auto auto 0;padding:0;border:1px solid var(--color-ligne);
+  border-radius:22px 22px 0 0;background:var(--color-noir-2);color:var(--color-creme);
+}
+@media (min-width:700px){.feuille{margin:auto;border-radius:var(--radius-card);max-height:88svh;}}
+.feuille::backdrop{background:color-mix(in srgb, var(--color-noir) 70%, transparent);}
+.feuille[open]{animation:feuille-monte .25s var(--ease);}
+@keyframes feuille-monte{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.feuille[open]{animation:none;}}
+.feuille__corps{display:flex;flex-direction:column;gap:14px;padding:18px clamp(16px,3vw,24px) 22px;}
+.feuille__tete{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.feuille__tete h2{margin:0;font-size:1.3rem;}
+.feuille__fermer{border:0;background:none;color:var(--color-gris);font-size:28px;line-height:1;cursor:pointer;width:40px;height:40px;border-radius:50%;}
+.feuille__fermer:focus-visible{outline:2px solid var(--color-bronze-clair);}
+.feuille__form{display:flex;flex-direction:column;gap:12px;}
+.feuille__form .seulement-compact{padding-bottom:12px;border-bottom:1px solid var(--color-ligne);}
+.feuille__grille{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.feuille__large{grid-column:1 / -1;}
+.feuille .field{margin:0;}
+.feuille .field input,.feuille .field textarea{width:100%;}
+.feuille__montant{margin:0;font-size:15px;}
+.feuille__montant strong{font-family:var(--font-mono-site);color:var(--color-bronze);}
+.feuille__montant small{color:var(--color-gris);}
+.feuille__case{display:flex;align-items:center;gap:10px;font-size:15px;cursor:pointer;}
+.feuille__case input{width:18px;height:18px;accent-color:var(--color-bronze);flex:none;}
+.feuille__compte{display:block;text-align:right;font-size:12px;color:var(--color-gris);}
+.feuille__mentions{margin:0;font-size:12px;line-height:1.5;color:var(--color-gris);}
+.feuille__gauche{text-align:left;}
+.feuille__fait{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;}
+.feuille .btn{margin:0;}
+/* Correctifs de recette (lot 59) */
+/* Deux boutons secondaires côte à côte, à côté du bouton or « Faire une offre » : noirs, texte or. */
+:root :is(.carte-action__duo, .barre-offre__duo) .btn.btn.btn{background:var(--color-noir);color:var(--color-bronze);border-color:var(--color-bronze);}
+:root :is(.carte-action__duo, .barre-offre__duo) .btn.btn.btn:hover{background:var(--color-noir-3);color:var(--color-bronze-clair);border-color:var(--color-bronze-clair);}
+/* Barre sur ordinateur : des champs moins rembourrés, le bouton plus court. */
+@media (min-width:1100px){
+  .recherche-biens__barre{grid-template-columns:minmax(0,1.7fr) minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.15fr) auto;gap:12px;}
+  .recherche-biens__barre .recherche-biens__champ:not(.recherche-biens__champ--lieu){padding-left:12px;}
+  .recherche-biens__barre input:not([type=range]),.recherche-biens__menu{padding:11px 12px !important;font-size:14px !important;}
+  .recherche-biens .prix-fleches input{padding-right:24px !important;}
+  .prix-fleches__btn{right:6px;}
+  .recherche-biens__barre .recherche-biens__lbl{letter-spacing:.08em;}
+  .recherche-biens__actions .btn{padding:12px 18px;}
+}
+/* Badges des cartes : plus serrés, sur une ligne. */
+.bien-carte__bas .badge{font-size:10.5px;letter-spacing:.02em;padding:4px 8px;white-space:nowrap;}
+.bien-carte__titre{font-size:1.02rem;}
+.bien-carte__faits{font-size:13.5px;}
+@media (max-width:699px){
+  .biens-liste--resultats .bien-carte__badges-mob .badge{font-size:10px;letter-spacing:0;padding:4px 7px;white-space:nowrap;}
+}
+/* Vignette off-market, en tête de la liste (retour #74) */
+.carte-offmarket{position:relative;background:var(--color-noir);border-color:var(--color-bronze-profond);color:var(--color-creme);min-height:100%;overflow:hidden;}
+.carte-offmarket__fond{position:absolute;inset:0;opacity:.42;}
+.carte-offmarket__fond::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb, var(--color-noir) 25%, transparent),var(--color-noir) 78%);}
+.carte-offmarket__corps{position:relative;display:flex;flex-direction:column;gap:12px;justify-content:flex-end;height:100%;min-height:360px;padding:24px;border-left:2px solid var(--color-bronze);}
+.carte-offmarket__surtitre{font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);}
+.carte-offmarket__titre{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:1.55rem;line-height:1.08;letter-spacing:-.015em;color:var(--color-creme);}
+.carte-offmarket__titre .accent{color:var(--color-bronze);}
+.carte-offmarket__texte{font-size:14.5px;line-height:1.5;color:var(--color-creme);}
+.carte-offmarket .carte-offmarket__btn{margin:6px 0 0;width:100%;padding:13px 18px;}
+.carte-offmarket:hover .carte-offmarket__btn{background:var(--color-bronze-clair-2);}
+@media (max-width:699px){
+  .biens-liste--resultats .carte-offmarket{border:1px solid var(--color-bronze-profond);border-radius:var(--radius-card);padding:0;margin:12px 0;background:var(--color-noir);}
+  .biens-liste--resultats .carte-offmarket__corps{min-height:0;padding:20px;}
+  .carte-offmarket__titre{font-size:1.3rem;}
+}
+.carte-action .kpi dd{font-size:13px;white-space:nowrap;}
