@@ -198,6 +198,11 @@ export async function relancerFile(limite = 20): Promise<{ transmis: number; res
     if (envoi.ok) {
       await sb(`leads_outbox?id=eq.${l.id}`, { method: "DELETE" });   // purgé dès transmission
       transmis++;
+    } else if (envoi.statut === 422 && typeof l.payload.annonce === "string") {
+      // Offre ou message sur une annonce sortie de la vente pendant l'attente
+      // (contrat §14) : le BO ne l'acceptera plus. L'agence a eu l'alerte au départ.
+      console.warn("[lead] annonce plus en ligne au BO — dépôt retiré de la file.");
+      await sb(`leads_outbox?id=eq.${l.id}`, { method: "DELETE" });
     } else if (envoi.statut === 422 && l.payload.type === "document") {
       // Une pièce que le BO refuse ne passera jamais : on l'efface du seau
       // (le site n'en garde rien) et on sort le dépôt de la file. Le

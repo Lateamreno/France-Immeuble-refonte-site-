@@ -23,8 +23,14 @@ export async function envoyerDuCompte(
   const ref = crypto.randomUUID();
   const lead = { type, ref, compte: s.utilisateur.id, ...champs };
   const copie = d.agent?.appele && d.agent.agent_email ? [d.agent.agent_email] : [];
-  const issue = await deposerLead(lead, { contexte: contexteDe(s.utilisateur), alerte: { copie, historique, regleRendezVous: type === "rendez_vous" } });
-  if (issue !== "perdu") await noterSaisie(s.utilisateur.id, ref, type, champs);
+  // Une annonce sortie de la vente répond 422 au BO (contrat §14) : ce dépôt ne
+  // passera jamais, il ne va pas en file. L'agence est prévenue quand même.
+  const issue = await deposerLead(lead, {
+    contexte: contexteDe(s.utilisateur),
+    alerte: { copie, historique, regleRendezVous: type === "rendez_vous" },
+    refusDefinitif: typeof champs.annonce === "string",
+  });
+  if (issue === "bo" || issue === "file") await noterSaisie(s.utilisateur.id, ref, type, champs);
   // Au passage, les réponses de l'agent déjà déposées sont annoncées aux clients.
   after(() => aviserClients().catch((e) => console.error("[avis]", e)));
   return { ref, issue };

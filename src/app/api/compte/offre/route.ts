@@ -74,6 +74,7 @@ export async function POST(req: Request) {
     // Pour l'alerte de l'agence seulement : de quel bien il s'agit.
     bienTitre: titre,
   });
+  if (issue === "refuse") return refus("Cet immeuble vient de sortir de la vente. Votre agent revient vers vous.", 409);
   if (issue === "perdu") return refus("Envoi impossible pour le moment. Réessayez.", 503);
   return NextResponse.json({ ok: true });
 }

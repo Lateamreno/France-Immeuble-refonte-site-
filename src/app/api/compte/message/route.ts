@@ -76,6 +76,7 @@ export async function POST(req: Request) {
     ...(annonce ? { annonce } : {}),
     pieces,
   }, { historique });
+  if (issue === "refuse") return refus("Cet immeuble vient de sortir de la vente. Votre agent revient vers vous.", 409);
   if (issue === "perdu") {
     await effacerObjets(pieces.map((x) => x.chemin));
     return refus("Envoi impossible pour le moment. Réessayez.", 503);

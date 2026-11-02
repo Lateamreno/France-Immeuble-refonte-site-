@@ -1,5 +1,17 @@
 # Demande à la session BO : annonces au niveau de Plein Bail (02/11/2026)
 
+> **Livré par le BO le 02/11/2026 (contrat §14).** Toutes les colonnes du §1 sauf `ges`,
+> `ges_min` (pas de GES au lot dans le BO) et `remonte_le` (pas de geste « remonter »).
+> `charges_copro` = charges d'exploitation hors taxe foncière (monopropriété) : le site les
+> libelle « Charges ». `occupation_lots` exclut caves, parkings, annexes et lots rattachés.
+> `prix_precedent` / `prix_baisse_le` seulement pour une baisse après la première mise en
+> ligne. `biens_lots` remplacée à chaque dépôt ; `charges_mois` et `disponible_le` toujours
+> nuls ; `loyer_marche_mois` pour les lots vides seulement ; un lot sans numéro devient
+> « Lot <rang> ». `offre_acquereur` et `message` avec `annonce` : 422 « Annonce inconnue ou
+> plus en ligne. » si le bien n'est plus en ligne au BO. Le site ne met pas ce dépôt en file
+> et répond au client que l'immeuble vient de sortir de la vente ; l'agence reçoit l'alerte.
+> Le vendeur voit le nom de l'offrant, la société d'abord : la feuille d'offre le dit.
+
 MAV veut que la page Immeubles à vendre du site reprenne le moteur de recherche
 et la fiche annonce de Plein Bail. Le contrat (§3) prévoit déjà que le site
 reçoive « exactement ce que reçoit Plein Bail, sans adresse ». La base du site

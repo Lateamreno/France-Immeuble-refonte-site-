@@ -218,7 +218,7 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
               <thead><tr><td /><th scope="col">Totales</th><th scope="col">Récupérables</th><th scope="col">Non récupérables</th></tr></thead>
               <tbody>
                 {ch.taxeFonciere != null && <tr><th scope="row">Taxe foncière</th><td>{eur(ch.taxeFonciere)}</td><td>{eur(ch.taxeFonciereRecup)}</td><td>{eur(ch.taxeFonciere - ch.taxeFonciereRecup)}</td></tr>}
-                {ch.copro != null && <tr><th scope="row">Copropriété</th><td>{eur(ch.copro)}</td><td>{eur(ch.coproRecup)}</td><td>{eur(ch.copro - ch.coproRecup)}</td></tr>}
+                {ch.copro != null && <tr><th scope="row">Charges</th><td>{eur(ch.copro)}</td><td>{eur(ch.coproRecup)}</td><td>{eur(ch.copro - ch.coproRecup)}</td></tr>}
                 <tr className="etat-financier__total"><th scope="row">Total</th><td>{eur(ch.totales)}</td><td>{eur(ch.recuperables)}</td><td>{eur(ch.nonRecuperables)}</td></tr>
               </tbody>
             </table>

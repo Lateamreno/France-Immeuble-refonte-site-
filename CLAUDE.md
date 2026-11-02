@@ -210,8 +210,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (`src/components/biens/CarteAction.tsx`), barre « Voir le n° · Contacter · Faire une offre » en
   bas au téléphone, offre en feuille. Adapté à la charte : bronze seul, DPE en dégradé bronze,
   pas de carte de quartier (aucune tuile tierce), pas de carte vendeur (l'agence vend), l'écart
-  au marché se mesure à nos ventes du département. Demande au BO : `docs/PROMPT-BO-ANNONCES.md`.
-  Première vignette de la liste : l'off-market (retour #74, MAV, 02/11/2026).
+  au marché se mesure à nos ventes du département. Demande au BO : `docs/PROMPT-BO-ANNONCES.md`, livrée par le BO le 02/11
+  (contrat §14 ; pas de GES, `charges_copro` libellé « Charges » ; 422 sur une annonce sortie de
+  la vente : pas de file, le client est prévenu). Première vignette de la liste : l'off-market (retour #74, MAV, 02/11/2026).
 
 ### Garde-fous non négociables
 

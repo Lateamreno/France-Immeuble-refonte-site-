@@ -322,7 +322,7 @@ function FeuilleOffre({
           )}
           <p className="feuille__mentions">
             Cette offre est une déclaration d’intention. Elle ne vous engage pas et aucun fonds ne transite par le site.
-            Votre agent la reprend avec vous avant de la présenter au vendeur. Pour un immeuble à usage d’habitation,
+            Votre agent la reprend avec vous avant de la présenter au vendeur, qui verra votre nom ou celui de votre société. Pour un immeuble à usage d’habitation,
             l’acquéreur non professionnel dispose d’un délai de rétractation de dix jours après la signature de
             l’avant-contrat (article L271-1 du code de la construction et de l’habitation).
           </p>
