@@ -147,14 +147,18 @@ export const lienCarte = (b: BienAVendre) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${b.codePostal ?? ""} ${b.ville} France`.trim())}`;
 
 /**
- * Les destinations des recherches du BO (contrat §6) : la barre de recherche
- * du site parle la même langue, pour que toute recherche s'enregistre telle
- * quelle (MAV, 02/11/2026).
+ * Les types d'immeuble de la recherche (MAV, 02/11/2026 : « on a que les 4
+ * types : commerce, bureaux, habitation, entrepôts »). La valeur est celle des
+ * destinations du BO (contrat §6), pour que toute recherche s'enregistre telle
+ * quelle ; le libellé est celui de l'agence. Pas d'hôtel ni de parking.
  */
-export type Destination = "Logement" | "Commerce" | "Bureau" | "Logistique" | "Hôtel" | "Parking";
-export const DESTINATIONS: Destination[] = ["Logement", "Commerce", "Bureau", "Logistique", "Hôtel", "Parking"];
+export type Destination = "Logement" | "Commerce" | "Bureau" | "Logistique";
+export const DESTINATIONS: Destination[] = ["Logement", "Commerce", "Bureau", "Logistique"];
+export const LIBELLE_DESTINATION: Record<Destination, string> = {
+  Logement: "Habitation", Commerce: "Commerces", Bureau: "Bureaux", Logistique: "Entrepôts",
+};
 const DESTINATION_DU_LOT: Record<string, Destination> = {
-  habitation: "Logement", commerce: "Commerce", bureau: "Bureau", activite: "Logistique", parking: "Parking",
+  habitation: "Logement", commerce: "Commerce", bureau: "Bureau", activite: "Logistique",
 };
 
 /** Les destinations d'un bien : celles de ses lots, sinon celles qu'on lit dans son type. */
@@ -165,7 +169,6 @@ export function destinationsDe(b: BienAVendre): Destination[] {
     const dom = dominanteDe(b);
     d.add(dom === "bureau" ? "Bureau" : dom === "commercial" ? "Commerce" : "Logement");
     if (estMixte(b)) { d.add("Logement"); d.add("Commerce"); }
-    if (/h[oô]tel/i.test(b.type)) d.add("Hôtel");
   }
   return DESTINATIONS.filter((x) => d.has(x));
 }

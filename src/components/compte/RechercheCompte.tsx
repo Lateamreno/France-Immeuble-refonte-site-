@@ -1,10 +1,12 @@
 "use client";
 
 import { useId, useState } from "react";
+import { LIBELLE_DESTINATION } from "@/lib/annonce";
 import { envoyer } from "./envoyer";
 
 const CIBLES = ["Investisseur", "Patrimonial", "Marchand de biens", "Promoteur"] as const;
-const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique", "Hôtel", "Parking"] as const;
+// Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
+const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique"] as const;
 
 export type ValeursRecherche = {
   cle?: string;
@@ -102,11 +104,11 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
         </div>
       </div>
       <div className="field">
-        <span className="field__lbl" id={`${uid}-dest`}>Destinations</span>
+        <span className="field__lbl" id={`${uid}-dest`}>Type d’immeuble</span>
         <div className="choices" role="group" aria-labelledby={`${uid}-dest`}>
           {DESTINATIONS.map((d) => (
             <button key={d} type="button" className="choice" aria-pressed={dest.includes(d)}
-              onClick={() => setDest((v) => (v.includes(d) ? v.filter((x) => x !== d) : [...v, d]))}>{d}</button>
+              onClick={() => setDest((v) => (v.includes(d) ? v.filter((x) => x !== d) : [...v, d]))}>{LIBELLE_DESTINATION[d]}</button>
           ))}
         </div>
       </div>

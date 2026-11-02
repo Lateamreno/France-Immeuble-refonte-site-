@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Picto } from "@/components/Picto";
 import { envoyer } from "@/components/compte/envoyer";
 import { DEPARTEMENTS, REGIONS } from "@/lib/departements";
-import { DESTINATIONS, type Destination } from "@/lib/annonce";
+import { DESTINATIONS, LIBELLE_DESTINATION, type Destination } from "@/lib/annonce";
 import {
   CIBLES, libelleLieu, libelleZone, lienRecherche, sansAccents, zonesTriees, type Criteres,
 } from "@/lib/recherche-biens";
@@ -101,7 +101,7 @@ export function RechercheBiens({
   };
   const ordonnees = zonesTriees(zones);
 
-  const libelleDest = dest.length === 0 || dest.length === DESTINATIONS.length ? "Toutes" : DESTINATIONS.filter((d) => dest.includes(d)).join(" · ");
+  const libelleDest = dest.length === 0 || dest.length === DESTINATIONS.length ? "Tous les types" : DESTINATIONS.filter((d) => dest.includes(d)).map((d) => LIBELLE_DESTINATION[d]).join(" · ");
 
   const criteresSaisis = (): Partial<Criteres> => ({
     zones, destinations: dest, prixMin: pmin, prixMax: pmax, rendementMin: rdt > 0.5 ? rdt : null, tri: criteres.tri,
@@ -191,13 +191,13 @@ export function RechercheBiens({
         </div>
 
         <div className="recherche-biens__champ recherche-biens__champ--type" ref={destRef}>
-          <span className="recherche-biens__lbl" id={`${uid}-dest-lbl`}><Picto nom="immeubles" taille={15} />Destinations</span>
+          <span className="recherche-biens__lbl" id={`${uid}-dest-lbl`}><Picto nom="immeubles" taille={15} />Type</span>
           <button type="button" className="recherche-biens__menu" aria-haspopup="true" aria-expanded={menuDest}
             aria-labelledby={`${uid}-dest-lbl ${uid}-dest-val`} onClick={() => setMenuDest((x) => !x)}>
             <span id={`${uid}-dest-val`}>{libelleDest}</span><span aria-hidden="true">⌄</span>
           </button>
           {menuDest && (
-            <div className="recherche-biens__deroulant" role="group" aria-label="Destinations des lots">
+            <div className="recherche-biens__deroulant" role="group" aria-label="Type d’immeuble">
               {DESTINATIONS.map((d) => (
                 <label key={d} className="recherche-biens__case">
                   <input type="checkbox" checked={dest.length === 0 || dest.includes(d)}
@@ -206,10 +206,10 @@ export function RechercheBiens({
                       const n = e.target.checked ? [...base, d] : base.filter((x) => x !== d);
                       setDest(n.length === DESTINATIONS.length ? [] : n);
                     }} />
-                  {d}
+                  {LIBELLE_DESTINATION[d]}
                 </label>
               ))}
-              <p className="recherche-biens__aide">Un immeuble ressort s’il contient au moins un lot de la destination choisie.</p>
+              <p className="recherche-biens__aide">Un immeuble ressort s’il contient au moins un lot du type choisi : un immeuble mixte ressort dans plusieurs types.</p>
             </div>
           )}
         </div>

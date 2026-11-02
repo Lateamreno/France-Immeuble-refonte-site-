@@ -3,6 +3,7 @@ import { Panneau, TeteCompte } from "@/components/compte/Ecrans";
 import { ecranCompte } from "@/lib/compte/ecran";
 import { euros, pct } from "@/lib/compte/vente";
 import type { Recherche } from "@/lib/compte/donnees";
+import { LIBELLE_DESTINATION } from "@/lib/annonce";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,9 @@ function resume(r: Recherche): string {
       ? `${r.prix_min != null ? `de ${euros(r.prix_min)}` : ""}${r.prix_max != null ? ` à ${euros(r.prix_max)}` : ""}`.trim()
       : null,
     r.rendement_min != null ? `rendement ${pct(r.rendement_min)} et plus` : null,
-    r.destinations.length ? r.destinations.join(", ") : null,
+    r.destinations.length
+      ? r.destinations.map((d) => (LIBELLE_DESTINATION as Record<string, string>)[d] ?? d).join(", ")
+      : null,
   ].filter(Boolean).join(" · ");
 }
 

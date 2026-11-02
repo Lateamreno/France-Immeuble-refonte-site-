@@ -1,6 +1,6 @@
 import type { BienAVendre } from "./biens";
 import { DEPARTEMENTS, REGIONS } from "./departements";
-import { dateTri, DESTINATIONS, destinationsDe, rendementAffiche, type Destination } from "./annonce";
+import { dateTri, DESTINATIONS, destinationsDe, LIBELLE_DESTINATION, rendementAffiche, type Destination } from "./annonce";
 
 /**
  * Le moteur de recherche des immeubles à vendre, sur le modèle de Plein Bail
@@ -8,7 +8,7 @@ import { dateTri, DESTINATIONS, destinationsDe, rendementAffiche, type Destinati
  * que les critères d'affichage soient les mêmes que ceux de notre BO de telle
  * façon qu'ils puissent enregistrer leur recherche »). Une recherche du BO
  * porte : départements, villes, prix minimum et maximum, rendement minimum,
- * destinations, profil (cible) et commentaire. La barre n'offre rien d'autre :
+ * types d'immeuble (destinations du BO), profil (cible) et commentaire. La barre n'offre rien d'autre :
  * tout ce qu'on cherche ici s'enregistre au BO sans rien perdre.
  *
  * Trois règles de Plein Bail gardées :
@@ -193,7 +193,7 @@ export function puces(c: Criteres): { libelle: string; sans: string; lieu?: bool
   const out: { libelle: string; sans: string; lieu?: boolean }[] = [];
   const sans = (m: Partial<Criteres>) => lienRecherche({ ...c, ...m });
   if (c.zones.length) out.push({ libelle: libelleLieu(c.zones), sans: sans({ zones: [] }), lieu: true });
-  for (const d of c.destinations) out.push({ libelle: d, sans: sans({ destinations: c.destinations.filter((x) => x !== d) }) });
+  for (const d of c.destinations) out.push({ libelle: LIBELLE_DESTINATION[d], sans: sans({ destinations: c.destinations.filter((x) => x !== d) }) });
   if (c.prixMin != null) out.push({ libelle: `Dès ${eurosCourts(c.prixMin)}`, sans: sans({ prixMin: null }) });
   if (c.prixMax != null) out.push({ libelle: `Jusqu’à ${eurosCourts(c.prixMax)}`, sans: sans({ prixMax: null }) });
   if (c.rendementMin) out.push({ libelle: `Rendement ≥ ${c.rendementMin.toLocaleString("fr-FR")} %`, sans: sans({ rendementMin: null }) });

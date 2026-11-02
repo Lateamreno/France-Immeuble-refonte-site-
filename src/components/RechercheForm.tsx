@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { LIBELLE_DESTINATION } from "@/lib/annonce";
 import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE } from "@/lib/site";
 
@@ -20,7 +21,8 @@ import { SITE } from "@/lib/site";
  */
 
 const CIBLES = ["Investisseur", "Marchand de biens", "Patrimonial", "Promoteur"] as const;
-const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique", "Hôtel", "Parking"] as const;
+// Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
+const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique"] as const;
 const DEPTS_COURANTS = ["75", "92", "93", "94", "78", "91", "95", "77"];
 /** Budget en fourchettes, converties en euros pour le BO. */
 const BUDGETS: { label: string; min: number | null; max: number | null }[] = [
@@ -284,11 +286,11 @@ export function RechercheForm() {
               ))}
             </div>
           </Champ>
-          <Champ id={`${uid}-${i}-dest`} label="Destinations" hint="Une ou plusieurs, facultatif" full>
+          <Champ id={`${uid}-${i}-dest`} label="Type d’immeuble" hint="Un ou plusieurs, facultatif" full>
             <div className="choices">
               {DESTINATIONS.map((t) => (
                 <button key={t} type="button" className="choice" aria-pressed={r.destinations.includes(t)}
-                  onClick={() => basculer(i, "destinations", t)}>{t}</button>
+                  onClick={() => basculer(i, "destinations", t)}>{LIBELLE_DESTINATION[t]}</button>
               ))}
             </div>
           </Champ>

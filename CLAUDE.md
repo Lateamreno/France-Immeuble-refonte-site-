@@ -196,10 +196,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   **Les critères sont ceux d'une recherche du BO, et rien d'autre** (MAV, 02/11/2026 : « il faut
   que les critères d'affichage soient les mêmes que ceux de notre BO de telle façon qu'ils puissent
   enregistrer leur recherche ») : départements et villes (une région ajoute ses départements),
-  destinations (Logement, Commerce, Bureau, Logistique, Hôtel, Parking, lues dans `biens_lots`),
+  quatre types d'immeuble (MAV, 02/11 : Habitation, Commerces, Bureaux, Entrepôts ; envoyés au BO
+  comme destinations Logement, Commerce, Bureau, Logistique ; ni hôtel ni parking ; lus dans `biens_lots`),
   prix, rendement ; à l'enregistrement, un ou plusieurs profils (une recherche par profil, le reste
   à l'identique) et un commentaire. Pas de type de ville, de surface, de DPE ni d'occupation
-  dans la barre. La vignette off-market est toujours la première, quels que soient les critères
+  dans la barre. Fond sombre (la page sur son image) et barre empilée au téléphone, comme Plein Bail
+  (MAV, 02/11). La vignette off-market est toujours la première, quels que soient les critères
   et le tri. Une seule
   traduction filtres → résultats (`filtrer` dans `src/lib/recherche-biens.ts`), une seule puce pour
   les localisations, « En dehors de votre recherche » sous six résultats, rangées compactes au
