@@ -365,9 +365,11 @@ transparente au-dessus du hero et devient noire floutée au défilement.
 
 **Exception : l'espace client** (`/mon-compte/…`, MAV, 30/10/2026) n'a pas de hero. C'est un
 outil, il s'ouvre directement sur son contenu (« pas besoin de hero ni rien »).
-**Bandeau titre** (`HeroMedia compact`, MAV, 02/11/2026) : le titre et l'image de fond, sans
-pleine hauteur ni flèche, pour les pages qui montrent leur contenu tout de suite :
-`/immeubles-a-vendre/` (la recherche) et `/contactez-nous/` (le formulaire, retour #72).
+**Page sur image** (`PageFond`, MAV, 02/11/2026) : pas de hero ; une seule image de fond court
+sous **toute la page** (« pas juste sur la première partie où il y a le titre »), collée pendant
+le défilement, voile sombre, le titre puis le contenu tout de suite. Les sections de la page n'ont
+plus de fond propre. Pour `/immeubles-a-vendre/` (la recherche, cartes sur fond sombre) et
+`/contactez-nous/` (le formulaire, retour #72).
 
 Les **chiffres** affichés (bandeau de preuve) sont en or, chacun avec un picto or **sans
 cercle** qui en dit l'intention, et viennent du BO (table `chiffres`, déposée à 9 h et 19 h).

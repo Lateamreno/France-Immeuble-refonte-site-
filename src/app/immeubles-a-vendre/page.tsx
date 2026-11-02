@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HeroMedia } from "@/components/HeroMedia";
+import { PageFond } from "@/components/PageFond";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
@@ -69,14 +69,11 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
         ])}
       />
 
-      {/* Pas de grand hero ici (MAV, 02/11/2026) : le titre sur l'image de fond, puis la recherche. */}
-      <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt} compact>
-        <h1>
-          Les immeubles que nous <span className="accent">commercialisons</span>
-        </h1>
-      </HeroMedia>
+      {/* Pas de hero (MAV, 02/11/2026) : une seule image sous toute la page, le titre, puis la recherche. */}
+      <PageFond image={VISUELS.toitsAeriens.src} className="page-fond--biens"
+        titre={<>Les immeubles que nous <span className="accent">commercialisons</span></>}>
 
-      <section id="resultats" className="section section--creme biens-recherche">
+      <section id="resultats" className="section biens-recherche est-sombre">
         <div className="container">
           {biens.length > 0 ? (
             <>
@@ -201,6 +198,7 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
           </Reveal>
         </div>
       </section>
+      </PageFond>
     </>
   );
 }

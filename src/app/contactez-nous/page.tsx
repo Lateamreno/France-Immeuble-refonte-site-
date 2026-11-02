@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HeroMedia } from "@/components/HeroMedia";
+import { PageFond } from "@/components/PageFond";
 import { VISUELS } from "@/lib/visuels";
 import { Reveal } from "@/components/Reveal";
 import { ContactForm } from "@/components/ContactForm";
@@ -32,12 +32,9 @@ export default function ContactezNous() {
         ])}
       />
 
-      {/* Retour #72 (MAV, 02/11/2026) : pas de grand hero, le formulaire tout de suite ; le titre et l'image de fond restent. */}
-      <HeroMedia image={VISUELS.skylineCrepuscule.src} alt={VISUELS.skylineCrepuscule.alt} compact>
-        <h1>
-          Contactez-<span className="accent">nous</span>
-        </h1>
-      </HeroMedia>
+      {/* Retour #72 et précision de MAV (02/11/2026) : pas de hero ; une seule image sous toute la page, le titre, le formulaire tout de suite. */}
+      <PageFond image={VISUELS.skylineCrepuscule.src} className="page-fond--contact"
+        titre={<>Contactez-<span className="accent">nous</span></>}>
 
       <section className="section section--noir contact-sec">
         <div className="container split">
@@ -77,6 +74,7 @@ export default function ContactezNous() {
           </div>
         </div>
       </section>
+      </PageFond>
     </>
   );
 }

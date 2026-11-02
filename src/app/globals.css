@@ -4440,3 +4440,27 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 /* Contact (retour #72) : le formulaire tout de suite sous le titre ; au téléphone il passe avant les coordonnées. */
 .hero-media--compact + .contact-sec{min-height:0;padding-top:clamp(28px,4vw,56px);}
 @media (max-width:759px){ .contact-sec .split > :last-child{order:-1;} }
+/* Page posée sur une seule image (MAV, 02/11/2026 : Immeubles à vendre et Contact).
+   L'image passe sous la barre de menu, comme un hero, et reste en place au défilement. */
+main > .page-fond{margin-top:calc(-1 * var(--header-h));}
+.page-fond{position:relative;isolation:isolate;background:var(--color-noir);color:var(--color-creme);}
+.page-fond__calque{position:absolute;inset:0;z-index:-1;pointer-events:none;}
+.page-fond__colle{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;}
+.page-fond__img{object-fit:cover;}
+.page-fond__voile{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--color-noir) 52%, transparent) 0%,
+    color-mix(in srgb, var(--color-noir) 74%, transparent) 38%,
+    color-mix(in srgb, var(--color-noir) 82%, transparent) 100%);
+}
+.page-fond__tete > .container{padding-top:calc(var(--header-h) + clamp(28px,4vw,56px));padding-bottom:clamp(8px,1.5vw,20px);}
+.page-fond__tete h1{margin:0;color:var(--color-creme);font-size:clamp(1.9rem,1.2rem + 2vw,3rem);max-width:22ch;text-shadow:0 2px 20px rgba(10,10,10,.55);}
+.page-fond__tete .accent{color:var(--color-bronze);}
+/* Les sections de la page laissent voir l'image. */
+.page-fond .section.section{background:none;}
+.page-fond .section.section::before,.page-fond .section.section::after{display:none;}
+.page-fond .biens-recherche{padding-top:clamp(20px,3vw,36px);}
+.page-fond .contact-sec{min-height:0;padding-top:clamp(20px,3vw,36px);}
+/* Sur l'image, les textes posés à nu gagnent une ombre douce. */
+.page-fond .resultats-tete__nb,.page-fond .hors-recherche__titre span{text-shadow:0 1px 12px rgba(10,10,10,.6);}
