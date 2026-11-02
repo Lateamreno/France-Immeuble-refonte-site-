@@ -16,6 +16,7 @@ import {
   tousLesArticles,
   type Article,
 } from "@/lib/contenu";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -187,6 +188,7 @@ export default async function ArticlePage({ params }: Params) {
           </section>
         )}
       </article>
+      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Estimer mon immeuble" />
     </>
   );
 }

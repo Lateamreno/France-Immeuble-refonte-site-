@@ -10,6 +10,7 @@ import { PREUVES, SITE, nombre } from "@/lib/site";
 import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
 import { VISUELS } from "@/lib/visuels";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /acheter-un-immeuble/ — construction du fichier acquéreurs.
@@ -144,6 +145,7 @@ export default async function Acheter() {
           </Reveal>
         </div>
       </section>
+      <BoutonFixeMobile href="#deposer" libelle="Déposer ma recherche" cible="deposer" />
     </>
   );
 }

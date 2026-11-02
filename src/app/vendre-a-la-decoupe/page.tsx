@@ -10,6 +10,7 @@ import { SITE, nombre } from "@/lib/site";
 import { chiffres } from "@/lib/chiffres";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /vendre-a-la-decoupe/ — le meilleur aimant à gros immeubles du site.
@@ -660,6 +661,7 @@ export default async function Decoupe() {
           </Reveal>
         </div>
       </section>
+      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Faire étudier mon immeuble" />
     </>
   );
 }

@@ -13,6 +13,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { CarteRegion, nomRegion } from "@/components/CarteRegion";
 import { ventesEtStats, villesFrequentes, volume, groupesVentes, NOMS_DEPTS_IDF } from "@/lib/biens";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /immeubles-vendus/ — les ventes réalisées, servies depuis nos données.
@@ -194,6 +195,7 @@ export default async function ImmeublesVendus() {
           </Reveal>
         </div>
       </section>
+      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Estimer mon immeuble" />
     </>
   );
 }

@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { PREUVES, SITE } from "@/lib/site";
 import { dateFr, dureeLecture, tousLesArticles } from "@/lib/contenu";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /blog/ — page de listing, et rien d'autre.
@@ -123,6 +124,7 @@ export default async function BlogPage() {
           </div>
         </div>
       </section>
+      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Estimer mon immeuble" />
     </>
   );
 }

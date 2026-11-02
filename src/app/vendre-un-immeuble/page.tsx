@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { SectionFondue } from "@/components/SectionFondue";
 import { Button } from "@/components/Button";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { FondPhoto } from "@/components/FondPhoto";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
@@ -261,9 +262,19 @@ export default async function VendreUnImmeuble() {
         compact
         fond="noir-2"
         intro="Des propriétaires qui nous ont confié la vente de leur immeuble de rapport."
+        photo={{
+          src: "/media/temoignages-poignee-de-main.webp",
+          alt: "Deux personnes en chemise se serrent la main au terme d’une vente",
+          width: 1800,
+          height: 1202,
+        }}
       />
 
+      {/* Photos ajoutées aux sections sombres (MAV, 02/11/2026) : l'immeuble
+          parisien à l'heure bleue derrière le titre du formulaire, la vue sur
+          les toits derrière le contact. */}
       <section id="estimer" className="section section--noir section--ecran sec-formulaire">
+        <FondPhoto image={VISUELS.fenetresHeureBleue.src} position="30% center" />
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
@@ -283,6 +294,7 @@ export default async function VendreUnImmeuble() {
       </section>
 
       <section className="section section--noir-3 contact-sec">
+        <FondPhoto image={VISUELS.interieurToits.src} position="center 40%" />
         <div className="container split">
           <Reveal>
             <Eyebrow>Contact</Eyebrow>

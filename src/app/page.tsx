@@ -16,6 +16,7 @@ import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
 import { VitrineAccueil } from "@/components/VitrineAccueil";
 import { Avis } from "@/components/Avis";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
@@ -66,8 +67,8 @@ export default async function Accueil() {
 
       {/* Sur un seul écran (retour #56, MAV, 27/10/2026). */}
       <section className="section section--creme section--ecran accueil-vendre">
-        <div className="container split accueil-vendre__grille">
-          <Reveal className="accueil-vendre__tete">
+        <div className="container split">
+          <Reveal>
             <Eyebrow>Vendre</Eyebrow>
             <h2>
               Vendez votre immeuble <span className="accent">au meilleur prix</span>
@@ -75,10 +76,7 @@ export default async function Accueil() {
             <p className="lead lead--or" style={{ marginTop: "var(--space-s)" }}>
               Estimation et commercialisation conçues pour les immeubles
             </p>
-          </Reveal>
-          {/* Au téléphone, le carnet se glisse entre l'accroche et le texte. */}
-          <Reveal className="accueil-vendre__corps">
-            <p>
+            <p style={{ marginTop: "var(--space-s)" }}>
               Obtenez une estimation basée sur des critères propres aux immeubles comme la
               rentabilité, l’occupation et le potentiel de surélévation/construction. Suite à cette
               estimation, nous vous accompagnons dans le choix du prix de commercialisation puis
@@ -95,36 +93,22 @@ export default async function Accueil() {
             </p>
             {/* Au téléphone, les boutons restent au bas de l'écran pendant que le
                 texte défile, jusqu'à la section suivante (MAV, 27/10/2026). */}
-            <div className="btn-row accueil-vendre__boutons" style={{ marginTop: "var(--space-m)" }}>
+            <div className="btn-row accueil-vendre__boutons porte-action" style={{ marginTop: "var(--space-m)" }}>
               <Button href="#estimer" icone>Estimer mon immeuble</Button>
               <Button href="/vendre-un-immeuble/" variant="ghost-dark">En savoir plus</Button>
             </div>
           </Reveal>
 
-          {/* Le carnet et son témoignage (retour #78, MAV, 02/11/2026 : « on voit
-              plus l'image avec le livre et le commentaire »). Le fichier est
-              coupé à droite, si bien que le texte écrit dans le carnet ne se lit
-              jamais en entier : le témoignage est repris en vrai texte, posé
-              sur l'image, lisible et indexable. Au téléphone, le carnet ouvre
-              la section au lieu de se fondre derrière le texte. */}
-          <Reveal delayIndex={1} className="accueil-carnet">
-            <span className="accueil-carnet__image">
-              <Image
-                src="/media/05_Notebook-Mock-up-1.webp"
-                alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
-                width={800}
-                height={820}
-                sizes="(max-width: 900px) 92vw, 640px"
-              />
-            </span>
-            <figure className="accueil-carnet__citation">
-              <blockquote>
-                Nous avons fait estimer un immeuble par France Immeuble (entre autres) et leur
-                dossier était le plus adapté à la vente d’un immeuble entier. La vente s’est
-                réalisée rapidement dans de très bonnes conditions.
-              </blockquote>
-              <figcaption>Famille M., vendeurs</figcaption>
-            </figure>
+          {/* Le carnet des témoignages. Le fichier d'origine est coupé à droite :
+              l'image va jusqu'au bord de l'écran, la coupe s'y confond (MAV). */}
+          <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord accueil-vendre__carnet">
+            <Image
+              src="/media/05_Notebook-Mock-up-noir.webp"
+              alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
+              width={800}
+              height={820}
+              sizes="(max-width: 900px) 100vw, 760px"
+            />
           </Reveal>
         </div>
       </section>
@@ -330,6 +314,7 @@ export default async function Accueil() {
           <ContactForm />
         </div>
       </section>
+      <BoutonFixeMobile href="#estimer" libelle="Estimer mon immeuble" cible="estimer" />
     </>
   );
 }

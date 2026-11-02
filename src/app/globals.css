@@ -2736,8 +2736,12 @@ fieldset.field legend,.lot label{
      le coin bas droite, fondu dans le beige. `overflow:clip` et non `hidden` :
      `hidden` empêcherait les boutons de rester collés. */
   .accueil-vendre{isolation:isolate;overflow:clip;}
+  /* Le carnet sous le texte, entier et net (MAV, 02/11/2026 : « je ne voyais pas
+     l'image »), jusqu'au bord droit de l'écran comme sur ordinateur. */
+  .accueil-vendre .accueil-vendre__carnet{margin:var(--space-s) calc(-1 * var(--gutter)) 0 auto;width:min(92vw,440px);}
+  .accueil-vendre .accueil-vendre__carnet img{width:100%;height:auto;display:block;}
   .accueil-vendre__boutons{position:sticky;bottom:0;z-index:2;flex-wrap:nowrap;gap:10px;
-    margin-inline:calc(-1 * var(--gutter));padding:28px var(--gutter) calc(14px + env(safe-area-inset-bottom,0px));
+    margin-inline:calc(-1 * var(--gutter));padding:28px var(--gutter) calc(28px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(to top,var(--color-creme) 72%,color-mix(in srgb,var(--color-creme) 0%,transparent));}
   /* L'un au-dessus de l'autre (MAV, 27/10/2026), un peu moins hauts pour
      laisser lire le texte qui défile derrière. */
@@ -4487,21 +4491,25 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .region-sec--noir .region-ventes__carte path.carte-region__active{fill:color-mix(in srgb, var(--color-bronze) 60%, transparent);stroke:var(--color-bronze);}
 .region-sec--noir .region-sec__mob-n{color:var(--color-bronze);}
 @media (max-width:759px){ .region-sec--noir + .region-sec--noir .region-ventes:first-of-type{border-top-color:var(--color-ligne);} }
-/* Bouton « Vendre mon immeuble » fixé en bas au téléphone (retour #77, MAV, 02/11/2026).
-   Les boutons des sections ne sont plus doublés à l'écran : ils se cachent au téléphone,
-   sauf dans le hero et la section du formulaire. */
+/* Le bouton qui suit le visiteur au téléphone (retour #77, MAV, 02/11/2026) : une pilule
+   dans la zone du pouce, au-dessus du bas de l'écran, sans bandeau. Il se retire quand
+   le hero, le formulaire, le pied de page ou les boutons d'une section sont à l'écran. */
 .bouton-fixe-mob{display:none;}
 @media (max-width:899px){
   .bouton-fixe-mob{
-    display:block;position:fixed;left:0;right:0;bottom:0;z-index:45;
-    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-    background:linear-gradient(180deg,transparent,color-mix(in srgb, var(--color-noir) 88%, transparent) 40%);
-    transform:translateY(110%);transition:transform .25s var(--ease);pointer-events:none;
+    --pouce:calc(28px + env(safe-area-inset-bottom,0px));
+    display:flex;justify-content:center;position:fixed;left:16px;right:16px;bottom:var(--pouce);z-index:45;
+    pointer-events:none;opacity:0;transform:translateY(16px);
+    transition:opacity .22s var(--ease),transform .22s var(--ease);
   }
-  .bouton-fixe-mob.est-visible{transform:none;pointer-events:auto;}
-  .bouton-fixe-mob .btn{margin:0;}
-  body:has(.bouton-fixe-mob) .sec-fondu__bouton,body:has(.bouton-fixe-mob) .methode-sec .btn-row{display:none;}
-  body:has(.bouton-fixe-mob.est-visible) .rv-fab{bottom:calc(84px + env(safe-area-inset-bottom));}
+  .bouton-fixe-mob.est-visible{opacity:1;transform:none;}
+  .bouton-fixe-mob.est-visible .btn{pointer-events:auto;}
+  .bouton-fixe-mob .btn{margin:0;min-width:min(280px,100%);
+    box-shadow:0 12px 32px color-mix(in srgb, var(--color-noir) 45%, transparent),0 0 0 1px color-mix(in srgb, var(--color-bronze-profond) 60%, transparent);}
+  body:has(.bouton-fixe-mob.est-visible) .rv-fab{bottom:calc(96px + env(safe-area-inset-bottom));}
+  /* Les boutons de section qui mènent au même endroit que la pilule. */
+  main a.btn.double-fixe{display:none;}
+  main .btn-row:has(> a.btn.double-fixe):not(:has(> :not(.double-fixe))){display:none;}
 }
 @media (prefers-reduced-motion:reduce){ .bouton-fixe-mob{transition:none;} }
 
@@ -4524,50 +4532,17 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   .methode-sec .steps--frise .step p{font-size:16px;max-width:30ch;}
 }
 .ligne-cartes{position:relative;}
-/* Accueil, « Vendez votre immeuble » (retour #78, MAV, 02/11/2026) : le carnet entier dans sa
-   colonne, et son témoignage en vrai texte posé dessus. */
-.accueil-carnet{position:relative;display:flex;flex-direction:column;align-items:flex-end;}
-.accueil-carnet__image{display:block;width:100%;max-width:560px;}
-.accueil-carnet__image img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 40px color-mix(in srgb, var(--color-noir) 22%, transparent));}
-.accueil-carnet__citation{
-  position:relative;margin:-22% 0 0;align-self:flex-start;width:min(360px,86%);
-  padding:20px 22px 18px;border-left:2px solid var(--color-bronze);border-radius:0 var(--radius-card) var(--radius-card) 0;
-  background:var(--color-noir);color:var(--color-creme);
-  box-shadow:0 18px 40px color-mix(in srgb, var(--color-noir) 28%, transparent);
-}
-.accueil-carnet__citation::before{content:"“";position:absolute;top:-18px;left:16px;font:900 64px/1 var(--font-display);color:var(--color-bronze);}
-.accueil-carnet__citation blockquote{margin:0;font-size:15px;line-height:1.55;}
-.accueil-carnet__citation figcaption{margin-top:10px;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze);}
-@media (min-width:900px){
-  .accueil-vendre .accueil-carnet__image img{max-height:calc(var(--ecran) - 200px);width:auto;max-width:100%;margin-left:auto;}
-}
+/* Photo fondue dans le fond d'une section sombre (FondPhoto, MAV, 02/11/2026). */
+.section:has(> .fond-photo){position:relative;isolation:isolate;overflow:clip;}
+.fond-photo{position:absolute;inset:0 auto 0 0;width:62%;z-index:-1;pointer-events:none;opacity:.3;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 30%,transparent 100%);
+          mask-image:linear-gradient(90deg,#000 0%,#000 30%,transparent 100%);}
+.fond-photo--droite{inset:0 0 0 auto;
+  -webkit-mask-image:linear-gradient(270deg,#000 0%,#000 30%,transparent 100%);
+          mask-image:linear-gradient(270deg,#000 0%,#000 30%,transparent 100%);}
+.fond-photo img{object-fit:cover;}
 @media (max-width:899px){
-  .accueil-vendre .container.split{display:flex;flex-direction:column;}
-  .accueil-vendre .accueil-carnet{order:-1;align-items:center;margin:0 0 var(--space-m);}
-  .accueil-vendre .accueil-carnet__image{max-width:300px;margin-right:-12vw;align-self:flex-end;}
-  .accueil-vendre .accueil-carnet__citation{margin-top:-30%;width:88%;}
-  .accueil-carnet__citation blockquote{font-size:14.5px;}
-}
-/* Accueil « Vendez votre immeuble » : l'accroche, le carnet, le texte (retour #78). */
-.accueil-vendre__corps{margin-top:var(--space-s);}
-@media (min-width:900px){
-  .accueil-vendre .container.accueil-vendre__grille{
-    grid-template-columns:7fr 5fr;grid-template-areas:"tete carnet" "corps carnet";
-    grid-template-rows:auto 1fr;row-gap:0;align-items:start;
-  }
-  .accueil-vendre__tete{grid-area:tete;}
-  .accueil-vendre__corps{grid-area:corps;}
-  .accueil-vendre .accueil-carnet{grid-area:carnet;align-self:center;}
-}
-@media (max-width:899px){
-  .accueil-vendre .accueil-carnet{order:0;margin:var(--space-s) 0 0;}
-  .accueil-vendre__tete{order:-1;}
-  .accueil-vendre__corps{order:1;}
-  .accueil-vendre .accueil-carnet__image{max-width:250px;margin-right:-10vw;}
-  .accueil-vendre .accueil-carnet__citation{margin-top:-26%;}
-}
-@media (max-width:899px){
-  /* Le haut du fichier du carnet est vide : on le rentre sous l'accroche. */
-  .accueil-vendre .accueil-carnet{margin-top:0;}
-  .accueil-vendre .accueil-carnet__image{margin-top:-18%;}
+  .fond-photo,.fond-photo--droite{inset:0 0 auto 0;width:100%;height:min(62%,520px);opacity:.3;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%);
+            mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%);}
 }

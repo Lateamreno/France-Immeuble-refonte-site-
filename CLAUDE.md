@@ -392,16 +392,20 @@ qui défile, contenu allégé) : `.section--ecran` la cale sur un écran, modèl
 de la page Vendre. Outils (27/10/2026) : `grid--ligne-mob` (cartes en ligne au téléphone),
 `media--fond-mob` (photo en fond fondu au téléphone), `tete-2col`, `steps--frise`,
 LigneDefilante `marches` pour toute liste longue (références, articles, étapes).
-Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au téléphone (retour #78,
-02/11/2026 : le carnet entre l'accroche et le texte, son témoignage repris en vrai texte), texte
+Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au téléphone, texte
 entier, les deux boutons l'un au-dessus de l'autre collés en bas de l'écran pendant qu'il
-défile (MAV : « Lire la suite », personne ne clique) ; l'échantillon des Références garde sur
+défile (MAV : « Lire la suite », personne ne clique), puis le carnet entier et net sous le texte
+(MAV, 02/11/2026 : la mise en page d'avant, mais l'image visible ; texte du carnet en noir,
+`05_Notebook-Mock-up-noir.webp`) ; l'échantillon des Références garde sur
 ordinateur sa longue liste par région et département (MAV : « c'était pas mal comme
 avant »), repliée en deux lignes qui glissent au téléphone. Suites courtes (méthode de
 Vendre) : une étape par écran au téléphone, illustrations agrandies (retours #75 et #77,
-02/11/2026). **Bouton fixe en bas au téléphone** sur Vendre (`BoutonFixeMobile`, retour #77) :
-visible partout sauf sur le hero, le formulaire et le pied de page ; les boutons des sections
-ne le doublent pas. Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
+02/11/2026). **Bouton fixe au téléphone sur toutes les pages qui vendent** (`BoutonFixeMobile`,
+retour #77, puis MAV, 02/11/2026 : « partout », « pas tout en bas », « sous le pouce ») : une
+pilule à 28 px au-dessus du bas de l'écran, sans bandeau. Cachée sur le hero, le formulaire
+(`cible`), le pied de page et les rangées `.porte-action` ; elle remplace au téléphone les
+boutons de section qui mènent au même endroit (`double-fixe`). **Photos fondues** dans les
+sections sombres sans image (`FondPhoto`, page Vendre : formulaire et contact, MAV, 02/11/2026). Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
 carte rétrécit (retour #76 : l'arrêt du défilement ne saute plus). Suites longues (mission de la Découpe) : grille 3 × 2 sur
 ordinateur, ligne qui glisse au téléphone.
 

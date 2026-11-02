@@ -13,6 +13,7 @@ import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
 import { ventesEtStats, offMarket, lieuOffMarket } from "@/lib/biens";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /immeubles-off-market/ — ce qu'est l'off-market, et comment y accéder.
@@ -191,6 +192,7 @@ export default async function ImmeublesOffMarket() {
           <RechercheForm />
         </div>
       </section>
+      <BoutonFixeMobile href="#deposer" libelle="Déposer ma recherche" cible="deposer" />
     </>
   );
 }

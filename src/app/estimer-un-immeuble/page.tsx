@@ -13,6 +13,7 @@ import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
+import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
 /**
  * /estimer-un-immeuble/ — page reprise du WordPress, RECOMPOSÉE.
@@ -177,6 +178,7 @@ export default function EstimerUnImmeuble() {
           <ContactForm />
         </div>
       </section>
+      <BoutonFixeMobile href="#estimer" libelle="Estimer mon immeuble" cible="estimer" />
     </>
   );
 }
