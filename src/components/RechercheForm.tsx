@@ -2,16 +2,19 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { LIBELLE_DESTINATION } from "@/lib/annonce";
-import { PropositionCompte } from "./compte/PropositionCompte";
+import { LIBELLE_OPERATION, libelleLieu, villeDe, type Cible } from "@/lib/recherche-biens";
 import { SITE } from "@/lib/site";
+import { ChoixLieux } from "./biens/ChoixLieux";
+import { DoubleCurseur } from "./DoubleCurseur";
+import { Picto } from "./Picto";
 
 /**
  * Dépôt de recherche acquéreur.
  *
  * C'est l'acquéreur qui règle les honoraires : un acquéreur sans capacité de
  * financement ne fait pas perdre du temps, il fait échouer la vente. Ce
- * formulaire qualifie donc sur le budget et le financement — il ne collecte
- * pas des adresses e-mail.
+ * formulaire qualifie donc sur le budget ; il ne collecte pas des adresses
+ * e-mail. Le financement n'est plus demandé (retour #89 : le BO ne le garde pas).
  *
  * Contrat BO du 21/10/2026 : un contact, et une ou plusieurs recherches. Le BO
  * crée (ou retrouve par e-mail) le contact, puis une recherche au statut D par
@@ -20,65 +23,77 @@ import { SITE } from "@/lib/site";
  * correspond à rien chez lui.
  */
 
-const CIBLES = ["Investisseur", "Marchand de biens", "Patrimonial", "Promoteur"] as const;
+// Les deux types d'opération proposés (retour #84 : patrimonial et promoteur retirés),
+// valeurs de `cible` au BO.
+const CIBLES = ["Investisseur", "Marchand de biens"] as const;
 // Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
 const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique"] as const;
-const DEPTS_COURANTS = ["75", "92", "93", "94", "78", "91", "95", "77"];
-/** Budget en fourchettes, converties en euros pour le BO. */
-const BUDGETS: { label: string; min: number | null; max: number | null }[] = [
-  { label: "< 1 M€", min: null, max: 1_000_000 },
-  { label: "1 – 2 M€", min: 1_000_000, max: 2_000_000 },
-  { label: "2 – 4 M€", min: 2_000_000, max: 4_000_000 },
-  { label: "4 – 7 M€", min: 4_000_000, max: 7_000_000 },
-  { label: "> 7 M€", min: 7_000_000, max: null },
-];
-const FINANCEMENTS = ["Fonds propres", "Crédit à obtenir", "Accord bancaire en place", "Mixte"];
+/** Le budget au curseur : de 0 à 10 M€, le bout droit veut dire « 10 M€ et plus », sans limite au BO (retour #86). */
+const BUDGET_MAX = 10_000_000;
+const BUDGET_PAS = 100_000;
 
 type Recherche = {
-  cible: string;
-  departements: string[];
-  autresDepts: string;
-  villes: string;
-  budget: string;
+  /** Un ou deux types d'opération : deux deviennent deux recherches identiques (retour #88). */
+  cibles: string[];
+  zones: string[];
+  prixMin: number | null;
+  prixMax: number | null;
   rendementMin: string;
   destinations: string[];
   commentaire: string;
 };
 const RECHERCHE_VIDE: Recherche = {
-  cible: "", departements: [], autresDepts: "", villes: "", budget: "",
-  rendementMin: "", destinations: [], commentaire: "",
+  cibles: [], zones: [], prixMin: null, prixMax: null, rendementMin: "", destinations: [], commentaire: "",
 };
 
-type Contact = { prenom: string; nom: string; email: string; telephone: string; financement: string };
-const CONTACT_VIDE: Contact = { prenom: "", nom: "", email: "", telephone: "", financement: "" };
+type Contact = { societe: string; prenom: string; nom: string; email: string; telephone: string };
+const CONTACT_VIDE: Contact = { societe: "", prenom: "", nom: "", email: "", telephone: "" };
 
-/** « 69, 13 » → ["69", "13"] ; « 2A » accepté pour la Corse. */
-function codesDepts(r: Recherche): string[] {
-  const autres = r.autresDepts
-    .split(/[\s,;/]+/)
-    .map((x) => x.trim().toUpperCase())
-    .filter((x) => /^(\d{2,3}|2A|2B)$/.test(x));
-  return [...new Set([...r.departements, ...autres])];
+const milliers = (n: number) => n.toLocaleString("fr-FR").replace(/\s/g, "\u202f");
+const enEuros = (n: number | null) => (n == null ? "" : `${milliers(n)} €`);
+const lireEntier = (s: string) => {
+  const t = s.replace(/[^\d]/g, "");
+  return t ? Number(t) : null;
+};
+const court = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} M€` : `${milliers(n)} €`);
+const libelleBudget = (r: Recherche) =>
+  r.prixMin == null && r.prixMax == null ? "" :
+    r.prixMax == null ? `${court(r.prixMin ?? 0)} et plus` : `${court(r.prixMin ?? 0)} à ${court(r.prixMax)}`;
+
+/** Les départements et les villes d'une recherche, au format du BO (une ville apporte son département). */
+function lieuxBO(r: Recherche) {
+  const departements = new Set<string>();
+  const villes: string[] = [];
+  for (const z of r.zones) {
+    if (z.startsWith("d:")) departements.add(z.slice(2));
+    else {
+      const v = villeDe(z);
+      villes.push(v.nom);
+      if (v.dept) departements.add(v.dept);
+    }
+  }
+  return { departements: [...departements], villes };
 }
 
-/** Ce qui part au BO pour une recherche — les noms de champs du contrat. */
-function versBO(r: Recherche, financement: string) {
-  const b = BUDGETS.find((x) => x.label === r.budget);
+/** Ce qui part au BO pour une recherche, une par type d'opération : les noms de champs du contrat (§6). */
+function versBO(r: Recherche, societe: string) {
   const rdt = Number(r.rendementMin.replace(",", "."));
-  const commentaire = [financement ? `Financement : ${financement}.` : "", r.commentaire.trim()]
+  const commentaire = [societe.trim() ? `Société : ${societe.trim()}.` : "", r.commentaire.trim()]
     .filter(Boolean)
     .join(" ");
-  return {
-    cible: r.cible,
-    departements: codesDepts(r),
-    villes: r.villes.split(/[,;]+/).map((v) => v.trim()).filter(Boolean),
-    prixMin: b?.min ?? null,
-    prixMax: b?.max ?? null,
+  return r.cibles.map((cible) => ({
+    cible,
+    ...lieuxBO(r),
+    prixMin: r.prixMin,
+    prixMax: r.prixMax,
     rendementMin: Number.isFinite(rdt) && rdt > 0 ? rdt : null,
     destinations: r.destinations,
     commentaire,
-  };
+  }));
 }
+
+/** Une recherche à deux types d'opération devient deux recherches, tout le reste à l'identique (retour #88). */
+const deplier = (rs: Recherche[]) => rs.flatMap((r) => (r.cibles.length > 1 ? r.cibles.map((c) => ({ ...r, cibles: [c] })) : [r]));
 
 export function RechercheForm() {
   const uid = useId();
@@ -113,21 +128,26 @@ export function RechercheForm() {
   };
   const setR = <K extends keyof Recherche>(i: number, k: K, v: Recherche[K]) => {
     setRs((p) => p.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
-    setErreurs((p) => ({ ...p, [`${i}.${k}`]: "", [`${i}.zone`]: "" }));
+    setErreurs((p) => ({ ...p, [`${i}.${k}`]: "" }));
   };
-  const basculer = (i: number, k: "departements" | "destinations", v: string) =>
+  const basculer = (i: number, k: "cibles" | "destinations", v: string) =>
     setR(i, k, rs[i][k].includes(v) ? rs[i][k].filter((x) => x !== v) : [...rs[i][k], v]);
+  const setZones = (i: number): React.Dispatch<React.SetStateAction<string[]>> => (v) => {
+    setRs((p) => p.map((r, j) => (j === i ? { ...r, zones: typeof v === "function" ? v(r.zones) : v } : r)));
+    setErreurs((p) => ({ ...p, [`${i}.zones`]: "" }));
+  };
 
   /** Erreurs d'une étape de critères pour la recherche `i`. */
   function erreursCriteres(i: number, quelle: 0 | 1): Record<string, string> {
     const r = rs[i];
     const e: Record<string, string> = {};
     if (quelle === 0) {
-      if (!r.cible) e[`${i}.cible`] = "Choisissez un profil.";
-      if (codesDepts(r).length === 0 && !r.villes.trim())
-        e[`${i}.zone`] = "Indiquez au moins un département ou une ville.";
-    } else if (!r.budget) {
-      e[`${i}.budget`] = "Requis : c’est ce qui nous permet de filtrer.";
+      if (r.cibles.length === 0) e[`${i}.cibles`] = "Choisissez au moins un type d’opération.";
+      if (lieuxBO(r).departements.length === 0) e[`${i}.zones`] = "Ajoutez au moins une région, un département ou une ville.";
+    } else if (r.prixMin == null && r.prixMax == null) {
+      e[`${i}.budget`] = "Indiquez votre budget : c’est ce qui nous permet de filtrer.";
+    } else if (r.prixMin != null && r.prixMax != null && r.prixMin > r.prixMax) {
+      e[`${i}.budget`] = "Le minimum dépasse le maximum.";
     }
     return e;
   }
@@ -136,7 +156,10 @@ export function RechercheForm() {
     const e = erreursCriteres(courante, etape === 0 ? 0 : 1);
     setErreurs(e);
     if (Object.keys(e).length) return;
-    setEtape(etape === 0 ? 1 : 2);
+    if (etape === 0) { setEtape(1); return; }
+    // Vers les coordonnées : deux types d'opération font deux recherches à l'écran.
+    setRs((p) => deplier(p));
+    setEtape(2);
   }
 
   async function envoyer(ev: React.FormEvent) {
@@ -148,10 +171,9 @@ export function RechercheForm() {
     if (fautive >= 0) {
       setErreurs(e);
       setCourante(fautive);
-      setEtape(e[`${fautive}.cible`] || e[`${fautive}.zone`] ? 0 : 1);
+      setEtape(e[`${fautive}.cibles`] || e[`${fautive}.zones`] ? 0 : 1);
       return;
     }
-    if (!c.financement) e.financement = "Requis.";
     if (!c.prenom.trim()) e.prenom = "Requis.";
     if (!c.nom.trim()) e.nom = "Requis.";
     if (!/^\S+@\S+\.\S+$/.test(c.email.trim())) e.email = "E-mail invalide.";
@@ -172,7 +194,10 @@ export function RechercheForm() {
           nom: c.nom.trim(),
           email: c.email.trim(),
           telephone: c.telephone.trim(),
-          recherches: rs.map((r) => versBO(r, c.financement)),
+          // Facultative (retour #90) ; recopiée dans le commentaire de chaque recherche
+          // tant que le BO ne lit pas ce champ (docs/PROMPT-BO-RECHERCHE.md).
+          societe: c.societe.trim() || undefined,
+          recherches: deplier(rs).flatMap((r) => versBO(r, c.societe)),
         }),
       });
       ok = r.ok;
@@ -209,26 +234,27 @@ export function RechercheForm() {
   }
 
   if (fini === "ok") {
+    // Le rappel est acquis (retour #91) : la suite, c'est le compte, mis en avant.
     return (
       <div className="form-shell outcome" ref={refFini}>
         <span className="outcome__badge">
           {rs.length > 1 ? `${rs.length} recherches enregistrées` : "Recherche enregistrée"}
         </span>
-        <h3>Merci. Vous êtes dans notre fichier.</h3>
+        <h3>C’est noté. Un agent vous appelle.</h3>
         <p>
-          Pour l’instant, vous y figurez comme acquéreur que nous ne connaissons pas encore. Les
-          meilleurs dossiers partent d’abord aux acquéreurs avec qui nous avons échangé&nbsp;:
-          demandez à être rappelé, ou appelez-nous, pour y avoir accès.
+          Cet appel de quelques minutes ouvre l’envoi des dossiers en priorité et les immeubles
+          off-market. En attendant, créez votre espace&nbsp;:
         </p>
+        <ul className="outcome__atouts">
+          <li><Picto nom="immeubles" taille={20} />Les immeubles que nous vous envoyons, avec leurs documents</li>
+          <li><Picto nom="loupe" taille={20} />Vos recherches, à modifier quand vous voulez</li>
+          <li><Picto nom="euro" taille={20} />Une offre en ligne, au curseur, transmise à votre agent</li>
+        </ul>
         <div className="btn-row">
-          <a className="btn btn--primary" href={SITE.telHref}>
-            Appeler · {SITE.tel}
-          </a>
-          <a className="btn btn--outline" href="/contactez-nous/">
-            Être rappelé
-          </a>
+          <a className="btn btn--primary" href="/mon-compte/">Créer mon compte</a>
+          <a className="btn btn--outline" href={SITE.telHref}>Appeler · {SITE.tel}</a>
         </div>
-        <PropositionCompte texte="Retrouvez vos recherches et les immeubles qu’on vous propose dans votre compte." />
+        <p className="form-note">Déjà un compte&nbsp;? <a className="lien-discret" href="/mon-compte/">Me connecter</a></p>
       </div>
     );
   }
@@ -249,43 +275,46 @@ export function RechercheForm() {
       {etape === 0 && (
         <div className="fields fields--2">
           {rs.length > 1 && <p className="form-recherche__quelle field--full">Recherche {i + 1}</p>}
-          <Champ id={`${uid}-${i}-cible`} label="Profil d’acquéreur" err={erreurs[`${i}.cible`]} full>
+          <Champ id={`${uid}-${i}-cible`} label="Type d’opération" hint="Un ou les deux" err={erreurs[`${i}.cibles`]} full>
             <div className="choices">
               {CIBLES.map((t) => (
-                <button key={t} type="button" className="choice" aria-pressed={r.cible === t}
-                  onClick={() => setR(i, "cible", t)}>{t}</button>
+                <button key={t} type="button" className="choice" aria-pressed={r.cibles.includes(t)}
+                  onClick={() => basculer(i, "cibles", t)}>{LIBELLE_OPERATION[t]}</button>
               ))}
             </div>
           </Champ>
-          <Champ id={`${uid}-${i}-dep`} label="Départements" err={erreurs[`${i}.zone`]} full>
-            <div className="choices">
-              {DEPTS_COURANTS.map((t) => (
-                <button key={t} type="button" className="choice" aria-pressed={r.departements.includes(t)}
-                  onClick={() => basculer(i, "departements", t)}>{t}</button>
-              ))}
+          <Champ id={`${uid}-${i}-lieux`} label="Où cherchez-vous ?" hint="Régions, départements, villes : tapez un nom ou ajoutez avec +" err={erreurs[`${i}.zones`]} full>
+            <div className="lieux-champ">
+              <ChoixLieux id={`${uid}-${i}-lieux`} zones={r.zones} setZones={setZones(i)} variante="formulaire" invalide={!!erreurs[`${i}.zones`]} />
             </div>
-          </Champ>
-          <Champ id={`${uid}-${i}-autres`} label="Autres départements" hint="Codes, séparés par une virgule">
-            <input id={`${uid}-${i}-autres`} value={r.autresDepts}
-              onChange={(e) => setR(i, "autresDepts", e.target.value)} placeholder="69, 13, 33" />
-          </Champ>
-          <Champ id={`${uid}-${i}-villes`} label="Villes (facultatif)" hint="Séparées par une virgule">
-            <input id={`${uid}-${i}-villes`} value={r.villes}
-              onChange={(e) => setR(i, "villes", e.target.value)} placeholder="Montreuil, Saint-Ouen" />
           </Champ>
         </div>
       )}
 
       {etape === 1 && (
         <div className="fields fields--2">
-          <Champ id={`${uid}-${i}-budget`} label="Budget d’acquisition" err={erreurs[`${i}.budget`]} full>
-            <div className="choices">
-              {BUDGETS.map((t) => (
-                <button key={t.label} type="button" className="choice" aria-pressed={r.budget === t.label}
-                  onClick={() => setR(i, "budget", t.label)}>{t.label}</button>
-              ))}
+          <div className="field field--full">
+            <span className="field__lbl" id={`${uid}-${i}-budget`}>Budget d’acquisition <b className="budget__valeur">{libelleBudget(r) || "à indiquer"}</b></span>
+            <div className="budget">
+              <label className="budget__champ">
+                <span>Minimum</span>
+                <input inputMode="numeric" autoComplete="off" value={enEuros(r.prixMin)} placeholder="0 €"
+                  aria-describedby={`${uid}-${i}-budget`}
+                  onChange={(e) => setR(i, "prixMin", lireEntier(e.target.value))} />
+              </label>
+              <label className="budget__champ">
+                <span>Maximum</span>
+                <input inputMode="numeric" autoComplete="off" value={enEuros(r.prixMax)} placeholder="Sans limite"
+                  aria-describedby={`${uid}-${i}-budget`}
+                  onChange={(e) => setR(i, "prixMax", lireEntier(e.target.value))} />
+              </label>
             </div>
-          </Champ>
+            <DoubleCurseur min={0} max={BUDGET_MAX} pas={BUDGET_PAS} de={r.prixMin} a={r.prixMax} libelle="Budget"
+              valeurTexte={(v) => (v >= BUDGET_MAX ? "10 millions d’euros et plus" : enEuros(v))}
+              onChange={(d, a) => { setR(i, "prixMin", d); setR(i, "prixMax", a); }} />
+            <div className="curseur__bornes" aria-hidden="true"><span>0 €</span><span>10 M€ et plus</span></div>
+            {erreurs[`${i}.budget`] && <span className="err">{erreurs[`${i}.budget`]}</span>}
+          </div>
           <Champ id={`${uid}-${i}-dest`} label="Type d’immeuble" hint="Un ou plusieurs, facultatif" full>
             <div className="choices">
               {DESTINATIONS.map((t) => (
@@ -298,10 +327,10 @@ export function RechercheForm() {
             <input id={`${uid}-${i}-rdt`} value={r.rendementMin}
               onChange={(e) => setR(i, "rendementMin", e.target.value)} placeholder="7" inputMode="decimal" />
           </Champ>
-          <Champ id={`${uid}-${i}-com`} label="Précisions (facultatif)">
-            <input id={`${uid}-${i}-com`} value={r.commentaire}
+          <Champ id={`${uid}-${i}-com`} label="Précisions (facultatif)" full>
+            <textarea id={`${uid}-${i}-com`} rows={4} maxLength={1000} value={r.commentaire}
               onChange={(e) => setR(i, "commentaire", e.target.value)}
-              placeholder="Travaux acceptés, horizon de détention…" />
+              placeholder="Travaux acceptés, horizon de détention, quartiers à éviter…" />
           </Champ>
         </div>
       )}
@@ -311,7 +340,7 @@ export function RechercheForm() {
           <ul className="recherche-resume">
             {rs.map((x, k) => (
               <li key={k}>
-                <span>{[x.cible, codesDepts(x).join(", ") || x.villes, x.budget].filter(Boolean).join(" · ")}</span>
+                <span>{[x.cibles.map((t) => LIBELLE_OPERATION[t as Cible] ?? t).join(" + "), libelleLieu(x.zones), libelleBudget(x)].filter(Boolean).join(" · ")}</span>
                 <button type="button" className="recherche__retirer" onClick={() => { setCourante(k); setEtape(0); }}>
                   Modifier
                 </button>
@@ -329,13 +358,8 @@ export function RechercheForm() {
             + Ajouter une autre recherche
           </button>
           <div className="fields fields--2">
-            <Champ id={`${uid}-fin`} label="Financement" err={erreurs.financement} full>
-              <div className="choices">
-                {FINANCEMENTS.map((t) => (
-                  <button key={t} type="button" className="choice" aria-pressed={c.financement === t}
-                    onClick={() => setContact("financement", t)}>{t}</button>
-                ))}
-              </div>
+            <Champ id={`${uid}-societe`} label="Société (facultatif)" full>
+              <input id={`${uid}-societe`} value={c.societe} onChange={(e) => setContact("societe", e.target.value)} autoComplete="organization" />
             </Champ>
             <Champ id={`${uid}-prenom`} label="Prénom" err={erreurs.prenom}>
               <input id={`${uid}-prenom`} value={c.prenom} onChange={(e) => setContact("prenom", e.target.value)} autoComplete="given-name" />

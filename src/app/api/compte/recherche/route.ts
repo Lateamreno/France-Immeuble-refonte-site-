@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deposerLead } from "@/lib/leads";
+import { noteOccupation } from "@/lib/recherche-biens";
 import { appartient } from "@/lib/compte/donnees";
 import { exigerCompte, lireJson, refus, texte, UUID, contexteDe } from "@/lib/compte/requete";
 
@@ -14,6 +15,11 @@ const nombre = (v: unknown) => {
   if (v === null || v === undefined || v === "") return null;
   const n = Number(String(v).replace(/[^\d.,-]/g, "").replace(",", "."));
   return Number.isFinite(n) && n >= 0 ? n : null;
+};
+
+const pourcent = (v: unknown) => {
+  const n = nombre(v);
+  return n == null ? null : Math.min(100, Math.round(n));
 };
 
 /**
@@ -64,7 +70,13 @@ export async function POST(req: Request) {
       prixMax: nombre(b.prixMax),
       rendementMin: nombre(b.rendementMin),
       destinations: liste(b.destinations, 6).filter((d) => DESTINATIONS.has(d)),
-      commentaire: texte(b.commentaire, 1000),
+      // Occupation (retour #94) : champs à part, que le BO apprend à lire
+      // (docs/PROMPT-BO-RECHERCHE.md), et recopiée dans le commentaire pour ne
+      // rien perdre en attendant.
+      occupationMin: pourcent(b.occupationMin),
+      occupationMax: pourcent(b.occupationMax),
+      commentaire: [noteOccupation(pourcent(b.occupationMin), pourcent(b.occupationMax)), texte(b.commentaire, 1000)]
+        .filter(Boolean).join(" "),
     });
   }
 

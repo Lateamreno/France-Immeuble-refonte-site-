@@ -2,9 +2,10 @@
 
 import { useId, useState } from "react";
 import { LIBELLE_DESTINATION } from "@/lib/annonce";
+import { CIBLES, LIBELLE_OPERATION, villeDe } from "@/lib/recherche-biens";
+import { ChoixLieux } from "@/components/biens/ChoixLieux";
 import { envoyer } from "./envoyer";
 
-const CIBLES = ["Investisseur", "Patrimonial", "Marchand de biens", "Promoteur"] as const;
 // Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
 const DESTINATIONS = ["Logement", "Commerce", "Bureau", "Logistique"] as const;
 
@@ -20,7 +21,20 @@ export type ValeursRecherche = {
   commentaire?: string | null;
 };
 
-const liste = (t: string) => t.split(/[,;\s]+/).map((x) => x.trim().toUpperCase()).filter(Boolean);
+/** Les lieux du BO en zones du choix des lieux, et retour (une ville apporte son département). */
+const versZones = (v?: ValeursRecherche) => [
+  ...(v?.departements ?? []).map((d) => `d:${d}`),
+  ...(v?.villes ?? []).map((n) => `v:${n}`),
+];
+function versBO(zones: string[]) {
+  const departements = new Set<string>();
+  const villes: string[] = [];
+  for (const z of zones) {
+    if (z.startsWith("d:")) departements.add(z.slice(2));
+    else { const v = villeDe(z); villes.push(v.nom); if (v.dept) departements.add(v.dept); }
+  }
+  return { departements: [...departements], villes };
+}
 
 /**
  * Ajouter ou modifier une recherche (§9.2). Le BO met à jour la recherche du
@@ -31,8 +45,7 @@ const liste = (t: string) => t.split(/[,;\s]+/).map((x) => x.trim().toUpperCase(
 export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherche; onFerme?: () => void }) {
   const uid = useId();
   const [cible, setCible] = useState(valeurs?.cible ?? "");
-  const [depts, setDepts] = useState((valeurs?.departements ?? []).join(", "));
-  const [villes, setVilles] = useState((valeurs?.villes ?? []).join(", "));
+  const [zones, setZones] = useState<string[]>(versZones(valeurs));
   const [prixMin, setPrixMin] = useState(valeurs?.prix_min?.toString() ?? "");
   const [prixMax, setPrixMax] = useState(valeurs?.prix_max?.toString() ?? "");
   const [rdt, setRdt] = useState(valeurs?.rendement_min?.toString() ?? "");
@@ -49,8 +62,7 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
       action,
       cle: valeurs?.cle,
       cible,
-      departements: liste(depts),
-      villes: villes.split(/[,;]+/).map((v) => v.trim()).filter(Boolean),
+      ...versBO(zones),
       prixMin, prixMax, rendementMin: rdt,
       destinations: dest,
       commentaire,
@@ -74,22 +86,23 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
   return (
     <form className="compte-recherche-form" noValidate onSubmit={(e) => { e.preventDefault(); agir("enregistrer"); }}>
       <div className="field">
-        <span className="field__lbl" id={`${uid}-cible`}>Votre profil</span>
+        <span className="field__lbl" id={`${uid}-cible`}>Type d’opération</span>
         <div className="choices" role="group" aria-labelledby={`${uid}-cible`}>
-          {CIBLES.map((c) => (
-            <button key={c} type="button" className="choice" aria-pressed={cible === c} onClick={() => setCible(c)}>{c}</button>
+          {/* Une recherche ancienne garde son profil (patrimonial, promoteur) tant qu'on n'en change pas. */}
+          {[...CIBLES, ...(cible && !(CIBLES as readonly string[]).includes(cible) ? [cible] : [])].map((c) => (
+            <button key={c} type="button" className="choice" aria-pressed={cible === c} onClick={() => setCible(c)}>
+              {LIBELLE_OPERATION[c as keyof typeof LIBELLE_OPERATION] ?? c}
+            </button>
           ))}
         </div>
       </div>
+      <div className="field">
+        <label htmlFor={`${uid}-lieux`}>Où cherchez-vous ?</label>
+        <div className="lieux-champ">
+          <ChoixLieux id={`${uid}-lieux`} zones={zones} setZones={setZones} variante="formulaire" />
+        </div>
+      </div>
       <div className="fields fields--2">
-        <div className="field">
-          <label htmlFor={`${uid}-dep`}>Départements</label>
-          <input id={`${uid}-dep`} value={depts} onChange={(e) => setDepts(e.target.value)} placeholder="75, 92, 93" />
-        </div>
-        <div className="field">
-          <label htmlFor={`${uid}-villes`}>Villes (facultatif)</label>
-          <input id={`${uid}-villes`} value={villes} onChange={(e) => setVilles(e.target.value)} placeholder="Paris, Boulogne-Billancourt" />
-        </div>
         <div className="field">
           <label htmlFor={`${uid}-min`}>Prix minimum (€)</label>
           <input id={`${uid}-min`} inputMode="numeric" value={prixMin} onChange={(e) => setPrixMin(e.target.value)} />

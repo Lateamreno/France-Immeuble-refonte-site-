@@ -69,7 +69,7 @@ export default async function Acheter() {
                 n: "01",
                 picto: "cible" as NomPicto,
                 t: "Vous déposez vos critères",
-                p: "Zones, budget, financement, rendement visé. Plus c’est précis, moins vous recevez de choses inutiles.",
+                p: "Zones, budget, type d’immeuble, rendement visé. Plus c’est précis, moins vous recevez de choses inutiles.",
               },
               {
                 n: "02",
@@ -134,13 +134,14 @@ export default async function Acheter() {
         <div className="container container--narrow" style={{ textAlign: "center" }}>
           <Reveal>
             <h2 style={{ maxWidth: "22ch", marginInline: "auto" }}>
-              Une question avant de déposer&nbsp;?
+              Besoin d’échanger tout de suite&nbsp;?
             </h2>
             <p className="lead" style={{ maxWidth: "48ch", margin: "var(--space-s) auto var(--space-l)" }}>
-              Nous répondons plus vite au téléphone qu’à un formulaire.
+              Un agent vous répond au téléphone sur votre projet d’achat, vos critères ou un
+              immeuble en particulier.
             </p>
             <div className="btn-row" style={{ justifyContent: "center" }}>
-              <a className="btn btn--outline" href={SITE.telHref}>{SITE.tel}</a>
+              <a className="btn btn--primary" href={SITE.telHref}>Appeler · {SITE.tel}</a>
             </div>
           </Reveal>
         </div>

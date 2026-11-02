@@ -11,6 +11,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { biensAVendre, offMarket } from "@/lib/biens";
 import { CarteOffMarket } from "@/components/biens/CarteOffMarket";
+import { EnregistrerIci } from "@/components/biens/EnregistrerIci";
 import { filtrer, horsRecherche, lienRecherche, lireCriteres, puces, TRIS, versParams, versRechercheCompte } from "@/lib/recherche-biens";
 import { RechercheBiens, TriMobile } from "@/components/biens/RechercheBiens";
 import Link from "next/link";
@@ -120,12 +121,13 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
               {resultats.length === 0 && (
                 <div className="vide vide--recherche">
                   <span className="vide__picto" aria-hidden="true"><Picto nom="loupe" taille={40} /></span>
-                  <h2>Aucun immeuble en ligne ne correspond</h2>
+                  <h2>Aucun immeuble en ligne ne correspond pour l’instant</h2>
                   <p className="lead">
-                    Enregistrez cette recherche : votre agent vous propose les immeubles qui y
-                    correspondent, y compris ceux qui ne passent jamais en annonce.
+                    Enregistrez votre recherche pour recevoir les prochains biens qui y correspondent,
+                    y compris ceux qui ne passent jamais en annonce.
                   </p>
                   <div className="btn-row" style={{ marginTop: "var(--space-m)", justifyContent: "center" }}>
+                    <EnregistrerIci />
                     <Button href="/immeubles-a-vendre/#resultats" variant="ghost-dark">Voir tous les immeubles</Button>
                   </div>
                 </div>

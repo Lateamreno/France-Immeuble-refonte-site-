@@ -1434,10 +1434,11 @@ fieldset.field legend,.lot label{
 :is(.card--medaillon, .card--filigrane) .card__fond{
   position:absolute;z-index:0;pointer-events:none;
   top:18px;right:18px;width:96px;height:96px;
-  color:var(--color-bronze-profond);opacity:.11;
+  color:var(--color-bronze);opacity:.34;
 }
-.section--creme :is(.card--medaillon, .card--filigrane) .card__fond{opacity:.12;}
-:is(.card--medaillon, .card--filigrane) .card__fond svg{width:100%;height:100%;stroke-width:1;}
+/* Plus visibles (retours #80 et #92, MAV, 02/11/2026) : or franc, trait plus épais. */
+.section--creme :is(.card--medaillon, .card--filigrane) .card__fond{color:var(--color-bronze-profond);opacity:.3;}
+:is(.card--medaillon, .card--filigrane) .card__fond svg{width:100%;height:100%;stroke-width:1.4;}
 
 
 /* Carte d'étape (Acheter) : texte aligné à gauche, mais le même filigrane au
@@ -2724,8 +2725,10 @@ fieldset.field legend,.lot label{
    MAV, 27/10/2026).
    ========================================================================== */
 @media (min-width:900px){
-  .accueil-vendre .split{grid-template-columns:7fr 5fr;align-items:center;gap:var(--space-l);}
-  .accueil-vendre .media-colonne img{max-height:calc(var(--ecran) - 120px);width:auto;max-width:100%;margin-left:auto;}
+  /* Le carnet plus grand, la moitié de la largeur (retour #79, MAV, 02/11/2026 : sur un
+     écran bas, il rétrécissait dans le coin droit au point de disparaître). */
+  .accueil-vendre .split{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:var(--space-l);}
+  .accueil-vendre .media-colonne img{max-height:max(440px, calc(var(--ecran) - 48px));width:auto;max-width:100%;margin-left:auto;}
   /* Le titre de la section au niveau du haut du formulaire (MAV, 27/10/2026). */
   .sec-formulaire .split{grid-template-columns:5fr 7fr;align-items:start;gap:var(--space-l);}
 }
@@ -4459,8 +4462,10 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   background:linear-gradient(180deg,
     color-mix(in srgb, var(--color-noir) 52%, transparent) 0%,
     color-mix(in srgb, var(--color-noir) 74%, transparent) 38%,
-    color-mix(in srgb, var(--color-noir) 82%, transparent) 100%);
+    color-mix(in srgb, var(--color-noir) 84%, transparent) 62%,
+    var(--color-noir) 100%);
 }
+/* Le bas de l'image fondu dans le noir, sous les cartes (retour #93, MAV, 02/11/2026). */
 .page-fond__tete > .container{padding-top:calc(var(--header-h) + clamp(28px,4vw,56px));padding-bottom:clamp(8px,1.5vw,20px);}
 .page-fond__tete h1{margin:0;color:var(--color-creme);font-size:clamp(1.9rem,1.2rem + 2vw,3rem);max-width:22ch;text-shadow:0 2px 20px rgba(10,10,10,.55);}
 .page-fond__tete .accent{color:var(--color-bronze);}
@@ -4546,3 +4551,35 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
     -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%);
             mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%);}
 }
+/* Dépôt de recherche d'Acheter (retours #83 à #91, MAV, 02/11/2026). */
+.lieux-champ{position:relative;}
+.field .lieux input{flex:1;min-width:120px;width:auto;border:0;background:none;padding:6px 8px;border-radius:0;}
+.field .lieux input:focus-visible{outline:none;}
+.lieux.est-invalide{border-color:var(--color-bronze-hover);}
+.lieux--formulaire .lieu{padding-block:6px;}
+.form-recherche .field__lbl{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;}
+.budget__valeur{color:var(--color-bronze);font-weight:600;letter-spacing:.06em;}
+.budget{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.budget__champ{display:flex;flex-direction:column;gap:5px;}
+.field .budget__champ span{font-size:12px;color:var(--color-gris);}
+.field .double-curseur{margin-top:8px;}
+.field .double-curseur input{border:0;background:none;padding:0;border-radius:0;height:28px;}
+.outcome__atouts{list-style:none;margin:0 0 var(--space-s);padding:0;display:grid;gap:10px;}
+.outcome__atouts li{display:flex;align-items:center;gap:12px;color:var(--color-creme);font-size:var(--fs-small);}
+.outcome__atouts li svg{color:var(--color-bronze);flex:none;}
+/* Immeubles à vendre : occupation et type d'opération sous la barre (retour #94). */
+.recherche-biens__basculer{
+  align-self:flex-start;margin-top:12px;border:0;background:none;cursor:pointer;padding:4px 0;
+  color:var(--color-bronze);font:500 14px/1.3 var(--font-body);text-decoration:underline;text-underline-offset:3px;
+}
+.recherche-biens__basculer:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.recherche-biens__plus-ligne{margin-top:12px;padding-top:14px;border-top:1px dashed var(--color-ligne);}
+.recherche-biens__champ--occ{width:min(340px,100%);}
+.recherche-biens__champ--op .choices{gap:8px;}
+/* Libellés des chiffres en carte, plus gras et plus clairs (retour #81). */
+.card .stat-label{font-weight:700;color:var(--color-bronze-clair);font-size:13px;}
+.section--creme .card .stat-label{color:var(--color-noir);}
+/* Cartes à chiffre : le picto, plus visible, ne passe plus sous le nombre. */
+.card--filigrane:has(.stat-number) .card__fond{width:68px;height:68px;}
+.card--filigrane .stat-number{display:block;padding-right:76px;white-space:nowrap;}
+.card--filigrane:has(.stat-number) .stat-label{padding-right:76px;}

@@ -215,6 +215,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   au marché se mesure à nos ventes du département. Demande au BO : `docs/PROMPT-BO-ANNONCES.md`, livrée par le BO le 02/11
   (contrat §14 ; pas de GES, `charges_copro` libellé « Charges » ; 422 sur une annonce sortie de
   la vente : pas de file, le client est prévenu). Première vignette de la liste : l'off-market (retour #74, MAV, 02/11/2026).
+  Retour #94 (MAV, 02/11) : la localisation propose toute la France, pas seulement là où un
+  bien est en vente ; « Plus de critères » ajoute l'occupation (double curseur, filtre la
+  liste) et le type d'opération (devient le profil enregistré ; ne filtre pas, le BO ne
+  qualifie pas encore ses biens) ; une liste vide invite à enregistrer la recherche.
+  Occupation et société partent aussi en clair dans le commentaire en attendant le BO.
 
 ### Garde-fous non négociables
 
@@ -573,6 +578,14 @@ Canal d'acquisition n°1 — à ne pas improviser.
 - **Aucun prénom dans les messages des formulaires** (MAV, 27/10/2026 : « c'est insultant »).
   Pas de « Merci Claire » ; l'e-mail au client commence par « Bonjour, ».
 - Dépôt de recherche acquéreur en trois étapes courtes : critères, budget, coordonnées.
+  Retours #83 à #91 (MAV, 02/11/2026) : type d'opération Investissement et/ou Marchand de
+  biens (deux choisis = deux recherches identiques, visibles comme telles au récapitulatif ;
+  ni patrimonial ni promoteur) ; lieux comme au BO, régions, départements et toutes les
+  communes de France, au clavier ou avec « + » (`ChoixLieux`, `/api/communes/`) ; budget
+  minimum et maximum en euros avec un double curseur de 0 à 10 M€ et plus (sans limite au
+  BO) ; précisions en zone de texte pleine largeur ; société facultative ; plus de
+  financement. Fin : « Créer mon compte » en bouton, avec ce que le compte apporte, plus de
+  « Être rappelé ». Demande au BO : `docs/PROMPT-BO-RECHERCHE.md`.
 - **Le « sous 48 h » ne se dit qu'à la fin du formulaire** (retour #65, MAV, 27/10/2026) : avant,
   le visiteur doit pouvoir croire que l'estimation arrive en ligne. Aucune promesse de délai dans
   les accroches, les cartes ou les étapes du formulaire. Seule exception : la meta de l'accueil,
