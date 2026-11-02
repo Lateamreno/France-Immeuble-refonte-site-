@@ -248,32 +248,32 @@ export default async function Accueil() {
             {/* Les deux cartes ont la même construction (MAV, 22/10/2026) :
                 surtitre, titre, texte, bouton, et leurs boutons alignés. */}
             <Reveal as="article" className="card card--offre">
-              <Eyebrow>Recherche sur critères</Eyebrow>
+              {/* Retour #95 (MAV, 02/11/2026) : à gauche ce que nous vendons déjà,
+                  à droite recevoir en avant-première, confidentiels compris. */}
+              <Eyebrow>En vente aujourd’hui</Eyebrow>
               <h3>Je souhaite acheter un immeuble</h3>
               <p>
-                Recherchez selon des <strong>critères spécifiques aux immeubles</strong> ou créez
-                une alerte pour être averti des prochaines ventes en{" "}
-                <strong>avant-première</strong>. Étudiez chaque immeuble grâce à un{" "}
-                <strong>dossier complet et structuré</strong> et échangez avec un{" "}
+                Parcourez nos immeubles de rapport en vente avec des{" "}
+                <strong>critères pensés pour les immeubles</strong> : rendement, lots, type, prix.
+                Chaque immeuble a son <strong>dossier complet</strong> et un{" "}
                 <strong>interlocuteur spécialisé</strong>.
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-                <Button href="/acheter-un-immeuble/" variant="outline">
-                  Rechercher un immeuble
+                <Button href="/immeubles-a-vendre/" variant="outline">
+                  Voir les immeubles en vente
                 </Button>
               </div>
             </Reveal>
-
             <Reveal as="article" className="card card--offre card--offmarket" delayIndex={1}>
               <Eyebrow>Les offres off-market</Eyebrow>
               <h3>Nos biens d’exception</h3>
               <p>
-                Les meilleurs immeubles se vendent en quelques heures. Pour ne pas les rater, créez
-                votre alerte off market et disposez de <strong>48h d’avance</strong> sur les
-                prochains immeubles à vendre.
+                Les meilleurs immeubles partent avant d’être annoncés. Déposez votre recherche et
+                recevez <strong>en avant-première</strong> ceux qui y correspondent,{" "}
+                <strong>y compris les confidentiels</strong>.
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-                <Button href="/acheter-un-immeuble/" icone>Créer une alerte</Button>
+                <Button href="/acheter-un-immeuble/#deposer" icone>Recevoir en avant-première</Button>
               </div>
             </Reveal>
           </div>

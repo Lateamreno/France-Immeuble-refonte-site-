@@ -18,6 +18,8 @@ import { configSite, configSitePublique, type ConfigSite } from "../supabase-sit
 export const COOKIE_AT = "fi_at";
 export const COOKIE_RT = "fi_rt";
 export const COOKIE_PKCE = "fi_pkce";
+/** La page où revenir après la vérification de l'adresse (inscription depuis la fenêtre de compte). */
+export const COOKIE_RETOUR = "fi_retour";
 
 /** Durée de vie du cookie de rafraîchissement : 30 jours. */
 const DUREE_RT = 60 * 60 * 24 * 30;

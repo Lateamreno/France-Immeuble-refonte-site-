@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { envoyer } from "@/components/compte/envoyer";
-import { lienConnexion, majFavori, useEtatCompte } from "./etat";
+import { majFavori, ouvrirCompte, useEtatCompte } from "./etat";
 
 /**
  * Le cœur « Ajouter aux favoris » (MAV, 31/10/2026, comme Plein Bail). Sans
- * compte, il mène à la connexion puis revient sur la page.
+ * compte, il ouvre la fenêtre de connexion, sur la page même (retour #108).
  */
 export function BoutonFavori({ bien, libelle = false, className = "" }: { bien: string; libelle?: boolean; className?: string }) {
   const etat = useEtatCompte();
@@ -20,7 +20,7 @@ export function BoutonFavori({ bien, libelle = false, className = "" }: { bien: 
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!etat?.connecte) { window.location.assign(lienConnexion()); return; }
+        if (!etat?.connecte) { ouvrirCompte(); return; }
         setEnvoi(true);
         majFavori(bien, !actif);
         const r = await envoyer("/api/compte/favori/", { bien, actif: !actif });

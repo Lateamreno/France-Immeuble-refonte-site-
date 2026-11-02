@@ -14,6 +14,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
 import { ventesEtStats, offMarket, lieuOffMarket } from "@/lib/biens";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { FondPhoto } from "@/components/FondPhoto";
 
 /**
  * /immeubles-off-market/ — ce qu'est l'off-market, et comment y accéder.
@@ -137,7 +138,9 @@ export default async function ImmeublesOffMarket() {
           Sans dépôt du BO (base vide ou injoignable), la section ne s'affiche
           pas : aucun chiffre plutôt qu'un chiffre faux. */}
       {total > 0 && (
-        <section className="section section--noir-2">
+        <section className="section section--noir-2 offmarket-maintenant">
+          {/* Retour #106 (MAV, 02/11/2026) : une porte entrouverte dans le noir. */}
+          <FondPhoto image="/media/dsc.webp" cote="droite" position="center 40%" />
           <div className="container">
             <Reveal className="section__head">
               <Eyebrow>En ce moment</Eyebrow>

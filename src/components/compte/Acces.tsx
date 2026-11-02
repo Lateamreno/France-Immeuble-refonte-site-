@@ -18,9 +18,13 @@ const MESSAGES_ETAT: Record<string, string> = {
 /** Après la connexion, retour sur la page d'où l'on venait (un chemin du site, rien d'autre). */
 const retourSur = (r?: string) => (r && /^\/(?!\/)[\w\-./?=&%#,:]*$/.test(r) ? r : "/mon-compte/");
 
-export function Acces({ etat, retour }: { etat?: string; retour?: string }) {
+export function Acces({ etat, retour, dansModale = false, ongletInitial = "connexion" }: {
+  etat?: string; retour?: string;
+  /** Dans la fenêtre de compte (ModaleCompte) : on reste sur la page. */
+  dansModale?: boolean; ongletInitial?: "connexion" | "creation";
+}) {
   const uid = useId();
-  const [onglet, setOnglet] = useState<Onglet>(etat === "lien-expire" ? "oubli" : "connexion");
+  const [onglet, setOnglet] = useState<Onglet>(etat === "lien-expire" ? "oubli" : ongletInitial);
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [prenom, setPrenom] = useState("");
@@ -39,12 +43,19 @@ export function Acces({ etat, retour }: { etat?: string; retour?: string }) {
       onglet === "connexion"
         ? await envoyer("/api/compte/connexion/", { email, motDePasse })
         : onglet === "creation"
-          ? await envoyer("/api/compte/inscription/", { email, motDePasse, prenom, nom, telephone })
+          ? await envoyer("/api/compte/inscription/", { email, motDePasse, prenom, nom, telephone, retour: dansModale ? retourSur(retour) : undefined })
           : await envoyer("/api/compte/mot-de-passe/", { email });
     setEnvoi(false);
     if (!r.ok) return setErreur(r.erreur ?? "");
-    if (onglet === "connexion") window.location.assign(retourSur(retour));
-    else setFait(onglet);
+    if (onglet === "connexion") {
+      const cible = retourSur(retour);
+      // Même page (au plus une ancre de plus) : on recharge sur place.
+      if (dansModale && cible.split("#")[0] === `${window.location.pathname}${window.location.search}`) {
+        const ancre = cible.includes("#") ? cible.slice(cible.indexOf("#")) : "";
+        if (ancre) history.replaceState(null, "", ancre);
+        window.location.reload();
+      } else window.location.assign(cible);
+    } else setFait(onglet);
   }
 
   if (fait === "creation") {
@@ -54,7 +65,7 @@ export function Acces({ etat, retour }: { etat?: string; retour?: string }) {
         <h3>Vérifiez votre boîte e-mail</h3>
         <p>
           Nous venons d’envoyer un lien à <strong>{email}</strong>. Cliquez dessus pour activer
-          votre compte. Pensez à regarder dans les courriers indésirables.
+          votre compte{dansModale ? " : il vous ramène sur cette page" : ""}. Pensez à regarder dans les courriers indésirables.
         </p>
       </div>
     );

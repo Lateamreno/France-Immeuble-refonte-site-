@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site";
 import { ChoixLieux } from "./biens/ChoixLieux";
 import { DoubleCurseur } from "./DoubleCurseur";
 import { Picto } from "./Picto";
+import { ouvrirCompte } from "./biens/etat";
 
 /**
  * Dépôt de recherche acquéreur.
@@ -240,10 +241,12 @@ export function RechercheForm() {
         <span className="outcome__badge">
           {rs.length > 1 ? `${rs.length} recherches enregistrées` : "Recherche enregistrée"}
         </span>
-        <h3>C’est noté. Un agent vous appelle.</h3>
+        {/* Retour #101 (MAV, 02/11/2026) : la recherche est enregistrée, mais
+            l'accès à l'off-market se valide par un appel. Pas de promesse de rappel. */}
+        <h3>Votre recherche est enregistrée.</h3>
         <p>
-          Cet appel de quelques minutes ouvre l’envoi des dossiers en priorité et les immeubles
-          off-market. En attendant, créez votre espace&nbsp;:
+          Pour recevoir les dossiers off-market, votre accès doit être validé : appelez-nous au{" "}
+          {SITE.tel}, quelques minutes suffisent. En attendant, créez votre espace&nbsp;:
         </p>
         <ul className="outcome__atouts">
           <li><Picto nom="immeubles" taille={20} />Les immeubles que nous vous envoyons, avec leurs documents</li>
@@ -251,10 +254,10 @@ export function RechercheForm() {
           <li><Picto nom="euro" taille={20} />Une offre en ligne, au curseur, transmise à votre agent</li>
         </ul>
         <div className="btn-row">
-          <a className="btn btn--primary" href="/mon-compte/">Créer mon compte</a>
-          <a className="btn btn--outline" href={SITE.telHref}>Appeler · {SITE.tel}</a>
+          <button type="button" className="btn btn--primary" onClick={() => ouvrirCompte({ onglet: "creation" })}>Créer mon compte</button>
+          <a className="btn btn--outline" href={SITE.telHref}>Valider mon accès · {SITE.tel}</a>
         </div>
-        <p className="form-note">Déjà un compte&nbsp;? <a className="lien-discret" href="/mon-compte/">Me connecter</a></p>
+        <p className="form-note">Déjà un compte&nbsp;? <button type="button" className="lien-discret" onClick={() => ouvrirCompte()}>Me connecter</button></p>
       </div>
     );
   }

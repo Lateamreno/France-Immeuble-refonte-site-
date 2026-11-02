@@ -491,24 +491,35 @@ export async function biensAVendre(): Promise<BienAVendre[]> {
     // Les types de lots de chaque bien : la recherche filtre par destination
     // (Logement, Commerce, Bureau…), comme les recherches du BO.
     const types = await typesDesLots(cfg);
-    for (const b of biens) b.typesLots = types.get(b.id) ?? [];
+    for (const b of biens) {
+      const x = types.get(b.id);
+      b.typesLots = x?.types ?? [];
+      // DPE de l'immeuble : déposé par le BO, sinon la fourchette des lots, de la
+      // meilleure classe à la moins bonne (retours #107 et #111).
+      if (x?.dpe.length) {
+        const tri = [...x.dpe].sort();
+        b.dpe ??= tri[tri.length - 1];
+        b.dpeMin ??= tri[0];
+      }
+    }
     return biens;
   } catch {
     return [];
   }
 }
 
-async function typesDesLots(cfg: { url: string; cle: string }): Promise<Map<string, string[]>> {
-  const m = new Map<string, string[]>();
+async function typesDesLots(cfg: { url: string; cle: string }): Promise<Map<string, { types: string[]; dpe: string[] }>> {
+  const m = new Map<string, { types: string[]; dpe: string[] }>();
   try {
-    const res = await fetch(`${cfg.url}/rest/v1/biens_lots?select=bien,type`, {
+    const res = await fetch(`${cfg.url}/rest/v1/biens_lots?select=bien,type,dpe`, {
       headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` },
       next: { revalidate: 600, tags: ["biens"] },
     });
     if (!res.ok) return m;
-    for (const l of (await res.json()) as { bien: string; type: string }[]) {
-      const t = m.get(l.bien) ?? [];
-      if (!t.includes(l.type)) t.push(l.type);
+    for (const l of (await res.json()) as { bien: string; type: string; dpe: string | null }[]) {
+      const t = m.get(l.bien) ?? { types: [], dpe: [] };
+      if (!t.types.includes(l.type)) t.types.push(l.type);
+      if (l.dpe && /^[A-G]$/.test(l.dpe) && !t.dpe.includes(l.dpe)) t.dpe.push(l.dpe);
       m.set(l.bien, t);
     }
   } catch { /* sans lots, la destination se lit dans le type du bien */ }

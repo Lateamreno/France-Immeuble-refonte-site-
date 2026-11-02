@@ -145,6 +145,26 @@ function EtatLocatif({ lots }: { lots: LotAnnonce[] }) {
   );
 }
 
+/**
+ * Un bloc de l'état financier (retour #114, MAV, 02/11/2026 : « structure le
+ * mieux, quitte à mettre des pictos ») : picto, titre et le chiffre qui compte
+ * en tête, le détail dessous.
+ */
+function BlocFinancier({ picto, titre, chiffre, libelle, children }: {
+  picto: NomPicto; titre: string; chiffre?: string; libelle?: string; children: React.ReactNode;
+}) {
+  return (
+    <section className="ef-bloc">
+      <header className="ef-bloc__tete">
+        <span className="ef-bloc__picto"><Picto nom={picto} taille={22} /></span>
+        <h3>{titre}</h3>
+        {chiffre && <p className="ef-bloc__chiffre"><span>{libelle}</span>{chiffre}</p>}
+      </header>
+      {children}
+    </section>
+  );
+}
+
 function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
   const { net, honoraires } = decomposition(b);
   const n = fraisNotaire(net);
@@ -166,7 +186,7 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
 
   return (
     <div className="etat-financier-pb">
-      <h3>Coût d’acquisition</h3>
+      <BlocFinancier picto="euro" titre="Coût d’acquisition" libelle="Coût total" chiffre={eur(total)}>
       <div className="tableau-defile">
         <table className="etat-financier">
           <tbody>
@@ -188,10 +208,11 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
           </tbody>
         </table>
       </div>
+      </BlocFinancier>
 
       {(b.loyerHcAn != null || b.loyerPotentielAn != null) && (
-        <>
-          <h3>Revenus annuels hors charges</h3>
+        <BlocFinancier picto="augmentation" titre="Revenus annuels hors charges" libelle="Loyers HC"
+          chiffre={b.loyerHcAn != null ? eur(b.loyerHcAn) : undefined}>
           <div className="tableau-defile">
             <table className="etat-financier">
               {deuxColonnes && <thead><tr><td /><th scope="col">Actuel</th><th scope="col">Potentiel</th></tr></thead>}
@@ -207,12 +228,11 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
               </tbody>
             </table>
           </div>
-        </>
+        </BlocFinancier>
       )}
 
       {ch && (
-        <>
-          <h3>Charges annuelles</h3>
+        <BlocFinancier picto="calculatrice" titre="Charges annuelles" libelle="Non récupérables" chiffre={eur(ch.nonRecuperables)}>
           <div className="tableau-defile">
             <table className="etat-financier etat-financier--3">
               <thead><tr><td /><th scope="col">Totales</th><th scope="col">Récupérables</th><th scope="col">Non récupérables</th></tr></thead>
@@ -223,12 +243,11 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
               </tbody>
             </table>
           </div>
-        </>
+        </BlocFinancier>
       )}
 
       {r.actuel && (
-        <>
-          <h3>Rendement</h3>
+        <BlocFinancier picto="stats" titre="Rendement" libelle="Net acte en main" chiffre={pct(r.actuel.aem)}>
           <div className="tableau-defile">
             <table className="etat-financier">
               {deuxColonnes && <thead><tr><td /><th scope="col">Actuel</th><th scope="col">Potentiel</th></tr></thead>}
@@ -245,12 +264,12 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
             <li><strong>Net acte en main</strong> : (loyers − charges non récupérables) ÷ (prix + frais de notaire + travaux).</li>
             {deuxColonnes && <li><strong>Potentiel</strong> : les lots vides comptés à leur loyer de marché.</li>}
           </ul>
-        </>
+        </BlocFinancier>
       )}
 
       {(travaux > 0 || b.travaux) && (
         <div className="encadre-travaux">
-          <p className="encadre-travaux__titre">Travaux à prévoir{travaux > 0 ? ` : ${eur(travaux)}` : ""}</p>
+          <p className="encadre-travaux__titre"><Picto nom="constructibilite" taille={20} />Travaux à prévoir{travaux > 0 ? ` : ${eur(travaux)}` : ""}</p>
           {b.travaux && <p>{b.travaux}</p>}
           {lots.some((l) => l.travaux) && (
             <ul>{lots.filter((l) => l.travaux).map((l) => <li key={l.numero}>{l.numero} : {eur(l.travaux!)}</li>)}</ul>
@@ -272,8 +291,6 @@ export default async function FicheBien({ params }: Params) {
   const r = rendementAffiche(b);
   const occ = libelleOccupation(b);
   const { net } = decomposition(b);
-  const ecartM2 = secteur?.prixM2 && b.prixM2 ? ((b.prixM2 - secteur.prixM2) / secteur.prixM2) * 100 : null;
-  const ecartRdt = secteur?.rendement && r ? r - secteur.rendement : null;
   const dpeFourchette = etiquetteDpe(b.dpeMin, b.dpe);
   const gesFourchette = etiquetteDpe(b.gesMin, b.ges);
   const excessive = b.dpe === "F" || b.dpe === "G";
@@ -348,7 +365,7 @@ export default async function FicheBien({ params }: Params) {
                 formule="Prix net vendeur plus les honoraires de l’agence, à la charge de l’acquéreur." />
               {r != null && (
                 <Tuile titre="Rentabilité brute" valeur={pct(r)}
-                  sous={ecartRdt != null ? `${ecartRdt >= 0 ? "+" : "−"}${pct(Math.abs(ecartRdt), 1)} vs nos ventes du département` : null}
+                  sous={null}
                   formule={b.rendementPotentiel != null
                     ? "Loyer annuel potentiel hors charges ÷ (prix honoraires inclus + travaux prévus)."
                     : "Loyer annuel hors charges ÷ prix honoraires inclus."} />
@@ -360,8 +377,8 @@ export default async function FicheBien({ params }: Params) {
               )}
               {b.prixM2 != null && (
                 <Tuile titre="Prix / m²" valeur={eur(b.prixM2)}
-                  sous={ecartM2 != null ? `${ecartM2 >= 0 ? "+" : "−"}${pct(Math.abs(ecartM2), 0)} vs nos ventes du département` : null}
-                  formule="Prix honoraires inclus ÷ surface totale. Comparé au prix médian au m² des immeubles que nous avons vendus dans le département." />
+                  sous={null}
+                  formule="Prix honoraires inclus ÷ surface totale." />
               )}
               <Tuile titre="Diagnostics" formule="Classe énergie (DPE) et classe climat (GES). Une fourchette quand les lots diffèrent, de la meilleure à la moins bonne.">
                 <span className="tuile-pb__dpe">
@@ -389,23 +406,25 @@ export default async function FicheBien({ params }: Params) {
               )}
             </Reveal>
 
+            <Reveal className="fiche-pb__bloc">
+              <h2 className="fiche-pb__h2">État financier</h2>
+              <EtatFinancier b={b} lots={lots} />
+            </Reveal>
+
+            {/* Nos ventes du département, en fin de fiche (retour #113). Ce ne sont pas
+                des références de marché pour ce bien (retour #110) : aucune comparaison. */}
             {secteur && (
               <Reveal className="fiche-pb__bloc">
                 <h2 className="fiche-pb__h2">{`Nos ventes : ${secteur.nom}`}</h2>
                 <dl className="faits faits--marche">
                   <div><dt>Immeubles vendus par l’agence</dt><dd>{secteur.ventes}</dd></div>
-                  {secteur.prixM2 && <div><dt>Prix médian au m²</dt><dd>{eur(secteur.prixM2)}{ecartM2 !== null && <small> · ce bien {ecartM2 > 0 ? "+" : "−"}{Math.abs(Math.round(ecartM2))} %</small>}</dd></div>}
+                  {secteur.prixM2 && <div><dt>Prix médian au m²</dt><dd>{eur(secteur.prixM2)}</dd></div>}
                   {secteur.rendement && <div><dt>Rendement médian</dt><dd>{pct(secteur.rendement)}</dd></div>}
                   {secteur.delaiJours && <div><dt>Délai médian jusqu’à l’offre</dt><dd>{Math.round(secteur.delaiJours)} jours</dd></div>}
                 </dl>
                 <p className="faits__note">Ventes réalisées par France Immeuble dans le département, publiées dans nos références.</p>
               </Reveal>
             )}
-
-            <Reveal className="fiche-pb__bloc">
-              <h2 className="fiche-pb__h2">État financier</h2>
-              <EtatFinancier b={b} lots={lots} />
-            </Reveal>
 
             <div className="fiche-pb__bloc mentions-pb">
               <h2 className="fiche-pb__h2">Mentions réglementaires</h2>
@@ -431,7 +450,7 @@ export default async function FicheBien({ params }: Params) {
           </div>
 
           <aside className="fiche-pb__cote" aria-label="Prix, contact et offre">
-            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={secteur?.prixM2 ?? null} />
+            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={null} />
           </aside>
         </div>
       </section>

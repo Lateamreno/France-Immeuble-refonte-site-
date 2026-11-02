@@ -7,7 +7,7 @@ import {
   charges, classeDpe, decomposition, eur, etiquetteDpe, loyerAffiche, m2, mensualite, notairePour, pct, rendements,
 } from "@/lib/annonce";
 import { BoutonFavori } from "./BoutonFavori";
-import { lienConnexion, useEtatCompte } from "./etat";
+import { ouvrirCompte, useEtatCompte } from "./etat";
 
 const piste = (v: number, min: number, max: number) => ({ ["--rempli" as string]: `${((v - min) / (max - min)) * 100}%` });
 const lireEntier = (s: string) => { const t = s.replace(/[^\d]/g, ""); return t ? Number(t) : null; };
@@ -55,6 +55,14 @@ export function CarteAction({
   const deja = etat?.offres?.filter((o) => o.annonce === b.id) ?? [];
   const sim: Sim = { offre, setOffre, apportPct, setApportPct, duree, setDuree, taux, setTaux };
 
+  // Revenu de la fenêtre de compte avec « #offre » : l'offre s'ouvre seule.
+  useEffect(() => {
+    if (etat?.connecte && window.location.hash === "#offre") {
+      setFeuille("offre");
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  }, [etat?.connecte]);
+
   const voirNumero = () => {
     setNumero(true);
     (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({ event: "voir_numero", bien: b.id });
@@ -62,7 +70,7 @@ export function CarteAction({
   const ouvrir = (f: "offre" | "contact") => {
     if (!etat?.connecte) {
       if (f === "contact") { document.getElementById("dossier")?.scrollIntoView({ behavior: "smooth" }); return; }
-      window.location.assign(lienConnexion("#offre"));
+      ouvrirCompte({ ancre: "#offre" });
       return;
     }
     setFeuille(f);
@@ -107,6 +115,7 @@ export function CarteAction({
           <Marteau />{libelleOffre}
         </button>
 
+        <button type="button" className="carte-action__simuler" onClick={() => ouvrir("offre")}>Simuler mon offre et mon financement</button>
         <div className="carte-action__simulation seulement-large">
           <Simulation b={b} sim={sim} min={min} max={max} pas={pas} prixM2Secteur={prixM2Secteur} />
         </div>

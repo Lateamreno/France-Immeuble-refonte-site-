@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Picto, type NomPicto } from "@/components/Picto";
@@ -39,15 +40,21 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
   if (!session) {
     return (
       <section className="section section--noir-2 compte-entree">
+        {/* Retour #103 (MAV, 02/11/2026) : un ordinateur en fond, en bas à droite,
+            fondu vers le haut à gauche pour laisser lire le texte. */}
+        <span className="compte-entree__fond" aria-hidden="true">
+          <Image src="/media/atouts/reseau-ecrans.webp" alt="" fill sizes="(max-width: 900px) 100vw, 60vw" />
+        </span>
         <div className="container split">
           <div>
             <Eyebrow>Espace client</Eyebrow>
             <h1>Votre <span className="accent">espace</span> France Immeuble</h1>
-            <ul className="compte-atouts">
-              <li>Acheteur : vos recherches, les immeubles qu’on vous propose, vos offres en ligne.</li>
-              <li>Vendeur : la vente pas à pas, votre estimation détaillée, les offres reçues.</li>
-              <li>Une messagerie avec votre agent et vos rendez-vous.</li>
-              <li>Le dépôt des pièces de votre immeuble, directement au coffre de l’agence.</li>
+            {/* Retour #102 : un picto par atout. */}
+            <ul className="compte-atouts compte-atouts--pictos">
+              <li><Picto nom="loupe" taille={30} /><span><b>Acheteur</b>Vos recherches, les immeubles qu’on vous propose, vos offres en ligne.</span></li>
+              <li><Picto nom="immeubles" taille={30} /><span><b>Vendeur</b>La vente pas à pas, votre estimation détaillée, les offres reçues.</span></li>
+              <li><Picto nom="bulles" taille={30} /><span><b>Votre agent</b>Une messagerie avec lui et vos rendez-vous.</span></li>
+              <li><Picto nom="dossier" taille={30} /><span><b>Vos documents</b>Le dépôt des pièces de votre immeuble, directement au coffre de l’agence.</span></li>
             </ul>
           </div>
           <Acces etat={etat} retour={retour} />

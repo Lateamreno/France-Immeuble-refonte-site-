@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { COOKIE_PKCE, echangerCode, poserSession } from "@/lib/compte/auth";
+import { COOKIE_PKCE, COOKIE_RETOUR, echangerCode, poserSession } from "@/lib/compte/auth";
 import { rattacher } from "@/lib/compte/rattachement";
 import { origineSite } from "@/lib/compte/requete";
 
@@ -24,6 +24,9 @@ export async function GET(req: Request) {
     await poserSession(s);
     c.delete(COOKIE_PKCE);
     await rattacher(s.user);
+    const retour = c.get(COOKIE_RETOUR)?.value;
+    c.delete(COOKIE_RETOUR);
+    if (retour && /^\/(?!\/)[\w\-./?=&%#,:]*$/.test(retour)) return NextResponse.redirect(`${base}${retour}`, 303);
     return NextResponse.redirect(`${base}/mon-compte/?etat=bienvenue`, 303);
   } catch {
     return NextResponse.redirect(`${base}/mon-compte/?etat=verifie`, 303);

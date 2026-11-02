@@ -51,3 +51,12 @@ export function majFavori(bien: string, actif: boolean) {
 /** La connexion, puis retour sur la page où l'on était. */
 export const lienConnexion = (ancre = "") =>
   `/mon-compte/?retour=${encodeURIComponent(`${window.location.pathname}${window.location.search}${ancre}`)}`;
+
+/**
+ * Ouvre la fenêtre de connexion ou de création de compte sans quitter la page
+ * (retour #108, MAV, 02/11/2026 : « qu'il ne parte jamais de la page dans
+ * laquelle il était »). `ancre` est rejouée après la connexion (« #offre »).
+ */
+export function ouvrirCompte(options: { ancre?: string; onglet?: "connexion" | "creation" } = {}) {
+  window.dispatchEvent(new CustomEvent("fi:compte", { detail: options }));
+}

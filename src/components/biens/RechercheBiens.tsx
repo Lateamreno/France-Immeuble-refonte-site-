@@ -10,7 +10,7 @@ import { DESTINATIONS, LIBELLE_DESTINATION, type Destination } from "@/lib/annon
 import {
   CIBLES, LIBELLE_OPERATION, lienRecherche, type Cible, type Criteres,
 } from "@/lib/recherche-biens";
-import { lienConnexion, useEtatCompte } from "./etat";
+import { ouvrirCompte, useEtatCompte } from "./etat";
 
 const PAS_PRIX = 10_000;
 const milliers = (n: number) => n.toLocaleString("fr-FR").replace(/\s/g, " ");
@@ -90,7 +90,7 @@ export function RechercheBiens({
 
   async function enregistrerRecherche() {
     setErreur("");
-    if (!etat?.connecte) { window.location.assign(lienConnexion()); return; }
+    if (!etat?.connecte) { ouvrirCompte(); return; }
     if (pourCompte.departements.length === 0) {
       setErreur("Choisissez au moins un département ou une ville, puis lancez la recherche.");
       return;

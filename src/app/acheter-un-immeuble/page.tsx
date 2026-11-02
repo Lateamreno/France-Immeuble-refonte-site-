@@ -56,10 +56,12 @@ export default async function Acheter() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Comment ça marche</Eyebrow>
-            <h2>Vous ne cherchez pas, on vous présente</h2>
+            {/* Retour #96 (MAV, 02/11/2026) : l'outil fait pour les acquéreurs d'immeubles. */}
+            <h2>Un outil conçu pour les acquéreurs d’immeubles</h2>
             <p className="lead">
-              Aucune alerte automatique, aucune newsletter. Un dossier ne vous est envoyé que
-              lorsqu’il correspond réellement à ce que vous nous avez décrit.
+              Nous avons développé notre propre outil pour les acheteurs d’immeubles. Vous ne
+              recevez que les immeubles qui correspondent à votre recherche, sur des critères
+              propres aux immeubles : localisation, budget, type de lots, rendement.
             </p>
           </Reveal>
 
@@ -75,13 +77,13 @@ export default async function Acheter() {
                 n: "02",
                 picto: "loupeCible" as NomPicto,
                 t: "Nous filtrons pour vous",
-                p: "Chaque immeuble rentré est confronté au fichier. Si vos critères collent, vous êtes dans la short-list.",
+                p: "Quand un immeuble arrive chez nous, nous regardons s’il correspond à votre recherche. Si oui, vous le recevez parmi les premiers.",
               },
               {
                 n: "03",
                 picto: "dossier" as NomPicto,
                 t: "Vous recevez le dossier complet",
-                p: "Baux, revenus, état d’occupation, travaux. Pas une annonce : de quoi décider.",
+                p: "Adresse, état locatif, surfaces Carrez, diagnostics, taxe foncière, baux, travaux : tout ce qu’il faut pour prendre votre décision.",
               },
             ].map((c, i) => (
               <Reveal key={c.n} as="article" className="card card--filigrane" delayIndex={i}>
@@ -98,11 +100,11 @@ export default async function Acheter() {
       </section>
 
       <BandeMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
-        <h2>Ce qu’un portail ne vous donnera pas</h2>
+        <h2>Des dossiers exclusifs</h2>
         <p>
-          Nos vendeurs viennent parce que leur dossier ne part pas d’emblée sur la place
-          publique. Vous en profitez de l’autre côté : des immeubles présentés au fichier
-          avant tout le monde, avec les baux et les comptes sur la table.
+          Nos vendeurs choisissent une agence spécialisée dans la vente d’immeubles plutôt
+          qu’une agence de quartier. Leurs immeubles ne sont donc pas partout sur internet :
+          nous les présentons d’abord en off-market, à notre fichier d’acquéreurs.
         </p>
       </BandeMedia>
 
@@ -112,8 +114,10 @@ export default async function Acheter() {
             <Eyebrow>Ce que ça vous donne</Eyebrow>
             <h2>Voir avant les autres</h2>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
-              Un immeuble qui se négocie bien est un immeuble que peu de gens ont vu. Être dans le
-              fichier, c’est faire partie de ce « peu de gens ».
+              {/* Retour #100 (MAV, 02/11/2026). */}
+              Être peu nombreux à voir un immeuble, c’est une commercialisation discrète et
+              courte. Le vendeur n’attend pas que tout le marché l’ait vu pour se décider : il
+              choisit vite parmi les offres reçues.
             </p>
             <div className="railed" style={{ marginTop: "var(--space-m)" }}>
               <p className="muted">

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { inscrire, nouveauPkce, poserPkce } from "@/lib/compte/auth";
+import { cookies } from "next/headers";
+import { COOKIE_RETOUR, inscrire, nouveauPkce, poserPkce } from "@/lib/compte/auth";
 import { EMAIL, erreurEnReponse, lireJson, memeOrigine, origineSite, refus, texte } from "@/lib/compte/requete";
 
 export const runtime = "nodejs";
@@ -31,6 +32,11 @@ export async function POST(req: Request) {
       retour: `${origineSite(req)}/mon-compte/confirmer/`,
     });
     await poserPkce(verifier);
+    // Retour sur la page d'où l'on s'est inscrit (retour #108) : un chemin du site seulement.
+    const retour = texte(b.retour, 300);
+    if (/^\/(?!\/)[\w\-./?=&%#,:]*$/.test(retour)) {
+      (await cookies()).set(COOKIE_RETOUR, retour, { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 });
+    }
     // Même réponse qu'un compte existe déjà ou non : on ne dit pas à un
     // inconnu quelles adresses ont un compte.
     return NextResponse.json({ ok: true });

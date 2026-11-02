@@ -220,6 +220,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   liste) et le type d'opération (devient le profil enregistré ; ne filtre pas, le BO ne
   qualifie pas encore ses biens) ; une liste vide invite à enregistrer la recherche.
   Occupation et société partent aussi en clair dans le commentaire en attendant le BO.
+  Retours #107 à #115 (MAV, 02/11) : tout bouton qui demande un compte (favori, offre,
+  enregistrer, fin du dépôt de recherche) ouvre la **fenêtre de compte** (`ModaleCompte`, montée
+  dans la mise en page, `ouvrirCompte()` de `src/components/biens/etat.ts`) : connecté, la page se
+  recharge sur place (« #offre » rouvre l'offre) ; compte créé, le lien de vérification ramène sur
+  la page (cookie `fi_retour`). Fiche : **aucune comparaison avec nos ventes** tant que MAV n'a
+  pas fixé la référence (rentabilité et prix au m² du secteur : Plein Bail ou BO) ; « Nos ventes »
+  en fin de fiche ; état financier en blocs à picto ; sous 1000 px de haut, la simulation passe
+  dans la feuille d'offre et la colonne tient sans défiler. DPE : fourchette des lots, de la
+  meilleure classe à la moins bonne, quand le BO dépose les lots.
 
 ### Garde-fous non négociables
 
