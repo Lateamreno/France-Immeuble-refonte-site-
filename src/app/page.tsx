@@ -103,11 +103,16 @@ export default async function Accueil() {
               l'image va jusqu'au bord de l'écran, la coupe s'y confond (MAV). */}
           <Reveal delayIndex={1} className="media-colonne media-colonne--libre media-colonne--bord accueil-vendre__carnet">
             <Image
-              src="/media/05_Notebook-Mock-up-noir.webp"
+              src="/media/carnet-temoignage.webp"
               alt="Carnet France Immeuble ouvert sur le témoignage d’une famille cliente"
               width={800}
               height={820}
               sizes="(max-width: 900px) 100vw, 760px"
+              // Retour #79 : chez MAV le carnet ne s'affichait pas. Nom de fichier
+              // neutre (« Mock-up » peut être écarté par un bloqueur), fichier servi
+              // tel quel (97 Ko) et chargé sans attendre le défilement.
+              unoptimized
+              loading="eager"
             />
           </Reveal>
         </div>

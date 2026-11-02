@@ -387,6 +387,8 @@ export type ComplementsAnnonce = {
   prixPrecedent: number | null;
   prixBaisseLe: string | null;
   remonteLe: string | null;
+  /** À quel type d'acquéreur s'adresse l'immeuble (BO, migration 0016) ; vide = non précisé. */
+  operations: string[];
 };
 
 /** Un lot de l'état locatif (table `biens_lots`). Jamais de nom de locataire. */
@@ -425,6 +427,7 @@ type LigneBien = {
   charges_copro?: number | string | null; charges_copro_recuperables?: number | string | null;
   prix_net_vendeur?: number | string | null; honoraires?: number | string | null;
   prix_precedent?: number | string | null; prix_baisse_le?: string | null; remonte_le?: string | null;
+  operations?: string[] | null;
 };
 
 function versBien(l: LigneBien, base: string): BienAVendre {
@@ -461,6 +464,7 @@ function versBien(l: LigneBien, base: string): BienAVendre {
     prixNetVendeur: nombre(l.prix_net_vendeur), honoraires: nombre(l.honoraires),
     prixPrecedent: nombre(l.prix_precedent), prixBaisseLe: l.prix_baisse_le ?? null,
     remonteLe: l.remonte_le ?? null,
+    operations: Array.isArray(l.operations) ? l.operations : [],
   };
 }
 

@@ -401,7 +401,7 @@ Exceptions voulues : « Vendez votre immeuble » de l'accueil dépasse au télé
 entier, les deux boutons l'un au-dessus de l'autre collés en bas de l'écran pendant qu'il
 défile (MAV : « Lire la suite », personne ne clique), puis le carnet entier et net sous le texte
 (MAV, 02/11/2026 : la mise en page d'avant, mais l'image visible ; texte du carnet en noir,
-`05_Notebook-Mock-up-noir.webp`) ; l'échantillon des Références garde sur
+`carnet-temoignage.webp`) ; l'échantillon des Références garde sur
 ordinateur sa longue liste par région et département (MAV : « c'était pas mal comme
 avant »), repliée en deux lignes qui glissent au téléphone. Suites courtes (méthode de
 Vendre) : une étape par écran au téléphone, illustrations agrandies (retours #75 et #77,

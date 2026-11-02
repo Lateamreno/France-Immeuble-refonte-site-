@@ -1,15 +1,17 @@
 # Demande à la session BO : les recherches d'acquéreur comme au BO (02/11/2026)
 
 MAV a revu le dépôt de recherche d'Acheter et la barre des immeubles à vendre
-(retours #83 à #94 du 02/11). Il veut « la même chose que sur notre BO ». Le
-site s'est aligné sur le contrat (§6) ; il lui manque quatre choses que seul le
-BO peut porter. En attendant, le site recopie chaque valeur en clair dans le
-`commentaire` de la recherche : rien ne se perd.
+du site (retours #83 à #94 du 02/11). Il veut « la même chose que sur notre
+BO ». Le site s'est aligné sur le contrat (§6) ; il lui manque trois choses que
+seul le BO peut porter. Côté site, tout est prêt : la base du site a ouvert les
+colonnes (migration 0016, posée le 02/11). En attendant votre réponse, le site
+recopie l'occupation et la société en clair dans le `commentaire` de chaque
+recherche : rien ne se perd.
 
 ## 1. Occupation minimum et maximum d'une recherche
 
-`recherche_acquereur` (chaque élément de `recherches`) et `recherche_compte`
-portent maintenant :
+Chaque élément de `recherches` (`recherche_acquereur`) et chaque
+`recherche_compte` peut porter :
 
 | Champ | Contenu |
 |---|---|
@@ -17,9 +19,12 @@ portent maintenant :
 | `occupationMax` | entier de 0 à 100 (%), ou absent ; absent = sans limite |
 
 Le `commentaire` commence alors par « Occupation recherchée : 50 à 100 %. ».
-Merci de ranger ces deux champs dans la recherche, de les retirer du
-commentaire si vous les lisez, et de les redéposer dans `compte_recherches`
-(`occupation_min`, `occupation_max`) pour que le compte les affiche.
+
+Merci de :
+- ranger ces deux valeurs dans la recherche du contact ;
+- les retirer du commentaire une fois rangées (ou nous dire de ne plus les y écrire) ;
+- les redéposer dans `compte_recherches`, colonnes `occupation_min` et
+  `occupation_max` (entiers 0 à 100), pour que le compte les affiche.
 
 ## 2. La société de l'acquéreur
 
@@ -29,12 +34,18 @@ site l'écrit aussi en tête du commentaire de chaque recherche
 
 ## 3. Le type d'opération d'un immeuble à vendre
 
-La barre propose « Type d'opération : Investissement / Marchand de biens ». Ce
-choix devient la `cible` de la recherche enregistrée (une recherche par type,
-le reste à l'identique, comme aujourd'hui). Il ne filtre pas encore la liste :
-`biens_a_vendre` ne dit pas à quel type d'acquéreur un immeuble s'adresse. Si
-le BO le sait, une colonne `operations text[]` (`Investisseur`, `Marchand de
-biens`) permettrait au site de filtrer.
+La barre du site propose « Type d'opération : Investissement / Marchand de
+biens ». Le choix devient la `cible` de la recherche enregistrée (une recherche
+par type, le reste à l'identique, comme aujourd'hui). Pour qu'il filtre aussi
+la liste, le site doit savoir à qui s'adresse chaque immeuble.
+
+Questions :
+- Le BO sait-il, pour un bien en vente, s'il s'adresse à un investisseur, à un
+  marchand de biens, ou aux deux ? D'où vient l'information (champ saisi par
+  l'agent, déduction des lots, de l'occupation, des travaux) ?
+- Si oui, merci de la déposer dans `biens_a_vendre.operations`, un tableau de
+  texte parmi `Investisseur` et `Marchand de biens` (vide ou absent = non
+  précisé ; le site garde alors le bien dans tous les résultats).
 
 ## 4. Pour information
 
@@ -45,4 +56,8 @@ biens`) permettrait au site de filtrer.
 - Budget : `prixMax` absent veut dire « 10 M€ et plus », sans limite.
 - Lieux : toutes les communes de France (Base Adresse Nationale). Une région
   part comme la liste de ses départements ; une ville ajoute son département à
-  `departements`, et son nom seul à `villes`.
+  `departements`, et son nom seul à `villes` (« Montreuil », « Lyon 3e
+  Arrondissement »).
+
+Merci de répondre en indiquant ce qui est livré, comme pour les annonces
+(§14 du contrat).

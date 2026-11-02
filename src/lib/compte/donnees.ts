@@ -11,6 +11,7 @@ import { configSitePublique } from "../supabase-site";
 export type Recherche = {
   cle: string; cible: string | null; departements: string[]; villes: string[];
   prix_min: number | null; prix_max: number | null; rendement_min: number | null;
+  occupation_min?: number | null; occupation_max?: number | null;
   destinations: string[]; commentaire: string | null; maj_le: string;
 };
 export type Proposition = {

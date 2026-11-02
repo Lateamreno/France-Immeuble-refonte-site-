@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { LIBELLE_DESTINATION } from "@/lib/annonce";
 import { CIBLES, LIBELLE_OPERATION, villeDe } from "@/lib/recherche-biens";
 import { ChoixLieux } from "@/components/biens/ChoixLieux";
+import { DoubleCurseur } from "@/components/DoubleCurseur";
 import { envoyer } from "./envoyer";
 
 // Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
@@ -17,6 +18,8 @@ export type ValeursRecherche = {
   prix_min?: number | null;
   prix_max?: number | null;
   rendement_min?: number | null;
+  occupation_min?: number | null;
+  occupation_max?: number | null;
   destinations?: string[];
   commentaire?: string | null;
 };
@@ -49,6 +52,8 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
   const [prixMin, setPrixMin] = useState(valeurs?.prix_min?.toString() ?? "");
   const [prixMax, setPrixMax] = useState(valeurs?.prix_max?.toString() ?? "");
   const [rdt, setRdt] = useState(valeurs?.rendement_min?.toString() ?? "");
+  const [occMin, setOccMin] = useState<number | null>(valeurs?.occupation_min ?? null);
+  const [occMax, setOccMax] = useState<number | null>(valeurs?.occupation_max ?? null);
   const [dest, setDest] = useState<string[]>(valeurs?.destinations ?? []);
   const [commentaire, setCommentaire] = useState(valeurs?.commentaire ?? "");
   const [envoi, setEnvoi] = useState(false);
@@ -64,6 +69,7 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
       cible,
       ...versBO(zones),
       prixMin, prixMax, rendementMin: rdt,
+      occupationMin: occMin, occupationMax: occMax,
       destinations: dest,
       commentaire,
     });
@@ -114,6 +120,11 @@ export function RechercheCompte({ valeurs, onFerme }: { valeurs?: ValeursRecherc
         <div className="field">
           <label htmlFor={`${uid}-rdt`}>Rendement minimum (%)</label>
           <input id={`${uid}-rdt`} inputMode="decimal" value={rdt} onChange={(e) => setRdt(e.target.value)} />
+        </div>
+        <div className="field">
+          <span className="field__lbl">Occupation : {occMin == null && occMax == null ? "toutes" : `${occMin ?? 0} à ${occMax ?? 100} %`}</span>
+          <DoubleCurseur min={0} max={100} pas={10} de={occMin} a={occMax} libelle="Occupation"
+            valeurTexte={(v) => `${v} %`} onChange={(d, x) => { setOccMin(d); setOccMax(x); }} />
         </div>
       </div>
       <div className="field">

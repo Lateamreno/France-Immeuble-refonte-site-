@@ -32,7 +32,10 @@ export type Criteres = {
   /** Occupation en % (retour #94) : par surface, sinon par lots. */
   occupationMin: number | null;
   occupationMax: number | null;
-  /** Type d'opération = profil du BO (retour #94). Sert à l'enregistrement ; ne filtre pas la liste. */
+  /**
+   * Type d'opération = profil du BO (retour #94). Devient le profil de la recherche
+   * enregistrée ; ne filtre que les immeubles dont le BO a dit le type (migration 0016).
+   */
   operations: Cible[];
   tri: Tri;
 };
@@ -179,7 +182,8 @@ export function filtrer(biens: BienAVendre[], c: Criteres, limite = 60): BienAVe
       (c.prixMax == null || b.prixHai <= c.prixMax) &&
       (!c.rendementMin || (r != null && r >= c.rendementMin)) &&
       (c.occupationMin == null || (occupationDe(b) ?? -1) >= c.occupationMin) &&
-      (c.occupationMax == null || (occupationDe(b) ?? Infinity) <= c.occupationMax)
+      (c.occupationMax == null || (occupationDe(b) ?? Infinity) <= c.occupationMax) &&
+      (c.operations.length === 0 || !b.operations?.length || b.operations.some((o) => (c.operations as string[]).includes(o)))
     );
   });
   // Les valeurs absentes vont toujours en fin de liste, quel que soit le sens.

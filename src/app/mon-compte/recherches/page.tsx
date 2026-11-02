@@ -15,6 +15,9 @@ function resume(r: Recherche): string {
       ? `${r.prix_min != null ? `de ${euros(r.prix_min)}` : ""}${r.prix_max != null ? ` à ${euros(r.prix_max)}` : ""}`.trim()
       : null,
     r.rendement_min != null ? `rendement ${pct(r.rendement_min)} et plus` : null,
+    r.occupation_min != null || r.occupation_max != null
+      ? `occupé ${r.occupation_min ?? 0} à ${r.occupation_max ?? 100} %`
+      : null,
     r.destinations.length
       ? r.destinations.map((d) => (LIBELLE_DESTINATION as Record<string, string>)[d] ?? d).join(", ")
       : null,
