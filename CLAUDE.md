@@ -224,8 +224,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   enregistrer, fin du dépôt de recherche) ouvre la **fenêtre de compte** (`ModaleCompte`, montée
   dans la mise en page, `ouvrirCompte()` de `src/components/biens/etat.ts`) : connecté, la page se
   recharge sur place (« #offre » rouvre l'offre) ; compte créé, le lien de vérification ramène sur
-  la page (cookie `fi_retour`). Fiche : **aucune comparaison avec nos ventes** tant que MAV n'a
-  pas fixé la référence (rentabilité et prix au m² du secteur : Plein Bail ou BO) ; « Nos ventes »
+  la page (cookie `fi_retour`). Fiche : la référence du secteur est **Plein Bail** (#110, MAV, 03/11/2026 : « Pleinbail c'est
+  mieux ») : prix au m² contre la médiane DVF des appartements, rentabilité contre celle de la ville,
+  mêmes règles que `src/lib/benchmarks.ts` de Plein Bail, lues avec sa clé publiable (`src/lib/marche.ts`),
+  bloc « Le marché à … » ; nos ventes restent en fin de fiche, sans comparaison ; « Nos ventes »
   en fin de fiche ; état financier en blocs à picto ; sous 1000 px de haut, la simulation passe
   dans la feuille d'offre et la colonne tient sans défiler. DPE : fourchette des lots, de la
   meilleure classe à la moins bonne, quand le BO dépose les lots.

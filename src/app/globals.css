@@ -4640,3 +4640,4 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .modale-compte__fermer{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--color-gris);font-size:28px;line-height:1;cursor:pointer;}
 .modale-compte__fermer:focus-visible{outline:2px solid var(--color-bronze-clair);}
 .modale-compte .compte-acces{padding:0;border:0;background:none;box-shadow:none;}
+.faits--marche dd small{display:block;margin-top:2px;font-weight:400;}

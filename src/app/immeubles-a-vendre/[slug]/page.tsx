@@ -16,6 +16,7 @@ import {
 } from "@/lib/annonce";
 import { similaires } from "@/lib/recherche-biens";
 import { secteurDe } from "@/lib/compte/secteur";
+import { marcheDuBien, ecartPct, type Marche } from "@/lib/marche";
 import { GalerieAnnonce } from "@/components/biens/GalerieAnnonce";
 import { CarteAction } from "@/components/biens/CarteAction";
 
@@ -78,6 +79,34 @@ function Tuile({ titre, valeur, sous, formule, children }: { titre: string; vale
       </dt>
       <dd>{children ?? valeur}{sous && <small>{sous}</small>}</dd>
     </div>
+  );
+}
+
+/** Le marché de la ville, calculé comme sur Plein Bail (src/lib/marche.ts). */
+function BlocMarche({ marche: m, ville, dept }: { marche: Marche; ville: string; dept: string }) {
+  const ou = (e: Marche["prixEchelle"]) => (e === "commune" ? ville : `département ${dept}`);
+  return (
+    <Reveal className="fiche-pb__bloc">
+      <h2 className="fiche-pb__h2">{`Le marché à ${ville}`}</h2>
+      <dl className="faits faits--marche">
+        {m.prixM2 != null && (
+          <div><dt>Prix médian au m²</dt><dd>{eur(m.prixM2)}
+            <small>{`appartements, ${ou(m.prixEchelle)}, ${m.prixFenetreMois} derniers mois, ${m.nbVentes} ventes`}</small></dd></div>
+        )}
+        {m.loyerM2 != null && (
+          <div><dt>Loyer médian au m²</dt><dd>{`${m.loyerM2.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} € / mois`}
+            <small>{`appartements, charges comprises, ${ou(m.loyerEchelle)}`}</small></dd></div>
+        )}
+        {m.rentaVille != null && (
+          <div><dt>Rentabilité moyenne de la ville</dt><dd>{pct(m.rentaVille, 1)}
+            <small>{m.rentaAVerifier ? "chiffre élevé, à vérifier" : "loyer × 12 ÷ prix au m²"}</small></dd></div>
+        )}
+      </dl>
+      <p className="faits__note">
+        Données Plein Bail, à partir des ventes DVF (DGFiP) et de la carte des loyers de l’ANIL (estimations à partir
+        des données du Groupe SeLoger et de leboncoin).
+      </p>
+    </Reveal>
   );
 }
 
@@ -285,10 +314,14 @@ export default async function FicheBien({ params }: Params) {
   const tous = await biensAVendre();
   const b = tous.find((x) => x.slug === slug);
   if (!b) notFound();
-  const [lots, secteur] = await Promise.all([lotsDuBien(b.id), secteurDe(b.dept)]);
+  const [lots, secteur, marche] = await Promise.all([lotsDuBien(b.id), secteurDe(b.dept), marcheDuBien(b)]);
   const proches = similaires(tous, b);
 
   const r = rendementAffiche(b);
+  // Écarts au marché calculés comme sur Plein Bail (retour #110) : prix au m² contre
+  // la médiane DVF, rentabilité contre la rentabilité moyenne de la ville.
+  const ecartM2 = ecartPct(b.prixM2, marche?.prixM2);
+  const ecartRdt = ecartPct(r, marche?.rentaVille);
   const occ = libelleOccupation(b);
   const { net } = decomposition(b);
   const dpeFourchette = etiquetteDpe(b.dpeMin, b.dpe);
@@ -365,10 +398,11 @@ export default async function FicheBien({ params }: Params) {
                 formule="Prix net vendeur plus les honoraires de l’agence, à la charge de l’acquéreur." />
               {r != null && (
                 <Tuile titre="Rentabilité brute" valeur={pct(r)}
-                  sous={null}
-                  formule={b.rendementPotentiel != null
+                  sous={ecartRdt != null ? `${ecartRdt >= 0 ? "+" : "−"}${Math.abs(Math.round(ecartRdt))} % vs secteur` : null}
+                  formule={(b.rendementPotentiel != null
                     ? "Loyer annuel potentiel hors charges ÷ (prix honoraires inclus + travaux prévus)."
-                    : "Loyer annuel hors charges ÷ prix honoraires inclus."} />
+                    : "Loyer annuel hors charges ÷ prix honoraires inclus.")
+                    + (ecartRdt != null ? " Comparée à la rentabilité moyenne des appartements de la ville (loyer ANIL × 12 ÷ prix DVF), données Plein Bail." : "")} />
               )}
               {b.surface != null && (
                 <Tuile titre="Surface totale" valeur={m2(b.surface)}
@@ -377,8 +411,9 @@ export default async function FicheBien({ params }: Params) {
               )}
               {b.prixM2 != null && (
                 <Tuile titre="Prix / m²" valeur={eur(b.prixM2)}
-                  sous={null}
-                  formule="Prix honoraires inclus ÷ surface totale." />
+                  sous={ecartM2 != null ? `${ecartM2 >= 0 ? "+" : "−"}${Math.abs(Math.round(ecartM2))} % vs marché` : null}
+                  formule={"Prix honoraires inclus ÷ surface totale."
+                    + (ecartM2 != null ? " Comparé au prix médian au m² des ventes d’appartements du secteur (DVF), données Plein Bail." : "")} />
               )}
               <Tuile titre="Diagnostics" formule="Classe énergie (DPE) et classe climat (GES). Une fourchette quand les lots diffèrent, de la meilleure à la moins bonne.">
                 <span className="tuile-pb__dpe">
@@ -411,8 +446,10 @@ export default async function FicheBien({ params }: Params) {
               <EtatFinancier b={b} lots={lots} />
             </Reveal>
 
+            {marche && <BlocMarche marche={marche} ville={b.ville} dept={b.dept} />}
+
             {/* Nos ventes du département, en fin de fiche (retour #113). Ce ne sont pas
-                des références de marché pour ce bien (retour #110) : aucune comparaison. */}
+                des références de marché pour ce bien : la référence est Plein Bail (#110). */}
             {secteur && (
               <Reveal className="fiche-pb__bloc">
                 <h2 className="fiche-pb__h2">{`Nos ventes : ${secteur.nom}`}</h2>
@@ -450,7 +487,7 @@ export default async function FicheBien({ params }: Params) {
           </div>
 
           <aside className="fiche-pb__cote" aria-label="Prix, contact et offre">
-            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={null} />
+            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={marche?.prixM2 ?? null} />
           </aside>
         </div>
       </section>
