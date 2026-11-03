@@ -4674,3 +4674,93 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   .om-principe__voile{background:linear-gradient(0deg,var(--color-noir) 0,var(--color-noir) calc(100% - 440px),color-mix(in srgb,var(--color-noir) 45%,transparent) calc(100% - 230px),color-mix(in srgb,var(--color-noir) 25%,transparent));}
   .om-principe__in{padding-top:250px;}
 }
+
+/* ===== Estimer · les analyses et le schéma de l'immeuble (dessin A, MAV 03/11/2026) =====
+   Le SVG vient de src/lib/schema-immeuble.ts ; chaque analyse allume sa partie
+   (groupe [data-i] en .est-actif). Couleurs : tokens et leurs mélanges, rien d'autre. */
+.sec-analyses{position:relative;overflow:clip;}
+.sec-analyses__tete .lead{margin-top:var(--space-s);color:color-mix(in srgb,var(--color-creme) 74%,var(--color-noir));}
+/* Titre et chapeau côte à côte sur ordinateur : la section tient sur un écran. */
+@media (min-width:1000px){
+  .sec-analyses__tete{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:var(--space-l);align-items:end;}
+  .sec-analyses__tete > :first-child{grid-column:1/-1;}
+  .sec-analyses__tete .lead{margin-top:0;}
+}
+.sec-analyses__cta{justify-content:center;margin-top:var(--space-s);}
+.analyses-sch{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:var(--space-l);align-items:center;margin-top:var(--space-m);}
+.analyses-sch__scene{margin:-10px 0 -10px -20px;}
+.analyses-sch__liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
+.analyses-sch__item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:2px 14px;padding:11px 14px;border-radius:16px;border:1px solid transparent;cursor:pointer;transition:background .3s,border-color .3s;}
+.analyses-sch__item:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.analyses-sch__item.est-actif{background:color-mix(in srgb,var(--color-bronze) 10%,var(--color-noir-2));border-color:color-mix(in srgb,var(--color-bronze) 40%,transparent);}
+.analyses-sch__picto{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--color-noir-3);color:var(--color-bronze);border:1px solid var(--color-ligne);transition:background .3s,color .3s;}
+.analyses-sch__item.est-actif .analyses-sch__picto{background:var(--color-bronze);color:var(--color-noir);border-color:var(--color-bronze);}
+.analyses-sch__item h3{margin:0;font-size:19px;color:var(--color-creme);}
+.analyses-sch__item p{margin:0;font-size:14.5px;line-height:1.5;color:color-mix(in srgb,var(--color-creme) 70%,var(--color-noir));}
+
+/* Le dessin */
+.sch{display:block;width:100%;height:auto;overflow:visible;}
+.sch *{transition:fill .45s ease,stroke .45s ease,opacity .45s ease,filter .45s ease;}
+.sch [data-i]{cursor:pointer;}
+.sch-st--g1{stop-color:color-mix(in srgb,var(--color-creme) 16%,var(--color-noir-3));}
+.sch-st--g2{stop-color:var(--color-noir-3);}
+.sch-st--d1{stop-color:color-mix(in srgb,var(--color-creme) 7%,var(--color-noir-3));}
+.sch-st--d2{stop-color:var(--color-noir-2);}
+.sch-st--or1{stop-color:var(--color-bronze-clair);}
+.sch-st--or2{stop-color:var(--color-bronze);}
+.sch-st--or3{stop-color:var(--color-bronze-hover);}
+.sch .f-g{fill:url(#sch-fac-g);}
+.sch .f-d{fill:url(#sch-fac-d);}
+.sch .f-m{fill:var(--color-noir-3);}
+.sch .gr,.sch .trottoir{fill:none;stroke-width:1.1;stroke:color-mix(in srgb,var(--color-creme) 22%,transparent);}
+.sch .axe{fill:none;stroke-width:1.3;stroke-dasharray:7 7;stroke:color-mix(in srgb,var(--color-creme) 30%,transparent);}
+.sch .zebre{fill:none;stroke-width:3.2;stroke:color-mix(in srgb,var(--color-creme) 30%,transparent);}
+.sch .parc{stroke-width:1;fill:color-mix(in srgb,var(--color-creme) 4%,transparent);stroke:color-mix(in srgb,var(--color-creme) 20%,transparent);}
+.sch .com-f.f-g{fill:color-mix(in srgb,var(--color-creme) 9%,var(--color-noir-3));}
+.sch .com-f.f-d{fill:var(--color-noir-2);}
+.sch .com-f.t-h{fill:color-mix(in srgb,var(--color-creme) 13%,var(--color-noir-3));}
+.sch .com-c,.sch .abri,.sch .store-r{fill:none;stroke-width:1;stroke-linejoin:round;stroke:color-mix(in srgb,var(--color-creme) 30%,transparent);}
+.sch .store-r{stroke-width:.8;}
+.sch .vit,.sch .porte,.sch .fen{fill:var(--color-noir);stroke:color-mix(in srgb,var(--color-creme) 14%,transparent);stroke-width:.6;}
+.sch .store,.sch .abri-t{fill:color-mix(in srgb,var(--color-creme) 18%,var(--color-noir-3));}
+.sch .abri-v{fill:color-mix(in srgb,var(--color-creme) 8%,transparent);stroke:color-mix(in srgb,var(--color-creme) 25%,transparent);stroke-width:.8;}
+.sch .ct{fill:none;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round;stroke:color-mix(in srgb,var(--color-creme) 38%,transparent);}
+.sch .ct.fin{stroke-width:.8;opacity:.55;}
+.sch .ct.bal{stroke-width:1.1;stroke-dasharray:1.5 2.5;}
+/* la mansarde : contours en pointillés, vide à l'intérieur */
+.sch .cp{fill:var(--color-bronze);fill-opacity:0;stroke-width:1.4;stroke-dasharray:5 4;stroke:color-mix(in srgb,var(--color-creme) 45%,transparent);}
+.sch .luc{fill:none;stroke-width:1;stroke-dasharray:3 3;stroke:color-mix(in srgb,var(--color-creme) 35%,transparent);}
+.sch .plus{font:800 15px var(--font-mono-site);text-anchor:middle;fill:color-mix(in srgb,var(--color-creme) 35%,transparent);}
+.sch .gens{fill:color-mix(in srgb,var(--color-creme) 30%,var(--color-noir));}
+.sch .anneau{fill:none;stroke-width:1.4;opacity:0;stroke:var(--color-bronze);}
+.sch .anneau.a2{stroke-dasharray:3 4;}
+.sch .rep{opacity:0;pointer-events:none;fill:var(--color-bronze);stroke:var(--color-bronze);}
+.sch .rep polyline{fill:none;stroke-width:1;}
+.sch .rep text{stroke:none;font:600 12px var(--font-mono-site);letter-spacing:.14em;text-transform:uppercase;}
+.analyses-sch[data-actif="0"] .sch [data-r="0"] .rep,.analyses-sch[data-actif="1"] .sch [data-r="1"] .rep,
+.analyses-sch[data-actif="2"] .sch [data-r="2"] .rep,.analyses-sch[data-actif="3"] .sch [data-r="3"] .rep,
+.analyses-sch[data-actif="4"] .sch [data-r="4"] .rep{opacity:1;}
+/* la partie allumée */
+.sch g.est-actif .trottoir{stroke:var(--color-bronze);}
+.sch g.est-actif .axe,.sch g.est-actif .zebre{stroke:var(--color-bronze);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--color-bronze) 60%,transparent));}
+.sch g.est-actif .parc{fill:color-mix(in srgb,var(--color-bronze) 16%,transparent);stroke:var(--color-bronze);}
+.sch g.est-actif .com-c,.sch g.est-actif .abri,.sch g.est-actif .store-r{stroke:var(--color-bronze);}
+.sch g.est-actif .store,.sch g.est-actif .abri-t{fill:var(--color-bronze);}
+.sch g.est-actif .abri-v{stroke:var(--color-bronze);fill:color-mix(in srgb,var(--color-bronze) 18%,transparent);}
+.sch g.est-actif .com-f{fill:color-mix(in srgb,var(--color-bronze) 14%,var(--color-noir-3));}
+.sch g.est-actif .ct{stroke:var(--color-bronze);opacity:1;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--color-bronze) 70%,transparent));}
+.sch g.est-actif .fen,.sch g.est-actif .vit{fill:url(#sch-or);stroke:none;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--color-bronze) 70%,transparent));}
+.sch g.est-actif .cp{fill-opacity:.16;stroke:var(--color-bronze);stroke-width:1.8;}
+.sch g.est-actif .luc{stroke:var(--color-bronze);}
+.sch g.est-actif .plus{fill:var(--color-bronze);}
+.sch g.est-actif .gens{fill:var(--color-bronze);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--color-bronze) 80%,transparent));}
+.sch g.est-actif .anneau{opacity:1;}
+@media (prefers-reduced-motion:reduce){.sch *{transition:none;}}
+@media (max-width:759px){
+  .analyses-sch{grid-template-columns:1fr;gap:8px;}
+  /* le schéma reste en haut de l'écran pendant qu'on fait défiler les analyses */
+  .analyses-sch__scene{position:sticky;top:var(--header-h);z-index:2;margin:0 calc(-1 * var(--gutter));padding:6px 10px 12px;
+    background:linear-gradient(var(--color-noir-2) 88%,transparent);}
+  .analyses-sch__liste{gap:10px;padding-bottom:22vh;}
+  .sch .rep text{font-size:17px;}
+}

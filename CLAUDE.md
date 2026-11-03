@@ -421,7 +421,13 @@ Vendre) : une étape par écran au téléphone, illustrations agrandies (retours
 retour #77, puis MAV, 02/11/2026 : « partout », « pas tout en bas », « sous le pouce ») : une
 pilule à 28 px au-dessus du bas de l'écran, sans bandeau. Cachée sur le hero, le formulaire
 (`cible`), le pied de page et les rangées `.porte-action` ; elle remplace au téléphone les
-boutons de section qui mènent au même endroit (`double-fixe`). **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
+boutons de section qui mènent au même endroit (`double-fixe`). **Estimer, « Analyses »** (MAV, 03/11/2026, dessin A) : un schéma d'immeuble haussmannien à
+l'angle de deux rues (`src/lib/schema-immeuble.ts`, SVG calculé au serveur) dont chaque analyse
+allume sa partie : rues en pointillés, abribus et commerce pour le secteur, contours pour la
+technique, fenêtres pour le financier (la porte reste éteinte), mansarde en pointillés et vide
+pour la constructibilité, un des trois personnages pour la cible (`AnalysesSchema`). Sur
+ordinateur, allumage seul toutes les 3 s, arrêté au survol ; au téléphone, schéma collé en haut
+et allumage au défilement. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », un lecteur et son document caviardé fondus dans le noir
 (`offmarket-lecteur-caviarde-v2.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
 **Photos fondues** dans les

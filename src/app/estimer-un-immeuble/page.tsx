@@ -7,8 +7,8 @@ import { EstimationForm } from "@/components/EstimationForm";
 import { ContactForm } from "@/components/ContactForm";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
-import { TeteMedia } from "@/components/TeteMedia";
-import { LigneDefilante } from "@/components/LigneDefilante";
+import { AnalysesSchema } from "@/components/AnalysesSchema";
+import { schemaImmeuble } from "@/lib/schema-immeuble";
 import { filAriane } from "@/lib/schema";
 import { metadonneesWP } from "@/components/ContenuWP";
 import { VISUELS } from "@/lib/visuels";
@@ -57,6 +57,9 @@ const ANALYSES: { picto: NomPicto; titre: string; texte: string }[] = [
   },
 ];
 
+/** Le dessin est calculé une fois, au rendu du serveur. */
+const SCHEMA = schemaImmeuble();
+
 export default function EstimerUnImmeuble() {
   return (
     <>
@@ -88,43 +91,26 @@ export default function EstimerUnImmeuble() {
         </>
       </HeroMedia>
 
-      <section className="section section--creme">
+      {/* Les cinq analyses et le schéma de l'immeuble (dessin A, MAV 03/11/2026) :
+          chaque analyse allume sa partie du dessin. Sombre : la section suit le hero
+          et précède le formulaire noir. */}
+      <section className="section section--noir-2 sec-analyses">
         <div className="container">
-          <TeteMedia
-            image={{
-              src: "/media/img-vendez-3.webp",
-              alt: "Immeuble de rapport parisien d’angle, façade en pierre et brique",
-              width: 1058,
-              height: 582,
-              libre: true,
-            }}
-          >
+          <Reveal className="sec-analyses__tete">
             <Eyebrow>Estimation</Eyebrow>
-            <h2>Analyses comprises dans l’estimation gratuite</h2>
+            <h2>
+              Analyses comprises dans l’estimation <span className="accent">gratuite</span>
+            </h2>
             <p className="lead">
               Bénéficiez d’une estimation se basant sur l’aspect général, géographique et locatif
               de votre immeuble ainsi que sur son caractère constructible pour une valorisation
               optimale.
             </p>
-          </TeteMedia>
-
-          {/* Les cinq analyses sur une seule ligne (MAV, 22/10/2026), en
-              médaillons comme sur la page Vendre. Quand la largeur manque, la
-              ligne défile au doigt plutôt que de passer à la ligne. */}
-          <LigneDefilante>
-            {ANALYSES.map((a, i) => (
-              <Reveal key={a.titre} as="article" className="card card--medaillon" delayIndex={i}>
-                <span className="card__fond" aria-hidden="true">
-                  <Picto nom={a.picto} taille={96} />
-                </span>
-                <span className="card__picto" aria-hidden="true">
-                  <Picto nom={a.picto} taille={30} />
-                </span>
-                <h3>{a.titre}</h3>
-                <p>{a.texte}</p>
-              </Reveal>
-            ))}
-          </LigneDefilante>
+          </Reveal>
+          <AnalysesSchema svg={SCHEMA} analyses={ANALYSES} />
+          <div className="btn-row sec-analyses__cta">
+            <Button href="#estimer">Estimer mon immeuble</Button>
+          </div>
         </div>
       </section>
 
