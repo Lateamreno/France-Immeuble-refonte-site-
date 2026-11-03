@@ -134,7 +134,7 @@ function objet(l: Lead): string {
     case "contact":
       return l.bien
         ? `Demande de dossier : ${texte(l.bienTitre) || "bien à vendre"}${qui(l) ? ` (${qui(l)})` : ""}`
-        : `Nouveau message de contact${texte(l.telephone) ? ` : ${texte(l.telephone)}` : ""}`;
+        : `Nouveau message de contact${qui(l) ? ` : ${qui(l)}` : texte(l.telephone) ? ` : ${texte(l.telephone)}` : ""}`;
     case "compte":
       return `Nouveau compte client${qui(l) ? ` : ${qui(l)}` : ""}`;
     case "recherche_compte":

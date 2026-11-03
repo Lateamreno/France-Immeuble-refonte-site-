@@ -92,7 +92,7 @@ export default async function ImmeublesOffMarket() {
               Déposer ma recherche
             </Button>
             <Button href={SITE.telHref} variant="outline">
-              Être rappelé.e
+              Nous appeler
             </Button>
           </div>
         </>

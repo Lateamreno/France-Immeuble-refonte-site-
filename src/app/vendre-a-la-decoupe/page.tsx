@@ -11,6 +11,9 @@ import { chiffres } from "@/lib/chiffres";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { EstimationForm } from "@/components/EstimationForm";
+import { DeuxAcheteurs } from "@/components/DeuxAcheteurs";
+import { Picto, type NomPicto } from "@/components/Picto";
 
 /**
  * /vendre-a-la-decoupe/ — le meilleur aimant à gros immeubles du site.
@@ -22,7 +25,7 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
  *
  * L'argument central n'est pas « la découpe rapporte plus » : c'est que le
  * propriétaire qui vend en bloc vend à quelqu'un qui fera ce travail à sa
- * place et empochera l'écart. On lui propose de le faire pour lui.
+ * place et fera sa marge. On lui propose de le faire pour lui.
  */
 export const metadata: Metadata = {
   title: "Vendre un immeuble à la découpe",
@@ -51,6 +54,7 @@ const CAS = {
     rendement: "7,71 %",
     acheteur: "Investisseur professionnel",
     honoraires: "− 95 000 €",
+    montage: "—",
     frais: "—",
     net: "1 805 000 €",
   },
@@ -59,7 +63,10 @@ const CAS = {
     prixM2: "5 202 €/m²",
     rendement: "5,17 %",
     acheteur: "Occupants et particuliers",
-    honoraires: "− 163 250 €",
+    // 163 250 € d'honoraires : 141 750 € de vente (5 % de 2 835 000 €) et
+    // 21 500 € de montage (10 lots occupés à 2 000 €, 1 lot vide à 1 500 €).
+    honoraires: "− 141 750 €",
+    montage: "− 21 500 €",
     frais: "− 22 275 €",
     net: "2 649 475 €",
   },
@@ -109,14 +116,15 @@ const QUESTIONS: QuestionFaq[] = [
     reponse: (
       <>
         <p>
-          Non, et c’est rarement souhaitable. Un lot occupé se vend à un investisseur, un lot libre
-          à un occupant : deux marchés, deux prix. Une découpe bien menée mélange les deux plutôt
-          que d’attendre des départs qui prendraient des années.
+          C’est la vacance qui rend la découpe intéressante : un lot libre se vend au prix du
+          marché résidentiel, un lot occupé avec une décote. Il faut donc donner les congés pour
+          espérer vendre au meilleur prix.
         </p>
         <p>
-          Les lots déjà vides partent en premier : ils financent la patience sur le reste. Pour les
-          autres, on travaille au cas par cas : rachat de bail, départ anticipé indemnisé, vente au
-          locataire en place, ou vente occupée avec sa décote.
+          Comme vous restez propriétaire, vous n’êtes pas tenu par les mêmes obligations que les
+          marchands de biens, notamment celles de la loi Aurillac : vous gardez beaucoup plus de
+          souplesse. Il faut en revanche respecter les échéances des baux. Un congé manqué sur un
+          bail nu, et le bail repart pour trois ans.
         </p>
       </>
     ),
@@ -131,9 +139,9 @@ const QUESTIONS: QuestionFaq[] = [
           délai de réponse encadré.
         </p>
         <p>
-          Notre règle est constante : le prix qui lui est notifié est un prix net vendeur, jamais
-          majoré de nos honoraires. Un locataire qui préempte n’est pas un acquéreur que nous avons
-          présenté. Nos honoraires sont dans ce cas minorés de 20 %.
+          Le prix qui lui est présenté est un prix net vendeur. S’il achète, nos honoraires sont
+          minorés de 20 % : il n’y a pas eu de commercialisation, seulement une mission de
+          négociation.
         </p>
       </>
     ),
@@ -176,11 +184,10 @@ const QUESTIONS: QuestionFaq[] = [
     question: "Est-ce que je deviens marchand de biens aux yeux du fisc ?",
     reponse: (
       <p>
-        C’est la vraie question à poser à votre conseil, et nous la signalons systématiquement.
-        Diviser puis revendre plusieurs lots peut, selon les circonstances et votre historique,
-        être regardé comme une activité professionnelle avec les conséquences fiscales
-        correspondantes. Nous ne donnons pas de conseil fiscal : nous vous alertons, votre
-        expert-comptable tranche.
+        Dans la plupart des cas, non. Si vous détenez l’immeuble pour le louer depuis de
+        nombreuses années, vous n’êtes pas concerné, et encore moins si vous en avez hérité. La
+        question se pose surtout pour un immeuble acheté récemment pour être revendu. Si votre
+        situation s’en rapproche, nous vous le signalons et votre expert-comptable tranche.
       </p>
     ),
   },
@@ -216,11 +223,11 @@ export default async function Decoupe() {
           </h1>
           <p className="lead">
             Celui qui rachète votre immeuble en bloc pour le découper fait un métier. Il le met en
-            copropriété, négocie les départs, rénove, revend lot par lot, et garde l’écart. Nous
-            faisons ce travail pour vous, et l’écart vous revient.
+            copropriété, négocie les départs, rénove, revend lot par lot, et fait sa marge. Nous
+            faisons ce travail pour vous, et la marge vous revient.
           </p>
           <div className="btn-row">
-            <Button href="/estimer-un-immeuble/" icone>
+            <Button href="#estimer" icone>
               Chiffrer les deux scénarios
             </Button>
             <a className="btn btn--outline" href={SITE.telHref}>
@@ -231,24 +238,17 @@ export default async function Decoupe() {
       </HeroMedia>
 
       {/* ───────── Le mécanisme : pourquoi l'écart existe ───────── */}
-      <section className="section section--noir-2">
-        <div className="container container--narrow">
+      <section className="section section--noir-2 deux-acheteurs-sec">
+        <div className="container">
           <Reveal className="section__head">
             <Eyebrow>L’écart de valeur</Eyebrow>
             <h2>Deux acheteurs qui n’achètent pas la même chose</h2>
+            <p className="lead">
+              Le même immeuble, au même endroit, ne se vend pas au même prix selon qui l’achète.
+            </p>
           </Reveal>
           <Reveal>
-            <p className="lead">
-              En bloc, votre acheteur est un investisseur. Il n’achète pas des murs, il achète un
-              rendement : il divise vos loyers par le taux qu’il exige, et ce calcul lui donne un
-              prix qu’il ne dépassera pas.
-            </p>
-            <p className="lead" style={{ marginTop: "var(--space-s)" }}>
-              À la découpe, chaque lot s’adresse à quelqu’un qui va y habiter, ou à un petit
-              investisseur qui raisonne au prix du marché. Le rendement n’entre plus dans
-              l’équation. C’est le même immeuble, au même endroit, vendu à un prix au m² que le
-              calcul de rendement rendait inatteignable.
-            </p>
+            <DeuxAcheteurs />
           </Reveal>
         </div>
       </section>
@@ -263,7 +263,8 @@ export default async function Decoupe() {
             </h2>
             <p className="lead">
               Un immeuble de rapport que nous avons étudié dans les deux hypothèses. Les prix à la
-              découpe sont la moyenne de deux estimations indépendantes, lot par lot.
+              découpe sont estimés selon les dernières ventes du secteur, puis ajustés avec
+              plusieurs agences locales avant la commercialisation.
             </p>
           </Reveal>
 
@@ -328,8 +329,8 @@ export default async function Decoupe() {
             <h2>Le même dossier, tous frais déduits</h2>
             <p className="lead">
               Un écart de prix ne veut rien dire tant qu’on n’a pas payé l’opération. Voici le
-              bilan complet : nos honoraires, plus élevés à la découpe, et l’intégralité des frais
-              de division.
+              bilan complet : nos honoraires de vente, les honoraires de montage de l’opération et
+              l’intégralité des frais de division.
             </p>
           </Reveal>
 
@@ -352,9 +353,17 @@ export default async function Decoupe() {
                   <td>{CAS.decoupe.prix}</td>
                 </tr>
                 <tr>
-                  <td>Honoraires France Immeuble</td>
+                  <td>Honoraires de vente (5 %)</td>
                   <td>{CAS.bloc.honoraires}</td>
                   <td>{CAS.decoupe.honoraires}</td>
+                </tr>
+                <tr>
+                  <td>
+                    Honoraires de montage
+                    <span className="tableau__detail">10 lots occupés à 2 000 €, 1 lot vide à 1 500 €</span>
+                  </td>
+                  <td>{CAS.bloc.montage}</td>
+                  <td>{CAS.decoupe.montage}</td>
                 </tr>
                 <tr>
                   <td>Frais d’opération (médian, hors travaux)</td>
@@ -427,11 +436,11 @@ export default async function Decoupe() {
             <h2>Vous n’avez pas à devenir marchand de biens</h2>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
               C’est un métier : cinq corps d’intervenants, un calendrier légal contraint, des
-              négociations locataire par locataire. Nous tenons l’ensemble. Vous validez et vous
-              signez.
+              négociations locataire par locataire. Nous nous en occupons pour vous, afin de vous
+              garantir la marge du marchand.
             </p>
             <div className="btn-row mission-sec__bouton">
-              <Button href="/estimer-un-immeuble/" icone>
+              <Button href="#estimer" icone>
                 Faire étudier mon immeuble
               </Button>
             </div>
@@ -444,40 +453,46 @@ export default async function Decoupe() {
                 t: "La grille de prix, lot par lot",
                 p: "Valorisation de chaque lot en valeur libre et en valeur occupée, puis séquencement des sorties : quel lot part en premier, lequel attend un départ, lequel se vend occupé.",
                 m: "Deux estimations croisées",
+                picto: "calculatrice",
               },
               {
                 n: "02",
                 t: "La mise en copropriété",
                 p: "Géomètre-expert pour l’état descriptif de division et les tantièmes, diagnostic technique global, notaire pour le règlement, syndic provisoire. Nous mettons chaque intervenant en concurrence et pilotons l’enchaînement.",
                 m: "Cinq intervenants coordonnés",
+                picto: "dossier",
               },
               {
                 n: "03",
                 t: "Les départs et les préemptions",
                 p: "Négociation amiable des départs, rachats de bail, congés pour vente aux échéances éligibles, offres de vente valant préemption. C’est le volet le plus délicat de l’opération et celui qui commande le calendrier.",
                 m: "Calendrier légal tenu",
+                picto: "agenda",
               },
               {
                 n: "04",
                 t: "Les baux commerciaux",
                 p: "Droit de préférence du locataire commercial à la première vente, et renégociation du bail quand le loyer est manifestement sous-évalué : un bail en dessous du marché plombe la valeur du lot.",
                 m: "Valeur du lot défendue",
+                picto: "commerce",
               },
               {
                 n: "05",
                 t: "Les travaux des lots libres",
-                p: "Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Gratuit lorsque les travaux passent par une société du groupe, aux conditions tarifaires négociées.",
+                p: "Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Sans honoraires lorsque les travaux passent par la Team Reno, à des conditions tarifaires avantageuses.",
                 m: "Rénovation avant vente",
+                picto: "technique",
               },
               {
                 n: "06",
                 t: "La commercialisation",
                 p: `Lots occupés vers notre fichier de ${nombre(ch.investisseurs)} investisseurs, lots libres vers les occupants, en off-market puis en diffusion élargie. Agence locale en renfort si le secteur l’exige, sans frais supplémentaires pour vous.`,
                 m: "Deux marchés, deux prix",
+                picto: "reseau",
               },
             ].map((e) => (
-              <article key={e.n} className="etape-frise">
-                <span className="etape-frise__point" aria-hidden="true" />
+              <article key={e.n} className="etape-frise etape-frise--picto">
+                <Picto nom={e.picto as NomPicto} taille={40} className="etape-frise__picto" />
                 <span className="step__num">Étape {e.n} · {e.m}</span>
                 <h3>{e.t}</h3>
                 <p>{e.p}</p>
@@ -582,17 +597,16 @@ export default async function Decoupe() {
                 <span className="tarifs__nom">Vente à un locataire qui préempte</span>
                 <span className="tarifs__val">− 20 % sur la commission</span>
                 <span className="tarifs__note">
-                  Le prix notifié au locataire est un prix net vendeur, jamais majoré de nos
-                  honoraires. Un locataire qui préempte n’est pas un acquéreur que nous avons
-                  présenté.
+                  Le prix présenté au locataire est un prix net vendeur. Il n’y a pas eu de
+                  commercialisation, seulement une mission de négociation.
                 </span>
               </li>
               <li>
                 <span className="tarifs__nom">Coordination des travaux</span>
                 <span className="tarifs__val">0 % ou 3 % TTC</span>
                 <span className="tarifs__note">
-                  Sans honoraires lorsque les travaux passent par une société du groupe, aux
-                  conditions tarifaires négociées. 3 % du montant coordonné avec une entreprise
+                  Sans honoraires lorsque les travaux passent par la Team Reno, à des conditions
+                  tarifaires avantageuses. 3 % du montant coordonné avec une entreprise
                   extérieure.
                 </span>
               </li>
@@ -620,9 +634,9 @@ export default async function Decoupe() {
             <p className="lead">
               Une découpe se pilote sur le terrain : rendez-vous locataire par locataire,
               entreprises à suivre, syndic à installer, mairie à interroger. Nous ne prenons ces
-              missions que là où nous pouvons être présents dans la journée. Pour un immeuble hors
-              de ce périmètre, nous vendons en bloc : c’est plus honnête que d’accepter une
-              opération que nous tiendrions mal.
+              missions que là où nous pouvons être présents dans la journée. Hors de ce périmètre,
+              nous ne pouvons pas encore la proposer, sauf au cas par cas quand nous avons déjà des
+              partenaires sur place.
             </p>
           </Reveal>
         </div>
@@ -640,28 +654,24 @@ export default async function Decoupe() {
         </div>
       </section>
 
-      <section className="section cta-final section--noir-2">
-        <div className="container">
+      {/* Tous les boutons de la page mènent ici (retours #132 et #133, MAV, 03/11/2026). */}
+      <section id="estimer" className="section section--noir-2 section--ecran sec-formulaire">
+        <div className="container split">
           <Reveal>
             <Eyebrow bare>Étude sans engagement</Eyebrow>
             <h2>Bloc ou découpe&nbsp;: on vous donne les deux chiffres</h2>
             <p className="lead">
-              Décrivez-nous l’immeuble et ses loyers. Nous revenons avec la valeur en bloc, la
-              valeur découpée lot par lot, et le net vendeur dans les deux cas, frais déduits. Vous
-              choisissez ensuite, ou vous ne faites rien.
+              Décrivez-nous l’immeuble et ses loyers. Nous vous accompagnons ensuite dans le choix
+              de la solution adaptée.
             </p>
-            <div className="btn-row">
-              <Button href="/estimer-un-immeuble/" icone>
-                Chiffrer les deux scénarios
-              </Button>
-              <a className="btn btn--outline" href={SITE.telHref}>
-                {SITE.tel}
-              </a>
+            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+              <Button href={SITE.telHref} variant="outline">Préférer le téléphone · {SITE.tel}</Button>
             </div>
           </Reveal>
+          <EstimationForm formulaire="vendre" />
         </div>
       </section>
-      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Faire étudier mon immeuble" />
+      <BoutonFixeMobile href="#estimer" libelle="Faire étudier mon immeuble" cible="estimer" />
     </>
   );
 }

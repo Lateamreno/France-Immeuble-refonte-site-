@@ -18,6 +18,18 @@ export const surfaceVente = (v: Vente) =>
       ? `${v.surfaceMin.toLocaleString("fr-FR")} à ${v.surfaceMax.toLocaleString("fr-FR")} m²`
       : null;
 
+/**
+ * Ce qui se publie (retour #144, MAV, 03/11/2026) : un écart à l'estimation plus
+ * défavorable que −8 % et un délai avant l'offre de plus de trois mois ne
+ * s'affichent pas, ni sur les cartes ni sur les fiches.
+ */
+export const ECART_PLANCHER = -8;
+export const DELAI_MAX_JOURS = 92;
+export const ecartPublie = (v: Pick<Vente, "ecartEstimation">) =>
+  v.ecartEstimation != null && v.ecartEstimation >= ECART_PLANCHER ? v.ecartEstimation : null;
+export const delaiPublie = (v: Pick<Vente, "delaiOffreJours">) =>
+  v.delaiOffreJours != null && v.delaiOffreJours <= DELAI_MAX_JOURS ? v.delaiOffreJours : null;
+
 /** « Offre en 3 semaines » ; moins de 14 jours : en jours. */
 export const delaiOffre = (j: number) =>
   j < 14 ? `${j} jour${j > 1 ? "s" : ""}` : `${Math.round(j / 7)} semaines`;
@@ -34,10 +46,12 @@ export const delaiOffre = (j: number) =>
  */
 export function CarteVente({ v }: { v: Vente }) {
   const surface = surfaceVente(v);
+  const delai = delaiPublie(v);
+  const ecart = ecartPublie(v);
   const suite = [
-    v.delaiOffreJours != null ? `Offre en ${delaiOffre(v.delaiOffreJours)}` : null,
-    AFFICHER_ECART_ESTIMATION && v.ecartEstimation != null
-      ? `Meilleure offre ${pct(v.ecartEstimation, true)}\u00a0vs\u00a0estimation`
+    delai != null ? `Offre en ${delaiOffre(delai)}` : null,
+    AFFICHER_ECART_ESTIMATION && ecart != null
+      ? `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
       : null,
   ].filter(Boolean);
 

@@ -67,6 +67,11 @@ export default async function Accueil() {
 
       {/* Sur un seul écran (retour #56, MAV, 27/10/2026). */}
       <section className="section section--creme section--ecran accueil-vendre">
+        {/* Retour #117 (MAV, 03/11/2026) : une photo d'immeubles à peine visible
+            sous le crème, pour que la section ne soit plus un aplat. */}
+        <div className="fond-leger" aria-hidden="true">
+          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" placeholder="blur" />
+        </div>
         <div className="container split">
           <Reveal>
             <Eyebrow>Vendre</Eyebrow>
@@ -254,7 +259,7 @@ export default async function Accueil() {
               <h3>Je souhaite acheter un immeuble</h3>
               <p>
                 Parcourez nos immeubles de rapport en vente avec des{" "}
-                <strong>critères pensés pour les immeubles</strong> : rendement, lots, type, prix.
+                <strong>critères pensés pour les immeubles</strong> : rendement, occupation, destination, prix.
                 Chaque immeuble a son <strong>dossier complet</strong> et un{" "}
                 <strong>interlocuteur spécialisé</strong>.
               </p>

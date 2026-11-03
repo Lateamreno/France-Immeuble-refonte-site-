@@ -85,7 +85,7 @@ export default function EstimerUnImmeuble() {
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>
-            <Button href={SITE.telHref} variant="outline">Être rappelé.e</Button>
+            <Button href={SITE.telHref} variant="outline">Nous appeler</Button>
           </div>
         </>
       </HeroMedia>
@@ -93,7 +93,10 @@ export default function EstimerUnImmeuble() {
       {/* Les cinq analyses et le schéma de l'immeuble (dessin A, MAV 03/11/2026) :
           chaque analyse allume sa partie du dessin. Sombre : la section suit le hero
           et précède le formulaire noir. */}
-      <section className="section section--noir-2 sec-analyses">
+      {/* Sur ordinateur, la section reste à l'écran pendant que les cinq analyses
+          défilent, puis la page reprend (retour #127, MAV, 03/11/2026). */}
+      <section className="section section--noir-2 sec-analyses sec-analyses--pin">
+        <div className="sec-analyses__pin">
         <div className="container">
           <AnalysesSchema
             svg={SCHEMA}
@@ -117,6 +120,7 @@ export default function EstimerUnImmeuble() {
           <div className="btn-row sec-analyses__cta">
             <Button href="#estimer">Estimer mon immeuble</Button>
           </div>
+        </div>
         </div>
       </section>
 

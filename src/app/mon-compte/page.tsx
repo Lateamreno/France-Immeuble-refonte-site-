@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { VISUELS } from "@/lib/visuels";
 import Link from "next/link";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Picto, type NomPicto } from "@/components/Picto";
@@ -40,10 +41,10 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
   if (!session) {
     return (
       <section className="section section--noir-2 compte-entree">
-        {/* Retour #103 (MAV, 02/11/2026) : un ordinateur en fond, en bas à droite,
-            fondu vers le haut à gauche pour laisser lire le texte. */}
-        <span className="compte-entree__fond" aria-hidden="true">
-          <Image src="/media/atouts/reseau-ecrans.webp" alt="" fill sizes="(max-width: 900px) 100vw, 60vw" />
+        {/* Retour #148 (MAV, 03/11/2026) : une façade parisienne à la place des écrans,
+            sur toute la hauteur de la section, fondue vers le texte à gauche. */}
+        <span className="compte-entree__fond compte-entree__fond--facade" aria-hidden="true">
+          <Image src={VISUELS.facadeCoucher.src} alt="" fill sizes="(max-width: 900px) 100vw, 60vw" placeholder="blur" />
         </span>
         <div className="container split">
           <div>

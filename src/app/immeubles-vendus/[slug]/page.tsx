@@ -6,7 +6,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { Picto } from "@/components/Picto";
-import { CarteVente, surfaceVente, delaiOffre } from "@/components/CarteVente";
+import { CarteVente, surfaceVente, delaiOffre, ecartPublie, delaiPublie } from "@/components/CarteVente";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { SITE } from "@/lib/site";
@@ -147,13 +147,15 @@ export default async function FicheVente({ params }: Params) {
     rempli(v.rendement) && ["Rendement brut", pct(v.rendement)],
     rempli(v.dpe) && ["DPE", v.dpe],
   ];
+  const ecart = ecartPublie(v);
+  const delai = delaiPublie(v);
   const vente: ([string, ReactNode] | null | false)[] = [
     ["Prix de vente", prix(v.prix)],
-    AFFICHER_ECART_ESTIMATION && rempli(v.ecartEstimation) && [
+    AFFICHER_ECART_ESTIMATION && ecart != null && [
       LIBELLE_ECART,
-      `${v.ecartEstimation > 0 ? "+" : ""}${pct(v.ecartEstimation)}`,
+      `${ecart > 0 ? "+" : ""}${pct(ecart)}`,
     ],
-    rempli(v.delaiOffreJours) && ["De la mise en vente à l’offre", delaiOffre(v.delaiOffreJours)],
+    delai != null && ["De la mise en vente à l’offre", delaiOffre(delai)],
     rempli(v.modeCommercialisation) && ["Commercialisation", MODES[v.modeCommercialisation]],
     rempli(v.delaiSemaines) && [
       "Du mandat au compromis",

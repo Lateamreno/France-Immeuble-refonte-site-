@@ -9,8 +9,10 @@ import { Picto, type NomPicto } from "@/components/Picto";
  *
  * Ordinateur (légende A1) : le titre et le chapeau en haut, le schéma à gauche, la
  * liste à droite sans encadré ; l'analyse allumée prend le filet or et son titre
- * passe en or. Elles s'allument seules toutes les trois secondes ; le survol de la
- * section arrête le défilement, le survol ou le clavier choisit.
+ * passe en or. La section reste à l'écran pendant que le défilement fait passer
+ * les cinq analyses, puis la page reprend (retour #127). Sur un écran trop bas
+ * pour l'épingler, elles s'allument seules toutes les trois secondes ; le survol
+ * arrête le défilement, le survol ou le clavier choisit.
  *
  * Téléphone (B1) : le surtitre, le titre et l'immeuble restent collés en haut de
  * l'écran ; dessous, une analyse par écran, en grand, la suivante à peine visible.
@@ -66,6 +68,28 @@ export function AnalysesSchema({
         addEventListener("scroll", surDefilement, { passive: true });
         suivre();
         arret = () => { ro.disconnect(); removeEventListener("scroll", surDefilement); if (attente) cancelAnimationFrame(attente); };
+        return;
+      }
+      // Section épinglée (retour #127) : elle reste à l'écran et le défilement fait
+      // passer les cinq analyses, puis la page reprend.
+      const piste = el.closest<HTMLElement>(".sec-analyses--pin");
+      const epingle = piste?.querySelector<HTMLElement>(".sec-analyses__pin");
+      if (piste && epingle && matchMedia("(min-width: 760px) and (min-height: 700px)").matches) {
+        let attente = 0;
+        const suivre = () => {
+          attente = 0;
+          const r = piste.getBoundingClientRect();
+          const haut = parseFloat(getComputedStyle(epingle).top) || 0;
+          const course = r.height - epingle.offsetHeight;
+          if (course <= 0) return;
+          const p = Math.min(1, Math.max(0, (haut - r.top) / course));
+          setActif(Math.min(analyses.length - 1, Math.floor(p * analyses.length)));
+        };
+        const surDefilement = () => { if (!attente) attente = requestAnimationFrame(suivre); };
+        addEventListener("scroll", surDefilement, { passive: true });
+        addEventListener("resize", surDefilement);
+        suivre();
+        arret = () => { removeEventListener("scroll", surDefilement); removeEventListener("resize", surDefilement); if (attente) cancelAnimationFrame(attente); };
         return;
       }
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) { arret = () => {}; return; }

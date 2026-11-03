@@ -11,6 +11,7 @@ import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { biensAVendre, offMarket } from "@/lib/biens";
 import { CarteOffMarket } from "@/components/biens/CarteOffMarket";
+import { RechercheForm } from "@/components/RechercheForm";
 import { EnregistrerIci } from "@/components/biens/EnregistrerIci";
 import { filtrer, horsRecherche, lienRecherche, lireCriteres, puces, TRIS, versParams, versRechercheCompte } from "@/lib/recherche-biens";
 import { RechercheBiens, TriMobile } from "@/components/biens/RechercheBiens";
@@ -167,7 +168,7 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
                 className="btn-row"
                 style={{ marginTop: "var(--space-m)", justifyContent: "center" }}
               >
-                <Button href="/immeubles-off-market/" icone>
+                <Button href="#deposer" icone>
                   Déposer ma recherche
                 </Button>
                 <Button href="/immeubles-vendus/" variant="ghost-dark">
@@ -179,25 +180,20 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
         </div>
       </section>
 
-      <section className="section section--noir-2">
-        <div className="container">
+      {/* Retour #146 (MAV, 03/11/2026) : le formulaire de recherche à droite, à la
+          place des boutons. */}
+      <section id="deposer" className="section section--noir-2 recherche-sec">
+        <div className="container split">
           <Reveal className="section__head">
             <Eyebrow>Et ce qui n’est pas en ligne</Eyebrow>
             <h2>Une partie de nos mandats ne sont jamais diffusés</h2>
             <p className="lead">
               Certains propriétaires préfèrent que leurs locataires, leurs voisins et le marché
               n’apprennent pas la vente par une annonce. Ces immeubles partent directement aux
-              acquéreurs inscrits dont la recherche correspond.
+              acquéreurs inscrits dont la recherche correspond. Déposez la vôtre pour les recevoir.
             </p>
-            <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/immeubles-off-market/">
-                Accéder à l’off-market
-              </Button>
-              <Button href={SITE.telHref} variant="outline">
-                Être rappelé.e
-              </Button>
-            </div>
           </Reveal>
+          <RechercheForm />
         </div>
       </section>
       </PageFond>

@@ -96,10 +96,14 @@ function versBO(r: Recherche, societe: string) {
 /** Une recherche à deux types d'opération devient deux recherches, tout le reste à l'identique (retour #88). */
 const deplier = (rs: Recherche[]) => rs.flatMap((r) => (r.cibles.length > 1 ? r.cibles.map((c) => ({ ...r, cibles: [c] })) : [r]));
 
-export function RechercheForm() {
+export function RechercheForm({ contact, commentaire }: {
+  /** Suite d'un message de contact (retour #120) : coordonnées et message déjà saisis. */
+  contact?: Partial<Contact>;
+  commentaire?: string;
+} = {}) {
   const uid = useId();
-  const [c, setC] = useState<Contact>(CONTACT_VIDE);
-  const [rs, setRs] = useState<Recherche[]>([RECHERCHE_VIDE]);
+  const [c, setC] = useState<Contact>(() => ({ ...CONTACT_VIDE, ...contact }));
+  const [rs, setRs] = useState<Recherche[]>(() => [{ ...RECHERCHE_VIDE, commentaire: commentaire?.trim() ?? "" }]);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [envoi, setEnvoi] = useState(false);
   const [fini, setFini] = useState<null | "ok" | "echec">(null);

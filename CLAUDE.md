@@ -434,7 +434,14 @@ le titre se resserre sur un écran bas et se cache sous 600 px de haut (le surti
 restent). **Méthode de Vendre** (MAV, 03/11/2026) : le marbre noir de l'ancien site
 (`marbre-noir.webp`) en fond et un grand chiffre or écrit en Caveat, décalé en haut à droite de chaque illustration qui n'en couvre que le bas
 (`.methode-sec--marbre`, `.step__chiffre`) ; l'ancien site utilisait Quentin, licence inconnue.
-**Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
+**Estimer, analyses épinglées** (retour #127, MAV, 03/11/2026) : sur ordinateur, la section
+reste à l'écran (immeuble, analyses et bouton) pendant que le défilement fait passer les cinq
+analyses, puis la page reprend (`.sec-analyses--pin`). **Méthode de Vendre centrée** (#124,
+#125) : sans petits numéros ni frise, le grand chiffre or dit l'ordre. **Découpe** (retours
+#126 à #141) : la marge du marchand ; les deux acheteurs en dessin (`DeuxAcheteurs`) ;
+honoraires de vente et de montage détaillés ; étapes avec picto, sans filet ni point ;
+la Team Reno pour les travaux ; tous les boutons mènent au formulaire de vente en fin de
+page. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », un lecteur et son document caviardé fondus dans le noir
 (`offmarket-lecteur-caviarde-v2.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
 **Photos fondues** dans les
@@ -594,6 +601,14 @@ Canal d'acquisition n°1 — à ne pas improviser.
   Contact. Vendre et Estimer finissent sur le formulaire d'estimation, avec le seul bouton
   téléphone à côté pour les indécis (l'e-mail y était moche, MAV) ; l'e-mail de contact est
   dans le pied de page de toutes les pages : un contact donne moins d'informations qu'une estimation.
+- **Le message de contact se prolonge** (retour #120, MAV, 03/11/2026) : prénom, nom et
+  e-mail sur tous les formulaires de contact ; le message parti, « acheter » enchaîne sur le
+  dépôt de recherche et « vendre » sur l'estimation, coordonnées et message repris
+  (`initial` de `EstimationForm`, `contact` de `RechercheForm`). Le message reste au BO même
+  si le visiteur s'arrête là.
+- **Ventes publiées** (retour #144, MAV, 03/11/2026) : un écart à l'estimation plus
+  défavorable que −8 % et un délai avant l'offre de plus de trois mois ne s'affichent pas
+  (`ecartPublie`, `delaiPublie` de `CarteVente`).
 - **Alerte de l'agence à chaque formulaire** (MAV, 22/10/2026) : le site envoie lui-même un
   e-mail à `contact@` et `ma.voci@` (SendGrid, depuis `contact@france-immeuble.fr`,
   Reply-To = le client), quel que soit le formulaire, même si le BO est en panne

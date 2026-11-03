@@ -11,6 +11,7 @@ import { HeroMedia } from "@/components/HeroMedia";
 import { BandeMedia } from "@/components/BandeMedia";
 import { VISUELS } from "@/lib/visuels";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { Button } from "@/components/Button";
 
 /**
  * /acheter-un-immeuble/ — construction du fichier acquéreurs.
@@ -45,6 +46,10 @@ export default async function Acheter() {
             fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page, mais
             l’accès à ceux qui circulent en premier.
           </p>
+          {/* Retour #142 (MAV, 03/11/2026) : le bouton du hero mène au dépôt de recherche. */}
+          <div className="btn-row">
+            <Button href="#deposer" icone>Recevoir nos offres exclusives</Button>
+          </div>
           <div className="hero-proof">
             <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="investisseurs déjà dans le fichier" />
             <Chiffre picto="secteur" valeur={stats.villes} libelle="communes où nous avons vendu" />

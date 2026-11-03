@@ -149,7 +149,7 @@ export default async function VendreUnImmeuble() {
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Vendre mon immeuble</Button>
-            <Button href={SITE.telHref} variant="outline">Être rappelé.e</Button>
+            <Button href={SITE.telHref} variant="outline">Nous appeler</Button>
           </div>
         </>
       </HeroMedia>
@@ -166,7 +166,7 @@ export default async function VendreUnImmeuble() {
         coin={{ width: 900, height: 437 }}
         className="portes-sec"
         surtitre="Votre projet"
-        titre={<>Nous estimons, puis nous trouvons le meilleur acheteur</>}
+        titre={<>Nous estimons puis trouvons le meilleur acheteur pour votre immeuble</>}
       >
         <ol className="portes-libres">
           <li className="porte">
@@ -175,8 +175,9 @@ export default async function VendreUnImmeuble() {
             <h3>Nous estimons votre immeuble</h3>
             <span className="porte__filet" aria-hidden="true" />
             <p>
-              Gratuitement, à partir de son emplacement, de ses loyers et de sa
-              constructibilité. Vous connaissez sa valeur avant de décider.
+              Obtenez une estimation gratuite et sans engagement basée sur l’aspect général,
+              géographique et locatif de votre immeuble ainsi que sur son caractère constructible
+              pour une valorisation optimale.
             </p>
           </li>
           <li className="porte">
@@ -185,8 +186,8 @@ export default async function VendreUnImmeuble() {
             <h3>Nous le présentons aux bons acquéreurs</h3>
             <span className="porte__filet" aria-hidden="true" />
             <p>
-              Parmi nos {nombre(ch.investisseurs)} acheteurs, ceux dont les critères correspondent à
-              votre immeuble, pour obtenir la meilleure offre.
+              Nous trouvons parmi notre réseau de {nombre(ch.investisseurs)} acheteurs ceux capables
+              de faire les meilleures offres pour votre immeuble.
             </p>
           </li>
         </ol>

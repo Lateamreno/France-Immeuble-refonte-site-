@@ -3,6 +3,8 @@
 import { useId, useState } from "react";
 import { SITE } from "@/lib/site";
 import { PropositionCompte } from "./compte/PropositionCompte";
+import { EstimationForm } from "./EstimationForm";
+import { RechercheForm } from "./RechercheForm";
 
 /**
  * Formulaire de contact — repris du WordPress.
@@ -22,6 +24,7 @@ const PROJETS = [
 ] as const;
 /** Retour #71 (MAV, 02/11/2026) : acheter, vendre ou autre. Vendre ouvre le formulaire de vente. */
 export const PROJET_VENDRE = PROJETS[1];
+const PROJET_ACHETER = PROJETS[0];
 
 /**
  * `bien` : posé depuis une fiche « à vendre ». Le projet est pré-rempli et la
@@ -55,11 +58,11 @@ export function ContactForm({ bien, onVendre }: {
       e.telephone = "Veuillez entrer un numéro de téléphone à 10 chiffres.";
     }
     if (!projet) e.projet = "Veuillez sélectionner une option.";
-    if (bien) {
-      if (!prenom.trim()) e.prenom = "Requis.";
-      if (!nom.trim()) e.nom = "Requis.";
-      if (!/^\S+@\S+\.\S+$/.test(email.trim())) e.email = "E-mail invalide.";
-    }
+    // Prénom, nom et e-mail sur tous les formulaires (retour #120, MAV, 03/11/2026) :
+    // le message se prolonge en estimation ou en recherche, déjà remplie.
+    if (!prenom.trim()) e.prenom = "Requis.";
+    if (!nom.trim()) e.nom = "Requis.";
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) e.email = "E-mail invalide.";
     setErreurs(e);
     if (Object.keys(e).length > 0) return;
 
@@ -75,9 +78,10 @@ export function ContactForm({ bien, onVendre }: {
           telephone,
           projet,
           message,
-          ...(bien
-            ? { bien: bien.ref, bienTitre: bien.titre, prenom: prenom.trim(), nom: nom.trim(), email: email.trim() }
-            : {}),
+          prenom: prenom.trim(),
+          nom: nom.trim(),
+          email: email.trim(),
+          ...(bien ? { bien: bien.ref, bienTitre: bien.titre } : {}),
         }),
       });
       ok = r.ok;
@@ -125,6 +129,37 @@ export function ContactForm({ bien, onVendre }: {
     );
   }
 
+  /* Retour #120 (MAV, 03/11/2026) : le message parti, le formulaire se
+     prolonge. Un acheteur précise sa recherche, un vendeur lance l'estimation,
+     avec les coordonnées et le message déjà saisis. S'il s'arrête là, l'agence
+     a quand même reçu son message. */
+  if (envoye === "ok" && projet === PROJET_ACHETER) {
+    return (
+      <div className="contact-suite">
+        <span className="outcome__badge">Message envoyé</span>
+        <h3>Précisez votre recherche</h3>
+        <p className="contact-suite__intro">
+          Vos coordonnées sont reprises. Décrivez ce que vous cherchez pour recevoir en avant-première
+          les immeubles qui y correspondent.
+        </p>
+        <RechercheForm contact={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone }} commentaire={message} />
+      </div>
+    );
+  }
+  if (envoye === "ok" && projet === PROJET_VENDRE) {
+    return (
+      <div className="contact-suite">
+        <span className="outcome__badge">Message envoyé</span>
+        <h3>Lancez l’estimation de votre immeuble</h3>
+        <p className="contact-suite__intro">
+          Vos coordonnées sont reprises. Il ne manque que l’adresse de l’immeuble.
+        </p>
+        <EstimationForm formulaire="vendre"
+          initial={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone, message }} />
+      </div>
+    );
+  }
+
   if (envoye === "ok") {
     return (
       <div className="form-shell outcome">
@@ -144,8 +179,7 @@ export function ContactForm({ bien, onVendre }: {
   return (
     <form className="form-shell" onSubmit={envoyer} noValidate>
       <div className="fields">
-        {bien && (
-          <div className="fields fields--2">
+        <div className="fields fields--2">
             <div className="field">
               <label htmlFor={`${uid}-prenom`}>Prénom</label>
               <input id={`${uid}-prenom`} value={prenom} autoComplete="given-name"
@@ -165,7 +199,6 @@ export function ContactForm({ bien, onVendre }: {
               {erreurs.email && <span className="err">{erreurs.email}</span>}
             </div>
           </div>
-        )}
         <div className="field">
           <label htmlFor={`${uid}-tel`}>Entrez votre numéro de téléphone</label>
           <input

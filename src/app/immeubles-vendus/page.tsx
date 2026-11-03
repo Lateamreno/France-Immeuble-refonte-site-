@@ -189,7 +189,7 @@ export default async function ImmeublesVendus() {
                 Estimer mon immeuble
               </Button>
               <Button href={SITE.telHref} variant="outline">
-                Être rappelé.e
+                Nous appeler
               </Button>
             </div>
           </Reveal>

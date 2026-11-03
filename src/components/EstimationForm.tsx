@@ -68,14 +68,17 @@ type Phase = "saisie" | "complement" | "fin";
 export function EstimationForm({
   formulaire,
   dansLeCompte = false,
+  initial,
 }: {
   formulaire: "vendre" | "estimer";
   /** Depuis /mon-compte/ : la proposition de créer un compte n'a plus lieu d'être. */
   dansLeCompte?: boolean;
+  /** Suite d'un message de contact (retour #120) : coordonnées et message déjà saisis. */
+  initial?: Partial<Pick<Data, "prenom" | "nom" | "email" | "telephone" | "message">>;
 }) {
   const uid = useId();
   const [phase, setPhase] = useState<Phase>("saisie");
-  const [d, setD] = useState<Data>(VIDE);
+  const [d, setD] = useState<Data>(() => ({ ...VIDE, ...initial }));
   const [indicatif, setIndicatif] = useState("33");
   const [adresse, setAdresse] = useState<EtatAdresse>({ saisie: "", choisie: false, manuel: false });
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
