@@ -432,7 +432,7 @@ l'analyse allumée prend le filet or et son titre passe en or. Téléphone B1 : 
 immeuble collés en haut, une analyse par écran dessous, en grand, la suivante à peine visible ;
 le titre se resserre sur un écran bas et se cache sous 600 px de haut (le surtitre et l'immeuble
 restent). **Méthode de Vendre** (MAV, 03/11/2026) : le marbre noir de l'ancien site
-(`marbre-noir.webp`) en fond et un grand chiffre or écrit en Caveat derrière chaque illustration
+(`marbre-noir.webp`) en fond et un grand chiffre or écrit en Caveat, décalé en haut à droite de chaque illustration qui n'en couvre que le bas
 (`.methode-sec--marbre`, `.step__chiffre`) ; l'ancien site utilisait Quentin, licence inconnue.
 **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », un lecteur et son document caviardé fondus dans le noir

@@ -4800,15 +4800,15 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .methode-sec--marbre .step__visuel{isolation:isolate;}
 .methode-sec--marbre .step__visuel::before{opacity:.55;}
 .methode-sec--marbre .step__visuel img{z-index:1;filter:drop-shadow(0 14px 22px color-mix(in srgb,var(--color-noir) 70%,transparent));}
-.step__chiffre{position:absolute;z-index:0;left:50%;top:-44%;transform:translateX(-50%) rotate(-4deg);
+.step__chiffre{position:absolute;z-index:0;left:64%;top:-76%;transform:translateX(-50%) rotate(-4deg);
   font-family:var(--font-ecriture);font-weight:700;font-size:calc(var(--vis-w) * 1.05);line-height:1;
   color:var(--color-bronze);pointer-events:none;
   text-shadow:0 2px 0 color-mix(in srgb,var(--color-bronze-profond) 60%,transparent);}
-.methode-sec--marbre .steps--frise{padding-top:calc(var(--vis-w) * 0.45);}
+.methode-sec--marbre .steps--frise{padding-top:calc(var(--vis-w) * 0.6);}
 .methode-sec--marbre .steps--frise .step::before{background:color-mix(in srgb,var(--color-bronze) 35%,transparent);}
 @media (max-width:899px){
   .methode-sec--marbre .steps--frise{padding-top:0;}
-  .methode-sec--marbre .steps--frise .step{padding-top:calc(var(--vis-w) * 0.5);}
+  .methode-sec--marbre .steps--frise .step{padding-top:calc(var(--vis-w) * 0.75);}
   .methode-sec--marbre .steps--frise .step + .step{border-top-color:color-mix(in srgb,var(--color-creme) 10%,transparent);}
-  .step__chiffre{font-size:calc(var(--vis-w) * 1.2);top:-55%;}
+  .step__chiffre{font-size:calc(var(--vis-w) * 1.1);top:-82%;}
 }
