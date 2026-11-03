@@ -104,7 +104,7 @@ export default async function ImmeublesOffMarket() {
       <section className="section section--noir om-principe">
         <Image
           className="om-principe__photo"
-          src="/media/offmarket-lecteur-caviarde.webp"
+          src="/media/offmarket-lecteur-caviarde-v2.webp"
           alt=""
           width={1800}
           height={1125}

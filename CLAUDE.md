@@ -423,7 +423,7 @@ pilule à 28 px au-dessus du bas de l'écran, sans bandeau. Cachée sur le hero,
 (`cible`), le pied de page et les rangées `.porte-action` ; elle remplace au téléphone les
 boutons de section qui mènent au même endroit (`double-fixe`). **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », un lecteur et son document caviardé fondus dans le noir
-(`offmarket-lecteur-caviarde.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
+(`offmarket-lecteur-caviarde-v2.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
 **Photos fondues** dans les
 sections sombres sans image (`FondPhoto`, page Vendre : formulaire et contact, MAV, 02/11/2026). Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
 carte rétrécit (retour #76 : l'arrêt du défilement ne saute plus). Suites longues (mission de la Découpe) : grille 3 × 2 sur
