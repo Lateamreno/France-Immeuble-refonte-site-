@@ -9,7 +9,6 @@ import { FondPhoto } from "@/components/FondPhoto";
 import { Avis } from "@/components/Avis";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
-import { ContactForm } from "@/components/ContactForm";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
@@ -291,40 +290,20 @@ export default async function VendreUnImmeuble() {
                 Préférer le téléphone · {SITE.tel}
               </Button>
             </div>
-          </Reveal>
-          <EstimationForm formulaire="vendre" />
-        </div>
-      </section>
-
-      <section className="section section--noir-3 contact-sec">
-        <FondPhoto image={VISUELS.interieurToits.src} position="center 40%" />
-        <div className="container split">
-          <Reveal>
-            <Eyebrow>Contact</Eyebrow>
-            <h2>Besoin d’un conseil&nbsp;?</h2>
-            <p className="lead">
-              Un immeuble à vendre ou à acheter&nbsp;? Nous répondons à toutes vos questions.
-            </p>
             <ul className="fiche-contact">
-              <li>
-                <Picto nom="telephone" taille={20} />
-                <span>
-                  <span className="fiche-contact__lbl">Téléphone</span>
-                  <a href={SITE.telHref}>{SITE.tel}</a>
-                </span>
-              </li>
               <li>
                 <Picto nom="mail" taille={20} />
                 <span>
-                  <span className="fiche-contact__lbl">Email</span>
+                  <span className="fiche-contact__lbl">Ou par e-mail</span>
                   <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                 </span>
               </li>
             </ul>
           </Reveal>
-          <ContactForm />
+          <EstimationForm formulaire="vendre" />
         </div>
       </section>
+
       {/* Retour #77 : le bouton toujours à portée au téléphone, sauf sur le hero et le formulaire. */}
       <BoutonFixeMobile href="#estimer" libelle="Vendre mon immeuble" cible="estimer" />
     </>
