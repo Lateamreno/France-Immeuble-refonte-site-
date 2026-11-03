@@ -67,7 +67,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 /** Une tuile chiffrée ; « i » donne sa formule, sans JavaScript. */
-function Tuile({ titre, valeur, sous, formule, children }: { titre: string; valeur?: string; sous?: string | null; formule: string; children?: React.ReactNode }) {
+/** `ecart` colore la ligne du dessous : or quand c'est favorable à l'acquéreur, noir sinon (MAV, 03/11/2026). */
+function Tuile({ titre, valeur, sous, formule, ecart, children }: { titre: string; valeur?: string; sous?: string | null; formule: string; ecart?: "bien" | "moins" | null; children?: React.ReactNode }) {
   return (
     <div className="tuile-pb">
       <dt>
@@ -77,7 +78,7 @@ function Tuile({ titre, valeur, sous, formule, children }: { titre: string; vale
           <p>{formule}</p>
         </details>
       </dt>
-      <dd>{children ?? valeur}{sous && <small>{sous}</small>}</dd>
+      <dd>{children ?? valeur}{sous && <small className={ecart ? `ecart--${ecart}` : undefined}>{sous}</small>}</dd>
     </div>
   );
 }
@@ -399,6 +400,7 @@ export default async function FicheBien({ params }: Params) {
               {r != null && (
                 <Tuile titre="Rentabilité brute" valeur={pct(r)}
                   sous={ecartRdt != null ? `${ecartRdt >= 0 ? "+" : "−"}${Math.abs(Math.round(ecartRdt))} % vs secteur` : null}
+                  ecart={ecartRdt == null ? null : ecartRdt > 0 ? "bien" : "moins"}
                   formule={(b.rendementPotentiel != null
                     ? "Loyer annuel potentiel hors charges ÷ (prix honoraires inclus + travaux prévus)."
                     : "Loyer annuel hors charges ÷ prix honoraires inclus.")
@@ -412,6 +414,7 @@ export default async function FicheBien({ params }: Params) {
               {b.prixM2 != null && (
                 <Tuile titre="Prix / m²" valeur={eur(b.prixM2)}
                   sous={ecartM2 != null ? `${ecartM2 >= 0 ? "+" : "−"}${Math.abs(Math.round(ecartM2))} % vs marché` : null}
+                  ecart={ecartM2 == null ? null : ecartM2 < 0 ? "bien" : "moins"}
                   formule={"Prix honoraires inclus ÷ surface totale."
                     + (ecartM2 != null ? " Comparé au prix médian au m² des ventes d’appartements du secteur (DVF), données Plein Bail." : "")} />
               )}

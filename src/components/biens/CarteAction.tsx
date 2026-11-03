@@ -184,7 +184,7 @@ function Simulation({
 
       <dl className="kpi">
         <div><dt>Mon prix</dt><dd>{eur(offre)}<small>{ecartPrix === 0 ? "prix demandé" : `${signe(ecartPrix)}${pct(Math.abs(ecartPrix), 1)} vs annonce`}</small></dd></div>
-        {pm2 != null && <div><dt>Prix / m²</dt><dd>{eur(pm2)}<small>{ecartM2 != null ? `${signe(ecartM2)}${pct(Math.abs(ecartM2), 0)} vs marché` : " "}</small></dd></div>}
+        {pm2 != null && <div><dt>Prix / m²</dt><dd>{eur(pm2)}<small className={ecartM2 == null ? undefined : ecartM2 < 0 ? "ecart--bien" : "ecart--moins"}>{ecartM2 != null ? `${signe(ecartM2)}${pct(Math.abs(ecartM2), 0)} vs marché` : " "}</small></dd></div>}
         {rd && (
           <div className="kpi--triple"><dt>Rendement</dt>
             <dd>{pct(rd.brut, 2)}<small>brut</small></dd>

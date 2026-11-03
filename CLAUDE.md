@@ -227,7 +227,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   la page (cookie `fi_retour`). Fiche : la référence du secteur est **Plein Bail** (#110, MAV, 03/11/2026 : « Pleinbail c'est
   mieux ») : prix au m² contre la médiane DVF des appartements, rentabilité contre celle de la ville,
   mêmes règles que `src/lib/benchmarks.ts` de Plein Bail, lues avec sa clé publiable (`src/lib/marche.ts`),
-  bloc « Le marché à … » ; nos ventes restent en fin de fiche, sans comparaison ; « Nos ventes »
+  bloc « Le marché à … » ; écart en or quand il est favorable à l'acquéreur, en noir sinon (MAV,
+  03/11/2026) ; nos ventes restent en fin de fiche, sans comparaison ; « Nos ventes »
   en fin de fiche ; état financier en blocs à picto ; sous 1000 px de haut, la simulation passe
   dans la feuille d'offre et la colonne tient sans défiler. DPE : fourchette des lots, de la
   meilleure classe à la moins bonne, quand le BO dépose les lots.
@@ -420,7 +421,10 @@ Vendre) : une étape par écran au téléphone, illustrations agrandies (retours
 retour #77, puis MAV, 02/11/2026 : « partout », « pas tout en bas », « sous le pouce ») : une
 pilule à 28 px au-dessus du bas de l'écran, sans bandeau. Cachée sur le hero, le formulaire
 (`cible`), le pied de page et les rangées `.porte-action` ; elle remplace au téléphone les
-boutons de section qui mènent au même endroit (`double-fixe`). **Photos fondues** dans les
+boutons de section qui mènent au même endroit (`double-fixe`). **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
+off-market », un lecteur et son document caviardé fondus dans le noir
+(`offmarket-lecteur-caviarde.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
+**Photos fondues** dans les
 sections sombres sans image (`FondPhoto`, page Vendre : formulaire et contact, MAV, 02/11/2026). Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
 carte rétrécit (retour #76 : l'arrêt du défilement ne saute plus). Suites longues (mission de la Découpe) : grille 3 × 2 sur
 ordinateur, ligne qui glisse au téléphone.

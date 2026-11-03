@@ -8,7 +8,7 @@ import { Reveal } from "@/components/Reveal";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { RechercheForm } from "@/components/RechercheForm";
 import { JsonLd } from "@/components/JsonLd";
-import { TeteMedia } from "@/components/TeteMedia";
+import Image from "next/image";
 import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, PREUVES, nombre } from "@/lib/site";
@@ -98,32 +98,36 @@ export default async function ImmeublesOffMarket() {
         </>
       </HeroMedia>
 
-      <section className="section section--creme">
-        <div className="container">
-          <TeteMedia
-            image={{
-              src: "/media/streets-of-paris-PV7Y89Z-1024x684.webp",
-              alt: "Rue parisienne bordée d’immeubles haussmanniens",
-              width: 1024,
-              height: 684,
-            }}
-          >
+      {/* Le principe, piste 3 retenue par MAV (retour #105, 03/11/2026) : la photo d'un
+          lecteur et d'un document caviardé, fondue dans le noir, et les trois raisons en
+          cartes de verre posées dessus. */}
+      <section className="section section--noir om-principe">
+        <Image
+          className="om-principe__photo"
+          src="/media/offmarket-lecteur-caviarde.webp"
+          alt=""
+          width={1800}
+          height={1125}
+          sizes="(max-width: 700px) 100vw, 70vw"
+        />
+        <span className="om-principe__voile" aria-hidden="true" />
+        <div className="container om-principe__in">
+          <Reveal className="om-principe__tete">
             <Eyebrow>Le principe</Eyebrow>
-            <h2>Off-market ne veut pas dire confidentiel pour tout le monde</h2>
+            <h2>
+              Les meilleures offres sont <span className="accent">off‑market</span>
+            </h2>
             <p className="lead">
-              Ça veut dire&nbsp;: pas d’annonce publique, pas de portail, pas de panneau. Le
-              dossier complet part à la poignée d’acquéreurs dont la recherche correspond
-              vraiment, et à eux seuls.
+              Un gage de qualité et d’exclusivité. Pas d’annonce publique, pas de portail, pas de
+              panneau : le dossier complet part à la poignée d’acquéreurs dont la recherche
+              correspond. Profitez de biens que vous ne verrez pas ailleurs.
             </p>
-          </TeteMedia>
+          </Reveal>
 
-          <div className="grid grid--3 grid--ligne-mob">
+          <div className="grid grid--ligne-mob om-principe__verres">
             {RAISONS.map((r, i) => (
-              <Reveal key={r.titre} as="article" className="card card--medaillon" delayIndex={i}>
-                <span className="card__fond" aria-hidden="true">
-                  <Picto nom={r.picto} taille={96} />
-                </span>
-                <span className="card__picto" aria-hidden="true">
+              <Reveal key={r.titre} as="article" className="om-verre" delayIndex={i}>
+                <span className="om-verre__picto" aria-hidden="true">
                   <Picto nom={r.picto} taille={30} />
                 </span>
                 <h3>{r.titre}</h3>
