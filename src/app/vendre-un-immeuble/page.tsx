@@ -290,15 +290,6 @@ export default async function VendreUnImmeuble() {
                 Préférer le téléphone · {SITE.tel}
               </Button>
             </div>
-            <ul className="fiche-contact">
-              <li>
-                <Picto nom="mail" taille={20} />
-                <span>
-                  <span className="fiche-contact__lbl">Ou par e-mail</span>
-                  <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-                </span>
-              </li>
-            </ul>
           </Reveal>
           <EstimationForm formulaire="vendre" />
         </div>

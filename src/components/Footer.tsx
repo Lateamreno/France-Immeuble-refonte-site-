@@ -28,6 +28,8 @@ export async function Footer() {
             <p className="small mono" style={{ marginTop: "var(--space-s)" }}>
               <a href={SITE.telHref}>{SITE.tel}</a>
               <br />
+              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              <br />
               {SITE.adresse}
               <br />
               {SITE.codePostalVille}

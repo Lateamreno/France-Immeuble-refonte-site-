@@ -591,8 +591,9 @@ Canal d'acquisition n°1 — à ne pas improviser.
 - Formspree est **abandonné** — le BO reçoit directement.
 - **Un seul formulaire par page de conversion** (MAV, 03/11/2026) : le bloc « Besoin d'un
   conseil ? » et son formulaire de contact restent sur l'accueil (public mélangé) et la page
-  Contact. Vendre et Estimer finissent sur le formulaire d'estimation, avec le téléphone et
-  l'e-mail à côté pour les indécis : un contact donne moins d'informations qu'une estimation.
+  Contact. Vendre et Estimer finissent sur le formulaire d'estimation, avec le seul bouton
+  téléphone à côté pour les indécis (l'e-mail y était moche, MAV) ; l'e-mail de contact est
+  dans le pied de page de toutes les pages : un contact donne moins d'informations qu'une estimation.
 - **Alerte de l'agence à chaque formulaire** (MAV, 22/10/2026) : le site envoie lui-même un
   e-mail à `contact@` et `ma.voci@` (SendGrid, depuis `contact@france-immeuble.fr`,
   Reply-To = le client), quel que soit le formulaire, même si le BO est en panne

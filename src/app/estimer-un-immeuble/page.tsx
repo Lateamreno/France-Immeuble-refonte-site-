@@ -4,7 +4,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
-import { Picto, type NomPicto } from "@/components/Picto";
+import type { NomPicto } from "@/components/Picto";
 import { JsonLd } from "@/components/JsonLd";
 import { AnalysesSchema } from "@/components/AnalysesSchema";
 import { schemaImmeuble } from "@/lib/schema-immeuble";
@@ -134,15 +134,6 @@ export default function EstimerUnImmeuble() {
                 Préférer le téléphone · {SITE.tel}
               </Button>
             </div>
-            <ul className="fiche-contact">
-              <li>
-                <Picto nom="mail" taille={20} />
-                <span>
-                  <span className="fiche-contact__lbl">Ou par e-mail</span>
-                  <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-                </span>
-              </li>
-            </ul>
           </Reveal>
 
           {/* Hors <Reveal> : le formulaire est le canal d'acquisition n°1, sa
