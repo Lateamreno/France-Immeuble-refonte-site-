@@ -198,8 +198,9 @@ export default async function VendreUnImmeuble() {
       </SectionFondue>
 
       {/* Les quatre étapes sur une frise horizontale : la méthode tient sur un
-          écran (MAV, 27/10/2026). Au téléphone, elles glissent au doigt. */}
-      <section className="section section--noir-2 methode-sec">
+          écran (MAV, 27/10/2026). Au téléphone, une étape par écran. Fond en marbre
+          noir et chiffres manuscrits or, repris de l'ancien site (MAV, 03/11/2026). */}
+      <section className="section section--noir-2 methode-sec methode-sec--marbre">
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>La méthode</Eyebrow>
@@ -211,7 +212,9 @@ export default async function VendreUnImmeuble() {
               <Reveal key={e.num} as="article" className="step step--illustre" delayIndex={i}>
                 <span className="step__dot" aria-hidden="true" />
                 <span className="step__visuel" aria-hidden="true">
-                  <Image src={e.image} alt="" width={445} height={390} sizes="150px" />
+                  {/* Le chiffre manuscrit or derrière l'illustration, comme sur l'ancien site (MAV, 03/11/2026). */}
+                  <span className="step__chiffre">{i + 1}</span>
+                  <Image src={e.image} alt="" width={445} height={390} sizes="(max-width: 899px) 190px, 176px" />
                 </span>
                 <span className="step__num">{e.num}</span>
                 <h3>{e.titre}</h3>

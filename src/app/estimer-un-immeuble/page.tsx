@@ -96,18 +96,25 @@ export default function EstimerUnImmeuble() {
           et précède le formulaire noir. */}
       <section className="section section--noir-2 sec-analyses">
         <div className="container">
-          <Reveal className="sec-analyses__tete">
-            <Eyebrow>Estimation</Eyebrow>
-            <h2>
-              Analyses comprises dans l’estimation <span className="accent">gratuite</span>
-            </h2>
-            <p className="lead">
-              Bénéficiez d’une estimation se basant sur l’aspect général, géographique et locatif
-              de votre immeuble ainsi que sur son caractère constructible pour une valorisation
-              optimale.
-            </p>
-          </Reveal>
-          <AnalysesSchema svg={SCHEMA} analyses={ANALYSES} />
+          <AnalysesSchema
+            svg={SCHEMA}
+            analyses={ANALYSES}
+            entete={
+              <>
+                <Eyebrow>Estimation</Eyebrow>
+                <h2>
+                  Analyses comprises dans l’estimation <span className="accent">gratuite</span>
+                </h2>
+              </>
+            }
+            chapeau={
+              <p className="lead">
+                Bénéficiez d’une estimation se basant sur l’aspect général, géographique et locatif
+                de votre immeuble ainsi que sur son caractère constructible pour une valorisation
+                optimale.
+              </p>
+            }
+          />
           <div className="btn-row sec-analyses__cta">
             <Button href="#estimer">Estimer mon immeuble</Button>
           </div>

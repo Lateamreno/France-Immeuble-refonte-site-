@@ -330,7 +330,7 @@ Les 4 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin 
 | `Archivo[wdth,wght].woff2` | Display — H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
 | `Inter[opsz,wght].woff2` | Body — texte, nav, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
 | `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
-| `Caveat[wght].woff2` | Écriture des légendes de polaroïds, rien d'autre (MAV, 22/10/2026). Non préchargée : seul l'accueil s'en sert | `wght` 400-700 | 75 Ko |
+| `Caveat[wght].woff2` | Écriture des légendes de polaroïds (MAV, 22/10/2026) et des chiffres de la méthode de Vendre (MAV, 03/11/2026), rien d'autre. Non préchargée | `wght` 400-700 | 75 Ko |
 
 ```css
 @font-face{font-family:"Archivo";src:url("/assets/fonts/Archivo[wdth,wght].woff2") format("woff2-variations");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
@@ -427,7 +427,14 @@ allume sa partie : rues en pointillés, abribus et commerce pour le secteur, con
 technique, fenêtres pour le financier (la porte reste éteinte), mansarde en pointillés et vide
 pour la constructibilité, un des trois personnages pour la cible (`AnalysesSchema`). Sur
 ordinateur, allumage seul toutes les 3 s, arrêté au survol ; au téléphone, schéma collé en haut
-et allumage au défilement. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
+et allumage au défilement. Légende A1 (MAV, 03/11/2026) : ni encadré ni rond autour du picto,
+l'analyse allumée prend le filet or et son titre passe en or. Téléphone B1 : surtitre, titre et
+immeuble collés en haut, une analyse par écran dessous, en grand, la suivante à peine visible ;
+le titre se resserre sur un écran bas et se cache sous 600 px de haut (le surtitre et l'immeuble
+restent). **Méthode de Vendre** (MAV, 03/11/2026) : le marbre noir de l'ancien site
+(`marbre-noir.webp`) en fond et un grand chiffre or écrit en Caveat derrière chaque illustration
+(`.methode-sec--marbre`, `.step__chiffre`) ; l'ancien site utilisait Quentin, licence inconnue.
+**Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », un lecteur et son document caviardé fondus dans le noir
 (`offmarket-lecteur-caviarde-v2.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
 **Photos fondues** dans les

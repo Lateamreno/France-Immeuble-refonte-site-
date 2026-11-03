@@ -4679,24 +4679,28 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
    Le SVG vient de src/lib/schema-immeuble.ts ; chaque analyse allume sa partie
    (groupe [data-i] en .est-actif). Couleurs : tokens et leurs mélanges, rien d'autre. */
 .sec-analyses{position:relative;overflow:clip;}
-.sec-analyses__tete .lead{margin-top:var(--space-s);color:color-mix(in srgb,var(--color-creme) 74%,var(--color-noir));}
-/* Titre et chapeau côte à côte sur ordinateur : la section tient sur un écran. */
-@media (min-width:1000px){
-  .sec-analyses__tete{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:var(--space-l);align-items:end;}
-  .sec-analyses__tete > :first-child{grid-column:1/-1;}
-  .sec-analyses__tete .lead{margin-top:0;}
-}
 .sec-analyses__cta{justify-content:center;margin-top:var(--space-s);}
-.analyses-sch{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:var(--space-l);align-items:center;margin-top:var(--space-m);}
-.analyses-sch__scene{margin:-10px 0 -10px -20px;}
-.analyses-sch__liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
-.analyses-sch__item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:2px 14px;padding:11px 14px;border-radius:16px;border:1px solid transparent;cursor:pointer;transition:background .3s,border-color .3s;}
+/* Ordinateur : titre | chapeau, puis schéma | liste (le bloc collé du téléphone s'efface). */
+.analyses-sch{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);grid-template-areas:"entete chapeau" "scene liste";column-gap:var(--space-l);row-gap:var(--space-m);align-items:center;}
+.analyses-sch__colle{display:contents;}
+.analyses-sch__entete{grid-area:entete;align-self:end;}
+.analyses-sch__chapeau{grid-area:chapeau;align-self:end;}
+.analyses-sch__chapeau .lead{margin:0;color:color-mix(in srgb,var(--color-creme) 74%,var(--color-noir));}
+.analyses-sch__scene{grid-area:scene;margin:-10px 0 -10px -20px;}
+.analyses-sch__liste{grid-area:liste;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+/* La légende A1 : pas d'encadré, un filet or pour l'analyse allumée. */
+.analyses-sch__item{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 14px;padding:11px 14px 11px 16px;margin-left:2px;
+  border-left:2px solid var(--color-ligne);cursor:pointer;opacity:.55;transition:opacity .35s,border-color .35s;}
 .analyses-sch__item:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
-.analyses-sch__item.est-actif{background:color-mix(in srgb,var(--color-bronze) 10%,var(--color-noir-2));border-color:color-mix(in srgb,var(--color-bronze) 40%,transparent);}
-.analyses-sch__picto{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--color-noir-3);color:var(--color-bronze);border:1px solid var(--color-ligne);transition:background .3s,color .3s;}
-.analyses-sch__item.est-actif .analyses-sch__picto{background:var(--color-bronze);color:var(--color-noir);border-color:var(--color-bronze);}
-.analyses-sch__item h3{margin:0;font-size:19px;color:var(--color-creme);}
+.analyses-sch__item.est-actif{opacity:1;border-left-color:var(--color-bronze);}
+.analyses-sch__num{display:none;}
+.analyses-sch__picto{grid-row:span 2;color:var(--color-bronze);margin-top:1px;}
+.analyses-sch__item h3{margin:0;font-size:19px;color:var(--color-creme);transition:color .35s;}
+.analyses-sch__item.est-actif h3{color:var(--color-bronze);}
 .analyses-sch__item p{margin:0;font-size:14.5px;line-height:1.5;color:color-mix(in srgb,var(--color-creme) 70%,var(--color-noir));}
+@media (max-width:999px) and (min-width:760px){
+  .analyses-sch{grid-template-areas:"entete entete" "chapeau chapeau" "scene liste";}
+}
 
 /* Le dessin */
 .sch{display:block;width:100%;height:auto;overflow:visible;}
@@ -4756,11 +4760,55 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .sch g.est-actif .gens{fill:var(--color-bronze);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--color-bronze) 80%,transparent));}
 .sch g.est-actif .anneau{opacity:1;}
 @media (prefers-reduced-motion:reduce){.sch *{transition:none;}}
+/* Téléphone (B1) : surtitre, titre et immeuble collés en haut ; une analyse par écran dessous,
+   la suivante à peine visible. --colle-h est mesuré par AnalysesSchema. */
 @media (max-width:759px){
-  .analyses-sch{grid-template-columns:1fr;gap:8px;}
-  /* le schéma reste en haut de l'écran pendant qu'on fait défiler les analyses */
-  .analyses-sch__scene{position:sticky;top:var(--header-h);z-index:2;margin:0 calc(-1 * var(--gutter));padding:6px 10px 12px;
-    background:linear-gradient(var(--color-noir-2) 88%,transparent);}
-  .analyses-sch__liste{gap:10px;padding-bottom:22vh;}
+  .analyses-sch{display:block;}
+  .analyses-sch__colle{display:block;position:sticky;top:var(--header-h);z-index:2;margin:0 calc(-1 * var(--gutter));
+    padding:14px var(--gutter) 10px;background:linear-gradient(var(--color-noir-2) 92%,transparent);}
+  .analyses-sch__entete h2{font-size:clamp(22px,6.4vw,27px);margin-top:6px;}
+  .analyses-sch__scene{margin:6px -10px 0;}
+  .analyses-sch__chapeau{margin:14px 0 6px;}
+  .analyses-sch__chapeau .lead{font-size:16px;}
+  .analyses-sch__liste{gap:0;}
+  .analyses-sch__item{display:flex;flex-direction:column;gap:12px;justify-content:flex-start;
+    min-height:calc(100svh - var(--header-h) - var(--colle-h, 380px) - 34px);padding:26px 4px 20px;margin:0;border-left:0;opacity:.16;}
+  .analyses-sch__item:last-child{min-height:calc(100svh - var(--header-h) - var(--colle-h, 380px));}
+  .analyses-sch__num{display:block;font:500 13px/1 var(--font-mono-site);letter-spacing:.15em;color:var(--color-bronze);}
+  .analyses-sch__num i{font-style:normal;color:var(--color-gris);}
+  .analyses-sch__picto{margin:0;}
+  .analyses-sch__item h3{font-size:30px;}
+  .analyses-sch__item p{font-size:18px;line-height:1.55;color:color-mix(in srgb,var(--color-creme) 80%,var(--color-noir));}
   .sch .rep text{font-size:17px;}
+}
+/* Écran bas : le titre se resserre, le surtitre et l'immeuble restent. */
+@media (max-width:759px) and (max-height:700px){
+  .analyses-sch__entete h2{font-size:19px;}
+  .analyses-sch__scene{margin:2px 10% 0;}
+}
+@media (max-width:759px) and (max-height:600px){
+  .analyses-sch__entete h2{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+}
+
+/* ===== Vendre · la méthode sur le marbre de l'ancien site (MAV, 03/11/2026) =====
+   Texture reprise de l'ancien thème (img-fonctionnement-full-bg), servie depuis le site ;
+   chiffres manuscrits or derrière chaque illustration, comme avant (Caveat, la police
+   d'écriture du site). */
+.methode-sec--marbre{background:
+  linear-gradient(color-mix(in srgb,var(--color-noir) 35%,transparent),color-mix(in srgb,var(--color-noir) 35%,transparent)),
+  url("/media/marbre-noir.webp") center top / cover no-repeat,var(--color-noir);}
+.methode-sec--marbre .step__visuel{isolation:isolate;}
+.methode-sec--marbre .step__visuel::before{opacity:.55;}
+.methode-sec--marbre .step__visuel img{z-index:1;filter:drop-shadow(0 14px 22px color-mix(in srgb,var(--color-noir) 70%,transparent));}
+.step__chiffre{position:absolute;z-index:0;left:50%;top:-44%;transform:translateX(-50%) rotate(-4deg);
+  font-family:var(--font-ecriture);font-weight:700;font-size:calc(var(--vis-w) * 1.05);line-height:1;
+  color:var(--color-bronze);pointer-events:none;
+  text-shadow:0 2px 0 color-mix(in srgb,var(--color-bronze-profond) 60%,transparent);}
+.methode-sec--marbre .steps--frise{padding-top:calc(var(--vis-w) * 0.45);}
+.methode-sec--marbre .steps--frise .step::before{background:color-mix(in srgb,var(--color-bronze) 35%,transparent);}
+@media (max-width:899px){
+  .methode-sec--marbre .steps--frise{padding-top:0;}
+  .methode-sec--marbre .steps--frise .step{padding-top:calc(var(--vis-w) * 0.5);}
+  .methode-sec--marbre .steps--frise .step + .step{border-top-color:color-mix(in srgb,var(--color-creme) 10%,transparent);}
+  .step__chiffre{font-size:calc(var(--vis-w) * 1.2);top:-55%;}
 }
