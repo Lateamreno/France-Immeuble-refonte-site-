@@ -10,7 +10,7 @@ import localFont from "next/font/local";
  */
 
 export const archivo = localFont({
-  src: "../../assets/fonts/Archivo[wdth,wght].woff2",
+  src: "../../assets/fonts/Archivo-wdth-wght.woff2",
   variable: "--font-archivo",
   weight: "100 900",
   display: "swap",
@@ -19,14 +19,14 @@ export const archivo = localFont({
 });
 
 export const inter = localFont({
-  src: "../../assets/fonts/Inter[opsz,wght].woff2",
+  src: "../../assets/fonts/Inter-opsz-wght.woff2",
   variable: "--font-inter",
   weight: "100 900",
   display: "swap",
 });
 
 export const jetbrainsMono = localFont({
-  src: "../../assets/fonts/JetBrainsMono[wght].woff2",
+  src: "../../assets/fonts/JetBrainsMono-wght.woff2",
   variable: "--font-jetbrains",
   weight: "100 800",
   display: "swap",
@@ -42,7 +42,7 @@ export const jetbrainsMono = localFont({
  * légende manuscrite, pas sur les autres.
  */
 export const caveat = localFont({
-  src: "../../assets/fonts/Caveat[wght].woff2",
+  src: "../../assets/fonts/Caveat-wght.woff2",
   variable: "--font-caveat",
   weight: "400 700",
   display: "swap",

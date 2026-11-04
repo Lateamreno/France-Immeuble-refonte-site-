@@ -9,10 +9,10 @@ sert depuis `/_next/static/media/`.
 
 | Fichier | Rôle | Axes | Poids |
 |---|---|---|---|
-| `Archivo[wdth,wght].woff2` | Display — titres H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
-| `Inter[opsz,wght].woff2` | Body — texte, navigation, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
-| `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
-| `Caveat[wght].woff2` | Écriture — légendes des polaroïds de l'accueil, rien d'autre | `wght` 400-700 | 75 Ko |
+| `Archivo-wdth-wght.woff2` | Display — titres H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
+| `Inter-opsz-wght.woff2` | Body — texte, navigation, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
+| `JetBrainsMono-wght.woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
+| `Caveat-wght.woff2` | Écriture — légendes des polaroïds de l'accueil, rien d'autre | `wght` 400-700 | 75 Ko |
 
 Caveat (Pablo Impallari, SIL Open Font License 1.1) a été ajoutée le 22/10/2026
 sur validation de MAV. Fichier pris tel quel chez Google Fonts (sous-ensemble
@@ -49,7 +49,7 @@ Contrôle par fontTools :
 
 ```python
 from fontTools.ttLib import TTFont
-f = TTFont("Archivo[wdth,wght].woff2")
+f = TTFont("Archivo-wdth-wght.woff2")
 print({a.axisTag: (a.minValue, a.maxValue) for a in f["fvar"].axes})
 # attendu : {'wght': (100.0, 900.0), 'wdth': (62.0, 125.0)}
 ```

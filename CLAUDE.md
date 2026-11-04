@@ -116,6 +116,12 @@ Vendre et publier le détail en page Références.
 > chiffre. Le numéro, les noms et l'adresse dans les récits restent interdits.
 > Même jour : la **surface exacte** remplace la fourchette pour les ventes (`ventes.surface`).
 
+> **Décisions MAV du 04/11/2026 (audit SEO)** : le **prix de vente exact** reste publié sur les
+> ventes réalisées (fiches et cartes), avec la rue sans numéro et la surface exacte : c'est assumé.
+> Le BO peut déposer des **agrégats anonymes par département** (nombre de ventes, rendements,
+> délais, nombre d'acquéreurs qui cherchent) pour de futures pages départements. Rien de nouveau
+> (page, contenu, gabarit) n'est créé sans l'accord de MAV.
+
 ### Le sens difficile : les leads (site → BO)
 
 C'est le seul flux où de la donnée personnelle circule vers le BO.
@@ -323,19 +329,21 @@ h1, h2, h3, .h-display, .stat-number{
 ## 4. Typographie — polices dans le repo
 
 Les 4 woff2 variables sont dans **`/assets/fonts/`**, sous-ensemblées au latin étendu.
-**Ne rien remplacer, ne jamais découper par graisse.**
+**Ne rien remplacer, ne jamais découper par graisse.** Les fichiers ont perdu leurs crochets le
+04/11/2026 (lot 77) : `Archivo[wdth,wght].woff2` était encodé `%5B…%5D` dans le préchargement et
+pas dans le CSS, et chaque police était téléchargée deux fois. Même fichier, même contenu.
 
 | Fichier | Rôle | Axes | Poids |
 |---|---|---|---|
-| `Archivo[wdth,wght].woff2` | Display — H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
-| `Inter[opsz,wght].woff2` | Body — texte, nav, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
-| `JetBrainsMono[wght].woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
-| `Caveat[wght].woff2` | Écriture des légendes de polaroïds (MAV, 22/10/2026) et des chiffres de la méthode de Vendre (MAV, 03/11/2026), rien d'autre. Non préchargée | `wght` 400-700 | 75 Ko |
+| `Archivo-wdth-wght.woff2` | Display — H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
+| `Inter-opsz-wght.woff2` | Body — texte, nav, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
+| `JetBrainsMono-wght.woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
+| `Caveat-wght.woff2` | Écriture des légendes de polaroïds (MAV, 22/10/2026) et des chiffres de la méthode de Vendre (MAV, 03/11/2026), rien d'autre. Non préchargée | `wght` 400-700 | 75 Ko |
 
 ```css
-@font-face{font-family:"Archivo";src:url("/assets/fonts/Archivo[wdth,wght].woff2") format("woff2-variations");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
-@font-face{font-family:"Inter";src:url("/assets/fonts/Inter[opsz,wght].woff2") format("woff2-variations");font-weight:100 900;font-display:swap}
-@font-face{font-family:"JetBrains Mono";src:url("/assets/fonts/JetBrainsMono[wght].woff2") format("woff2-variations");font-weight:100 800;font-display:swap}
+@font-face{font-family:"Archivo";src:url("/assets/fonts/Archivo-wdth-wght.woff2") format("woff2-variations");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"Inter";src:url("/assets/fonts/Inter-opsz-wght.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("/assets/fonts/JetBrainsMono-wght.woff2") format("woff2-variations");font-weight:100 800;font-display:swap}
 ```
 
 **INTERDIT** : `<link>` vers `fonts.googleapis.com`, `@import` d'une CDN de polices,
@@ -752,6 +760,13 @@ clics/an sans gagner une position**. ⚠️ Tension à arbitrer : le CTR se joue
 title et la meta, or ils sont gelés. Les leviers restants sont les données structurées, les
 rich results et les sitelinks. À rediscuter avant le lot Homepage.
 
+**Décisions MAV du 04/11/2026** : seules `/vendre-un-immeuble/` et `/estimer-un-immeuble/` restent
+des pages de conversion pour Google Ads (pas de texte SEO ajouté) ; les autres pages peuvent viser
+le trafic. Le title et la meta de l'accueil restent gelés jusqu'à la bascule ; **quelques semaines
+après, rappeler à MAV de tester un nouveau title/meta selon ce que montre la Search Console**.
+Pas de page Boulogne ni Neuilly tant qu'aucune vente n'y est publiée. Audit complet :
+https://claude.ai/artifact/1inya8hsQapWCuXT9QTWwZ.
+
 ### Cannibalisation
 
 `/vendre-un-immeuble/` et `/estimer-un-immeuble/` se disputent leurs requêtes avec deux articles
@@ -879,7 +894,7 @@ l'essentiel de l'enjeu CTR : elle passe en dernier, quand le socle est éprouvé
 - ❌ Une table sans RLS
 - ❌ Le site qui lit une table du CRM plutôt qu'une projection
 - ❌ Le BO sur un sous-domaine de `france-immeuble.fr`
-- ❌ Publier une référence non anonymisée (adresse exacte, nom, prix exact)
+- ❌ Publier une référence non anonymisée (adresse exacte, numéro de rue, nom) ; le prix de vente exact est admis (MAV, 04/11/2026)
 
 **SEO**
 - ❌ Changer une URL existante, ou changer de nom de domaine

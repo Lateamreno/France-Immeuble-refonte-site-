@@ -74,6 +74,14 @@ function schemaArticle(a: Article) {
   };
 }
 
+/**
+ * Les images du corps d'un article ne se chargent qu'à l'approche de l'écran, et se
+ * décodent hors du fil principal (lot 77, vitesse) : le haut de l'article s'affiche d'abord.
+ */
+function imagesDifferees(html: string): string {
+  return html.replace(/<img(?![^>]*\bloading=)/g, '<img loading="lazy" decoding="async"');
+}
+
 export default async function ArticlePage({ params }: Params) {
   const { slug } = await params;
   const a = articleParSlug(slug);
@@ -130,7 +138,7 @@ export default async function ArticlePage({ params }: Params) {
             */}
             <div
               className="prose"
-              dangerouslySetInnerHTML={{ __html: a.contenuHtml }}
+              dangerouslySetInnerHTML={{ __html: imagesDifferees(a.contenuHtml) }}
             />
 
             {/*

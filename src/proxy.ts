@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import MEDIAS from "@/lib/medias-wp.json";
 
 /**
  * Rafraîchit la session du compte avant la page ou la route qui la lit.
@@ -32,7 +33,64 @@ const options = (maxAge: number) => ({
   maxAge,
 });
 
+/** Liens courts de l'ancien WordPress (?p= et ?page_id=), d'après l'inventaire du §10 de CLAUDE.md. */
+const IDS_WP: Record<string, string> = {
+  "6": "/", "9": "/blog/", "964": "/contactez-nous/", "997": "/estimer-un-immeuble/",
+  "1428": "/immeubles-vendus/", "1232": "/mentions-legales-2/", "1461": "/plan-du-site/",
+  "1081": "/vendre-un-immeuble/",
+  "2095": "/comment-choisir-agence-immobiliere-pour-vendre-immeuble/",
+  "1208": "/comment-estimer-un-immeuble-de-rapport/",
+  "1195": "/comment-vendre-plus-cher-a-un-promoteur/",
+  "2003": "/comment-vendre-un-immeuble-a-paris/",
+  "1217": "/comment-vendre-un-immeuble-de-rapport/",
+  "1976": "/comment-vendre-un-immeuble-plus-cher/",
+  "1179": "/delegation-de-mandat-pourquoi-y-recourir/",
+  "1211": "/droit-de-preemption-lors-de-la-vente-dun-immeuble-en-bloc/",
+  "1171": "/immeuble-dhabitation-ou-immeuble-de-bureaux/",
+  "1214": "/immeuble-insalubre-ou-en-etat-de-peril-que-faire/",
+  "1183": "/immobilier-off-market-tout-ce-quil-faut-savoir/",
+  "2013": "/impact-de-la-hausse-des-taux-sur-les-immeubles-en-bloc/",
+  "1204": "/pourquoi-acheter-un-immeuble-en-bloc/",
+  "2126": "/vendre-un-immeuble-avec-un-mauvais-dpe/",
+};
+
+/**
+ * Une image de l'ancien WordPress (/wp-content/uploads/AAAA/MM/nom-1024x683.jpg) vers sa
+ * copie sur le site (/media/nom.webp) : on cherche le nom, puis le nom sans sa taille
+ * (-1024x683), sans « -scaled » et sans suffixe de doublon (-1). Rien trouvé : 404.
+ */
+function imageWp(chemin: string): string | null {
+  const nom = decodeURIComponent(chemin.split("/").pop() ?? "").replace(/\.[a-z0-9]+$/i, "").toLowerCase();
+  const table = MEDIAS as Record<string, string>;
+  let n = nom;
+  for (let i = 0; i < 5; i++) {
+    if (table[n]) return table[n];
+    const suivant = n.replace(/(-\d+x\d+|-scaled|-\d)$/, "");
+    if (suivant === n) break;
+    n = suivant;
+  }
+  return null;
+}
+
+function redirection(req: NextRequest, chemin: string) {
+  const url = req.nextUrl.clone();
+  url.pathname = chemin;
+  url.search = "";
+  return NextResponse.redirect(url, 301);
+}
+
 export async function proxy(req: NextRequest) {
+  const { pathname, searchParams } = req.nextUrl;
+  if (pathname.startsWith("/wp-content/")) {
+    const cible = imageWp(pathname);
+    return cible ? redirection(req, cible) : NextResponse.next();
+  }
+  if (pathname === "/") {
+    const id = searchParams.get("p") ?? searchParams.get("page_id");
+    const cible = id ? IDS_WP[id] : undefined;
+    return cible ? redirection(req, cible) : NextResponse.next();
+  }
+
   const at = req.cookies.get(AT)?.value;
   const rt = req.cookies.get(RT)?.value;
   if (!rt) return NextResponse.next();
@@ -75,5 +133,11 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/mon-compte/:path*", "/api/compte/:path*", "/api/lead/:path*"],
+  matcher: [
+    "/mon-compte/:path*", "/api/compte/:path*", "/api/lead/:path*",
+    // Ancien WordPress : images et liens courts (lot 77).
+    "/wp-content/:path*",
+    { source: "/", has: [{ type: "query", key: "p" }] },
+    { source: "/", has: [{ type: "query", key: "page_id" }] },
+  ],
 };
