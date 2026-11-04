@@ -23,9 +23,9 @@ export type NomPicto =
   | "detective";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
-  /* Retour #231 (MAV, 04/11/2026) : l'off-market, un détective en chapeau et
-     trench, col relevé. */
-  detective: <><path d="m7.3 8.7.7-3.6c.2-.9.9-1.3 1.8-1.1l2.2.7 2.2-.7c.9-.2 1.6.2 1.8 1.1l.7 3.6"/><path d="M7.7 6.9h8.6"/><path d="M3.5 9.2c2.4-.8 5.3-1.1 8.5-1.1s6.1.3 8.5 1.1"/><path d="M9.2 9.6c.4 1.9 1.5 3 2.8 3s2.4-1.1 2.8-3"/><path d="M4.5 21c.3-4.4 1.8-6.9 4.6-7.9M19.5 21c-.3-4.4-1.8-6.9-4.6-7.9"/><path d="M9.1 13.1 8 10.9M14.9 13.1l1.1-2.2"/><path d="M9.1 13.1 12 17.2l2.9-4.1"/><path d="M12 17.2V21"/><path d="M6 18.6h4.2M13.8 18.6H18"/></>,
+  /* Retour #231 puis exemples de MAV (04/11/2026) : l'off-market, un détective
+     en chapeau mou à large bord, sans visage, col du trench relevé, cravate. */
+  detective: <><path d="M8.6 7.4c.1-2.4.9-3.6 2-3.6l1.4.6 1.4-.6c1.1 0 1.9 1.2 2 3.6"/><path d="M8.7 6.3h6.6"/><path d="M3.8 8.5c1.6-.9 4.6-1.4 8.2-1.4s6.6.5 8.2 1.4c-1.6.9-4.6 1.4-8.2 1.4s-6.6-.5-8.2-1.4Z"/><path d="M9.4 10.2c.2 2.1 1.2 3.3 2.6 3.3s2.4-1.2 2.6-3.3"/><path d="M9.7 12.8 8.3 11.3l-.9 3.1M14.3 12.8l1.4-1.5.9 3.1"/><path d="M7.4 14.4c-2 .5-3.2 2.1-3.4 6.1h16c-.2-4-1.4-5.6-3.4-6.1"/><path d="M7.4 14.4 12 20.5l4.6-6.1"/><path d="m11.3 16.9.7-1 .7 1-.7 2.6z"/></>,
   /* Types de lots de l'état locatif (retour #70, MAV, 27/10/2026). Le bureau
      reprend la mallette « business ». */
   logement: <><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.4v11.1h13V9.4"/><path d="M10 20.5V15h4v5.5"/></>,

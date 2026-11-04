@@ -277,9 +277,9 @@ export default async function VendreUnImmeuble() {
           parisien à l'heure bleue derrière le titre du formulaire, la vue sur
           les toits derrière le contact. */}
       <section id="estimer" className="section section--noir section--ecran sec-formulaire">
-        {/* Retours #234 et #260 (MAV, 04/11/2026) : une photo claire et conviviale
-            qui invite au contact (Unsplash, licence libre). */}
-        <FondPhoto image="/media/atouts/rendez-vous-echange.webp" position="35% center" clair />
+        {/* Retours #234 et #260, puis MAV le 04/11 au soir : une photo sérieuse, un
+            dossier qu'on signe, moins sombre qu'avant (Unsplash, licence libre). */}
+        <FondPhoto image="/media/atouts/signature-dossier.webp" position="40% center" clair />
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>

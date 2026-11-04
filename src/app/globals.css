@@ -5171,12 +5171,16 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 
 /* ===== Lot 80 (retours #230 à #260, MAV, 04/11/2026) ===== */
 @media (max-width:759px){
-  /* #230 : au téléphone, les boutons et les chiffres du hero descendent vers le bas
-     de l'écran, au-dessus de la flèche ; le titre garde sa place. */
-  .hero-media:not(.hero-media--compact) > .container:has(> .btn-row){
-    min-height:100svh;display:flex;flex-direction:column;
-    padding-top:calc(var(--header-h) + 9svh);padding-bottom:calc(var(--space-l) + 30px);}
+  /* #230 puis retour du 04/11 au soir (MAV) : au téléphone, sur toutes les pages, le
+     titre commence au même niveau (celui d'avant) et les boutons tombent au même
+     endroit que ceux de l'accueil. Deux cales souples (avant le titre, après les
+     boutons) se tassent quand le texte est long : le hero tient toujours sur un écran. */
+  .hero-media:not(.hero-media--compact) > .container{
+    display:flex;flex-direction:column;min-height:100svh;
+    padding-top:calc(var(--header-h) + var(--space-s));padding-bottom:calc(var(--space-m) + 30px);}
+  .hero-media:not(.hero-media--compact) > .container::before{content:"";flex:8 1 0;max-height:calc(16svh - var(--space-s));min-height:0;}
   .hero-media:not(.hero-media--compact) > .container:has(> .btn-row) > .btn-row{margin-top:auto;padding-top:var(--space-m);}
+  .hero-media:not(.hero-media--compact) > .container:has(> .btn-row):not(:has(> .hero-proof))::after{content:"";flex:1 1 0;max-height:19svh;min-height:0;}
 }
 /* #232 : la flèche native des listes déroulantes était noire sur fond noir. Une
    flèche or dessinée en CSS, sur tous les fonds, ouvert ou fermé. */
@@ -5220,12 +5224,8 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   .nav{height:auto;bottom:0;overscroll-behavior:contain;}
   html.menu-ouvert,html.menu-ouvert body{overflow:hidden;}
 }
-@media (max-width:759px){
-  /* #255 : sur la page Contact, les coordonnées avant le formulaire. */
-  .page-fond--contact .contact-sec .split > :first-child > .fiche-contact{order:0;margin-bottom:var(--space-s);}
-}
 /* #234, #260 : la photo du formulaire de Vendre, claire et présente. */
-.fond-photo.fond-photo--clair{opacity:.6;}
-@media (max-width:899px){ .fond-photo.fond-photo--clair{opacity:.55;} }
+.fond-photo.fond-photo--clair{opacity:.46;}
+@media (max-width:899px){ .fond-photo.fond-photo--clair{opacity:.42;} }
 .section:has(> .fond-photo--clair) .split > :first-child :is(h2,.lead,.eyebrow){text-shadow:0 1px 14px color-mix(in srgb,var(--color-noir) 70%,transparent);}
 .section:has(> .fond-photo--clair) .split > :first-child .lead{color:var(--color-creme);}

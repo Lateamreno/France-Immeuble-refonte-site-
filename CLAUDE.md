@@ -494,14 +494,16 @@ la découpe, Biens vendus…), sans titre de groupe ; les articles du blog l'un 
 secondaire presque blanc ; champs à 16 px (l'iPhone zoomait). « Déposer ma recherche » de l'accueil
 ouvre la fenêtre de recherche (`BoutonRecherche`). Nos ventes : « Vendez votre immeuble » en fin de
 page, communes d'une seule vente classées par prix au m², « et X autres communes ».
-Lot 80 (retours #230 à #260, MAV, 04/11/2026) : au téléphone, boutons et chiffres du hero en
-bas de l'écran ; flèches des lignes qui glissent sous les cartes, au centre ; une carte passe au
+Lot 80 (retours #230 à #260, MAV, 04/11/2026) : au téléphone, **le titre de chaque hero commence
+au même niveau** (16 % de l'écran sous la barre) et les boutons tombent au niveau de ceux de
+l'accueil, deux cales souples qui se tassent quand le texte est long (le hero tient sur un écran) ; flèches des lignes qui glissent sous les cartes, au centre ; une carte passe au
 premier plan dès les trois quarts visibles ; flèche or des listes déroulantes ; menu ouvert jusqu'au
 bas de l'écran, page bloquée derrière ; un lien vers une ancre (`#estimer`) se recale après le
 chargement (`AncreStable`) ; sur Nos ventes et les fiches de vente, « Estimer mon immeuble » et la
 pilule ouvrent le formulaire dans une fenêtre (`ModaleEstimation`) ; photo claire et conviviale
-derrière le formulaire de Vendre (`FondPhoto clair`, Unsplash) ; picto détective en trench pour
-l'off-market de l'accueil ; pictos téléphone, e-mail et adresse dans le pied de page. Textes : un
+derrière le formulaire de Vendre une photo sérieuse, un dossier qu'on signe (`FondPhoto clair`,
+Unsplash) ; picto détective au trait (chapeau mou, col relevé, cravate) pour l'off-market de
+l'accueil ; sur Contact, le formulaire reste avant les coordonnées ; pictos téléphone, e-mail et adresse dans le pied de page. Textes : un
 immeuble en bloc se valorise au rendement du secteur, et non au prix au m² (plus de
 « capitaliser ») ; Acheter titré « avec France Immeuble », « 100 % de nos biens d'abord en
 off-market ».
