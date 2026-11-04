@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { addFeedback, type Feedback } from "@/lib/bo/feedback";
+import { allegerCaptures } from "@/lib/bo/alleger-capture";
 
 type Draft = {
   /** Coin haut-gauche de la zone, en % de la page. */
@@ -300,7 +301,7 @@ function RevuePanel({
         fd.set("viewport_w", String(window.innerWidth));
         fd.set("gravite", gravite);
         fd.set("commentaire", commentaire);
-        for (const c of captures) fd.append("capture", c.f);
+        for (const f of await allegerCaptures(captures.map((c) => c.f))) fd.append("capture", f);
         const r = await addFeedback(fd);
         if (!r.ok) { setErr(r.message); return; }
         setOk(true);

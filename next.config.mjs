@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Les retours de recette envoient leurs captures par une action serveur : la
+  // limite par défaut (1 Mo) refusait une capture d'écran collée (04/11/2026).
+  // Les captures sont allégées dans le navigateur ; cette marge couvre plusieurs
+  // captures dans un même retour, sous la limite de 4,5 Mo de Vercel.
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Les URLs existantes se terminent toutes par un slash (voir CLAUDE.md §10).
   // Objectif zéro perte : ne jamais servir /vendre-un-immeuble sans slash final.
   trailingSlash: true,

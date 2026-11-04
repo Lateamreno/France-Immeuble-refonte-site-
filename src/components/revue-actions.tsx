@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { deleteFeedback, modifierFeedback, setFeedbackStatut, type Resultat } from "@/lib/bo/feedback";
+import { allegerCaptures } from "@/lib/bo/alleger-capture";
 import { useQuestion } from "@/components/modale";
 
 const GRAVITES = [
@@ -42,8 +43,10 @@ export function FeedbackActions({ id, statut, commentaire, gravite }: {
     fd.set("id", String(id));
     fd.set("commentaire", texte);
     fd.set("gravite", grav);
-    for (const f of ajouts) fd.append("capture", f);
-    agir(() => modifierFeedback(fd), () => { setAjouts([]); setEdite(false); });
+    agir(async () => {
+      for (const f of await allegerCaptures(ajouts)) fd.append("capture", f);
+      return modifierFeedback(fd);
+    }, () => { setAjouts([]); setEdite(false); });
   };
 
   const avis = erreur ? <div className="fbk-err" role="status">{erreur}</div> : null;
