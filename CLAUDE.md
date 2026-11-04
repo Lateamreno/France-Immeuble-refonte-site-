@@ -440,7 +440,7 @@ analyses, puis la page reprend (`.sec-analyses--pin`). **Méthode de Vendre cent
 #125) : sans petits numéros ni frise, le grand chiffre or dit l'ordre. **Découpe** (retours
 #126 à #141) : la marge du marchand ; les deux acheteurs en dessin (`DeuxAcheteurs`) ;
 honoraires de vente et de montage détaillés ; étapes avec picto, sans filet ni point ;
-la Team Reno pour les travaux ; tous les boutons mènent au formulaire de vente en fin de
+la Team Reno pour les travaux (lien vers www.lateamreno.fr) ; tous les boutons mènent au formulaire de vente en fin de
 page. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que
@@ -606,10 +606,14 @@ Canal d'acquisition n°1 — à ne pas improviser.
   e-mail sur tous les formulaires de contact ; le message parti, « acheter » enchaîne sur le
   dépôt de recherche et « vendre » sur l'estimation, coordonnées et message repris
   (`initial` de `EstimationForm`, `contact` de `RechercheForm`). Le message reste au BO même
-  si le visiteur s'arrête là.
-- **Ventes publiées** (retour #144, MAV, 03/11/2026) : un écart à l'estimation plus
-  défavorable que −8 % et un délai avant l'offre de plus de trois mois ne s'affichent pas
-  (`ecartPublie`, `delaiPublie` de `CarteVente`).
+  si le visiteur s'arrête là. La recherche ou l'estimation qui suit porte `refContact`, la
+  référence du message : le BO regroupe les deux et garde, pour un acheteur, la vignette du
+  message dans « Formulaires du site » pour pousser l'appel (MAV, 04/11/2026 ;
+  `docs/PROMPT-BO-CONTACT-SUITE.md`).
+- **Ventes publiées** (retour #144, MAV, 03 et 04/11/2026) : l'écart à l'estimation ne
+  s'affiche qu'entre −8 % et +8 % (au-delà, dans les deux sens, l'estimation était loin du
+  prix) ; un délai avant l'offre de plus de trois mois ne s'affiche pas (`ecartPublie`,
+  `delaiPublie` de `CarteVente`).
 - **Alerte de l'agence à chaque formulaire** (MAV, 22/10/2026) : le site envoie lui-même un
   e-mail à `contact@` et `ma.voci@` (SendGrid, depuis `contact@france-immeuble.fr`,
   Reply-To = le client), quel que soit le formulaire, même si le BO est en panne

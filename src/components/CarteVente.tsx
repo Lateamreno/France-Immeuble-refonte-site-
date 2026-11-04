@@ -19,14 +19,16 @@ export const surfaceVente = (v: Vente) =>
       : null;
 
 /**
- * Ce qui se publie (retour #144, MAV, 03/11/2026) : un écart à l'estimation plus
- * défavorable que −8 % et un délai avant l'offre de plus de trois mois ne
- * s'affichent pas, ni sur les cartes ni sur les fiches.
+ * Ce qui se publie (retour #144, MAV, 03 et 04/11/2026) : l'écart à l'estimation
+ * ne s'affiche que s'il reste entre −8 % et +8 %. Au-delà, dans un sens comme
+ * dans l'autre, il dit que l'estimation était loin du prix obtenu. Un délai
+ * avant l'offre de plus de trois mois ne s'affiche pas non plus. Valable sur
+ * les cartes et sur les fiches.
  */
-export const ECART_PLANCHER = -8;
+export const ECART_MAX = 8;
 export const DELAI_MAX_JOURS = 92;
 export const ecartPublie = (v: Pick<Vente, "ecartEstimation">) =>
-  v.ecartEstimation != null && v.ecartEstimation >= ECART_PLANCHER ? v.ecartEstimation : null;
+  v.ecartEstimation != null && Math.abs(v.ecartEstimation) <= ECART_MAX ? v.ecartEstimation : null;
 export const delaiPublie = (v: Pick<Vente, "delaiOffreJours">) =>
   v.delaiOffreJours != null && v.delaiOffreJours <= DELAI_MAX_JOURS ? v.delaiOffreJours : null;
 

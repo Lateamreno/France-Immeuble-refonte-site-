@@ -49,6 +49,8 @@ export function ContactForm({ bien, onVendre }: {
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [envoi, setEnvoi] = useState(false);
   const [envoye, setEnvoye] = useState<null | "ok" | "echec">(null);
+  /** La référence du message : la recherche ou l'estimation qui suit la reprend, le BO les regroupe. */
+  const [refMessage, setRefMessage] = useState("");
 
   async function envoyer(ev: React.FormEvent) {
     ev.preventDefault();
@@ -68,13 +70,15 @@ export function ContactForm({ bien, onVendre }: {
 
     setEnvoi(true);
     let ok = false;
+    const ref = globalThis.crypto?.randomUUID?.() ?? `fi-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setRefMessage(ref);
     try {
       const r = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           type: "contact",
-          ref: globalThis.crypto?.randomUUID?.() ?? `fi-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          ref,
           telephone,
           projet,
           message,
@@ -142,7 +146,7 @@ export function ContactForm({ bien, onVendre }: {
           Vos coordonnées sont reprises. Décrivez ce que vous cherchez pour recevoir en avant-première
           les immeubles qui y correspondent.
         </p>
-        <RechercheForm contact={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone }} commentaire={message} />
+        <RechercheForm contact={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone }} commentaire={message} refContact={refMessage} />
       </div>
     );
   }
@@ -155,7 +159,7 @@ export function ContactForm({ bien, onVendre }: {
           Vos coordonnées sont reprises. Il ne manque que l’adresse de l’immeuble.
         </p>
         <EstimationForm formulaire="vendre"
-          initial={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone, message }} />
+          initial={{ prenom: prenom.trim(), nom: nom.trim(), email: email.trim(), telephone, message }} refContact={refMessage} />
       </div>
     );
   }

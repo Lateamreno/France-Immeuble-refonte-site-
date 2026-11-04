@@ -69,12 +69,15 @@ export function EstimationForm({
   formulaire,
   dansLeCompte = false,
   initial,
+  refContact,
 }: {
   formulaire: "vendre" | "estimer";
   /** Depuis /mon-compte/ : la proposition de créer un compte n'a plus lieu d'être. */
   dansLeCompte?: boolean;
   /** Suite d'un message de contact (retour #120) : coordonnées et message déjà saisis. */
   initial?: Partial<Pick<Data, "prenom" | "nom" | "email" | "telephone" | "message">>;
+  /** Référence du message de contact qui précède : le BO regroupe les deux. */
+  refContact?: string;
 }) {
   const uid = useId();
   const [phase, setPhase] = useState<Phase>("saisie");
@@ -174,7 +177,7 @@ export function EstimationForm({
       const r = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ type: "estimation", etat, ref: ref.current, formulaire, ...pourBO(donnees) }),
+        body: JSON.stringify({ type: "estimation", etat, ref: ref.current, formulaire, ...(refContact ? { refContact } : {}), ...pourBO(donnees) }),
       });
       return r.ok;
     } catch {

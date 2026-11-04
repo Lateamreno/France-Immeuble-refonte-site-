@@ -193,6 +193,11 @@ const QUESTIONS: QuestionFaq[] = [
   },
 ];
 
+/** La société de travaux du groupe (retour #135, MAV, 04/11/2026 : www.lateamreno.fr). */
+function TeamReno() {
+  return <a className="lien-discret" href="https://www.lateamreno.fr/" target="_blank" rel="noopener">la Team Reno</a>;
+}
+
 export default async function Decoupe() {
   const ch = await chiffres();
   return (
@@ -479,7 +484,7 @@ export default async function Decoupe() {
               {
                 n: "05",
                 t: "Les travaux des lots libres",
-                p: "Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Sans honoraires lorsque les travaux passent par la Team Reno, à des conditions tarifaires avantageuses.",
+                p: <>Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Sans honoraires lorsque les travaux passent par <TeamReno />, à des conditions tarifaires avantageuses.</>,
                 m: "Rénovation avant vente",
                 picto: "technique",
               },
@@ -605,7 +610,7 @@ export default async function Decoupe() {
                 <span className="tarifs__nom">Coordination des travaux</span>
                 <span className="tarifs__val">0 % ou 3 % TTC</span>
                 <span className="tarifs__note">
-                  Sans honoraires lorsque les travaux passent par la Team Reno, à des conditions
+                  Sans honoraires lorsque les travaux passent par <TeamReno />, à des conditions
                   tarifaires avantageuses. 3 % du montant coordonné avec une entreprise
                   extérieure.
                 </span>

@@ -96,10 +96,12 @@ function versBO(r: Recherche, societe: string) {
 /** Une recherche à deux types d'opération devient deux recherches, tout le reste à l'identique (retour #88). */
 const deplier = (rs: Recherche[]) => rs.flatMap((r) => (r.cibles.length > 1 ? r.cibles.map((c) => ({ ...r, cibles: [c] })) : [r]));
 
-export function RechercheForm({ contact, commentaire }: {
+export function RechercheForm({ contact, commentaire, refContact }: {
   /** Suite d'un message de contact (retour #120) : coordonnées et message déjà saisis. */
   contact?: Partial<Contact>;
   commentaire?: string;
+  /** Référence du message de contact qui précède : le BO regroupe les deux. */
+  refContact?: string;
 } = {}) {
   const uid = useId();
   const [c, setC] = useState<Contact>(() => ({ ...CONTACT_VIDE, ...contact }));
@@ -195,6 +197,7 @@ export function RechercheForm({ contact, commentaire }: {
         body: JSON.stringify({
           type: "recherche_acquereur",
           ref: globalThis.crypto?.randomUUID?.() ?? `fi-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          ...(refContact ? { refContact } : {}),
           prenom: c.prenom.trim(),
           nom: c.nom.trim(),
           email: c.email.trim(),
