@@ -436,7 +436,9 @@ restent). **Méthode de Vendre** (MAV, 03/11/2026) : le marbre noir de l'ancien 
 (`.methode-sec--marbre`, `.step__chiffre`) ; l'ancien site utilisait Quentin, licence inconnue.
 **Estimer, analyses épinglées** (retour #127, MAV, 03/11/2026) : sur ordinateur, la section
 reste à l'écran (immeuble, analyses et bouton) pendant que le défilement fait passer les cinq
-analyses, puis la page reprend (`.sec-analyses--pin`). **Méthode de Vendre centrée** (#124,
+analyses, puis la page reprend (`.sec-analyses--pin`). Au téléphone, on garde une analyse par
+écran sous le titre et l'immeuble collés : la section bloquée y a été essayée et écartée (MAV,
+04/11/2026). **Méthode de Vendre centrée** (#124,
 #125) : sans petits numéros ni frise, le grand chiffre or dit l'ordre. **Découpe** (retours
 #126 à #141) : la marge du marchand ; les deux acheteurs en dessin (`DeuxAcheteurs`) ;
 honoraires de vente et de montage détaillés ; étapes avec picto, sans filet ni point ;
