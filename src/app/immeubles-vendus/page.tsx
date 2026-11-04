@@ -41,7 +41,7 @@ export const revalidate = 600;
 
 export default async function ImmeublesVendus() {
   const { ventes, stats } = await ventesEtStats();
-  const villes = villesFrequentes(ventes, 10);
+  const { villes, reste: autresVilles } = villesFrequentes(ventes, 12);
   const groupes = groupesVentes(ventes);
   const gIdf = groupes.find((g) => g.region === "11");
   const autres = groupes.filter((g) => g.region !== "11");
@@ -155,7 +155,7 @@ export default async function ImmeublesVendus() {
           <Reveal className="section__head">
             <Eyebrow>Couverture</Eyebrow>
             <h2>Où nous vendons</h2>
-            <p className="lead">Les communes qui reviennent le plus souvent dans cette sélection.</p>
+            <p className="lead">Les communes qui reviennent le plus souvent dans cette sélection, puis les plus chères au m².</p>
           </Reveal>
           <ul className="villes">
             {villes.map((v) => (
@@ -164,6 +164,11 @@ export default async function ImmeublesVendus() {
                 {v.n > 1 && <span className="ville__n">{v.n} ventes</span>}
               </li>
             ))}
+            {autresVilles > 0 && (
+              <li className="ville ville--reste">
+                <span className="ville__nom">et {autresVilles} autre{autresVilles > 1 ? "s" : ""} commune{autresVilles > 1 ? "s" : ""}</span>
+              </li>
+            )}
           </ul>
         </div>
       </section>
@@ -176,7 +181,8 @@ export default async function ImmeublesVendus() {
         <div className="container" style={{ textAlign: "center" }}>
           <Reveal>
             <Eyebrow bare>Votre immeuble</Eyebrow>
-            <h2>Le prochain sur cette page&nbsp;?</h2>
+            {/* Retour #218 (MAV, 04/11/2026) : un titre qui dit ce qu'on propose. */}
+            <h2>Vendez votre <span className="accent">immeuble</span></h2>
             <p className="lead" style={{ marginInline: "auto", maxWidth: "52ch" }}>
               Nous estimons gratuitement et commercialisons auprès de notre fichier
               d’acquéreurs, sans annonce publique si vous le souhaitez.
@@ -185,7 +191,7 @@ export default async function ImmeublesVendus() {
               className="btn-row"
               style={{ marginTop: "var(--space-m)", justifyContent: "center" }}
             >
-              <Button href="/estimer-un-immeuble/" icone>
+              <Button href="/estimer-un-immeuble/#estimer" icone>
                 Estimer mon immeuble
               </Button>
               <Button href={SITE.telHref} variant="outline">

@@ -311,13 +311,24 @@ export function vitrineAccueil(v: Vente[], n = 8): Vente[] {
 }
 
 /** Les communes les plus représentées, pour le bloc de couverture. */
-export function villesFrequentes(v: Vente[], n = 8): { ville: string; n: number }[] {
-  const compte = new Map<string, number>();
-  for (const x of v) compte.set(x.ville, (compte.get(x.ville) ?? 0) + 1);
-  return [...compte.entries()]
-    .map(([ville, n]) => ({ ville, n }))
-    .sort((a, b) => b.n - a.n || a.ville.localeCompare(b.ville, "fr"))
-    .slice(0, n);
+export function villesFrequentes(v: Vente[], n = 8): { villes: { ville: string; n: number; prixM2?: number }[]; reste: number } {
+  const compte = new Map<string, { n: number; prixM2: number }>();
+  for (const x of v) {
+    const c = compte.get(x.ville) ?? { n: 0, prixM2: 0 };
+    c.n += 1;
+    // Retour #219 (MAV, 04/11/2026) : entre les communes d'une seule vente, les
+    // plus chères au m² d'abord. On garde le meilleur prix au m² de la commune.
+    if (x.surface && x.surface > 0 && x.prix > 0) c.prixM2 = Math.max(c.prixM2, x.prix / x.surface);
+    compte.set(x.ville, c);
+  }
+  const toutes = [...compte.entries()].map(([ville, c]) => ({ ville, n: c.n, prixM2: c.prixM2 || undefined }));
+  const plusieurs = toutes.filter((c) => c.n > 1)
+    .sort((a, b) => b.n - a.n || a.ville.localeCompare(b.ville, "fr"));
+  const une = toutes.filter((c) => c.n === 1)
+    .sort((a, b) => (b.prixM2 ?? 0) - (a.prixM2 ?? 0) || a.ville.localeCompare(b.ville, "fr"));
+  const villes = [...plusieurs, ...une].slice(0, n);
+  // Retour #220 : « et X autres » pour les communes qu'on ne cite pas.
+  return { villes, reste: toutes.length - villes.length };
 }
 
 /**

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SITE, nombre } from "@/lib/site";
 import { chiffres } from "@/lib/chiffres";
 import { Logo } from "./Logo";
+import { Picto } from "./Picto";
 
 /**
  * Footer global.
@@ -26,9 +27,10 @@ export async function Footer() {
               Île-de-France et en région.
             </p>
             <p className="small mono" style={{ marginTop: "var(--space-s)" }}>
-              <a href={SITE.telHref}>{SITE.tel}</a>
+              {/* Retour #211 (MAV, 04/11/2026) : un picto devant le téléphone et l'e-mail. */}
+              <a className="footer-coord" href={SITE.telHref}><Picto nom="telephone" taille={16} />{SITE.tel}</a>
               <br />
-              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              <a className="footer-coord" href={`mailto:${SITE.email}`}><Picto nom="mail" taille={16} />{SITE.email}</a>
               <br />
               {SITE.adresse}
               <br />
@@ -50,7 +52,7 @@ export async function Footer() {
           <div className="footer-col">
             <h4>Acheter</h4>
             <ul>
-              <li><Link href="/acheter-un-immeuble/">Accès investisseurs</Link></li>
+              <li><Link href="/acheter-un-immeuble/">Acheter un immeuble</Link></li>
               <li>
                 <a href={SITE.pleinbail} target="_blank" rel="noopener">
                   PleinBail — biens loués

@@ -15,6 +15,7 @@ import { SITE, nombre } from "@/lib/site";
 import { RECHERCHES } from "@/lib/accueil";
 import { ventes, vitrineAccueil } from "@/lib/biens";
 import { VitrineAccueil } from "@/components/VitrineAccueil";
+import { BoutonRecherche } from "@/components/biens/BoutonRecherche";
 import { Avis } from "@/components/Avis";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 
@@ -287,7 +288,8 @@ export default async function Accueil() {
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
                 {/* Retours #176 et #191 (MAV, 04/11/2026). */}
-                <Button href="/acheter-un-immeuble/#deposer" icone>Déposer ma recherche</Button>
+                {/* Retour #227 (MAV, 04/11/2026) : la fenêtre de dépôt de recherche, sans quitter l'accueil. */}
+                <BoutonRecherche />
               </div>
             </Reveal>
           </div>

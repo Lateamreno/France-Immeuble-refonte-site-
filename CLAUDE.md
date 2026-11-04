@@ -485,6 +485,15 @@ réel en libellés courts au téléphone, sans défilement. Fiche annonce : la c
 l'écran (cœur à côté de « Voir le n° » et « Contacter », cadres plus bas, simulation dans la
 feuille sous 1150 px de haut). Ventes au téléphone : une ligne qui glisse par département
 d'Île-de-France puis par région, carte de la région en tête.
+Lot 79 (retours #205 à #229, MAV, 04/11/2026) : **le menu fermé du téléphone n'existe plus pour le
+doigt** (`visibility:hidden`) ; au lot 78, ses sous-menus invisibles couvraient la page et prenaient
+les clics (« des liens partout », formulaires impossibles à remplir, défilements bloqués). Ne jamais
+laisser un élément invisible recevoir le doigt. Aucun lien dans les textes des pages hors blog : le
+maillage du blog reste. Au téléphone, le menu ne montre que les sous-menus (Vendre en bloc, Vendre à
+la découpe, Biens vendus…), sans titre de groupe ; les articles du blog l'un sous l'autre ; texte
+secondaire presque blanc ; champs à 16 px (l'iPhone zoomait). « Déposer ma recherche » de l'accueil
+ouvre la fenêtre de recherche (`BoutonRecherche`). Nos ventes : « Vendez votre immeuble » en fin de
+page, communes d'une seule vente classées par prix au m², « et X autres communes ».
 **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que

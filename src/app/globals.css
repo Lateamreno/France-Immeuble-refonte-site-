@@ -5120,3 +5120,51 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 
 /* Fiche annonce : « Voir le numéro » et « Contacter » tiennent sur une ligne à côté du cœur. */
 @media (min-width:900px){ .carte-action__duo .btn{padding-inline:10px;font-size:.9rem;} }
+
+/* ===== Lot 79 (retours #205 à #229, MAV, 04/11/2026) ===== */
+@media (max-width:980px){
+  /* #214 : au téléphone, le menu ne montre que les sous-menus (Vendre en bloc,
+     Vendre à la découpe, Biens vendus…), sans leur titre de groupe. */
+  .nav-groupe__tete,.nav-groupe > .nav-groupe__btn{display:none;}
+  .nav-groupe__liste,.nav-groupe.is-open > .nav-groupe__liste{border-left:0;}
+  .nav .nav-groupe__liste a{padding:16px 0;font-size:1.05rem;}
+}
+@media (max-width:759px){
+  /* #205 : la photo à peine visible sous le crème, coupée par le fond des boutons
+     collés, faisait croire à une deuxième image. Au téléphone, le crème seul. */
+  .accueil-vendre > .fond-leger{display:none;}
+
+  /* #216 : on voit l'homme lire son dossier, papiers compris, avant le titre. */
+  .om-principe__photo--lecteur{height:420px;object-position:60% 88%;filter:brightness(.72) saturate(.8);}
+  .om-principe:has(.om-principe__photo--lecteur) .om-principe__voile{
+    background:linear-gradient(0deg,var(--color-noir) 0,var(--color-noir) calc(100% - 420px),color-mix(in srgb,var(--color-noir) 0%,transparent) calc(100% - 330px));}
+  .om-principe:has(.om-principe__photo--lecteur) .om-principe__in{padding-top:360px;}
+
+  /* #213 : au téléphone, les articles du blog l'un sous l'autre. */
+  .ligne--marches > .ligne-cartes.articles-ligne{display:flex;flex-direction:column;overflow:visible;
+    margin-inline:0;padding-inline:0;scroll-snap-type:none;cursor:auto;}
+  .ligne--marches > .ligne-cartes.articles-ligne > .ligne-case > *{transform:none;opacity:1;}
+  .ligne--marches:has(> .articles-ligne) > .ligne__fleche{display:none;}
+  .articles-ligne .article-carte__lien{flex-direction:row;}
+  .articles-ligne .article-carte__visuel{flex:0 0 112px;aspect-ratio:auto;}
+  .articles-ligne .article-carte__corps{padding:14px 16px;gap:6px;}
+  .articles-ligne .article-carte__titre{font-size:1rem;}
+  .articles-ligne .article-carte__resume{display:none;}
+
+  /* #210 : au téléphone, en plein jour, le texte secondaire presque blanc, dans
+     les cartes et les formulaires comme ailleurs. Sur crème, le secondaire
+     dérivé des tokens (§3). */
+  :root{--color-gris:color-mix(in srgb,var(--color-creme) 86%,var(--color-noir));}
+  .section--creme{--color-gris:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+  .field input::placeholder,.field textarea::placeholder{color:color-mix(in srgb,var(--color-creme) 58%,var(--color-noir-2));}
+  .om-verre p,.analyses-sch__item p,.om-principe__tete .lead,.analyses-sch__chapeau .lead{color:color-mix(in srgb,var(--color-creme) 88%,var(--color-noir));}
+}
+/* #211 : un picto devant le téléphone et l'e-mail du pied de page. */
+.footer-coord{display:inline-flex;align-items:center;gap:8px;}
+.footer-coord svg{color:var(--color-bronze);flex:none;}
+.ville--reste .ville__nom{color:var(--color-gris);}
+/* #206 : sous 16 px, l'iPhone zoome sur le champ touché et la page reste
+   zoomée ensuite. Tous les champs à 16 px au moins au téléphone. */
+@media (max-width:759px){
+  :is(input,select,textarea):not([type=checkbox]):not([type=radio]):not([type=range]){font-size:16px !important;}
+}
