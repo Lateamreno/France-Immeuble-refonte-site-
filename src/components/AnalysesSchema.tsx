@@ -25,7 +25,7 @@ export type Analyse = { picto: NomPicto; titre: string; texte: string };
 
 export function AnalysesSchema({
   svg, analyses, entete, chapeau,
-}: { svg: string; analyses: Analyse[]; entete: ReactNode; chapeau: ReactNode }) {
+}: { svg: string; analyses: Analyse[]; entete: ReactNode; chapeau?: ReactNode }) {
   const [actif, setActif] = useState(0);
   const racine = useRef<HTMLDivElement>(null);
   const colle = useRef<HTMLDivElement>(null);
@@ -130,7 +130,7 @@ export function AnalysesSchema({
           dangerouslySetInnerHTML={{ __html: svg }}
         />
       </div>
-      <div className="analyses-sch__chapeau">{chapeau}</div>
+      {chapeau && <div className="analyses-sch__chapeau">{chapeau}</div>}
       <ul className="analyses-sch__liste">
         {analyses.map((a, i) => (
           <li

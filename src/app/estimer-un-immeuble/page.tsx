@@ -47,12 +47,18 @@ const ANALYSES: { picto: NomPicto; titre: string; texte: string }[] = [
   {
     picto: "constructibilite",
     titre: "Constructibilité",
-    texte: "Analyse des possibilités d’opérations marchandes et de promotions",
+    texte: "Possibilités d’opérations marchandes et de promotion, si l’immeuble s’y prête",
   },
   {
     picto: "cible",
     titre: "Cible",
     texte: "Définition de la clientèle cible et de ses critères d’achat pour affiner l’estimation",
+  },
+  // Retour #165 (MAV, 04/11/2026) : la vente à la découpe, si l'immeuble s'y prête.
+  {
+    picto: "logement",
+    titre: "Découpe",
+    texte: "Possibilité de vendre lot par lot, si l’immeuble s’y prête, et ce qu’elle rapporterait",
   },
 ];
 
@@ -80,8 +86,11 @@ export default function EstimerUnImmeuble() {
           {/* Les deux textes d'origine étaient fusionnés ici : sept lignes
               d'accroche dans un hero. Le second descend d'une section, là où
               il a la place d'être lu. Rien n'est retiré. */}
+          {/* Retour #168 (MAV, 04/11/2026) : le chapeau des analyses remonte ici. */}
           <p className="lead">
-            La seule estimation conçue spécifiquement pour les immeubles.
+            La seule estimation conçue spécifiquement pour les immeubles. Elle se base sur leur
+            aspect général, géographique et locatif, et sur leur caractère constructible, pour une
+            valorisation optimale.
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>
@@ -108,13 +117,6 @@ export default function EstimerUnImmeuble() {
                   Analyses comprises dans l’estimation <span className="accent">gratuite</span>
                 </h2>
               </>
-            }
-            chapeau={
-              <p className="lead">
-                Bénéficiez d’une estimation se basant sur l’aspect général, géographique et locatif
-                de votre immeuble ainsi que sur son caractère constructible pour une valorisation
-                optimale.
-              </p>
             }
           />
           <div className="btn-row sec-analyses__cta">

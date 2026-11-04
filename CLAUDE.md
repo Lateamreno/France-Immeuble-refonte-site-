@@ -438,12 +438,23 @@ restent). **Méthode de Vendre** (MAV, 03/11/2026) : le marbre noir de l'ancien 
 reste à l'écran (immeuble, analyses et bouton) pendant que le défilement fait passer les cinq
 analyses, puis la page reprend (`.sec-analyses--pin`). Au téléphone, on garde une analyse par
 écran sous le titre et l'immeuble collés : la section bloquée y a été essayée et écartée (MAV,
-04/11/2026). **Méthode de Vendre centrée** (#124,
+04/11/2026). Six analyses depuis le retour #165 (MAV, 04/11/2026) : la sixième, « Découpe »,
+allume une ligne de partage des lots sur la façade ; le chapeau est monté dans le hero (#168) ;
+allumage net, sans fondu (#167). **Méthode de Vendre centrée** (#124,
 #125) : sans petits numéros ni frise, le grand chiffre or dit l'ordre. **Découpe** (retours
 #126 à #141) : la marge du marchand ; les deux acheteurs en dessin (`DeuxAcheteurs`) ;
 honoraires de vente et de montage détaillés ; étapes avec picto, sans filet ni point ;
 la Team Reno pour les travaux (lien vers www.lateamreno.fr) ; tous les boutons mènent au formulaire de vente en fin de
-page. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
+page. Lot 75 (retours #150 à #164, MAV, 04/11/2026) : les deux acheteurs dessinés devant le même
+immeuble isométrique (`src/lib/dessin-acheteurs.ts`), l'investisseur seul entouré comme la cible
+d'Estimer, les familles nombreuses ; lots occupés proposés sur Plein Bail, lots libres confiés à
+des agences locales sans surcoût ; 5 000 € TTC à la signature de la structuration, le solde à la
+première vente ; périmètre « Paris et Île-de-France » sur la carte de France, la région en or
+(`CarteIdf`). **Acheter et le SEO** (MAV, 04/11/2026 : « le titre c'est même pas acheter un
+immeuble de rapport ») : H1 « Acheter un immeuble de rapport avant qu'il soit annoncé », H2 et
+meta sur « immeuble de rapport », FAQ repliée de cinq questions avec ses données FAQPage. La page
+reste une page qui convertit (§6) : le texte SEO est dans la FAQ, fermée par défaut.
+**Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que
 j'aime bien »), trois raisons en cartes de verre.

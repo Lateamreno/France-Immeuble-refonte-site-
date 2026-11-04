@@ -10,6 +10,7 @@
  *   2 financier        fenêtres et vitrines (la porte d'entrée reste à part, éteinte)
  *   3 constructibilité la mansarde en pointillés, marquée « +1 »
  *   4 cible            un des trois personnages
+ *   5 découpe          les lots dessinés en pointillés sur les façades (retour #165)
  *
  * Projection isométrique calculée ici, rendue côté serveur en une chaîne SVG :
  * aucune image, aucune dépendance. Les couleurs sont dans la feuille globale
@@ -73,9 +74,11 @@ export function schemaImmeuble(): string {
     [[Y0, fr[0]], [fr[1], Y1]].map(([a, b]) => ligne(cls, [[x, a, 0], [x, b, 0]])).join("");
   sect += segX(fr[0], "trottoir") + segX(fr[1], "trottoir") + segX((fr[0] + fr[1]) / 2, "axe");
   sect += segY(cote[0], "trottoir") + segY(cote[1], "trottoir") + segY((cote[0] + cote[1]) / 2, "axe");
-  for (let k = 0; k < 5; k++) {
-    const x = W - 1.1 + k * 0.17;
-    sect += ligne("zebre", [[x, fr[0] + 0.12, 0], [x, fr[1] - 0.12, 0]]);
+  // Bandes du passage piéton dans le sens de la rue, posées l'une après l'autre
+  // en travers de la chaussée (retour #166).
+  for (let k = 0; k < 6; k++) {
+    const y = fr[0] + 0.16 + (k * (fr[1] - fr[0] - 0.32)) / 5;
+    sect += ligne("zebre", [[W - 1.15, y, 0], [W - 0.45, y, 0]]);
   }
   for (const [a, b, c, d] of [[-2.4, -2.2, -0.7, -0.6], [0, -2.2, 1.8, -0.6], [2.2, -2.2, W, -0.6], [W + 2.35, -2.2, X1, -0.6], [-2.4, D + 2.6, -0.7, Y1]])
     sect += poly("parc", [[a, b, 0], [c, b, 0], [c, d, 0], [a, d, 0]]);
@@ -153,6 +156,14 @@ export function schemaImmeuble(): string {
   const [plx, ply] = P(cx, cy, H + TH);
   cons += `<text class="plus" x="${f1(plx)}" y="${f1(ply + 5)}">+1</text>`;
 
+  // ── 5. Découpe : les lots en pointillés, deux par étage et par façade ──
+  let dec = "";
+  for (const f of vues) {
+    const m = sur(f, 0.5);
+    dec += ligne("dec", [en(m, HF), en(m, H)]);
+    for (let n = 1; n <= NIV; n++) dec += ligne("dec", [en(f.a, n * HF), en(f.b, n * HF)]);
+  }
+
   // ── 4. Cible : trois personnages sur le trottoir, un seul s'allume ──
   const fm = sur(facade, 0.5);
   const pos: P2[] = [[fm[0] + 0.75, D + 0.32], [fm[0] + 1.25, D + 0.5], [fm[0] + 1.75, D + 0.3]];
@@ -178,6 +189,7 @@ export function schemaImmeuble(): string {
     rep(...sur(fd, 0.5), 3 * HF + 0.41, 40, -16, "Financier"),
     rep(W - 0.5, 0.6, H + 0.5, 40, -14, "Constructibilité"),
     rep(pos[1][0], pos[1][1], 1.05, 34, 10, "Cible"),
+    rep(...sur(fd, 0.5), 4 * HF, 40, -12, "Découpe"),
   ];
 
   const xs = tous.map((p) => p[0]), ys = tous.map((p) => p[1]);
@@ -198,6 +210,7 @@ export function schemaImmeuble(): string {
 <g data-i="2">${fen}</g>
 <g>${porte}</g>
 <g data-i="3">${cons}</g>
+<g data-i="5">${dec}</g>
 ${gens}
 <g class="reps">${reps.map((r, i) => `<g data-r="${i}">${r}</g>`).join("")}</g>
 </svg>`;

@@ -12,6 +12,18 @@ import { BandeMedia } from "@/components/BandeMedia";
 import { VISUELS } from "@/lib/visuels";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { Button } from "@/components/Button";
+import { Faq } from "@/components/Faq";
+import { JsonLd } from "@/components/JsonLd";
+import { filAriane } from "@/lib/schema";
+
+/** Médiane d'une liste de nombres, ou null. */
+const mediane = (xs: number[]) => {
+  const v = xs.filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const m = Math.floor(v.length / 2);
+  return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+};
+const pct = (x: number | null) => (x == null ? "" : `${x.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`);
 
 /**
  * /acheter-un-immeuble/ — construction du fichier acquéreurs.
@@ -23,23 +35,69 @@ import { Button } from "@/components/Button";
 export const metadata: Metadata = {
   title: "Acheter un immeuble de rapport",
   description:
-    "Accédez aux immeubles de rapport avant leur diffusion. Déposez votre recherche : vous recevez les dossiers correspondants avant toute présentation à d’autres acquéreurs.",
+    "Achetez un immeuble de rapport en off-market à Paris, en Île-de-France et en région : déposez votre recherche et recevez les dossiers complets avant leur diffusion.",
   alternates: { canonical: "/acheter-un-immeuble/" },
 };
 
 export default async function Acheter() {
-  const [{ stats }, ch] = await Promise.all([ventesEtStats(), chiffres()]);
+  const [{ stats, ventes }, ch] = await Promise.all([ventesEtStats(), chiffres()]);
+  // Les rendements de nos propres ventes : la donnée que personne d'autre ne publie (§7).
+  const rdt = (idf: boolean) => mediane(ventes.filter((v) => (v.region === "idf") === idf).map((v) => Number(v.rendement)).filter((x) => x > 0));
+  const rdtIdf = rdt(true), rdtRegion = rdt(false);
+  const QUESTIONS: { question: string; texte: string }[] = [
+    {
+      question: "Qu’est-ce qu’un immeuble de rapport ?",
+      texte: "Un immeuble entier, découpé en plusieurs lots loués (logements, commerces, bureaux), que l’on achète en bloc pour ses loyers. L’acquéreur devient seul propriétaire de tout l’immeuble, sans copropriété.",
+    },
+    {
+      question: "Quel rendement attendre d’un immeuble de rapport ?",
+      texte: rdtIdf && rdtRegion
+        ? `Sur nos ventes publiées en référence, le rendement brut médian est de ${pct(rdtIdf)} en Île-de-France et de ${pct(rdtRegion)} en région. Il dépend surtout de la ville : plus bas là où les prix sont élevés, plus haut ailleurs.`
+        : "Il dépend surtout de la ville : plus bas là où les prix sont élevés, plus haut en région. Chaque dossier que nous envoyons donne le rendement brut, net et acte en main.",
+    },
+    {
+      question: "Pourquoi les meilleurs immeubles ne sont-ils pas en ligne ?",
+      texte: "Beaucoup de propriétaires ne veulent pas que leurs locataires, leurs voisins ou le marché apprennent la vente par une annonce. Leur immeuble est présenté d’abord en off-market, aux acquéreurs dont la recherche correspond.",
+    },
+    {
+      question: "Comment recevoir les immeubles qui correspondent à ma recherche ?",
+      texte: "Déposez votre recherche : zones, budget, type d’immeuble et rendement visé. Quand un immeuble y correspond, vous recevez le dossier complet parmi les premiers : état locatif, surfaces, diagnostics, taxe foncière, baux et travaux.",
+    },
+    {
+      question: "Où achetez-vous des immeubles de rapport ?",
+      texte: `Partout en France. Nos références publiées couvrent ${stats.villes} communes, dont ${stats.partIdf} % en Île-de-France.`,
+    },
+  ];
   return (
     <>
+      <JsonLd
+        data={[
+          filAriane([
+            { nom: "Accueil", url: "/" },
+            { nom: "Acheter un immeuble de rapport", url: "/acheter-un-immeuble/" },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: QUESTIONS.map((q) => ({
+              "@type": "Question",
+              name: q.question,
+              acceptedAnswer: { "@type": "Answer", text: q.texte },
+            })),
+          },
+        ]}
+      />
       <HeroMedia
         image={VISUELS.toursContrePlongee.src}
         alt={VISUELS.toursContrePlongee.alt}
       >
         <>
           <Eyebrow>Accès investisseurs</Eyebrow>
+          {/* Le titre porte la requête (MAV, 04/11/2026 : « le titre c'est même pas
+              acheter un immeuble de rapport »), la promesse reste en or. */}
           <h1>
-            Les meilleurs immeubles partent{" "}
-            <span className="accent">avant d’être annoncés</span>
+            Acheter un immeuble de rapport{" "}
+            <span className="accent">avant qu’il soit annoncé</span>
           </h1>
           <p className="lead">
             C’est ce que nous promettons aux propriétaires : leur dossier est présenté à notre
@@ -62,7 +120,7 @@ export default async function Acheter() {
           <Reveal className="section__head">
             <Eyebrow>Comment ça marche</Eyebrow>
             {/* Retour #96 (MAV, 02/11/2026) : l'outil fait pour les acquéreurs d'immeubles. */}
-            <h2>Un outil conçu pour les acquéreurs d’immeubles</h2>
+            <h2>Un outil conçu pour les acquéreurs d’immeubles de rapport</h2>
             <p className="lead">
               Nous avons développé notre propre outil pour les acheteurs d’immeubles. Vous ne
               recevez que les immeubles qui correspondent à votre recherche, sur des critères
@@ -105,7 +163,7 @@ export default async function Acheter() {
       </section>
 
       <BandeMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
-        <h2>Des dossiers exclusifs</h2>
+        <h2>Des immeubles de rapport en exclusivité</h2>
         <p>
           Nos vendeurs choisissent une agence spécialisée dans la vente d’immeubles plutôt
           qu’une agence de quartier. Leurs immeubles ne sont donc pas partout sur internet :
@@ -135,6 +193,18 @@ export default async function Acheter() {
 
           <Reveal>
             <RechercheForm />
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section section--noir-2 faq-sec">
+        <div className="container container--narrow">
+          <Reveal className="section__head">
+            <Eyebrow>Questions fréquentes</Eyebrow>
+            <h2>Acheter un immeuble de rapport : vos questions</h2>
+          </Reveal>
+          <Reveal>
+            <Faq items={QUESTIONS.map((q) => ({ question: q.question, reponse: <p>{q.texte}</p> }))} />
           </Reveal>
         </div>
       </section>

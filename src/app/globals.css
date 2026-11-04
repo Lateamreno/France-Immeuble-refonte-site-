@@ -4743,7 +4743,7 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .sch .rep text{stroke:none;font:600 12px var(--font-mono-site);letter-spacing:.14em;text-transform:uppercase;}
 .analyses-sch[data-actif="0"] .sch [data-r="0"] .rep,.analyses-sch[data-actif="1"] .sch [data-r="1"] .rep,
 .analyses-sch[data-actif="2"] .sch [data-r="2"] .rep,.analyses-sch[data-actif="3"] .sch [data-r="3"] .rep,
-.analyses-sch[data-actif="4"] .sch [data-r="4"] .rep{opacity:1;}
+.analyses-sch[data-actif="4"] .sch [data-r="4"] .rep,.analyses-sch[data-actif="5"] .sch [data-r="5"] .rep{opacity:1;}
 /* la partie allumée */
 .sch g.est-actif .trottoir{stroke:var(--color-bronze);}
 .sch g.est-actif .axe,.sch g.est-actif .zebre{stroke:var(--color-bronze);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--color-bronze) 60%,transparent));}
@@ -4905,3 +4905,60 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .om-principe__photo--lecteur{width:56%;object-position:60% 22%;filter:brightness(.6) saturate(.8);
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 38%);mask-image:linear-gradient(90deg,transparent,#000 38%);}
 @media (max-width:759px){ .om-principe__photo--lecteur{width:100%;object-position:62% 18%;-webkit-mask-image:none;mask-image:none;} }
+
+/* ── Lot 75 (retours MAV du 04/11/2026) ─────────────────────────────── */
+/* #157 : un picto par point du cadre légal, à la place du petit trait. */
+.cadre-sec .cadre li{padding-left:40px;}
+.cadre-sec .cadre li::before{display:none;}
+.cadre__picto{position:absolute;left:0;top:13px;color:var(--color-bronze);}
+@media (max-width:759px){
+  .cadre-sec .cadre li{padding-left:18px;}
+  .cadre__picto{position:static;display:block;margin-bottom:8px;}
+}
+/* #154 : titres et textes des étapes alignés par le haut d'une carte à l'autre. */
+.etape-frise--picto h3,.etape-frise--picto .step__num{align-self:start;}
+/* #150 : les deux acheteurs devant l'immeuble, dans le style du schéma d'Estimer. */
+.da2{display:block;width:100%;max-width:340px;height:auto;margin-inline:auto;}
+.da2 .da2-g{fill:color-mix(in srgb,var(--color-noir-3) 82%,var(--color-bronze-profond));}
+.da2 .da2-d{fill:var(--color-noir-3);}
+.da2 .da2-t{fill:color-mix(in srgb,var(--color-noir-3) 70%,var(--color-bronze-profond));}
+.da2 .da2-fen{fill:color-mix(in srgb,var(--color-noir) 70%,var(--color-bronze-profond));}
+.da2 .da2-ct{fill:none;stroke:var(--color-bronze);stroke-width:1.3;stroke-linejoin:round;opacity:.85;}
+.da2 .da2-fin{stroke-width:.7;opacity:.35;}
+.da2 .da2-rue{fill:none;stroke:var(--color-bronze);stroke-width:1;stroke-dasharray:3 5;opacity:.45;}
+.da2 .da2-gens{fill:var(--color-bronze);}
+.da2 .da2-anneau{fill:none;stroke:var(--color-bronze);stroke-width:1.4;opacity:.8;}
+.da2 .da2-a2{opacity:.35;}
+.da2 .da2-coeur{fill:var(--color-bronze-clair-2);}
+.da2 .da2-bulle rect{fill:var(--color-noir);stroke:var(--color-bronze);stroke-width:1.2;}
+.da2 .da2-bulle text{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:11px;font-weight:700;text-anchor:middle;letter-spacing:.04em;}
+.da2 .da2-tige{fill:none;stroke:var(--color-bronze);stroke-width:1;opacity:.6;}
+/* #159 : la carte du périmètre de la découpe. */
+.perimetre-carte{display:flex;justify-content:center;}
+.carte-idf{display:block;width:100%;max-width:520px;height:auto;}
+.carte-idf__st1{stop-color:color-mix(in srgb,var(--color-bronze) 14%,var(--color-noir-3));}
+.carte-idf__st2{stop-color:var(--color-noir-3);stop-opacity:0;}
+.carte-idf__reg{fill:color-mix(in srgb,var(--color-noir) 70%,var(--color-noir-3));stroke:var(--color-bronze);stroke-width:1.2;stroke-opacity:.45;}
+.carte-idf__idf{fill:color-mix(in srgb,var(--color-bronze) 55%,var(--color-noir));stroke:var(--color-bronze-clair-2);stroke-width:2;}
+.carte-idf__idf--trait{fill:none;}
+.carte-idf__halo{fill:var(--color-bronze);opacity:.55;}
+.carte-idf__paris{fill:var(--color-bronze-clair);}
+.carte-idf__onde{fill:none;stroke:var(--color-bronze-clair);stroke-width:2;opacity:.6;}
+.carte-idf__nom{fill:var(--color-bronze-clair);font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:34px;}
+.carte-idf__sous{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:20px;letter-spacing:.12em;text-transform:uppercase;}
+@media (max-width:899px){ .carte-idf{max-width:360px;} }
+/* #165 : la découpe, les lots en pointillés sur les façades. */
+.sch .dec{fill:none;stroke-width:1.2;stroke-dasharray:4 4;stroke:transparent;}
+.sch g.est-actif .dec{stroke:var(--color-bronze);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--color-bronze) 70%,transparent));}
+/* #167 : la partie choisie s'allume d'un seul coup. La couleur des fenêtres (un
+   dégradé) ne peut pas s'animer : avec un fondu sur le reste, l'allumage se
+   faisait en deux temps. Tout bascule ensemble. */
+.sch *{transition:none;}
+/* #168 : sans chapeau, le titre prend toute la largeur au-dessus du schéma et de la liste. */
+.analyses-sch:not(:has(.analyses-sch__chapeau)){grid-template-areas:"entete entete" "scene liste";}
+/* #170 : le bouton remonte, la section épinglée garde de l'air en bas. Six analyses : la piste s'allonge. */
+@media (min-width:760px) and (min-height:700px){
+  .sec-analyses--pin{height:calc(var(--ecran) + 240svh);}
+  .sec-analyses--pin .sec-analyses__pin{padding-bottom:calc(var(--space-l) + 24px);}
+  .sec-analyses--pin .sec-analyses__cta{margin-top:var(--space-m);}
+}

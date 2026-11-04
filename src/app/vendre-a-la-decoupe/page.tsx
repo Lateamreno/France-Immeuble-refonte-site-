@@ -6,13 +6,13 @@ import { LigneDefilante } from "@/components/LigneDefilante";
 import { Faq, type QuestionFaq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
-import { SITE, nombre } from "@/lib/site";
-import { chiffres } from "@/lib/chiffres";
+import { SITE } from "@/lib/site";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { EstimationForm } from "@/components/EstimationForm";
 import { DeuxAcheteurs } from "@/components/DeuxAcheteurs";
+import { CarteIdf } from "@/components/CarteIdf";
 import { Picto, type NomPicto } from "@/components/Picto";
 
 /**
@@ -116,9 +116,10 @@ const QUESTIONS: QuestionFaq[] = [
     reponse: (
       <>
         <p>
-          C’est la vacance qui rend la découpe intéressante : un lot libre se vend au prix du
-          marché résidentiel, un lot occupé avec une décote. Il faut donc donner les congés pour
-          espérer vendre au meilleur prix.
+          C’est la vacance qui rend la découpe intéressante. Un lot libre se vend au prix du
+          marché résidentiel. Un lot occupé se vend au rendement, à un investisseur : il garde les
+          mêmes limites que la vente en bloc, avec une décote à peine moins forte. Il faut donc
+          donner les congés pour espérer vendre au meilleur prix.
         </p>
         <p>
           Comme vous restez propriétaire, vous n’êtes pas tenu par les mêmes obligations que les
@@ -153,7 +154,7 @@ const QUESTIONS: QuestionFaq[] = [
         Ils suivent leur propre régime. La première vente d’un local loué déclenche le droit de
         préférence du locataire commercial. Selon les baux, il y a parfois plus à gagner à
         renégocier le loyer avant de vendre qu’à vendre en l’état : un bail sous-évalué plombe la
-        valeur du lot. Nous regardons les deux.
+        valeur du lot.
       </p>
     ),
   },
@@ -162,8 +163,9 @@ const QUESTIONS: QuestionFaq[] = [
     reponse: (
       <p>
         Comptez environ deux mois pour arriver au règlement de copropriété et lancer les premières
-        ventes, celles des lots vides ou dont le départ est déjà négocié. Les lots occupés sortent
-        ensuite, au fil des congés et des préemptions, sur douze à vingt-quatre mois. Le calendrier
+        ventes, celles des lots vides ou dont le départ est déjà négocié. Les locaux commerciaux,
+        vendus loués à notre réseau d’investisseurs et sur <PleinBail />, partent généralement en
+        premier. Les logements occupés sortent ensuite, au fil des congés et des préemptions, sur douze à vingt-quatre mois. Le calendrier
         n’est pas tenu par nous mais par la loi : information préalable, délais de préemption,
         échéances de baux.
       </p>
@@ -173,10 +175,24 @@ const QUESTIONS: QuestionFaq[] = [
     question: "Quels frais faut-il avancer ?",
     reponse: (
       <p>
-        De l’ordre de 20 000 à 25 000 € pour un immeuble d’une dizaine de lots : géomètre, notaire,
-        diagnostic technique global, diagnostics par lot, commissaire de justice, syndic
-        provisoire. Ces frais sont réglés directement aux intervenants, que nous mettons en
-        concurrence. Nous ne les refacturons pas et ne prenons aucune commission dessus.
+        Nous prenons 5 000 € TTC d’avance à la signature de la mission de structuration. Comptez
+        ensuite de l’ordre de 20 000 à 25 000 € de frais d’intervenants pour un immeuble d’une
+        dizaine de lots : géomètre, notaire, diagnostic technique global, diagnostics par lot,
+        commissaire de justice, syndic provisoire. Ces frais sont réglés directement aux
+        intervenants. Nous comparons toujours plusieurs devis pour trouver le meilleur rapport
+        qualité-prix, et vous gardez le choix des prestataires. Nous ne prenons aucune commission
+        dessus.
+      </p>
+    ),
+  },
+  {
+    question: "Comment choisissez-vous les intervenants ?",
+    reponse: (
+      <p>
+        Pour chaque poste (géomètre, notaire, diagnostics), nous demandons plusieurs devis et les
+        comparons sur quatre critères : les avis Google, la rapidité de réponse, la proximité de
+        l’immeuble et le prix. Vous recevez le comparatif, avec notre recommandation, et vous
+        choisissez.
       </p>
     ),
   },
@@ -193,13 +209,17 @@ const QUESTIONS: QuestionFaq[] = [
   },
 ];
 
+/** La place de marché des immeubles loués du groupe (retours #156 et #162, MAV, 04/11/2026). */
+function PleinBail() {
+  return <a className="lien-discret" href={SITE.pleinbail} target="_blank" rel="noopener">Plein Bail</a>;
+}
+
 /** La société de travaux du groupe (retour #135, MAV, 04/11/2026 : www.lateamreno.fr). */
 function TeamReno() {
   return <a className="lien-discret" href="https://www.lateamreno.fr/" target="_blank" rel="noopener">la Team Reno</a>;
 }
 
-export default async function Decoupe() {
-  const ch = await chiffres();
+export default function Decoupe() {
   return (
     <>
       <JsonLd
@@ -484,14 +504,14 @@ export default async function Decoupe() {
               {
                 n: "05",
                 t: "Les travaux des lots libres",
-                p: <>Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Sans honoraires lorsque les travaux passent par <TeamReno />, à des conditions tarifaires avantageuses.</>,
+                p: <>Devis comparés, vérification des assurances et attestations, suivi de chantier, conformité et réception. Sans honoraires lorsque les travaux passent par <TeamReno />, à des conditions tarifaires avantageuses ; 3 % du montant des travaux avec une entreprise extérieure.</>,
                 m: "Rénovation avant vente",
                 picto: "technique",
               },
               {
                 n: "06",
                 t: "La commercialisation",
-                p: `Lots occupés vers notre fichier de ${nombre(ch.investisseurs)} investisseurs, lots libres vers les occupants, en off-market puis en diffusion élargie. Agence locale en renfort si le secteur l’exige, sans frais supplémentaires pour vous.`,
+                p: <>Les lots occupés sont proposés aux investisseurs sur <PleinBail />. Les lots libres sont confiés à une sélection d’agences locales, qui les vendent aux occupants sans surcoût pour vous.</>,
                 m: "Deux marchés, deux prix",
                 picto: "reseau",
               },
@@ -522,40 +542,49 @@ export default async function Decoupe() {
           <Reveal>
             <ul className="cadre">
               <li>
+                <Picto nom="technique" taille={24} className="cadre__picto" />
                 <strong>Diagnostic technique global</strong> : obligatoire avant toute mise en
                 copropriété d’un immeuble de plus de dix ans, et préalable au règlement.
               </li>
               <li>
+                <Picto nom="stats" taille={24} className="cadre__picto" />
                 <strong>DPE collectif de l’immeuble</strong> : exigé pour toute copropriété. Il
                 s’obtient dans la même mission que le diagnostic technique global.
               </li>
               <li>
+                <Picto nom="constructibilite" taille={24} className="cadre__picto" />
                 <strong>État descriptif de division et tantièmes</strong> : établis par un
                 géomètre-expert. Sur un immeuble mixte, les grilles de charges habitation et
                 commerces se traitent séparément : une erreur se paie pendant toute la vie de la
                 copropriété.
               </li>
               <li>
+                <Picto nom="dossier" taille={24} className="cadre__picto" />
                 <strong>Règlement de copropriété</strong> : rédigé et publié par le notaire, qui
                 immatricule le syndicat au registre national dans la foulée.
               </li>
               <li>
+                <Picto nom="bulles" taille={24} className="cadre__picto" />
                 <strong>Information préalable des locataires</strong> : puis offres de vente valant
                 droit de préemption, avec des délais de réponse encadrés.
               </li>
               <li>
+                <Picto nom="agenda" taille={24} className="cadre__picto" />
                 <strong>Congé pour vente</strong> : délivrable six mois avant le terme du bail
                 seulement. C’est ce qui fixe les fenêtres de tir, pas notre calendrier commercial.
               </li>
               <li>
+                <Picto nom="commerce" taille={24} className="cadre__picto" />
                 <strong>Droit de préférence du locataire commercial</strong> : déclenché par la
                 première vente d’un local loué.
               </li>
               <li>
+                <Picto nom="loupe" taille={24} className="cadre__picto" />
                 <strong>Diagnostics par lot</strong> : un DPE d’immeuble ne suffit pas à vendre :
                 chaque lot a les siens.
               </li>
               <li>
+                <Picto nom="valide" taille={24} className="cadre__picto" />
                 <strong>Autorisation préalable de division</strong> : selon la commune. La division
                 est par ailleurs interdite sur un immeuble frappé d’arrêté de péril ou
                 d’insalubrité.
@@ -584,7 +613,8 @@ export default async function Decoupe() {
                 <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
                 <span className="tarifs__note">
-                  Payable pour partie à la signature, le solde à la première vente.
+                  5 000 € TTC à la signature du contrat de structuration, le solde des forfaits à la
+                  première vente d’un lot.
                 </span>
               </li>
               <li>
@@ -631,18 +661,22 @@ export default async function Decoupe() {
       </section>
 
       {/* ───────── Périmètre ───────── */}
-      <section className="section section--noir-3">
-        <div className="container container--narrow">
+      {/* Retour #159 (MAV, 04/11/2026) : Paris et l'Île-de-France, avec la carte. */}
+      <section className="section section--noir-3 perimetre-sec">
+        <div className="container split">
           <Reveal className="section__head">
             <Eyebrow>Où nous intervenons</Eyebrow>
-            <h2>Paris et petite couronne</h2>
+            <h2>Paris et Île-de-France</h2>
             <p className="lead">
               Une découpe se pilote sur le terrain : rendez-vous locataire par locataire,
-              entreprises à suivre, syndic à installer, mairie à interroger. Nous ne prenons ces
-              missions que là où nous pouvons être présents dans la journée. Hors de ce périmètre,
+              entreprises à suivre, syndic à installer, mairie à interroger. Nous la proposons à
+              Paris et en Île-de-France, là où nous pouvons être présents dans la journée. Ailleurs,
               nous ne pouvons pas encore la proposer, sauf au cas par cas quand nous avons déjà des
               partenaires sur place.
             </p>
+          </Reveal>
+          <Reveal delayIndex={1} className="perimetre-carte">
+            <CarteIdf />
           </Reveal>
         </div>
       </section>
