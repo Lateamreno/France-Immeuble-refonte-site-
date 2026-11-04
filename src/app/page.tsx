@@ -242,7 +242,12 @@ export default async function Accueil() {
         </div>
       </section>
 
-      <section className="section section--noir">
+      {/* Retour #149, option A (MAV, 04/11/2026) : une photo fondue en fond et un
+          picto en tête de chaque carte. */}
+      <section className="section section--noir offres-sec">
+        <span className="offres-sec__fond" aria-hidden="true">
+          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" />
+        </span>
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Acheter</Eyebrow>
@@ -251,10 +256,11 @@ export default async function Accueil() {
 
           <div className="grid grid--2 grid--ligne-mob">
             {/* Les deux cartes ont la même construction (MAV, 22/10/2026) :
-                surtitre, titre, texte, bouton, et leurs boutons alignés. */}
+                picto, surtitre, titre, texte, bouton, et leurs boutons alignés. */}
             <Reveal as="article" className="card card--offre">
               {/* Retour #95 (MAV, 02/11/2026) : à gauche ce que nous vendons déjà,
                   à droite recevoir en avant-première, confidentiels compris. */}
+              <span className="card__picto-tete" aria-hidden="true"><Picto nom="immeubles" taille={44} /></span>
               <Eyebrow>En vente aujourd’hui</Eyebrow>
               <h3>Je souhaite acheter un immeuble</h3>
               <p>
@@ -264,12 +270,13 @@ export default async function Accueil() {
                 <strong>interlocuteur spécialisé</strong>.
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-                <Button href="/immeubles-a-vendre/" variant="outline">
+                <Button href="/immeubles-a-vendre/" variant="outline" court="Voir les immeubles">
                   Voir les immeubles en vente
                 </Button>
               </div>
             </Reveal>
             <Reveal as="article" className="card card--offre card--offmarket" delayIndex={1}>
+              <span className="card__picto-tete" aria-hidden="true"><Picto nom="best" taille={44} /></span>
               <Eyebrow>Les offres off-market</Eyebrow>
               <h3>Nos biens d’exception</h3>
               <p>
@@ -278,7 +285,7 @@ export default async function Accueil() {
                 <strong>y compris les confidentiels</strong>.
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-                <Button href="/acheter-un-immeuble/#deposer" icone>Recevoir en avant-première</Button>
+                <Button href="/acheter-un-immeuble/#deposer" icone court="Recevoir en premier">Recevoir en avant-première</Button>
               </div>
             </Reveal>
           </div>

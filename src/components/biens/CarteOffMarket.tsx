@@ -34,7 +34,7 @@ export function CarteOffMarket({ nombre }: { nombre: number }) {
             Une partie de nos mandats n’est jamais publiée en ligne. Déposez votre recherche pour recevoir nos offres off-market.
           </span>
           <button type="button" className="btn btn--primary carte-offmarket__btn" onClick={ouvrir}>
-            Recevoir les offres off-market
+            <span className="btn__long">Recevoir les offres off-market</span><span className="btn__court">Recevoir l’off-market</span>
           </button>
         </span>
       </div>

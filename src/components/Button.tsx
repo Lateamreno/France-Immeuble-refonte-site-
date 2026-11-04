@@ -16,12 +16,15 @@ export function Button({
   variant = "primary",
   icone = false,
   wide = false,
+  court,
   children,
 }: {
   href: string;
   variant?: Variante;
   icone?: boolean;
   wide?: boolean;
+  /** Libellé court pour le téléphone : un bouton tient sur une ligne (MAV, 04/11/2026). */
+  court?: ReactNode;
   children: ReactNode;
 }) {
   const classes = ["btn", `btn--${variant}`, wide ? "btn--wide" : ""]
@@ -33,7 +36,9 @@ export function Button({
     href.startsWith("tel:") || href.startsWith("mailto:") ||
     href.startsWith("http") || href.startsWith("#");
   void icone;
-  const contenu = <>{children}</>;
+  const contenu = court ? (
+    <><span className="btn__long">{children}</span><span className="btn__court">{court}</span></>
+  ) : <>{children}</>;
 
   if (externe) {
     return (

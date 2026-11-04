@@ -2,10 +2,14 @@ import "../revue.css";
 // Synthèse des retours de recette (mode Revue) : liste par écran, statut,
 // capture jointe. C'est la « todo » de fidélité au site d'origine.
 import Link from "next/link";
+import type { Metadata } from "next";
 import { listFeedback } from "@/lib/bo/feedback";
 import { FeedbackActions } from "@/components/revue-actions";
 
 export const dynamic = "force-dynamic";
+
+// Outil interne de recette : jamais dans les moteurs (audit SEO du 04/11/2026, T6).
+export const metadata: Metadata = { title: "Revue", robots: { index: false, follow: false } };
 
 const COULEURS: Record<string, string> = {
   bloquant: "#d60000", ecart: "#e3790d", detail: "#b6a359", idee: "#3db327",

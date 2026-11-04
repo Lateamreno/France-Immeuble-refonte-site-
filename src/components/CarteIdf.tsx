@@ -1,34 +1,28 @@
+import Image from "next/image";
 import { CARTE_VIEWBOX, REGIONS_FR } from "@/lib/carte-france";
 
 /**
- * Le périmètre de la découpe (retour #159, MAV, 04/11/2026) : les contours de la
- * France en or sur noir, l'Île-de-France en lumière et Paris marqué. Contours des
- * régions IGN Admin Express (Licence ouverte Etalab, voir `carte-france.ts`),
- * servis par le site lui-même.
+ * Le périmètre de la découpe (retour #159, puis MAV, 04/11/2026 : « je voyais un
+ * truc comme sur la photo », la France vue de nuit). Chaque commune est un point
+ * de lumière à sa population (INSEE, via geo.api.gouv.fr, Licence ouverte), dessiné
+ * une fois en or sur noir et servi par le site (`/media/carte/france-nuit.webp`,
+ * même projection que `carte-france.ts`). Par-dessus, le trait de l'Île-de-France
+ * et Paris, en vectoriel pour rester nets.
  */
+const PARIS = { x: 509.5, y: 236.6 };
+
 export function CarteIdf() {
   const idf = REGIONS_FR["11"];
   return (
-    <svg className="carte-idf" viewBox={CARTE_VIEWBOX} role="img" aria-label="Carte de France : Paris et l’Île-de-France en surbrillance">
-      <defs>
-        <filter id="carte-idf-halo" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="14" />
-        </filter>
-        <radialGradient id="carte-idf-fond" cx="52%" cy="24%" r="42%">
-          <stop offset="0" className="carte-idf__st1" />
-          <stop offset="1" className="carte-idf__st2" />
-        </radialGradient>
-      </defs>
-      <rect x="0" y="0" width="1000" height="963" fill="url(#carte-idf-fond)" />
-      {Object.entries(REGIONS_FR).map(([code, r]) => (
-        <path key={code} d={r.d} className={code === "11" ? "carte-idf__idf" : "carte-idf__reg"} />
-      ))}
-      <path d={idf.d} className="carte-idf__halo" filter="url(#carte-idf-halo)" />
-      <path d={idf.d} className="carte-idf__idf carte-idf__idf--trait" />
-      <circle cx="521" cy="229" r="7" className="carte-idf__paris" />
-      <circle cx="521" cy="229" r="15" className="carte-idf__onde" />
-      <text x="548" y="222" className="carte-idf__nom">Paris</text>
-      <text x="606" y="262" className="carte-idf__sous">Île-de-France</text>
-    </svg>
+    <div className="carte-idf">
+      <Image src="/media/carte/france-nuit.webp" alt="" fill sizes="(max-width: 899px) 360px, 520px" className="carte-idf__nuit" />
+      <svg className="carte-idf__trait" viewBox={CARTE_VIEWBOX} role="img" aria-label="La France de nuit, l’Île-de-France et Paris en surbrillance">
+        <path d={idf.d} className="carte-idf__idf" />
+        <circle cx={PARIS.x} cy={PARIS.y} r="16" className="carte-idf__onde" />
+        <line x1={PARIS.x + 18} y1={PARIS.y - 10} x2={PARIS.x + 120} y2={PARIS.y - 70} className="carte-idf__fil" />
+        <text x={PARIS.x + 128} y={PARIS.y - 74} className="carte-idf__nom">Paris</text>
+        <text x={PARIS.x + 128} y={PARIS.y - 44} className="carte-idf__sous">et l’Île-de-France</text>
+      </svg>
+    </div>
   );
 }

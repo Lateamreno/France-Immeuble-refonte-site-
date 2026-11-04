@@ -36,9 +36,11 @@ type Sim = {
  * collante en bas d'écran, et la simulation complète dans la feuille d'offre.
  */
 export function CarteAction({
-  b, telephone, telHref, prixM2Secteur,
+  b, telephone, telHref, prixM2Secteur, rentaVille = null,
 }: {
   b: BienAVendre; telephone: string; telHref: string; prixM2Secteur: number | null;
+  /** Rentabilité brute moyenne de la ville (Plein Bail), en %. */
+  rentaVille?: number | null;
 }) {
   const etat = useEtatCompte();
   const pas = 1_000;
@@ -92,6 +94,12 @@ export function CarteAction({
           <p className="carte-action__note">dont honoraires de {eur(honoraires)} TTC à la charge de l’acquéreur</p>
         </div>
 
+        {/* Retour #171 (MAV, 04/11/2026) : la barrette de prix reste dans la colonne, avec
+            l'écart à l'annonce, le prix au m² et les trois rendements face au marché. */}
+        <div className="seulement-large">
+          <Barrette b={b} sim={sim} min={min} max={max} pas={pas} prixM2Secteur={prixM2Secteur} rentaVille={rentaVille} />
+        </div>
+
         {deja.length > 0 && (
           <p className="carte-action__deja" role="status">
             Votre offre du {new Date(deja[0].envoye_le).toLocaleDateString("fr-FR")} : <strong>{eur(deja[0].montant)}</strong>. Votre agent vous rappelle.
@@ -104,7 +112,7 @@ export function CarteAction({
             {numero ? (
               <a className="btn btn--outline carte-action__tel" href={telHref}>{telephone}</a>
             ) : (
-              <button type="button" className="btn btn--outline" onClick={voirNumero}>Voir le numéro</button>
+              <button type="button" className="btn btn--outline" onClick={voirNumero}><span className="btn__long">Voir le numéro</span><span className="btn__court">Voir le n°</span></button>
             )}
             <button type="button" className="btn btn--outline" onClick={() => ouvrir("contact")}>Contacter</button>
           </div>
@@ -115,9 +123,9 @@ export function CarteAction({
           <Marteau />{libelleOffre}
         </button>
 
-        <button type="button" className="carte-action__simuler" onClick={() => ouvrir("offre")}>Simuler mon offre et mon financement</button>
+        <button type="button" className="carte-action__simuler" onClick={() => ouvrir("offre")}>Simuler mon financement</button>
         <div className="carte-action__simulation seulement-large">
-          <Simulation b={b} sim={sim} min={min} max={max} pas={pas} prixM2Secteur={prixM2Secteur} />
+          <Simulation b={b} sim={sim} min={min} max={max} pas={pas} prixM2Secteur={prixM2Secteur} financementSeul />
         </div>
         {etat && !etat.connecte && (
           <p className="carte-action__note">Avec votre espace client : favoris, offres en ligne et immeubles hors annonce.</p>
@@ -146,13 +154,67 @@ export function CarteAction({
   );
 }
 
+/** Le prix de l'offre : saisie au clavier, boutons − et +, curseur. */
+function SaisieOffre({ sim, min, max, pas }: { sim: Sim; min: number; max: number; pas: number }) {
+  const [saisie, setSaisie] = useState<string | null>(null);
+  const { offre, setOffre } = sim;
+  return (
+    <>
+      <p className="carte-action__lbl">Prix de mon offre</p>
+      <div className="offre-saisie">
+        <button type="button" aria-label={`Baisser l’offre de ${eur(pas)}`} onClick={() => { setSaisie(null); setOffre(offre - pas); }}>−</button>
+        <input aria-label="Prix de mon offre en euros" inputMode="numeric" value={saisie ?? eur(offre)}
+          onChange={(e) => setSaisie(e.target.value)}
+          onBlur={() => { const v = lireEntier(saisie ?? ""); if (v) setOffre(v); setSaisie(null); }}
+          onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }} />
+        <button type="button" aria-label={`Augmenter l’offre de ${eur(pas)}`} onClick={() => { setSaisie(null); setOffre(offre + pas); }}>+</button>
+      </div>
+      <input type="range" className="curseur" aria-label="Curseur du prix de mon offre" min={min} max={max} step={pas} value={offre}
+        style={piste(offre, min, max)} aria-valuetext={eur(offre)} onChange={(e) => { setSaisie(null); setOffre(Number(e.target.value)); }} />
+    </>
+  );
+}
+
+/**
+ * La barrette de la colonne (retour #171) : le prix de l'offre, puis sur une ligne le
+ * prix et le prix au m², sur la suivante les trois rendements. Écarts comme Plein
+ * Bail : en or quand ils sont favorables à l'acquéreur. La rentabilité de la ville
+ * est brute : seul le rendement brut s'y compare.
+ */
+function Barrette({
+  b, sim, min, max, pas, prixM2Secteur, rentaVille,
+}: { b: BienAVendre; sim: Sim; min: number; max: number; pas: number; prixM2Secteur: number | null; rentaVille: number | null }) {
+  const { offre } = sim;
+  const ecartPrix = ((offre - b.prixHai) / b.prixHai) * 100;
+  const pm2 = b.surface ? offre / b.surface : null;
+  const ecartM2 = pm2 && prixM2Secteur ? ((pm2 - prixM2Secteur) / prixM2Secteur) * 100 : null;
+  const r = rendements(b, offre);
+  const rd = r.potentiel ?? r.actuel;
+  const ecartRdt = rd && rentaVille ? ((rd.brut - rentaVille) / rentaVille) * 100 : null;
+  return (
+    <div className="barrette">
+      <SaisieOffre sim={sim} min={min} max={max} pas={pas} />
+      <dl className="kpi kpi--deux">
+        <div><dt>Mon prix</dt><dd>{eur(offre)}<small className={ecartPrix < 0 ? "ecart--bien" : undefined}>{Math.round(ecartPrix * 10) === 0 ? "prix demandé" : `${signe(ecartPrix)}${pct(Math.abs(ecartPrix), 1)} vs annonce`}</small></dd></div>
+        {pm2 != null && <div><dt>Prix / m²</dt><dd>{eur(pm2)}<small className={ecartM2 == null ? undefined : ecartM2 < 0 ? "ecart--bien" : "ecart--moins"}>{ecartM2 != null ? `${signe(ecartM2)}${pct(Math.abs(ecartM2), 0)} vs marché` : " "}</small></dd></div>}
+      </dl>
+      {rd && (
+        <dl className="kpi">
+          <div><dt>Brut</dt><dd>{pct(rd.brut, 2)}<small className={ecartRdt == null ? undefined : ecartRdt > 0 ? "ecart--bien" : "ecart--moins"}>{ecartRdt != null ? `${signe(ecartRdt)}${pct(Math.abs(ecartRdt), 0)} vs ville` : " "}</small></dd></div>
+          <div><dt>Net</dt><dd>{pct(rd.net, 2)}<small>charges déduites</small></dd></div>
+          <div><dt>Acte en main</dt><dd>{pct(rd.aem, 2)}<small>notaire compris</small></dd></div>
+        </dl>
+      )}
+    </div>
+  );
+}
+
 /** Six vignettes et trois curseurs, recalculés en direct, frais de notaire réels compris. */
 function Simulation({
-  b, sim, min, max, pas, prixM2Secteur,
-}: { b: BienAVendre; sim: Sim; min: number; max: number; pas: number; prixM2Secteur: number | null }) {
+  b, sim, min, max, pas, prixM2Secteur, financementSeul = false,
+}: { b: BienAVendre; sim: Sim; min: number; max: number; pas: number; prixM2Secteur: number | null; financementSeul?: boolean }) {
   const uid = useId();
-  const [saisie, setSaisie] = useState<string | null>(null);
-  const { offre, setOffre, apportPct, setApportPct, duree, setDuree, taux, setTaux } = sim;
+  const { offre, apportPct, setApportPct, duree, setDuree, taux, setTaux } = sim;
   const notaire = notairePour(b, offre);
   const travaux = b.travauxTotal ?? 0;
   const cout = offre + notaire + travaux;
@@ -170,22 +232,12 @@ function Simulation({
 
   return (
     <div className="simulation">
-      <p className="carte-action__lbl">Prix de mon offre</p>
-      <div className="offre-saisie">
-        <button type="button" aria-label={`Baisser l’offre de ${eur(pas)}`} onClick={() => { setSaisie(null); setOffre(offre - pas); }}>−</button>
-        <input aria-label="Prix de mon offre en euros" inputMode="numeric" value={saisie ?? eur(offre)}
-          onChange={(e) => setSaisie(e.target.value)}
-          onBlur={() => { const v = lireEntier(saisie ?? ""); if (v) setOffre(v); setSaisie(null); }}
-          onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }} />
-        <button type="button" aria-label={`Augmenter l’offre de ${eur(pas)}`} onClick={() => { setSaisie(null); setOffre(offre + pas); }}>+</button>
-      </div>
-      <input type="range" className="curseur" aria-label="Curseur du prix de mon offre" min={min} max={max} step={pas} value={offre}
-        style={piste(offre, min, max)} aria-valuetext={eur(offre)} onChange={(e) => { setSaisie(null); setOffre(Number(e.target.value)); }} />
+      {!financementSeul && <SaisieOffre sim={sim} min={min} max={max} pas={pas} />}
 
       <dl className="kpi">
-        <div><dt>Mon prix</dt><dd>{eur(offre)}<small>{ecartPrix === 0 ? "prix demandé" : `${signe(ecartPrix)}${pct(Math.abs(ecartPrix), 1)} vs annonce`}</small></dd></div>
-        {pm2 != null && <div><dt>Prix / m²</dt><dd>{eur(pm2)}<small className={ecartM2 == null ? undefined : ecartM2 < 0 ? "ecart--bien" : "ecart--moins"}>{ecartM2 != null ? `${signe(ecartM2)}${pct(Math.abs(ecartM2), 0)} vs marché` : " "}</small></dd></div>}
-        {rd && (
+        {!financementSeul && <div><dt>Mon prix</dt><dd>{eur(offre)}<small>{ecartPrix === 0 ? "prix demandé" : `${signe(ecartPrix)}${pct(Math.abs(ecartPrix), 1)} vs annonce`}</small></dd></div>}
+        {!financementSeul && pm2 != null && <div><dt>Prix / m²</dt><dd>{eur(pm2)}<small className={ecartM2 == null ? undefined : ecartM2 < 0 ? "ecart--bien" : "ecart--moins"}>{ecartM2 != null ? `${signe(ecartM2)}${pct(Math.abs(ecartM2), 0)} vs marché` : " "}</small></dd></div>}
+        {!financementSeul && rd && (
           <div className="kpi--triple"><dt>Rendement</dt>
             <dd>{pct(rd.brut, 2)}<small>brut</small></dd>
             <dd className="kpi__sous">{pct(rd.net, 2)} net · {pct(rd.aem, 2)} AEM</dd>
@@ -292,7 +344,7 @@ function FeuilleOffre({
         </div>
       ) : (
         <form className="feuille__form" onSubmit={envoyerOffre}>
-          <div className="seulement-compact">
+          <div className="feuille__sim">
             <Simulation b={b} sim={sim} min={min} max={max} pas={pas} prixM2Secteur={prixM2Secteur} />
           </div>
           <div className="feuille__grille">

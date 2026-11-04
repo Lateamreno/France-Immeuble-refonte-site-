@@ -25,8 +25,9 @@ export function ContactProjet() {
     );
   }
   return (
-    <div>
-      <h2 style={{ marginBottom: "var(--space-s)" }}>Votre message</h2>
+    <div className="contact-projet">
+      {/* Retour #173 : un titre qui pousse à écrire, à la place de « Votre message ». */}
+      <h2 className="contact-projet__titre">Échangeons sur votre projet</h2>
       <ContactForm onVendre={() => setVendre(true)} />
     </div>
   );

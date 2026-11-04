@@ -33,12 +33,13 @@ export default function ContactezNous() {
       />
 
       {/* Retour #72 et précision de MAV (02/11/2026) : pas de hero ; une seule image sous toute la page, le titre, le formulaire tout de suite. */}
-      <PageFond image={VISUELS.skylineCrepuscule.src} className="page-fond--contact"
-        titre={<>Contactez-<span className="accent">nous</span></>}>
-
+      {/* Retours #172 et #173 (MAV, 04/11/2026) : « Contactez-nous » revient à gauche,
+          au-dessus des coordonnées, et le formulaire remonte à sa hauteur. */}
+      <PageFond image={VISUELS.skylineCrepuscule.src} className="page-fond--contact">
       <section className="section section--noir contact-sec">
         <div className="container split">
           <Reveal>
+            <h1 className="contact-titre">Contactez-<span className="accent">nous</span></h1>
             <ul className="fiche-contact">
               <li>
                 <Picto nom="mail" taille={20} />

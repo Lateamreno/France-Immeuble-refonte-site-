@@ -22,7 +22,14 @@ type Face = { a: P2; b: P2; cls: "f-g" | "f-d" | "f-m"; L: number };
 
 const f1 = (v: number) => v.toFixed(1);
 
-export function schemaImmeuble(): string {
+/**
+ * `scene` dessine le même immeuble pour la page Découpe (retour #150 bis, MAV,
+ * 04/11/2026 : « reprends celui de la page Estimer ») : « bloc », toutes les
+ * fenêtres allumées et un investisseur, calculette en main ; « decoupe », quelques
+ * fenêtres allumées et une famille (la mère regarde les commerces, le père
+ * l'immeuble, les enfants à la balançoire). Sans repères ni parties à allumer.
+ */
+export function schemaImmeuble(scene?: "bloc" | "decoupe"): string {
   const W = 4, D = 3, NIV = 6, HF = 0.8;
   const s = 34, C = 0.866, H = NIV * HF;
   const P = (x: number, y: number, z: number): P2 => [(x - y) * C * s, (x + y) * 0.5 * s - z * s];
@@ -119,14 +126,20 @@ export function schemaImmeuble(): string {
   for (const f of faces(retrait(emprise, -0.07))) tech += ligne("ct", [en(f.a, H), en(f.b, H)]);
 
   // ── 2. Financier : fenêtres et vitrines ; la porte à part ──
-  let fen = "", porte = "";
+  let fen = "", porte = "", nf = 0;
+  // Fenêtres allumées à la découpe : quelques lots seulement, choisis une fois pour toutes.
+  const ALLUMEES = new Set([2, 6, 9, 15, 19, 26]);
+  const cl = () => {
+    const i = nf++;
+    return scene === "bloc" || (scene === "decoupe" && ALLUMEES.has(i)) ? "fen on" : "fen";
+  };
   for (const f of vues) {
     const nc = Math.max(1, Math.round(f.L));
     for (let c = 0; c < nc; c++) {
       const t0 = (c + 0.3) / nc, t1 = (c + 0.7) / nc;
       for (let n = 1; n < NIV; n++) {
         const z0 = n * HF + 0.18, z1 = n * HF + 0.64;
-        fen += poly("fen", [en(sur(f, t0), z0), en(sur(f, t1), z0), en(sur(f, t1), z1), en(sur(f, t0), z1)]);
+        fen += poly(cl(), [en(sur(f, t0), z0), en(sur(f, t1), z0), en(sur(f, t1), z1), en(sur(f, t0), z1)]);
       }
       if (f === facade && c === Math.floor(nc / 2))
         porte = poly("porte", [en(sur(f, (c + 0.3) / nc), 0), en(sur(f, (c + 0.7) / nc), 0), en(sur(f, (c + 0.7) / nc), 0.66), en(sur(f, (c + 0.3) / nc), 0.66)]);
@@ -141,7 +154,7 @@ export function schemaImmeuble(): string {
   for (let i = 0; i < emprise.length; i++) {
     const j = (i + 1) % emprise.length, a = emprise[i], b = emprise[j];
     if (!vues.some((f) => f.a === a && f.b === b)) continue;
-    cons += poly("cp", [en(a, H), en(b, H), en(haut[j], H + TH), en(haut[i], H + TH)]);
+    cons += poly(scene ? "toit" : "cp", [en(a, H), en(b, H), en(haut[j], H + TH), en(haut[i], H + TH)]);
     const L = Math.hypot(b[0] - a[0], b[1] - a[1]), nc = Math.max(1, Math.round(L));
     for (let c = 0; c < nc; c++) {
       const t = (c + 0.5) / nc, e = (0.09 / L) * nc, k = 0.35;
@@ -149,12 +162,12 @@ export function schemaImmeuble(): string {
       const m1: P2 = [a[0] + (b[0] - a[0]) * (t + e), a[1] + (b[1] - a[1]) * (t + e)];
       const h0: P2 = [m0[0] + (haut[i][0] - a[0]) * k, m0[1] + (haut[i][1] - a[1]) * k];
       const h1: P2 = [m1[0] + (haut[j][0] - b[0]) * k, m1[1] + (haut[j][1] - b[1]) * k];
-      cons += poly("luc", [en(m0, H + 0.14), en(m1, H + 0.14), en(h1, H + 0.14 + TH * k * 0.9), en(h0, H + 0.14 + TH * k * 0.9)]);
+      cons += poly(scene ? "luc luc--plein" : "luc", [en(m0, H + 0.14), en(m1, H + 0.14), en(h1, H + 0.14 + TH * k * 0.9), en(h0, H + 0.14 + TH * k * 0.9)]);
     }
   }
-  cons += poly("cp", haut.map((p) => en(p, H + TH)));
+  cons += poly(scene ? "toit toit--haut" : "cp", haut.map((p) => en(p, H + TH)));
   const [plx, ply] = P(cx, cy, H + TH);
-  cons += `<text class="plus" x="${f1(plx)}" y="${f1(ply + 5)}">+1</text>`;
+  if (!scene) cons += `<text class="plus" x="${f1(plx)}" y="${f1(ply + 5)}">+1</text>`;
 
   // ── 5. Découpe : les lots en pointillés, deux par étage et par façade ──
   let dec = "";
@@ -164,10 +177,64 @@ export function schemaImmeuble(): string {
     for (let n = 1; n <= NIV; n++) dec += ligne("dec", [en(f.a, n * HF), en(f.b, n * HF)]);
   }
 
+  // ── Scènes de la page Découpe ──
+  // Le cadre d'une scène : l'immeuble, ses voisins et les personnes, sans le reste des rues.
+  const cadre: P2[] = [];
+  function personnages(sc: "bloc" | "decoupe"): string {
+    for (const [x, y, z] of [[-2.3, D, 0], [-2.3, -0.4, 0.95], [0, 0, H + TH], [W, 0, H + TH], [W, 0, 0], [W, D, 0], [0, D + 1.2, 0], [W + 0.6, D + 0.9, 0]] as P3[])
+      cadre.push(P(x, y, z));
+    const corps = (x: number, y: number, k: number) => {
+      const [gx, gy] = P(x, y, 0);
+      cadre.push([gx - 10 * k, gy - 30 * k], [gx + 10 * k, gy + 4]);
+      return {
+        gx, gy, tete: [gx, gy - 22 * k] as P2,
+        svg: `<path class="gens on" d="M${f1(gx - 6.5 * k)} ${f1(gy)}v${f1(-11 * k)}a${f1(6.5 * k)} ${f1(6.5 * k)} 0 0 1 ${f1(13 * k)} 0v${f1(11 * k)}z"/><circle class="gens on" cx="${f1(gx)}" cy="${f1(gy - 22 * k)}" r="${f1(4.6 * k)}"/>`,
+      };
+    };
+    // Regard : un trait en pointillés de la tête vers ce que la personne regarde.
+    const regard = ([ax, ay]: P2, [bx, by]: P2) =>
+      `<polyline class="regard" points="${f1(ax)},${f1(ay)} ${f1(bx)},${f1(by)}"/><circle class="regard-pt" cx="${f1(bx)}" cy="${f1(by)}" r="2.2"/>`;
+    if (sc === "bloc") {
+      const k = 1.4, p = corps(fm[0] + 0.9, D + 0.42, k);
+      const { gx, gy } = p;
+      // La calculette tenue devant lui, écran allumé, et ce qu'il calcule au-dessus.
+      const cx0 = gx + 3 * k, cy0 = gy - 19 * k, cw = 10 * k, ch = 13 * k;
+      let calc = `<line class="bras" x1="${f1(gx + 4 * k)}" y1="${f1(gy - 13 * k)}" x2="${f1(cx0 + 2)}" y2="${f1(cy0 + ch - 3)}"/>`;
+      calc += `<rect class="calc" x="${f1(cx0)}" y="${f1(cy0)}" width="${f1(cw)}" height="${f1(ch)}" rx="1.6"/>`;
+      calc += `<rect class="calc-ecran" x="${f1(cx0 + 1.6)}" y="${f1(cy0 + 1.6)}" width="${f1(cw - 3.2)}" height="${f1(3.2)}"/>`;
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++)
+        calc += `<circle class="calc-touche" cx="${f1(cx0 + 2.6 + c * (cw - 5.2) / 2)}" cy="${f1(cy0 + 7.4 + r * 2.4 * k)}" r="0.9"/>`;
+      const bx = cx0 + cw / 2 + 14, by = cy0 - 20;
+      cadre.push([bx - 30, by - 14], [bx + 30, by + 12]);
+      const bulle = `<polyline class="tige" points="${f1(cx0 + cw / 2)},${f1(cy0 - 2)} ${f1(bx - 8)},${f1(by + 10)}"/><g class="bulle"><rect x="${f1(bx - 27)}" y="${f1(by - 12)}" width="54" height="22" rx="11"/><text x="${f1(bx)}" y="${f1(by + 3.5)}">€ / %</text></g>`;
+      return `<g class="scene">${p.svg}${calc}${bulle}</g>`;
+    }
+    // La famille : la mère vers les commerces, le père vers l'immeuble.
+    const mere = corps(-0.1, D + 0.45, 1.15), pere = corps(0.85, D + 0.5, 1.25);
+    let out = mere.svg + pere.svg;
+    out += regard([mere.tete[0] - 4, mere.tete[1] - 1], P(-1.3, D + 0.05, 0.42));
+    out += regard([pere.tete[0] + 3, pere.tete[1] - 4], P(fm[0] - 0.4, D, 3 * HF + 0.4));
+    // La balançoire, dans le square en face, au bout du passage piéton, et les deux enfants.
+    const q0 = 2.15, q1 = 3.35, qy = D + 2.95, qh = 1.05;
+    let jeu = poly("parc", [[1.9, D + 2.45, 0], [3.9, D + 2.45, 0], [3.9, D + 3.45, 0], [1.9, D + 3.45, 0]]) + ligne("jeu", [[q0, qy - 0.22, 0], [q0, qy, qh], [q0, qy + 0.22, 0]]) +
+      ligne("jeu", [[q1, qy - 0.22, 0], [q1, qy, qh], [q1, qy + 0.22, 0]]) +
+      ligne("jeu", [[q0, qy, qh], [q1, qy, qh]]);
+    const sx = (q0 + q1) / 2, sw = 0.22;
+    jeu += ligne("jeu fin", [[sx - sw, qy, qh], [sx - sw + 0.18, qy + 0.34, 0.32]]) + ligne("jeu fin", [[sx + sw, qy, qh], [sx + sw + 0.18, qy + 0.34, 0.32]]);
+    jeu += ligne("jeu", [[sx - sw + 0.12, qy + 0.34, 0.32], [sx + sw + 0.24, qy + 0.34, 0.32]]);
+    const [ex, ey] = P(sx + 0.18, qy + 0.34, 0.32), ke = 0.62;
+    // L'enfant assis : le buste posé sur le siège.
+    const assis = `<path class="gens on" d="M${f1(ex - 6.5 * ke)} ${f1(ey)}v${f1(-9 * ke)}a${f1(6.5 * ke)} ${f1(6.5 * ke)} 0 0 1 ${f1(13 * ke)} 0v${f1(9 * ke)}z"/><circle class="gens on" cx="${f1(ex)}" cy="${f1(ey - 20 * ke)}" r="${f1(4.6 * ke)}"/>`;
+    const debout = corps(q1 + 0.35, qy + 0.55, ke);
+    cadre.push(P(q0 - 0.3, qy + 0.3, 0), P(q0, qy, qh + 0.2));
+    out += jeu + assis + debout.svg;
+    return `<g class="scene">${out}</g>`;
+  }
+
   // ── 4. Cible : trois personnages sur le trottoir, un seul s'allume ──
   const fm = sur(facade, 0.5);
   const pos: P2[] = [[fm[0] + 0.75, D + 0.32], [fm[0] + 1.25, D + 0.5], [fm[0] + 1.75, D + 0.3]];
-  const gens = pos.map(([x, y], k) => {
+  const gens = scene ? personnages(scene) : pos.map(([x, y], k) => {
     const [gx, gy] = P(x, y, 0);
     tous.push([gx, gy - 30]);
     const corps = `<path class="gens" d="M${f1(gx - 6.5)} ${f1(gy)}v-11a6.5 6.5 0 0 1 13 0v11z"/><circle class="gens" cx="${f1(gx)}" cy="${f1(gy - 22)}" r="4.6"/>`;
@@ -179,7 +246,7 @@ export function schemaImmeuble(): string {
   // ── Repères : un mot à côté de la partie allumée ──
   const rep = (x: number, y: number, z: number, dx: number, dy: number, mot: string) => {
     const [ax, ay] = P(x, y, z), bx = ax + dx, by = ay + dy, g = dx < 0;
-    tous.push([bx + (g ? -110 : 165), by]);
+    if (!scene) tous.push([bx + (g ? -110 : 165), by]);
     return `<g class="rep"><circle cx="${f1(ax)}" cy="${f1(ay)}" r="2.6"/><polyline points="${f1(ax)},${f1(ay)} ${f1(bx)},${f1(by)} ${f1(bx + (g ? -14 : 14))},${f1(by)}"/><text x="${f1(bx + (g ? -20 : 20))}" y="${f1(by + 4)}" text-anchor="${g ? "end" : "start"}">${mot}</text></g>`;
   };
   const fd = vues.find((f) => f.cls === "f-d") ?? vues[vues.length - 1];
@@ -194,8 +261,34 @@ export function schemaImmeuble(): string {
 
   const xs = tous.map((p) => p[0]), ys = tous.map((p) => p[1]);
   const x0 = Math.min(...xs) - 8, y0 = Math.min(...ys) - 12;
+  if (scene) return sceneSvg();
   const w = Math.max(...xs) - x0 + 8, h = Math.max(...ys) - y0 + 8;
   const [mx, my] = P(cx, cy, 0), R = Math.max(w, h) * 0.58;
+  function sceneSvg() {
+    const cxs = cadre.map((p) => p[0]), cys = cadre.map((p) => p[1]);
+    const x0 = Math.min(...cxs) - 14, y0 = Math.min(...cys) - 10;
+    const w = Math.max(...cxs) - x0 + 14, h = Math.max(...cys) - y0 + 10;
+    const [mx, my] = P(cx, cy, 0), R = Math.max(w, h) * 0.56, q = `sch-${scene}`;
+    const titre = scene === "bloc"
+      ? "Un investisseur devant l’immeuble, toutes les fenêtres allumées, sa calculette en main"
+      : "Une famille devant l’immeuble : la mère regarde les commerces, le père l’immeuble, les enfants jouent à la balançoire";
+    return `<svg class="sch sch--scene" viewBox="${x0.toFixed(0)} ${y0.toFixed(0)} ${w.toFixed(0)} ${h.toFixed(0)}" role="img" aria-label="${titre}">
+<defs>
+<radialGradient id="${q}-fg" gradientUnits="userSpaceOnUse" cx="${mx.toFixed(0)}" cy="${my.toFixed(0)}" r="${R.toFixed(0)}"><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<mask id="${q}-fondu"><rect x="${x0.toFixed(0)}" y="${y0.toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" fill="url(#${q}-fg)"/></mask>
+<linearGradient id="sch-fac-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sch-st sch-st--g1"/><stop offset="1" class="sch-st sch-st--g2"/></linearGradient>
+<linearGradient id="sch-fac-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sch-st sch-st--d1"/><stop offset="1" class="sch-st sch-st--d2"/></linearGradient>
+<linearGradient id="sch-or" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sch-st sch-st--or1"/><stop offset=".55" class="sch-st sch-st--or2"/><stop offset="1" class="sch-st sch-st--or3"/></linearGradient>
+</defs>
+<g mask="url(#${q}-fondu)">${sect}</g>
+<g class="vol">${volume}</g>
+<g>${tech}</g>
+<g>${fen}</g>
+<g>${porte}</g>
+<g>${cons}</g>
+${gens}
+</svg>`;
+  }
   return `<svg class="sch" viewBox="${x0.toFixed(0)} ${y0.toFixed(0)} ${w.toFixed(0)} ${h.toFixed(0)}" aria-hidden="true" focusable="false">
 <defs>
 <radialGradient id="sch-fg" gradientUnits="userSpaceOnUse" cx="${mx.toFixed(0)}" cy="${my.toFixed(0)}" r="${R.toFixed(0)}"><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>

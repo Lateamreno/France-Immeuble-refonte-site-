@@ -4918,34 +4918,16 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 /* #154 : titres et textes des étapes alignés par le haut d'une carte à l'autre. */
 .etape-frise--picto h3,.etape-frise--picto .step__num{align-self:start;}
 /* #150 : les deux acheteurs devant l'immeuble, dans le style du schéma d'Estimer. */
-.da2{display:block;width:100%;max-width:340px;height:auto;margin-inline:auto;}
-.da2 .da2-g{fill:color-mix(in srgb,var(--color-noir-3) 82%,var(--color-bronze-profond));}
-.da2 .da2-d{fill:var(--color-noir-3);}
-.da2 .da2-t{fill:color-mix(in srgb,var(--color-noir-3) 70%,var(--color-bronze-profond));}
-.da2 .da2-fen{fill:color-mix(in srgb,var(--color-noir) 70%,var(--color-bronze-profond));}
-.da2 .da2-ct{fill:none;stroke:var(--color-bronze);stroke-width:1.3;stroke-linejoin:round;opacity:.85;}
-.da2 .da2-fin{stroke-width:.7;opacity:.35;}
-.da2 .da2-rue{fill:none;stroke:var(--color-bronze);stroke-width:1;stroke-dasharray:3 5;opacity:.45;}
-.da2 .da2-gens{fill:var(--color-bronze);}
-.da2 .da2-anneau{fill:none;stroke:var(--color-bronze);stroke-width:1.4;opacity:.8;}
-.da2 .da2-a2{opacity:.35;}
-.da2 .da2-coeur{fill:var(--color-bronze-clair-2);}
-.da2 .da2-bulle rect{fill:var(--color-noir);stroke:var(--color-bronze);stroke-width:1.2;}
-.da2 .da2-bulle text{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:11px;font-weight:700;text-anchor:middle;letter-spacing:.04em;}
-.da2 .da2-tige{fill:none;stroke:var(--color-bronze);stroke-width:1;opacity:.6;}
 /* #159 : la carte du périmètre de la découpe. */
 .perimetre-carte{display:flex;justify-content:center;}
-.carte-idf{display:block;width:100%;max-width:520px;height:auto;}
-.carte-idf__st1{stop-color:color-mix(in srgb,var(--color-bronze) 14%,var(--color-noir-3));}
-.carte-idf__st2{stop-color:var(--color-noir-3);stop-opacity:0;}
-.carte-idf__reg{fill:color-mix(in srgb,var(--color-noir) 70%,var(--color-noir-3));stroke:var(--color-bronze);stroke-width:1.2;stroke-opacity:.45;}
-.carte-idf__idf{fill:color-mix(in srgb,var(--color-bronze) 55%,var(--color-noir));stroke:var(--color-bronze-clair-2);stroke-width:2;}
-.carte-idf__idf--trait{fill:none;}
-.carte-idf__halo{fill:var(--color-bronze);opacity:.55;}
-.carte-idf__paris{fill:var(--color-bronze-clair);}
-.carte-idf__onde{fill:none;stroke:var(--color-bronze-clair);stroke-width:2;opacity:.6;}
-.carte-idf__nom{fill:var(--color-bronze-clair);font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:34px;}
-.carte-idf__sous{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:20px;letter-spacing:.12em;text-transform:uppercase;}
+.carte-idf{position:relative;width:100%;max-width:520px;aspect-ratio:1000/963;margin-inline:auto;}
+.carte-idf__nuit{object-fit:contain;}
+.carte-idf__trait{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.carte-idf__idf{fill:color-mix(in srgb,var(--color-bronze) 10%,transparent);stroke:var(--color-bronze-clair-2);stroke-width:2;stroke-linejoin:round;}
+.carte-idf__onde{fill:none;stroke:var(--color-bronze-clair);stroke-width:2;opacity:.7;}
+.carte-idf__fil{stroke:var(--color-bronze-clair-2);stroke-width:1.5;}
+.carte-idf__nom{fill:var(--color-bronze-clair);font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:40px;}
+.carte-idf__sous{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:21px;letter-spacing:.12em;text-transform:uppercase;}
 @media (max-width:899px){ .carte-idf{max-width:360px;} }
 /* #165 : la découpe, les lots en pointillés sur les façades. */
 .sch .dec{fill:none;stroke-width:1.2;stroke-dasharray:4 4;stroke:transparent;}
@@ -4961,4 +4943,67 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   .sec-analyses--pin{height:calc(var(--ecran) + 240svh);}
   .sec-analyses--pin .sec-analyses__pin{padding-bottom:calc(var(--space-l) + 24px);}
   .sec-analyses--pin .sec-analyses__cta{margin-top:var(--space-m);}
+}
+
+/* ===== Lot 76 ===== */
+/* Libellé court des boutons au téléphone : un bouton tient sur une ligne (MAV, 04/11/2026). */
+.btn__court{display:none;}
+@media (max-width:600px){ .btn__long{display:none;} .btn__court{display:inline;} }
+
+/* Accueil, « Les offres » : option A du retour #149 (MAV, 04/11/2026). */
+.offres-sec{position:relative;isolation:isolate;overflow:clip;}
+.offres-sec__fond{position:absolute;inset:0;z-index:-1;pointer-events:none;}
+.offres-sec__fond img{object-fit:cover;opacity:.32;}
+.offres-sec__fond::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--color-noir) 55%,transparent),var(--color-noir) 92%);}
+.offres-sec .card{background:color-mix(in srgb,var(--color-noir-2) 72%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+.offres-sec .card--offmarket{background:linear-gradient(145deg,color-mix(in srgb,var(--color-noir-3) 80%,transparent),color-mix(in srgb,var(--color-noir) 80%,transparent));}
+.card__picto-tete{display:inline-flex;color:var(--color-bronze);margin-bottom:14px;}
+
+/* Page Découpe : les deux acheteurs devant l'immeuble d'Estimer (MAV, 04/11/2026). */
+.sch--scene{max-width:440px;margin-inline:auto;}
+.sch--scene .ct{stroke:color-mix(in srgb,var(--color-bronze) 70%,transparent);}
+.sch .fen.on{fill:url(#sch-or);stroke:none;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--color-bronze) 70%,transparent));}
+.sch .toit{fill:color-mix(in srgb,var(--color-creme) 6%,var(--color-noir-3));stroke-width:1;stroke-linejoin:round;stroke:color-mix(in srgb,var(--color-creme) 30%,transparent);}
+.sch .toit--haut{fill:color-mix(in srgb,var(--color-creme) 10%,var(--color-noir-3));}
+.sch .luc--plein{stroke-dasharray:none;fill:var(--color-noir);}
+.sch .gens.on{fill:var(--color-bronze);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--color-bronze) 60%,transparent));}
+.sch .regard{fill:none;stroke:var(--color-bronze-clair-2);stroke-width:1;stroke-dasharray:2 4;stroke-linecap:round;}
+.sch .regard-pt{fill:var(--color-bronze-clair-2);}
+.sch .bras{stroke:var(--color-bronze);stroke-width:2.2;stroke-linecap:round;}
+.sch .calc{fill:var(--color-noir);stroke:var(--color-bronze-clair);stroke-width:1.1;}
+.sch .calc-ecran{fill:var(--color-bronze-clair);}
+.sch .calc-touche{fill:var(--color-bronze);}
+.sch .bulle rect{fill:var(--color-noir);stroke:var(--color-bronze);stroke-width:1.2;}
+.sch .bulle text{fill:var(--color-bronze);font-family:var(--font-mono-site);font-size:11px;font-weight:700;text-anchor:middle;letter-spacing:.04em;}
+.sch .tige{fill:none;stroke:var(--color-bronze);stroke-width:1;opacity:.6;}
+.sch .jeu{fill:none;stroke:color-mix(in srgb,var(--color-creme) 45%,transparent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.sch .jeu.fin{stroke-width:.9;}
+
+/* Fiche : la barrette de prix dans la colonne (retour #171, MAV, 04/11/2026). */
+.barrette{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--color-ligne);padding-top:12px;}
+.kpi--deux{grid-template-columns:repeat(2,minmax(0,1fr));}
+.carte-action .barrette .kpi dd{font-size:13.5px;}
+.carte-action .barrette .kpi > div{padding:6px 4px;}
+/* La simulation de financement dans la feuille d'offre, sauf sur les grands écrans où elle est dans la colonne. */
+.feuille__form .feuille__sim{padding-bottom:12px;border-bottom:1px solid var(--color-ligne);}
+@media (min-width:900px) and (min-height:1000px){ .feuille__sim{display:none;} }
+/* Contact : le titre à gauche, au-dessus des coordonnées ; le formulaire à sa hauteur (#172, #173). */
+.page-fond--contact .contact-sec{padding-top:calc(var(--header-h) + clamp(28px,4vw,56px));}
+.page-fond--contact .contact-sec .split{align-items:start;}
+.contact-titre{margin:0 0 var(--space-m);font-size:clamp(1.9rem,1.2rem + 2vw,3rem);color:var(--color-creme);text-shadow:0 2px 20px rgba(10,10,10,.55);}
+.contact-titre .accent{color:var(--color-bronze);}
+.contact-projet__titre{margin:0 0 var(--space-s);font-size:clamp(1.3rem,1rem + 1vw,1.75rem);}
+/* Petits téléphones (320 px) : moins de marge dans la pilule pour que chaque bouton tienne sur une ligne. */
+@media (max-width:359px){ .btn{padding-inline:16px;} }
+/* Ces deux-là gardent leur texte entier jusqu'à 360 px de large. */
+@media (min-width:360px){
+  .carte-offmarket__btn .btn__long,.carte-action__duo .btn__long{display:inline;}
+  .carte-offmarket__btn .btn__court,.carte-action__duo .btn__court{display:none;}
+}
+/* Page Contact au téléphone : le titre d'abord, les trois coordonnées sur une ligne chacune, puis le formulaire. */
+@media (max-width:759px){
+  .page-fond--contact .contact-sec .split > :last-child{order:0;}
+  .page-fond--contact .contact-titre{margin-bottom:var(--space-s);}
 }

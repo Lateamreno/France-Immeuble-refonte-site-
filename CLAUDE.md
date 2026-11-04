@@ -454,6 +454,15 @@ première vente ; périmètre « Paris et Île-de-France » sur la carte de Fran
 immeuble de rapport ») : H1 « Acheter un immeuble de rapport avant qu'il soit annoncé », H2 et
 meta sur « immeuble de rapport », FAQ repliée de cinq questions avec ses données FAQPage. La page
 reste une page qui convertit (§6) : le texte SEO est dans la FAQ, fermée par défaut.
+Lot 76 (MAV, 04/11/2026) : « Les offres » de l'accueil en option A (#149 : photo fondue en
+fond, picto en tête de carte) ; **aucun bouton sur deux lignes au téléphone**, vérifié par script
+à 390, 375, 360 et 320 px (`court` de `Button` : un libellé court sous 600 px) ; les deux acheteurs
+de la Découpe sont l'immeuble d'Estimer (`schemaImmeuble("bloc" | "decoupe")`) : toutes les
+fenêtres allumées et un investisseur à la calculette, ou quelques fenêtres et une famille (la mère
+vers les commerces, le père vers l'immeuble, les enfants à la balançoire) ; la carte du périmètre
+est la France de nuit, une lumière par commune à sa population (`/media/carte/france-nuit.webp`) ;
+fiche annonce : la barrette de prix reste dans la colonne (#171) ; Contact : le titre à gauche,
+le formulaire titré « Échangeons sur votre projet » (#172, #173).
 **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que

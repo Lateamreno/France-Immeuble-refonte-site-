@@ -490,7 +490,7 @@ export default async function FicheBien({ params }: Params) {
           </div>
 
           <aside className="fiche-pb__cote" aria-label="Prix, contact et offre">
-            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={marche?.prixM2 ?? null} />
+            <CarteAction b={b} telephone={SITE.tel} telHref={SITE.telHref} prixM2Secteur={marche?.prixM2 ?? null} rentaVille={marche?.rentaVille ?? null} />
           </aside>
         </div>
       </section>

@@ -2,13 +2,14 @@
  * Les deux marchés de la découpe, en dessin (retours #128 et #150, MAV, 03 et
  * 04/11/2026) : devant le même immeuble, en bloc un investisseur seul qui ne
  * regarde que son rendement ; à la découpe, des acquéreurs nombreux, une famille
- * parmi eux. Dessins calculés au serveur (`src/lib/dessin-acheteurs.ts`).
+ * parmi eux. Même immeuble que la page Estimer (`schemaImmeuble`, scènes « bloc » et
+ * « decoupe », MAV, 04/11/2026).
  */
 
-import { dessinAcheteurs } from "@/lib/dessin-acheteurs";
+import { schemaImmeuble } from "@/lib/schema-immeuble";
 
-const BLOC = dessinAcheteurs("bloc");
-const DECOUPE = dessinAcheteurs("decoupe");
+const BLOC = schemaImmeuble("bloc");
+const DECOUPE = schemaImmeuble("decoupe");
 
 const COTES = [
   {

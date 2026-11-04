@@ -15,7 +15,8 @@ export function PageFond({
   image, titre, className = "", children,
 }: {
   image: StaticImageData | string;
-  titre: ReactNode;
+  /** Sans titre, la page place elle-même son h1 (Contact, retour #172). */
+  titre?: ReactNode;
   className?: string;
   children: ReactNode;
 }) {
@@ -28,11 +29,13 @@ export function PageFond({
           <span className="page-fond__voile" />
         </div>
       </div>
-      <div className="page-fond__tete">
-        <div className="container">
-          <h1>{titre}</h1>
+      {titre && (
+        <div className="page-fond__tete">
+          <div className="container">
+            <h1>{titre}</h1>
+          </div>
         </div>
-      </div>
+      )}
       {children}
     </div>
   );
