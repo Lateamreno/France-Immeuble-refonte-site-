@@ -147,7 +147,8 @@ export default async function Accueil() {
 
           {/* Au téléphone, les trois cartes défilent sur une ligne : la section
               tient sur un écran (MAV, 27/10/2026). */}
-          <div className="grid grid--3 grid--ligne-mob">
+          {/* Retour #190 : au téléphone, les trois cartes l'une sous l'autre. */}
+          <div className="grid grid--3 reseau-grille">
             {recherches.map((r, i) => (
               <Reveal key={r.lbl} as="article" className="card card--filigrane" delayIndex={i}>
                 <span className="card__fond" aria-hidden="true">
@@ -285,7 +286,8 @@ export default async function Accueil() {
                 <strong>y compris les confidentiels</strong>.
               </p>
               <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-                <Button href="/acheter-un-immeuble/#deposer" icone court="Recevoir en premier">Recevoir en avant-première</Button>
+                {/* Retours #176 et #191 (MAV, 04/11/2026). */}
+                <Button href="/acheter-un-immeuble/#deposer" icone>Déposer ma recherche</Button>
               </div>
             </Reveal>
           </div>
@@ -328,7 +330,7 @@ export default async function Accueil() {
               </li>
             </ul>
           </Reveal>
-          <ContactForm />
+          <ContactForm titre="Parlez-nous de votre projet" />
         </div>
       </section>
       <BoutonFixeMobile href="#estimer" libelle="Estimer mon immeuble" cible="estimer" />

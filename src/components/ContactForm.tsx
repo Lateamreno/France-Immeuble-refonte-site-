@@ -34,8 +34,10 @@ const PROJET_ACHETER = PROJETS[0];
  * (contrat BO du 21/10/2026). Le formulaire général, repris du WordPress, garde
  * ses trois champs.
  */
-export function ContactForm({ bien, onVendre }: {
+export function ContactForm({ bien, onVendre, titre }: {
   bien?: { ref: string; titre: string };
+  /** Titre posé dans le cadre du formulaire (retours #177, #181, MAV, 04/11/2026). */
+  titre?: string;
   /** Page Contact : choisir « vendre » remplace ce formulaire par celui de la vente. */
   onVendre?: () => void;
 } = {}) {
@@ -182,6 +184,7 @@ export function ContactForm({ bien, onVendre }: {
 
   return (
     <form className="form-shell" onSubmit={envoyer} noValidate>
+      {titre && <h3 className="form-shell__titre">{titre}</h3>}
       <div className="fields">
         <div className="fields fields--2">
             <div className="field">
@@ -204,7 +207,7 @@ export function ContactForm({ bien, onVendre }: {
             </div>
           </div>
         <div className="field">
-          <label htmlFor={`${uid}-tel`}>Entrez votre numéro de téléphone</label>
+          <label htmlFor={`${uid}-tel`}>Téléphone</label>
           <input
             id={`${uid}-tel`}
             type="tel"

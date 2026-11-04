@@ -26,9 +26,8 @@ export function ContactProjet() {
   }
   return (
     <div className="contact-projet">
-      {/* Retour #173 : un titre qui pousse à écrire, à la place de « Votre message ». */}
-      <h2 className="contact-projet__titre">Échangeons sur votre projet</h2>
-      <ContactForm onVendre={() => setVendre(true)} />
+      {/* Retours #173 et #181 : un titre qui pousse à écrire, dans le cadre du formulaire. */}
+      <ContactForm titre="Échangeons sur votre projet" onVendre={() => setVendre(true)} />
     </div>
   );
 }

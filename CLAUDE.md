@@ -235,7 +235,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   mêmes règles que `src/lib/benchmarks.ts` de Plein Bail, lues avec sa clé publiable (`src/lib/marche.ts`),
   bloc « Le marché à … » ; écart en or quand il est favorable à l'acquéreur, en noir sinon (MAV,
   03/11/2026) ; nos ventes restent en fin de fiche, sans comparaison ; « Nos ventes »
-  en fin de fiche ; état financier en blocs à picto ; sous 1000 px de haut, la simulation passe
+  en fin de fiche ; état financier en blocs à picto ; sous 1150 px de haut (retour #180), la simulation passe
   dans la feuille d'offre et la colonne tient sans défiler. DPE : fourchette des lots, de la
   meilleure classe à la moins bonne, quand le BO dépose les lots.
 
@@ -468,9 +468,23 @@ fond, picto en tête de carte) ; **aucun bouton sur deux lignes au téléphone**
 de la Découpe sont l'immeuble d'Estimer (`schemaImmeuble("bloc" | "decoupe")`) : toutes les
 fenêtres allumées et un investisseur à la calculette, ou quelques fenêtres et une famille (la mère
 vers les commerces, le père vers l'immeuble, les enfants à la balançoire) ; la carte du périmètre
-est la France de nuit, une lumière par commune à sa population (`/media/carte/france-nuit.webp`) ;
+est la France au trait or, l'Île-de-France allumée d'un halo (retour #179 : la vue de nuit était « trop réaliste ») ;
 fiche annonce : la barrette de prix reste dans la colonne (#171) ; Contact : le titre à gauche,
 le formulaire titré « Échangeons sur votre projet » (#172, #173).
+Lot 78 (retours #174 à #204, MAV, 04/11/2026) : sur crème, surtitre et accroche en noir ; les
+formulaires de contact portent leur titre dans leur cadre (« Parlez-nous de votre projet »,
+« Échangeons sur votre projet ») ; au téléphone, le titre et le sous-titre avant le formulaire,
+pas de carnet sous « Vendez votre immeuble », les cartes du réseau l'une sous l'autre ; menu du
+téléphone sur toute la hauteur, sous-menus dépliés d'office ; « Estimer mon immeuble » du menu
+mène au formulaire (`#estimer`) ; le bouton fixe reste sur le pied de page et s'efface devant
+tout formulaire visible ; Acheter : surtitre « Acheter un immeuble », « Déposer ma recherche »
+sur l'accueil. Découpe : carte au trait or, Île-de-France en halo (`CarteIdf`, vectoriel) ;
+seules la fenêtre que regarde le père et ses deux voisines sont allumées ; « Des honoraires
+connus d'avance » avec un picto par ligne et les montants dans l'or des boutons ; tableau du cas
+réel en libellés courts au téléphone, sans défilement. Fiche annonce : la colonne tient dans
+l'écran (cœur à côté de « Voir le n° » et « Contacter », cadres plus bas, simulation dans la
+feuille sous 1150 px de haut). Ventes au téléphone : une ligne qui glisse par département
+d'Île-de-France puis par région, carte de la région en tête.
 **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que

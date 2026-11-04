@@ -89,14 +89,15 @@ export function Header() {
               </Link>
             ),
           )}
-          <Button href="/estimer-un-immeuble/">Estimer mon immeuble</Button>
+          {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. */}
+          <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
         </nav>
 
         <div className="header-cta">
           <a className="header-tel" href={SITE.telHref}>
             {SITE.tel.replace(/ /g, " ")}
           </a>
-          <Button href="/estimer-un-immeuble/">Estimer mon immeuble</Button>
+          <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
           <Link
             className="header-compte"
             href="/mon-compte/"

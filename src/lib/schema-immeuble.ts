@@ -126,12 +126,15 @@ export function schemaImmeuble(scene?: "bloc" | "decoupe"): string {
   for (const f of faces(retrait(emprise, -0.07))) tech += ligne("ct", [en(f.a, H), en(f.b, H)]);
 
   // ── 2. Financier : fenêtres et vitrines ; la porte à part ──
-  let fen = "", porte = "", nf = 0;
-  // Fenêtres allumées à la découpe : quelques lots seulement, choisis une fois pour toutes.
-  const ALLUMEES = new Set([2, 6, 9, 15, 19, 26]);
-  const cl = () => {
-    const i = nf++;
-    return scene === "bloc" || (scene === "decoupe" && ALLUMEES.has(i)) ? "fen on" : "fen";
+  let fen = "", porte = "";
+  // À la découpe (retour #182, MAV, 04/11/2026) : seule la fenêtre que regarde le père
+  // est allumée, avec ses deux voisines du même étage.
+  const REGARD_X = W / 2 - 0.4, REGARD_N = 3;
+  const cl = (f: Face, t: number, n: number, nc: number) => {
+    if (scene === "bloc") return "fen on";
+    if (scene !== "decoupe" || f !== facade || n !== REGARD_N) return "fen";
+    const pas = facade.L / nc, x = sur(f, t)[0];
+    return Math.abs(x - REGARD_X) <= pas * 1.5 ? "fen on" : "fen";
   };
   for (const f of vues) {
     const nc = Math.max(1, Math.round(f.L));
@@ -139,7 +142,7 @@ export function schemaImmeuble(scene?: "bloc" | "decoupe"): string {
       const t0 = (c + 0.3) / nc, t1 = (c + 0.7) / nc;
       for (let n = 1; n < NIV; n++) {
         const z0 = n * HF + 0.18, z1 = n * HF + 0.64;
-        fen += poly(cl(), [en(sur(f, t0), z0), en(sur(f, t1), z0), en(sur(f, t1), z1), en(sur(f, t0), z1)]);
+        fen += poly(cl(f, (c + 0.5) / nc, n, nc), [en(sur(f, t0), z0), en(sur(f, t1), z0), en(sur(f, t1), z1), en(sur(f, t0), z1)]);
       }
       if (f === facade && c === Math.floor(nc / 2))
         porte = poly("porte", [en(sur(f, (c + 0.3) / nc), 0), en(sur(f, (c + 0.7) / nc), 0), en(sur(f, (c + 0.7) / nc), 0.66), en(sur(f, (c + 0.3) / nc), 0.66)]);

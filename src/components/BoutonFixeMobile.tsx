@@ -14,7 +14,8 @@ import { useEffect, useState } from "react";
  * endroit (classe `double-fixe`), pour ne jamais montrer deux fois le même
  * bouton. Il laisse la place :
  * - au hero, qui a ses propres boutons ;
- * - au formulaire (`cible`) et au pied de page ;
+ * - au formulaire (`cible`). Il reste affiché sur le pied de page (retour #201,
+ *   MAV, 04/11/2026 : « garder le bouton affiché jusqu'à la fin du pied de page ») ;
  * - aux rangées de boutons qui portent l'action elles-mêmes (`.porte-action`,
  *   les deux boutons collés de « Vendez votre immeuble » sur l'accueil).
  * Sur ordinateur, rien : les boutons des sections suffisent.
@@ -25,7 +26,9 @@ export function BoutonFixeMobile({ href, libelle, cible }: { href: string; libel
     const etats = new Map<Element, boolean>();
     const hero = document.querySelector("main .hero-media");
     const zoneCible = cible ? document.getElementById(cible) : null;
-    const fin = [zoneCible, document.querySelector("footer")].filter((x): x is HTMLElement => !!x);
+    // Il s'efface aussi devant tout formulaire visible : il ne recouvre jamais un champ.
+    const formulaires = Array.from(document.querySelectorAll<HTMLElement>("main form"));
+    const fin = [zoneCible, ...formulaires].filter((x): x is HTMLElement => !!x);
     // Les boutons des sections qui mènent au même endroit : la pilule les remplace.
     const doubles = Array.from(document.querySelectorAll<HTMLElement>("main a.btn")).filter((b) =>
       b.getAttribute("href") === href && !b.closest(".hero-media, .bouton-fixe-mob, .porte-action") &&

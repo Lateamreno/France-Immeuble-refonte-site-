@@ -4449,7 +4449,7 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 @media (min-width:1100px){.recherche-biens__barre .lieux{min-height:0;padding-block:2px;}}
 /* Contact (retour #72) : le formulaire tout de suite sous le titre ; au téléphone il passe avant les coordonnées. */
 .hero-media--compact + .contact-sec{min-height:0;padding-top:clamp(28px,4vw,56px);}
-@media (max-width:759px){ .contact-sec .split > :last-child{order:-1;} }
+/* Le formulaire après le titre au téléphone : voir lot 78 (retour #189). */
 /* Page posée sur une seule image (MAV, 02/11/2026 : Immeubles à vendre et Contact).
    L'image passe sous la barre de menu, comme un hero, et reste en place au défilement. */
 main > .page-fond{margin-top:calc(-1 * var(--header-h));}
@@ -4626,7 +4626,7 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 /* Colonne d'action de la fiche : tenir dans la hauteur de l'écran (retour #109). Sous 1000 px
    de haut, la simulation part dans la feuille d'offre ; un lien y mène. */
 .carte-action__simuler{display:none;}
-@media (min-width:900px) and (min-height:660px) and (max-height:999px){
+@media (min-width:900px) and (min-height:660px) and (max-height:1149px){
   .carte-action__simulation{display:none !important;}
   .carte-action__simuler{display:block;align-self:center;background:none;border:0;cursor:pointer;color:var(--color-bronze-profond);font:500 14px/1.3 var(--font-body);text-decoration:underline;text-underline-offset:3px;padding:2px;}
   .fiche-pb__cote{overflow:visible;max-height:none;}
@@ -4920,10 +4920,13 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 /* #150 : les deux acheteurs devant l'immeuble, dans le style du schéma d'Estimer. */
 /* #159 : la carte du périmètre de la découpe. */
 .perimetre-carte{display:flex;justify-content:center;}
-.carte-idf{position:relative;width:100%;max-width:520px;aspect-ratio:1000/963;margin-inline:auto;}
-.carte-idf__nuit{object-fit:contain;}
-.carte-idf__trait{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
-.carte-idf__idf{fill:color-mix(in srgb,var(--color-bronze) 10%,transparent);stroke:var(--color-bronze-clair-2);stroke-width:2;stroke-linejoin:round;}
+.carte-idf{display:block;width:100%;max-width:520px;height:auto;margin-inline:auto;overflow:visible;}
+.carte-idf__st1{stop-color:var(--color-bronze-clair);}
+.carte-idf__st2{stop-color:var(--color-bronze);}
+.carte-idf__reg{fill:none;stroke:var(--color-bronze);stroke-width:1.4;stroke-linejoin:round;opacity:.7;}
+.carte-idf__halo{fill:var(--color-bronze);opacity:.7;}
+.carte-idf__idf{fill:url(#carte-idf-zone);fill-opacity:.55;stroke:var(--color-bronze-clair);stroke-width:2.4;stroke-linejoin:round;}
+.carte-idf__paris{fill:var(--color-bronze-clair);}
 .carte-idf__onde{fill:none;stroke:var(--color-bronze-clair);stroke-width:2;opacity:.7;}
 .carte-idf__fil{stroke:var(--color-bronze-clair-2);stroke-width:1.5;}
 .carte-idf__nom{fill:var(--color-bronze-clair);font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:40px;}
@@ -4988,7 +4991,7 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .carte-action .barrette .kpi > div{padding:6px 4px;}
 /* La simulation de financement dans la feuille d'offre, sauf sur les grands écrans où elle est dans la colonne. */
 .feuille__form .feuille__sim{padding-bottom:12px;border-bottom:1px solid var(--color-ligne);}
-@media (min-width:900px) and (min-height:1000px){ .feuille__sim{display:none;} }
+@media (min-width:900px) and (min-height:1150px){ .feuille__sim{display:none;} }
 /* Contact : le titre à gauche, au-dessus des coordonnées ; le formulaire à sa hauteur (#172, #173). */
 .page-fond--contact .contact-sec{padding-top:calc(var(--header-h) + clamp(28px,4vw,56px));}
 .page-fond--contact .contact-sec .split{align-items:start;}
@@ -4999,11 +5002,113 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 @media (max-width:359px){ .btn{padding-inline:16px;} }
 /* Ces deux-là gardent leur texte entier jusqu'à 360 px de large. */
 @media (min-width:360px){
-  .carte-offmarket__btn .btn__long,.carte-action__duo .btn__long{display:inline;}
-  .carte-offmarket__btn .btn__court,.carte-action__duo .btn__court{display:none;}
+  .carte-offmarket__btn .btn__long{display:inline;}
+  .carte-offmarket__btn .btn__court{display:none;}
 }
 /* Page Contact au téléphone : le titre d'abord, les trois coordonnées sur une ligne chacune, puis le formulaire. */
+
+
+/* ===== Lot 78 (retours #174 à #204, MAV, 04/11/2026) ===== */
+/* #174 : sur crème, le surtitre et l'accroche en noir ; le filet reste bronze. */
+.section--creme .eyebrow{color:var(--color-noir);}
+.section--creme .eyebrow::before{background:var(--color-bronze-profond);}
+.section--creme .lead--or{color:var(--color-noir);font-weight:600;}
+/* #177, #181 : le titre dans le cadre du formulaire. */
+.form-shell__titre{margin:0 0 var(--space-s);font-size:clamp(1.2rem,1rem + .8vw,1.6rem);color:var(--color-creme);}
 @media (max-width:759px){
-  .page-fond--contact .contact-sec .split > :last-child{order:0;}
-  .page-fond--contact .contact-titre{margin-bottom:var(--space-s);}
+  /* #189 : au téléphone, le titre et le sous-titre, puis le formulaire, puis les coordonnées. */
+  .contact-sec .split > :first-child{display:contents;}
+  .contact-sec .split > :last-child{order:1;}
+  .contact-sec .split > :first-child > .fiche-contact{order:2;}
+  /* #188 : le carnet ne sert à rien au téléphone. */
+  .accueil-vendre__carnet{display:none;}
 }
+/* #192, #193 : au téléphone, le menu prend toute la hauteur et montre tout de suite les sous-menus. */
+@media (max-width:980px){
+  .nav{inset:var(--header-h) 0 0 0;height:calc(100svh - var(--header-h));max-height:none;}
+  .nav-groupe__liste{display:flex;flex-direction:column;border-left:2px solid var(--color-bronze-profond);}
+  .nav-groupe__btn--fleche,.nav-groupe__chev{display:none;}
+  .nav-groupe__tete .nav-groupe__lien{border-bottom:0;}
+}
+/* Découpe, honoraires (#184, #200) : un picto par ligne ; les montants dans l'or des boutons. */
+.tarifs li{position:relative;}
+.tarifs__picto{color:var(--color-bronze);}
+.tarifs__val{color:var(--color-bronze);font-weight:700;font-size:1rem;}
+.tableau .tableau__total td:last-child{color:var(--color-bronze);}
+@media (min-width:760px){
+  .tarifs li{grid-template-columns:28px minmax(0,1fr) auto;}
+  .tarifs__picto{grid-row:1;align-self:center;}
+  .tarifs__note{grid-column:2 / -1;}
+}
+@media (max-width:759px){ .tarifs__picto{display:block;margin-bottom:6px;} }
+/* Découpe, tableau (#194, #195) : au téléphone, libellés courts, tout tient sur un écran. */
+.tableau__court{display:none;}
+@media (max-width:759px){
+  .tableau{min-width:0;font-size:.84rem;}
+  .tableau th,.tableau td{padding:11px 6px;}
+  .tableau th:first-child,.tableau td:first-child{padding-left:0;}
+  .tableau th:last-child,.tableau td:last-child{padding-right:0;}
+  .tableau__long{display:none;}
+  .tableau__court{display:inline;}
+  .tableau__detail{font-size:.72rem;line-height:1.35;}
+}
+/* Ventes au téléphone (#202, MAV, 04/11/2026) : comme avant, une ligne qui glisse par
+   département en Île-de-France, puis une par région, avec la carte de la région comme sur PC. */
+@media (max-width:759px){
+  .region-sec__mob{display:none;}
+  .ventes-flux{display:block;overflow:visible;margin-inline:0;padding:0;}
+  .ventes-flux :is(.region-ventes,.region-ventes__dept){display:block;}
+  .ventes-flux :is(.region-ventes__tete,.region-ventes__dept > h3){display:flex;}
+  .ventes-flux .region-ventes__dept > h3{display:block;}
+  .ventes-flux .region-ventes__tete{align-items:center;gap:var(--space-s);margin-bottom:var(--space-s);}
+  .ventes-flux .region-ventes__carte{width:96px;}
+  .ventes-flux .ventes{display:grid;grid-auto-flow:column;grid-auto-columns:84%;grid-template-columns:none;gap:12px;
+    overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;
+    margin-inline:calc(-1 * var(--gutter));padding:4px var(--gutter) 6px;scroll-padding-inline:var(--gutter);scrollbar-width:none;}
+  .ventes-flux .ventes::-webkit-scrollbar{display:none;}
+  .ventes-flux .region-ventes{padding-top:var(--space-m);margin-top:var(--space-m);}
+}
+/* #199 : au téléphone, plus de trait entre les étapes de la méthode. */
+@media (max-width:899px){ .methode-sec .steps--frise .step + .step{border-top:0;} }
+/* Fiche annonce, colonne d'action (#180, MAV, 04/11/2026) : elle tient dans l'écran avec de
+   l'air dessous ; cadres de prix et de rendement plus bas ; le cœur rejoint les deux boutons. */
+@media (min-width:900px){
+  .carte-action__boutons{flex-direction:row;align-items:stretch;}
+  .carte-action__boutons .favori--rond{width:50px;flex:none;padding:0;border-radius:50%;aspect-ratio:1;align-self:center;}
+  .carte-action__boutons .favori--rond span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .carte-action__boutons .carte-action__duo{flex:1;}
+}
+/* Accueil, « Déposer ma recherche » sur une ligne jusqu'à 320 px. */
+@media (max-width:600px){ .offres-sec .btn{padding-inline:18px;} }
+@media (max-width:359px){ .offres-sec .btn{font-size:14px;padding-inline:12px;} .offres-sec .card{padding-inline:18px;} }
+.carte-action .barrette .kpi > div{padding:5px 4px;}
+.carte-action .barrette .kpi dt{font-size:10.5px;line-height:1.2;}
+.carte-action .barrette .kpi dd{margin-top:1px;line-height:1.2;}
+.carte-action .barrette .kpi dd small{margin-top:1px;font-size:10px;line-height:1.2;}
+@media (min-width:900px) and (min-height:660px){
+  .fiche-pb__cote{max-height:calc(100svh - var(--header-h) - 40px);overflow-y:auto;}
+  .carte-action{gap:10px;padding:18px;}
+  .carte-action__prix .carte-action__montant{font-size:1.8rem;}
+}
+@media (min-width:900px) and (min-height:660px) and (max-height:1149px){
+  .fiche-pb__cote{overflow-y:auto;max-height:calc(100svh - var(--header-h) - 40px);}
+  .carte-action > .carte-action__note:last-child{display:none;}
+}
+@media (max-width:759px){ .contact-sec .split > :first-child .lead{display:block;} }
+/* Contact (#181) : sur ordinateur, le formulaire tient dans la hauteur de la section. */
+@media (min-width:900px){
+  /* Prénom et nom, puis e-mail et téléphone sur une ligne ; le projet et le message en pleine largeur. */
+  .page-fond--contact .form-shell > .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;}
+  .page-fond--contact .form-shell > .fields > .fields--2{display:contents;}
+  .page-fond--contact .form-shell > .fields > .fields--2 > .field--full{grid-column:auto;}
+  .page-fond--contact .form-shell > .fields > .field:nth-last-child(-n+2){grid-column:1 / -1;}
+  .page-fond--contact .form-shell textarea{min-height:84px;height:84px;}
+  .page-fond--contact .contact-sec{padding-top:calc(var(--header-h) + 28px);padding-bottom:28px;}
+}
+/* #203 : la vignette off-market garde son fond noir au téléphone (les rangées compactes
+   retirent le fond des cartes ; sur l'image de la page, elle devenait transparente). */
+.biens-liste--resultats .bien-carte.carte-offmarket,
+.est-sombre .biens-liste--resultats .bien-carte.carte-offmarket{background:var(--color-noir);border:1px solid var(--color-bronze-profond);border-radius:var(--radius-card);}
+
+/* Fiche annonce : « Voir le numéro » et « Contacter » tiennent sur une ligne à côté du cœur. */
+@media (min-width:900px){ .carte-action__duo .btn{padding-inline:10px;font-size:.9rem;} }

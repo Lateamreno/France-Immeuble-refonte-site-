@@ -366,32 +366,32 @@ export default function Decoupe() {
               </caption>
               <thead>
                 <tr>
-                  <th scope="col">Poste</th>
-                  <th scope="col">Vente en bloc</th>
-                  <th scope="col">Vente à la découpe</th>
+                  <th scope="col"><span className="tableau__long">Poste</span><span className="tableau__court"></span></th>
+                  <th scope="col"><span className="tableau__long">Vente en bloc</span><span className="tableau__court">En bloc</span></th>
+                  <th scope="col"><span className="tableau__long">Vente à la découpe</span><span className="tableau__court">Découpe</span></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Prix de vente</td>
+                  <td><span className="tableau__long">Prix de vente</span><span className="tableau__court">Prix</span></td>
                   <td>{CAS.bloc.prix}</td>
                   <td>{CAS.decoupe.prix}</td>
                 </tr>
                 <tr>
-                  <td>Honoraires de vente (5 %)</td>
+                  <td><span className="tableau__long">Honoraires de vente (5 %)</span><span className="tableau__court">Vente 5 %</span></td>
                   <td>{CAS.bloc.honoraires}</td>
                   <td>{CAS.decoupe.honoraires}</td>
                 </tr>
                 <tr>
                   <td>
-                    Honoraires de montage
+                    <span className="tableau__long">Honoraires de montage</span><span className="tableau__court">Montage</span>
                     <span className="tableau__detail">10 lots occupés à 2 000 €, 1 lot vide à 1 500 €</span>
                   </td>
                   <td>{CAS.bloc.montage}</td>
                   <td>{CAS.decoupe.montage}</td>
                 </tr>
                 <tr>
-                  <td>Frais d’opération (médian, hors travaux)</td>
+                  <td><span className="tableau__long">Frais d’opération (médian, hors travaux)</span><span className="tableau__court">Frais</span></td>
                   <td>{CAS.bloc.frais}</td>
                   <td>{CAS.decoupe.frais}</td>
                 </tr>
@@ -552,7 +552,8 @@ export default function Decoupe() {
                 s’obtient dans la même mission que le diagnostic technique global.
               </li>
               <li>
-                <Picto nom="constructibilite" taille={24} className="cadre__picto" />
+                {/* Retour #183 : la division en lots, pas la surélévation. */}
+                <Picto nom="logement" taille={24} className="cadre__picto" />
                 <strong>État descriptif de division et tantièmes</strong> : établis par un
                 géomètre-expert. Sur un immeuble mixte, les grilles de charges habitation et
                 commerces se traitent séparément : une erreur se paie pendant toute la vie de la
@@ -599,17 +600,21 @@ export default function Decoupe() {
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Nos honoraires</Eyebrow>
-            <h2>Ce que nous coûtons, sans rendez-vous préalable</h2>
+            {/* Retours #185 et #186 (MAV, 04/11/2026). */}
+            <h2>Des honoraires <span className="accent">connus d’avance</span></h2>
             <p className="lead">
-              Deux lignes, et rien d’autre : un forfait de structuration, puis une commission à
-              chaque vente. Les frais des intervenants extérieurs vous sont facturés directement
-              par eux. Nous ne prenons aucune marge dessus.
+              Notre travail s’organise autour de deux missions : la structuration de la
+              copropriété, puis la commercialisation des lots. Nos honoraires rémunèrent ces deux
+              missions. Pour le reste, géomètre, notaire, diagnostics et syndic, nous mettons les
+              intervenants en concurrence pour que cela vous coûte le moins possible. Ils vous
+              facturent directement, sans marge de notre part.
             </p>
           </Reveal>
 
           <Reveal>
             <ul className="tarifs">
               <li>
+                <Picto nom="profil" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
                 <span className="tarifs__note">
@@ -618,10 +623,12 @@ export default function Decoupe() {
                 </span>
               </li>
               <li>
+                <Picto nom="logement" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Forfait de structuration, par lot vide</span>
                 <span className="tarifs__val">1 500 € TTC</span>
               </li>
               <li>
+                <Picto nom="euro" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Commission de vente, par lot</span>
                 <span className="tarifs__val">5 % TTC</span>
                 <span className="tarifs__note">
@@ -629,6 +636,7 @@ export default function Decoupe() {
                 </span>
               </li>
               <li>
+                <Picto nom="poignee" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Vente à un locataire qui préempte</span>
                 <span className="tarifs__val">− 20 % sur la commission</span>
                 <span className="tarifs__note">
@@ -637,6 +645,7 @@ export default function Decoupe() {
                 </span>
               </li>
               <li>
+                <Picto nom="technique" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Coordination des travaux</span>
                 <span className="tarifs__val">0 % ou 3 % TTC</span>
                 <span className="tarifs__note">
@@ -646,6 +655,7 @@ export default function Decoupe() {
                 </span>
               </li>
               <li>
+                <Picto nom="equipe" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">
                   Frais d’intervenants : géomètre, notaire, diagnostics, syndic
                 </span>

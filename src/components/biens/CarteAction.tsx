@@ -107,12 +107,13 @@ export function CarteAction({
         )}
 
         <div className="carte-action__boutons">
-          <BoutonFavori bien={b.id} libelle className="favori--plein" />
+          {/* Retour #180 : le cœur à côté des deux boutons, la colonne tient dans l'écran. */}
+          <BoutonFavori bien={b.id} libelle className="favori--plein favori--rond" />
           <div className="carte-action__duo">
             {numero ? (
               <a className="btn btn--outline carte-action__tel" href={telHref}>{telephone}</a>
             ) : (
-              <button type="button" className="btn btn--outline" onClick={voirNumero}><span className="btn__long">Voir le numéro</span><span className="btn__court">Voir le n°</span></button>
+              <button type="button" className="btn btn--outline" onClick={voirNumero}>Voir le n°</button>
             )}
             <button type="button" className="btn btn--outline" onClick={() => ouvrir("contact")}>Contacter</button>
           </div>

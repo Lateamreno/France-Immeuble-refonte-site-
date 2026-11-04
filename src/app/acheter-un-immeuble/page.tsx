@@ -92,7 +92,8 @@ export default async function Acheter() {
         alt={VISUELS.toursContrePlongee.alt}
       >
         <>
-          <Eyebrow>Accès investisseurs</Eyebrow>
+          {/* Retour #178 : le surtitre dit la page, pas le compte client. */}
+          <Eyebrow>Acheter un immeuble</Eyebrow>
           {/* Le titre porte la requête (MAV, 04/11/2026 : « le titre c'est même pas
               acheter un immeuble de rapport »), la promesse reste en or. */}
           <h1>
