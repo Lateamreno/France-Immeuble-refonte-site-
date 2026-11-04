@@ -4513,8 +4513,8 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
     box-shadow:0 12px 32px color-mix(in srgb, var(--color-noir) 45%, transparent),0 0 0 1px color-mix(in srgb, var(--color-bronze-profond) 60%, transparent);}
   body:has(.bouton-fixe-mob.est-visible) .rv-fab{bottom:calc(96px + env(safe-area-inset-bottom));}
   /* Les boutons de section qui mènent au même endroit que la pilule. */
-  main a.btn.double-fixe{display:none;}
-  main .btn-row:has(> a.btn.double-fixe):not(:has(> :not(.double-fixe))){display:none;}
+  main .btn.double-fixe{display:none;}
+  main .btn-row:has(> .btn.double-fixe):not(:has(> :not(.double-fixe))){display:none;}
 }
 @media (prefers-reduced-motion:reduce){ .bouton-fixe-mob{transition:none;} }
 
@@ -5168,3 +5168,64 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 @media (max-width:759px){
   :is(input,select,textarea):not([type=checkbox]):not([type=radio]):not([type=range]){font-size:16px !important;}
 }
+
+/* ===== Lot 80 (retours #230 à #260, MAV, 04/11/2026) ===== */
+@media (max-width:759px){
+  /* #230 : au téléphone, les boutons et les chiffres du hero descendent vers le bas
+     de l'écran, au-dessus de la flèche ; le titre garde sa place. */
+  .hero-media:not(.hero-media--compact) > .container:has(> .btn-row){
+    min-height:100svh;display:flex;flex-direction:column;
+    padding-top:calc(var(--header-h) + 9svh);padding-bottom:calc(var(--space-l) + 30px);}
+  .hero-media:not(.hero-media--compact) > .container:has(> .btn-row) > .btn-row{margin-top:auto;padding-top:var(--space-m);}
+}
+/* #232 : la flèche native des listes déroulantes était noire sur fond noir. Une
+   flèche or dessinée en CSS, sur tous les fonds, ouvert ou fermé. */
+select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zones__ajout select,.tri-mobile select,.lot-champ select){
+  -webkit-appearance:none;appearance:none;padding-right:42px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--color-bronze) 50%),linear-gradient(135deg,var(--color-bronze) 50%,transparent 50%) !important;
+  background-position:calc(100% - 21px) 52%,calc(100% - 15px) 52% !important;
+  background-size:6px 6px,6px 6px !important;background-repeat:no-repeat !important;
+}
+.tel__indicatif select{background-image:none !important;}
+/* #233 : le pied de page a aussi son picto d'adresse. */
+.footer-adresse{display:inline-flex;align-items:flex-start;gap:8px;}
+.footer-adresse svg{color:var(--color-bronze);flex:none;margin-top:3px;}
+@media (max-width:759px){
+  /* #240 : au téléphone, les flèches des lignes qui glissent passent sous les
+     cartes, au centre, et ne couvrent plus le texte. */
+  .ligne:has(> .ligne__fleche:not([hidden])){padding-bottom:54px;}
+  .ligne > .ligne__fleche{top:auto;bottom:0;transform:none;}
+  .ligne > .ligne__fleche--avant,.ligne--marches > .ligne__fleche--avant{left:calc(50% - 48px);}
+  .ligne > .ligne__fleche--apres,.ligne--marches > .ligne__fleche--apres{right:calc(50% - 48px);}
+  .ligne:has(> .avis-ligne){padding-bottom:0;}
+  .ligne:has(> .avis-ligne) > .ligne__fleche{bottom:-6px;}
+
+  /* #241 : les honoraires de la découpe en liste verticale au téléphone. */
+  .couts-sec .tarifs{display:grid;grid-auto-flow:row;overflow:visible;margin-inline:0;padding-inline:0;}
+  .couts-sec .tarifs li,.couts-sec .tarifs li:first-child{border:0;border-top:1px solid var(--color-ligne);border-radius:0;
+    background:none;padding:14px 0;}
+  .couts-sec .tarifs li:first-child{border-top:0;padding-top:0;}
+
+  /* #258 : les textes des formulaires encore plus blancs. */
+  .field label,.field .hint{color:var(--color-creme);}
+  .section--creme .field label{color:var(--color-noir);}
+  .field input::placeholder,.field textarea::placeholder{color:color-mix(in srgb,var(--color-creme) 70%,var(--color-noir-2));}
+}
+/* #259 : la carte qui arrive passe au premier plan sans attendre. */
+.ligne--marches .ligne-case > *{transition-duration:.14s;}
+.ligne--marches .ligne-case.est-basse > *{opacity:.62;}
+/* #257 : le menu ouvert du téléphone va jusqu'au bas de l'écran, quelle que soit
+   la barre du navigateur, et la page derrière ne défile plus. */
+@media (max-width:980px){
+  .nav{height:auto;bottom:0;overscroll-behavior:contain;}
+  html.menu-ouvert,html.menu-ouvert body{overflow:hidden;}
+}
+@media (max-width:759px){
+  /* #255 : sur la page Contact, les coordonnées avant le formulaire. */
+  .page-fond--contact .contact-sec .split > :first-child > .fiche-contact{order:0;margin-bottom:var(--space-s);}
+}
+/* #234, #260 : la photo du formulaire de Vendre, claire et présente. */
+.fond-photo.fond-photo--clair{opacity:.6;}
+@media (max-width:899px){ .fond-photo.fond-photo--clair{opacity:.55;} }
+.section:has(> .fond-photo--clair) .split > :first-child :is(h2,.lead,.eyebrow){text-shadow:0 1px 14px color-mix(in srgb,var(--color-noir) 70%,transparent);}
+.section:has(> .fond-photo--clair) .split > :first-child .lead{color:var(--color-creme);}

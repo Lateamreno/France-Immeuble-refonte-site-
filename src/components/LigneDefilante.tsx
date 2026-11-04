@@ -55,7 +55,10 @@ export function LigneDefilante({
       const droite = el.scrollLeft + el.clientWidth - parseFloat(style.paddingRight);
       for (const carte of Array.from(el.children) as HTMLElement[]) {
         const debut = carte.offsetLeft;
-        const entiere = debut >= gauche - 2 && debut + carte.offsetWidth <= droite + 2;
+        // Retour #259 (MAV, 04/11/2026) : la carte passe au premier plan dès que
+        // les trois quarts sont à l'écran, sans attendre la fin du glissement.
+        const vu = Math.min(debut + carte.offsetWidth, droite) - Math.max(debut, gauche);
+        const entiere = vu >= carte.offsetWidth * 0.75;
         carte.classList.toggle("est-haute", entiere);
         carte.classList.toggle("est-basse", !entiere);
       }

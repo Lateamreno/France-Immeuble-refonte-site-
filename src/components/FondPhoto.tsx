@@ -8,15 +8,17 @@ import Image, { type StaticImageData } from "next/image";
  * d'image de la section (§5).
  */
 export function FondPhoto({
-  image, cote = "gauche", position = "center",
+  image, cote = "gauche", position = "center", clair = false,
 }: {
+  /** Photo plus présente, moins assombrie (retours #234 et #260, MAV, 04/11/2026). */
+  clair?: boolean;
   image: StaticImageData | string;
   cote?: "gauche" | "droite";
   /** object-position de la photo, pour garder son sujet dans la partie visible. */
   position?: string;
 }) {
   return (
-    <div className={`fond-photo fond-photo--${cote}`} aria-hidden="true">
+    <div className={`fond-photo fond-photo--${cote}${clair ? " fond-photo--clair" : ""}`} aria-hidden="true">
       <Image src={image} alt="" fill sizes="(max-width: 900px) 100vw, 60vw" style={{ objectPosition: position }}
         placeholder={typeof image === "string" ? "empty" : "blur"} />
     </div>

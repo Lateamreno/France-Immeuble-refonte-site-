@@ -19,9 +19,13 @@ export type NomPicto =
   | "immeubles" | "mail" | "telephone" | "calculatrice" | "dossier"
   | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles" | "france"
   | "logement" | "commerce" | "entrepot" | "parking" | "cave" | "autre"
-  | "loupe" | "reglages" | "agenda" | "profil" | "valide" | "plus" | "sortie" | "trombone" | "coeur";
+  | "loupe" | "reglages" | "agenda" | "profil" | "valide" | "plus" | "sortie" | "trombone" | "coeur"
+  | "detective";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
+  /* Retour #231 (MAV, 04/11/2026) : l'off-market, un détective en chapeau et
+     trench, col relevé. */
+  detective: <><path d="m7.3 8.7.7-3.6c.2-.9.9-1.3 1.8-1.1l2.2.7 2.2-.7c.9-.2 1.6.2 1.8 1.1l.7 3.6"/><path d="M7.7 6.9h8.6"/><path d="M3.5 9.2c2.4-.8 5.3-1.1 8.5-1.1s6.1.3 8.5 1.1"/><path d="M9.2 9.6c.4 1.9 1.5 3 2.8 3s2.4-1.1 2.8-3"/><path d="M4.5 21c.3-4.4 1.8-6.9 4.6-7.9M19.5 21c-.3-4.4-1.8-6.9-4.6-7.9"/><path d="M9.1 13.1 8 10.9M14.9 13.1l1.1-2.2"/><path d="M9.1 13.1 12 17.2l2.9-4.1"/><path d="M12 17.2V21"/><path d="M6 18.6h4.2M13.8 18.6H18"/></>,
   /* Types de lots de l'état locatif (retour #70, MAV, 27/10/2026). Le bureau
      reprend la mallette « business ». */
   logement: <><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.4v11.1h13V9.4"/><path d="M10 20.5V15h4v5.5"/></>,

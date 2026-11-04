@@ -17,9 +17,9 @@ const COTES = [
     vente: "Vente en bloc",
     titre: "Un investisseur, qui achète un rendement",
     attentes: [
-      "Son prix dépend du prix au m² et du rendement, et ne les dépasse pas",
+      "Il fait ses calculs de rendement et de prix au m², et il s’y tient",
       "Il n’achète ni sur un coup de cœur ni pour habiter le quartier",
-      "Plus l’immeuble est grand, moins il a d’acheteurs : moins de concurrence, des offres plus basses",
+      "Les acquéreurs d’immeubles sont bien moins nombreux que les acheteurs d’appartements : moins de concurrence, des offres plus basses",
     ],
   },
   {
@@ -28,7 +28,7 @@ const COTES = [
     titre: "Des familles et des particuliers, qui achètent un logement",
     attentes: [
       "Ils paient le prix du marché résidentiel",
-      "Le coup de cœur et le besoin d’habiter le quartier jouent pour vous",
+      "Le coup de cœur et l’envie d’habiter le quartier permettent d’obtenir des offres plus élevées",
       "Un grand vivier d’acquéreurs pour chaque lot",
     ],
   },

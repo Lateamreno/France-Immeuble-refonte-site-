@@ -64,7 +64,7 @@ export default async function Acheter() {
       texte: "Déposez votre recherche : zones, budget, type d’immeuble et rendement visé. Quand un immeuble y correspond, vous recevez le dossier complet parmi les premiers : état locatif, surfaces, diagnostics, taxe foncière, baux et travaux.",
     },
     {
-      question: "Où achetez-vous des immeubles de rapport ?",
+      question: "Où vendez-vous des immeubles de rapport ?",
       texte: `Partout en France. Nos références publiées couvrent ${stats.villes} communes, dont ${stats.partIdf} % en Île-de-France.`,
     },
   ];
@@ -96,14 +96,15 @@ export default async function Acheter() {
           <Eyebrow>Acheter un immeuble</Eyebrow>
           {/* Le titre porte la requête (MAV, 04/11/2026 : « le titre c'est même pas
               acheter un immeuble de rapport »), la promesse reste en or. */}
+          {/* Retours #244 et #245 (MAV, 04/11/2026). */}
           <h1>
             Acheter un immeuble de rapport{" "}
-            <span className="accent">avant qu’il soit annoncé</span>
+            <span className="accent">avec France Immeuble</span>
           </h1>
           <p className="lead">
-            C’est ce que nous promettons aux propriétaires : leur dossier est présenté à notre
-            fichier avant toute diffusion. Vous ne trouverez donc aucun bien sur cette page, mais
-            l’accès à ceux qui circulent en premier.
+            Tout est pensé pour les acquéreurs d’immeubles : des dossiers complets (adresse, état
+            locatif, taxe foncière, urbanisme, DPE) et un tri par type d’opération, rentabilité,
+            occupation et destination. Vous ne recevez que ce qui vous intéresse.
           </p>
           {/* Retour #142 (MAV, 03/11/2026) : le bouton du hero mène au dépôt de recherche. */}
           <div className="btn-row">
@@ -111,7 +112,8 @@ export default async function Acheter() {
           </div>
           <div className="hero-proof">
             <Chiffre picto="reseau" valeur={nombre(ch.investisseurs)} libelle="investisseurs déjà dans le fichier" />
-            <Chiffre picto="secteur" valeur={stats.villes} libelle="communes où nous avons vendu" />
+            {/* Retour #246 (MAV, 04/11/2026). */}
+            <Chiffre picto="best" valeur="100 %" libelle="de nos biens d’abord en off-market" />
           </div>
         </>
       </HeroMedia>
@@ -175,8 +177,8 @@ export default async function Acheter() {
       <section id="deposer" className="section section--noir-3 recherche-sec">
         <div className="container split">
           <Reveal className="split__aside">
-            <Eyebrow>Ce que ça vous donne</Eyebrow>
-            <h2>Voir avant les autres</h2>
+            <Eyebrow>Recevez nos biens en exclusivité</Eyebrow>
+            <h2>Recevoir nos immeubles</h2>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
               {/* Retour #100 (MAV, 02/11/2026). */}
               Être peu nombreux à voir un immeuble, c’est une commercialisation discrète et

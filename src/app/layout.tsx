@@ -5,6 +5,7 @@ import { GtmNoScript, GtmScript } from "@/components/GoogleTagManager";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ModaleCompte } from "@/components/compte/ModaleCompte";
+import { AncreStable } from "@/components/AncreStable";
 import { SITE } from "@/lib/site";
 import { RevueButton } from "@/components/revue";
 import { listFeedbackOuverts } from "@/lib/bo/feedback";
@@ -49,6 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main id="main">{children}</main>
         <Footer />
         <ModaleCompte />
+        <AncreStable />
         {MODE_REVUE && <RevueButton pins={await listFeedbackOuverts().catch(() => [])} />}
       </body>
     </html>

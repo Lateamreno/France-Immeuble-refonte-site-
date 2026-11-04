@@ -34,6 +34,12 @@ export function Header() {
     setDeroule(null);
   }, [pathname]);
 
+  /* Retour #257 (MAV, 04/11/2026) : menu ouvert, la page derrière ne défile plus. */
+  useEffect(() => {
+    document.documentElement.classList.toggle("menu-ouvert", ouvert);
+    return () => document.documentElement.classList.remove("menu-ouvert");
+  }, [ouvert]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

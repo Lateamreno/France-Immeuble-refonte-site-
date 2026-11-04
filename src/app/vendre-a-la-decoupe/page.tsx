@@ -98,10 +98,10 @@ const QUESTIONS: QuestionFaq[] = [
     reponse: (
       <>
         <p>
-          Ce n’est pas une question de nombre de lots, c’est une question d’écart. On capitalise
-          vos loyers au taux de rendement pratiqué dans la commune : ça donne le prix qu’un
-          investisseur acceptera de payer en bloc. On le compare ensuite au prix au m² auquel se
-          vendent réellement les appartements du secteur.
+          Ce n’est pas une question de nombre de lots, c’est une question d’écart. Un immeuble
+          vendu en bloc se valorise au rendement pratiqué dans le secteur, et non au prix au m² :
+          c’est le prix qu’un investisseur acceptera de payer. On le compare ensuite au prix au m²
+          auquel se vendent réellement les appartements du secteur.
         </p>
         <p>
           Quand le second dépasse largement le premier, la découpe crée de la valeur. Quand les
@@ -431,10 +431,10 @@ export default function Decoupe() {
           </Reveal>
           <Reveal>
             <p className="lead">
-              Ce n’est pas une affaire de nombre de lots. On capitalise vos loyers au taux de
-              rendement pratiqué dans votre commune : ça donne le prix qu’un investisseur acceptera
-              de payer en bloc. On le compare au prix au m² auquel se vendent réellement les
-              appartements du secteur.
+              Ce n’est pas une affaire de nombre de lots. Un immeuble vendu en bloc se valorise au
+              rendement pratiqué dans le secteur, et non au prix au m² : c’est le prix qu’un
+              investisseur acceptera de payer. On le compare au prix au m² auquel se vendent
+              réellement les appartements du secteur.
             </p>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
               Dans le dossier ci-dessus, l’écart est de {CAS.bloc.prixM2} contre{" "}

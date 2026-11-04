@@ -186,7 +186,7 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
         <div className="container split">
           <Reveal className="section__head">
             <Eyebrow>Et ce qui n’est pas en ligne</Eyebrow>
-            <h2>Une partie de nos mandats ne sont jamais diffusés</h2>
+            <h2>Recevez nos offres off-market, jamais diffusées</h2>
             <p className="lead">
               Certains propriétaires préfèrent que leurs locataires, leurs voisins et le marché
               n’apprennent pas la vente par une annonce. Ces immeubles partent directement aux

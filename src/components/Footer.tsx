@@ -32,9 +32,8 @@ export async function Footer() {
               <br />
               <a className="footer-coord" href={`mailto:${SITE.email}`}><Picto nom="mail" taille={16} />{SITE.email}</a>
               <br />
-              {SITE.adresse}
-              <br />
-              {SITE.codePostalVille}
+              {/* Retour #233 (MAV, 04/11/2026). */}
+              <span className="footer-adresse"><Picto nom="secteur" taille={16} /><span>{SITE.adresse}<br />{SITE.codePostalVille}</span></span>
             </p>
           </div>
 

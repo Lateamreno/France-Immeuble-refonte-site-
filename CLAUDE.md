@@ -494,6 +494,17 @@ la découpe, Biens vendus…), sans titre de groupe ; les articles du blog l'un 
 secondaire presque blanc ; champs à 16 px (l'iPhone zoomait). « Déposer ma recherche » de l'accueil
 ouvre la fenêtre de recherche (`BoutonRecherche`). Nos ventes : « Vendez votre immeuble » en fin de
 page, communes d'une seule vente classées par prix au m², « et X autres communes ».
+Lot 80 (retours #230 à #260, MAV, 04/11/2026) : au téléphone, boutons et chiffres du hero en
+bas de l'écran ; flèches des lignes qui glissent sous les cartes, au centre ; une carte passe au
+premier plan dès les trois quarts visibles ; flèche or des listes déroulantes ; menu ouvert jusqu'au
+bas de l'écran, page bloquée derrière ; un lien vers une ancre (`#estimer`) se recale après le
+chargement (`AncreStable`) ; sur Nos ventes et les fiches de vente, « Estimer mon immeuble » et la
+pilule ouvrent le formulaire dans une fenêtre (`ModaleEstimation`) ; photo claire et conviviale
+derrière le formulaire de Vendre (`FondPhoto clair`, Unsplash) ; picto détective en trench pour
+l'off-market de l'accueil ; pictos téléphone, e-mail et adresse dans le pied de page. Textes : un
+immeuble en bloc se valorise au rendement du secteur, et non au prix au m² (plus de
+« capitaliser ») ; Acheter titré « avec France Immeuble », « 100 % de nos biens d'abord en
+off-market ».
 **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
 off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
 (`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que

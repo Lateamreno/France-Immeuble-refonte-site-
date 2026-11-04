@@ -90,7 +90,8 @@ export default function EstimerUnImmeuble() {
           <p className="lead">
             La seule estimation conçue spécifiquement pour les immeubles. Elle se base sur leur
             aspect général, géographique et locatif, et sur leur caractère constructible, pour une
-            valorisation optimale.
+            valorisation optimale. Quand l’immeuble s’y prête, nous estimons aussi sa vente à la
+            découpe.
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>

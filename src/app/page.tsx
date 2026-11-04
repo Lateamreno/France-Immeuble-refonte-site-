@@ -278,7 +278,7 @@ export default async function Accueil() {
               </div>
             </Reveal>
             <Reveal as="article" className="card card--offre card--offmarket" delayIndex={1}>
-              <span className="card__picto-tete" aria-hidden="true"><Picto nom="best" taille={44} /></span>
+              <span className="card__picto-tete" aria-hidden="true"><Picto nom="detective" taille={44} /></span>
               <Eyebrow>Les offres off-market</Eyebrow>
               <h3>Nos biens d’exception</h3>
               <p>

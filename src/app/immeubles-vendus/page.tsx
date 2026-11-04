@@ -1,3 +1,4 @@
+import { BoutonEstimation, ModaleEstimation } from "@/components/ModaleEstimation";
 import type { Metadata } from "next";
 import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
@@ -191,9 +192,8 @@ export default async function ImmeublesVendus() {
               className="btn-row"
               style={{ marginTop: "var(--space-m)", justifyContent: "center" }}
             >
-              <Button href="/estimer-un-immeuble/#estimer" icone>
-                Estimer mon immeuble
-              </Button>
+              {/* Retours #251 et #252 (MAV, 04/11/2026) : le formulaire s'ouvre ici. */}
+              <BoutonEstimation />
               <Button href={SITE.telHref} variant="outline">
                 Nous appeler
               </Button>
@@ -201,7 +201,8 @@ export default async function ImmeublesVendus() {
           </Reveal>
         </div>
       </section>
-      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Estimer mon immeuble" />
+      <BoutonFixeMobile href="/estimer-un-immeuble/#estimer" libelle="Estimer mon immeuble" modale />
+      <ModaleEstimation />
     </>
   );
 }

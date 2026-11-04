@@ -84,8 +84,9 @@ export default async function ImmeublesOffMarket() {
             Les immeubles que <span className="accent">personne ne voit passer</span>
           </h1>
           <p className="lead">
-            La plupart de nos immeubles de rapport partent sans annonce, directement aux
-            acquéreurs de notre fichier. C’est précisément ce que le vendeur achète.
+            {/* Retour #254 (MAV, 04/11/2026). */}
+            La plupart des immeubles que nous vendons sont vendus directement aux acquéreurs de
+            notre fichier, sans publication d’annonce.
           </p>
           <div className="btn-row">
             <Button href="#deposer" icone>

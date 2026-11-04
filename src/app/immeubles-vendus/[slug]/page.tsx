@@ -4,6 +4,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
+import { BoutonEstimation, ModaleEstimation } from "@/components/ModaleEstimation";
 import { Reveal } from "@/components/Reveal";
 import { Picto } from "@/components/Picto";
 import { CarteVente, surfaceVente, delaiOffre, ecartPublie, delaiPublie } from "@/components/CarteVente";
@@ -280,9 +281,8 @@ export default async function FicheVente({ params }: Params) {
               fichier d’acquéreurs, sans annonce si vous le souhaitez.
             </p>
             <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
-              <Button href="/estimer-un-immeuble/" variant="primary" icone>
-                Estimer mon immeuble
-              </Button>
+              {/* Comme la page Nos ventes (retour #251) : le formulaire s'ouvre ici. */}
+              <BoutonEstimation />
               <Button href={SITE.telHref} variant="outline">
                 Appeler · {SITE.tel}
               </Button>
@@ -315,6 +315,7 @@ export default async function FicheVente({ params }: Params) {
           </div>
         </section>
       )}
+      <ModaleEstimation />
     </>
   );
 }
