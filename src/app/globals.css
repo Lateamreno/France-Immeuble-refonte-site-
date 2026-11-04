@@ -5029,6 +5029,14 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   .nav-groupe__liste{display:flex;flex-direction:column;border-left:2px solid var(--color-bronze-profond);}
   .nav-groupe__btn--fleche,.nav-groupe__chev{display:none;}
   .nav-groupe__tete .nav-groupe__lien{border-bottom:0;}
+  /* Retours #207 à #229 (MAV, 04/11/2026) : fermé, le menu est transparent mais
+     couvre tout l'écran ; ses sous-menus, en `pointer-events:auto`, prenaient
+     les doigts à la place de la page (liens invisibles sur les textes, les
+     vignettes, les formulaires, défilements bloqués). Fermé, le menu n'existe
+     plus pour le doigt ni pour le clavier. */
+  .nav{visibility:hidden;transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility 0s linear var(--dur);}
+  .nav.is-open{visibility:visible;transition-delay:0s;}
+  .nav:not(.is-open) *{pointer-events:none;}
 }
 /* Découpe, honoraires (#184, #200) : un picto par ligne ; les montants dans l'or des boutons. */
 .tarifs li{position:relative;}
