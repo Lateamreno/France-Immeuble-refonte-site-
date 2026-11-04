@@ -442,8 +442,9 @@ analyses, puis la page reprend (`.sec-analyses--pin`). **Méthode de Vendre cent
 honoraires de vente et de montage détaillés ; étapes avec picto, sans filet ni point ;
 la Team Reno pour les travaux ; tous les boutons mènent au formulaire de vente en fin de
 page. **Off-market, « Le principe »** (retour #105, MAV, 03/11/2026) : « Les meilleures offres sont
-off-market », un lecteur et son document caviardé fondus dans le noir
-(`offmarket-lecteur-caviarde-v2.webp`, photo Unsplash caviardée), trois raisons en cartes de verre.
+off-market », l'homme aux lunettes qui lit son dossier, fondu dans le noir
+(`atouts/commercialisation-dossier.webp`, retour #147, MAV, 04/11/2026 : « c'est cette photo que
+j'aime bien »), trois raisons en cartes de verre.
 **Photos fondues** dans les
 sections sombres sans image (`FondPhoto`, page Vendre : formulaire et contact, MAV, 02/11/2026). Lignes en `marches` : chaque carte dans une case de taille fixe, seule la
 carte rétrécit (retour #76 : l'arrêt du défilement ne saute plus). Suites longues (mission de la Découpe) : grille 3 × 2 sur

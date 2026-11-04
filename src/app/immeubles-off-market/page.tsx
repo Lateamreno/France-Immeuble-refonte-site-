@@ -102,13 +102,15 @@ export default async function ImmeublesOffMarket() {
           lecteur et d'un document caviardé, fondue dans le noir, et les trois raisons en
           cartes de verre posées dessus. */}
       <section className="section section--noir om-principe">
+        {/* Retour #147 (MAV, 04/11/2026) : l'homme qui lit son dossier, la photo de la
+            piste 3 d'origine, plutôt que le document caviardé. */}
         <Image
-          className="om-principe__photo"
-          src="/media/offmarket-lecteur-caviarde-v2.webp"
+          className="om-principe__photo om-principe__photo--lecteur"
+          src="/media/atouts/commercialisation-dossier.webp"
           alt=""
-          width={1800}
-          height={1125}
-          sizes="(max-width: 700px) 100vw, 70vw"
+          width={700}
+          height={800}
+          sizes="(max-width: 700px) 100vw, 52vw"
         />
         <span className="om-principe__voile" aria-hidden="true" />
         <div className="container om-principe__in">

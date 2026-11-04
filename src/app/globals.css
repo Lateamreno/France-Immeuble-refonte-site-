@@ -4899,3 +4899,9 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 @media (max-width:899px){
   .compte-entree__fond--facade{width:100%;opacity:.22;-webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 75%);mask-image:linear-gradient(to bottom,#000 20%,transparent 75%);}
 }
+/* #147 : la photo de l'homme qui lit son dossier. Fond clair d'origine : on
+   l'assombrit pour la fondre dans le noir, et on la garde plus étroite pour ne
+   pas l'agrandir au-delà de sa définition. */
+.om-principe__photo--lecteur{width:56%;object-position:60% 22%;filter:brightness(.6) saturate(.8);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 38%);mask-image:linear-gradient(90deg,transparent,#000 38%);}
+@media (max-width:759px){ .om-principe__photo--lecteur{width:100%;object-position:62% 18%;-webkit-mask-image:none;mask-image:none;} }
