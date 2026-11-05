@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Picto, type NomPicto } from "@/components/Picto";
+import { Deconnexion } from "./Actions";
 
 /**
  * Le cadre de l'espace client (option B, MAV, 30/10/2026) : le menu du site
@@ -72,9 +73,22 @@ export function Coquille({
             </Link>
           ))}
         </nav>
-        <Link href="/" className="compte-menu__retour"><Picto nom="sortie" taille={17} /> Retour au site</Link>
+        {/* MAV, 05/11/2026 : « dans l'espace client il y a rien pour se déconnecter ». */}
+        <div className="compte-menu__pied">
+          <Link href="/" className="compte-menu__retour"><Picto nom="logement" taille={17} /> Retour au site</Link>
+          <Deconnexion className="compte-menu__retour"><Picto nom="sortie" taille={17} /> Me déconnecter</Deconnexion>
+        </div>
       </aside>
-      <div className="compte-contenu">{children}</div>
+      <div className="compte-contenu">
+        {/* Au téléphone, pas de menu de gauche : la sortie en haut de l'accueil et du profil. */}
+        {(actif("/mon-compte/") || actif("/mon-compte/profil/")) && (
+          <div className="compte-sortie-mob">
+            <Link href="/" className="compte-menu__retour">Retour au site</Link>
+            <Deconnexion className="compte-menu__retour"><Picto nom="sortie" taille={16} /> Me déconnecter</Deconnexion>
+          </div>
+        )}
+        {children}
+      </div>
       <nav className="compte-barre" aria-label="Menu de mon espace">
         {onglets.map((r) => (
           <Link key={r.href} href={r.href} className={`compte-barre__i${ongletActif(r) ? " est-actif" : ""}`}

@@ -15,6 +15,7 @@ import { Button } from "@/components/Button";
 import { Faq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
+import { BiensEnVenteLigne } from "@/components/biens/BiensEnVenteLigne";
 
 /** Médiane d'une liste de nombres, ou null. */
 const mediane = (xs: number[]) => {
@@ -28,9 +29,8 @@ const pct = (x: number | null) => (x == null ? "" : `${x.toLocaleString("fr-FR",
 /**
  * /acheter-un-immeuble/ — construction du fichier acquéreurs.
  *
- * AUCUN BIEN N'EST MONTRÉ PUBLIQUEMENT. Tout le discours vendeur repose sur
- * l'off-market : lister des immeubles ici démonterait l'argument devant le
- * vendeur. La page vend l'accès, pas le stock.
+ * La page vend d'abord l'accès à l'off-market. Depuis le 05/11/2026 (MAV), une
+ * ligne montre aussi les immeubles en annonce, la vignette off-market en tête.
  */
 export const metadata: Metadata = {
   title: "Acheter un immeuble de rapport",
@@ -174,6 +174,9 @@ export default async function Acheter() {
         </p>
       </BandeMedia>
 
+      {/* MAV, 05/11/2026 : les immeubles en vente, juste avant le dépôt de recherche.
+          La vignette off-market ouvre la ligne, « Voir tous nos immeubles » la ferme. */}
+      <BiensEnVenteLigne id="en-vente" />
       <section id="deposer" className="section section--noir-3 recherche-sec">
         <div className="container split">
           <Reveal className="split__aside">

@@ -321,6 +321,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   la somme des lots, l'écart a sa ligne dans « Revenus annuels » (« Hausse de loyers prévue, non
   détaillée par lot » ou « Autres loyers ») ; demande au BO, point 8 de
   `docs/PROMPT-BO-MES-IMMEUBLES.md`.
+- **Lot 91** (MAV, 05/11/2026). Page Acheter : une ligne qui glisse « Nos immeubles de rapport
+  à vendre » juste avant le dépôt de recherche (`BiensEnVenteLigne`) : la vignette off-market
+  d'abord, huit immeubles au plus du plus cher au moins cher, puis « Voir tous nos immeubles ».
+  Liste des immeubles à vendre au téléphone : la vignette off-market n'est plus collée au premier
+  immeuble (12 px, le filet, 12 px, comme entre deux immeubles). Espace client : « Me déconnecter »
+  en bas du menu de gauche sur ordinateur, en haut de l'accueil et du profil au téléphone.
 
 ### Garde-fous non négociables
 

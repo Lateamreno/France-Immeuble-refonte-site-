@@ -4,16 +4,16 @@ import { useId, useState } from "react";
 import { envoyer } from "./envoyer";
 
 /** Bouton de déconnexion. */
-export function Deconnexion() {
+export function Deconnexion({ className = "lien-discret", children = "Me déconnecter" }: { className?: string; children?: React.ReactNode }) {
   const [envoi, setEnvoi] = useState(false);
   return (
-    <button type="button" className="lien-discret" disabled={envoi}
+    <button type="button" className={className} disabled={envoi}
       onClick={async () => {
         setEnvoi(true);
         await envoyer("/api/compte/deconnexion/", {});
         window.location.assign("/mon-compte/");
       }}>
-      Me déconnecter
+      {children}
     </button>
   );
 }

@@ -3481,6 +3481,12 @@ body:has(.compte-appli) .site-footer{display:none;}
 .compte-menu__i:focus-visible,.compte-barre__i:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
 .compte-menu__retour{display:flex;align-items:center;gap:10px;padding:10px 14px;color:var(--color-gris);font-size:var(--fs-small);text-decoration:none;}
 .compte-menu__retour:hover{color:var(--color-bronze);}
+button.compte-menu__retour{background:none;border:0;font:inherit;font-size:var(--fs-small);cursor:pointer;text-align:left;}
+button.compte-menu__retour:disabled{opacity:.6;cursor:default;}
+.compte-menu__retour:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;border-radius:8px;}
+.compte-menu__pied{display:flex;flex-direction:column;gap:2px;}
+.compte-sortie-mob{display:flex;justify-content:space-between;align-items:center;margin:-8px -14px 0;}
+@media (min-width:960px){.compte-sortie-mob{display:none;}}
 
 /* Les cinq onglets du téléphone, collés en bas. */
 .compte-barre{
@@ -4425,7 +4431,10 @@ fieldset.field legend{margin-bottom:8px;padding:0;}
 .carte-offmarket .carte-offmarket__btn{margin:6px 0 0;width:100%;padding:13px 18px;}
 .carte-offmarket:hover .carte-offmarket__btn{background:var(--color-bronze-clair-2);}
 @media (max-width:699px){
-  .biens-liste--resultats .carte-offmarket{border:1px solid var(--color-bronze-profond);border-radius:var(--radius-card);padding:0;margin:12px 0;background:var(--color-noir);}
+  .biens-liste--resultats .carte-offmarket{border:1px solid var(--color-bronze-profond);border-radius:var(--radius-card);padding:0;margin:0;background:var(--color-noir);}
+  /* MAV, 05/11/2026 : la vignette off-market était collée au premier immeuble (sa marge
+     sortait de la case). Même respiration que entre deux immeubles : 12 px, le filet, 12 px. */
+  .biens-liste--resultats > .li-offmarket{padding:12px 0;}
   .biens-liste--resultats .carte-offmarket__corps{min-height:0;padding:20px;}
   .carte-offmarket__titre{font-size:1.3rem;}
 }
@@ -5382,3 +5391,26 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 @media (min-width:960px){ .onglets-acheter{display:none;} }
 /* Ligne d'écart des loyers (05/11/2026) : la précision sous le libellé, pas au milieu. */
 .etat-financier th > small{display:block;margin-top:2px;font-size:var(--fs-eyebrow);font-weight:400;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+
+/* Les immeubles en vente en une ligne (page Acheter, MAV, 05/11/2026) :
+   l'off-market d'abord, huit immeubles du plus cher au moins cher, puis
+   « Voir tous nos immeubles ». */
+.ligne-cartes.biens-ligne{--g:clamp(14px,2vw,24px);gap:var(--g);padding-block:4px 40px;margin-bottom:-36px;align-items:stretch;}
+.biens-ligne .ligne-case > *{height:100%;}
+.biens-ligne .bien-carte-cadre{height:100%;}
+.biens-ligne .carte-offmarket__corps{min-height:100%;}
+.carte-tous{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;
+  padding:28px 22px;border:1px solid var(--color-bronze-profond);border-radius:var(--radius-card);
+  background:var(--color-noir-3);color:var(--color-creme);text-decoration:none;text-align:center;
+}
+.carte-tous__picto{color:var(--color-bronze);}
+.biens-ligne-sec .section__head{margin-bottom:var(--space-m);}
+/* Au téléphone, la section tient sur un écran : la vignette off-market dit déjà le reste. */
+@media (max-width:700px){
+  .biens-ligne-sec .section__head .lead{display:none;}
+  .biens-ligne .carte-offmarket__corps{min-height:0;padding:20px;}
+}
+.carte-tous__nb{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:1.45rem;line-height:1.08;letter-spacing:-.015em;}
+.carte-tous:hover .carte-tous__btn{background:var(--color-bronze-clair-2);}
+.carte-tous:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}

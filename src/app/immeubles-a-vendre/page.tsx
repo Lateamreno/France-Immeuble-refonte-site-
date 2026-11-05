@@ -112,7 +112,7 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
 
               {/* La vignette off-market reste la première, quels que soient les critères et le tri (MAV, 02/11/2026). */}
               <ul className="biens-liste biens-liste--resultats">
-                <li><CarteOffMarket nombre={nbOffMarket} /></li>
+                <li className="li-offmarket"><CarteOffMarket nombre={nbOffMarket} /></li>
                 {resultats.map((b, i) => (
                   <li key={b.id}>
                     <CarteBien b={b} rang={i} />
