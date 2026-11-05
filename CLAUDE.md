@@ -868,6 +868,11 @@ de `<body>`. C'était absent de certaines pages du site actuel : ne jamais l'oub
 
 **Jamais de mise en production sans validation humaine explicite.**
 
+> **Depuis la bascule sur www.france-immeuble.fr (MAV, 05/11/2026)** : chaque lot est poussé
+> **seulement sur la branche de travail** (preview Vercel). **Jamais de `git push origin HEAD:main`
+> sans que MAV le demande explicitement, lot par lot** (« passe en prod »). Le site est en ligne :
+> `main` = production.
+
 ### Rapport de fin de lot — OBLIGATOIRE, sans attendre qu'on le demande
 
 Chaque lot livré se termine par un **artefact avant/après** publié (outil Artifact), lien donné
