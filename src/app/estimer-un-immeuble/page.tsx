@@ -131,7 +131,7 @@ export default function EstimerUnImmeuble() {
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
-            <h2>Obtenez votre estimation gratuite</h2>
+            <h2>Obtenez votre <span className="accent">estimation gratuite</span></h2>
             <p className="lead">
               Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
               gratuite et confidentielle.

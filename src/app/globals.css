@@ -4921,6 +4921,20 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .da-attentes{display:flex;flex-direction:column;gap:6px;margin:4px 0 0;padding:0;list-style:none;color:var(--color-gris);}
 .da-attentes li{padding-left:18px;position:relative;}
 .da-attentes li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--color-bronze);}
+/* #287 (MAV, 05/11/2026) : la section tient dans l'écran sur ordinateur. Les deux cartes
+   l'une sous l'autre, le dessin à gauche, le texte sur toute la largeur ; la hauteur du
+   dessin suit celle de l'écran. */
+@media (min-width:960px){
+  .deux-acheteurs-sec{--section-y:clamp(24px,4svh,56px);}
+  .deux-acheteurs-sec .section__head{margin-bottom:var(--space-m);}
+  .deux-acheteurs-sec .tete-2col.tete-2col{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);}
+  .deux-acheteurs-sec .section__head h2{max-width:none;}
+  .deux-acheteurs{--h-dessin:clamp(120px,calc((100svh - 530px) / 2),280px);grid-template-columns:1fr;gap:var(--space-s);}
+  .da-carte{display:grid;grid-template-columns:var(--h-dessin) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:var(--space-l);row-gap:8px;align-items:start;padding:20px var(--space-m);}
+  .da-dessin{grid-row:1 / -1;align-self:center;margin:0;}
+  .da-dessin svg{height:var(--h-dessin);width:100%;max-width:none;}
+  .da-vente{align-self:end;}
+}
 @media (max-width:759px){
   .deux-acheteurs{grid-template-columns:1fr;gap:var(--space-s);}
   .da-carte{padding:var(--space-s);}

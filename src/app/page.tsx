@@ -130,7 +130,7 @@ export default async function Accueil() {
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
-            <h2>Obtenez votre estimation gratuite</h2>
+            <h2>Obtenez votre <span className="accent">estimation gratuite</span></h2>
             <p className="lead">
               Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
               gratuite et confidentielle.
@@ -144,7 +144,7 @@ export default async function Accueil() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Notre réseau</Eyebrow>
-            <h2>Notre réseau d’acheteurs d’immeubles</h2>
+            <h2>Notre réseau d’<span className="accent">acheteurs d’immeubles</span></h2>
             <p className="lead">Nos clients recherchent actuellement&nbsp;:</p>
           </Reveal>
 
@@ -176,7 +176,7 @@ export default async function Accueil() {
         <div className="container">
           <Reveal className="section__head">
             <Eyebrow>Biens vendus</Eyebrow>
-            <h2>Immeubles vendus par France Immeuble</h2>
+            <h2><span className="accent">Immeubles vendus</span> par France Immeuble</h2>
           </Reveal>
         </div>
         {/* Déposées par le BO, comme la page des ventes. Polaroïds en ligne

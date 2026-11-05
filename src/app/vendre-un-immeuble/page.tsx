@@ -166,7 +166,7 @@ export default async function VendreUnImmeuble() {
         coin={{ width: 900, height: 437 }}
         className="portes-sec"
         surtitre="Votre projet"
-        titre={<>Nous estimons puis trouvons le meilleur acheteur pour votre immeuble</>}
+        titre={<>Nous <span className="accent">estimons</span> puis trouvons le <span className="accent">meilleur acheteur</span> pour votre immeuble</>}
       >
         <ol className="portes-libres">
           <li className="porte">
@@ -283,7 +283,7 @@ export default async function VendreUnImmeuble() {
         <div className="container split">
           <Reveal>
             <Eyebrow bare>Première étape</Eyebrow>
-            <h2>Obtenez votre estimation gratuite</h2>
+            <h2>Obtenez votre <span className="accent">estimation gratuite</span></h2>
             <p className="lead">
               Quelques questions sur votre immeuble suffisent pour lancer son estimation. Elle est
               gratuite et confidentielle.

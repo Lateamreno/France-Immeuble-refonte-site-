@@ -280,7 +280,7 @@ export function EstimationForm({
       {phase === "saisie" && (
         <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate>
           <div className="step-head">
-            <h3>Estimez gratuitement votre immeuble</h3>
+            <h3 className="accent">Estimez gratuitement votre immeuble</h3>
             <p>Vos coordonnées et l’adresse de l’immeuble.</p>
           </div>
 

@@ -329,6 +329,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   en bas du menu de gauche sur ordinateur, en bas de l'accueil au téléphone (en haut, « ça tue
   la lecture », MAV) et toujours dans Mon profil. Sous offre gardés dans la ligne (« c'est stylé »).
   **Lot 91 en production le 05/11/2026** (« Passe en prod direct »).
+- **Lot 92** (retours #279 à #296, MAV, 05/11/2026). Mots en or : « estimation gratuite » (accueil,
+  Vendre, Estimer), titre du formulaire d'estimation, « acheteurs d'immeubles », « Immeubles
+  vendus », « estimons » et « meilleur acheteur ». Découpe, deux acheteurs : sur ordinateur les
+  deux cartes l'une sous l'autre, dessin à gauche dont la hauteur suit l'écran : la section tient
+  sur un écran (#287). Propositions en attente de MAV : titres de la Découpe (#288 à #290), FAQ
+  (#291 à #294, #296), menu déroulant (#283), pied de page (#295).
 
 ### Garde-fous non négociables
 

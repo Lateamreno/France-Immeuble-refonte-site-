@@ -265,7 +265,7 @@ export default function Decoupe() {
       {/* ───────── Le mécanisme : pourquoi l'écart existe ───────── */}
       <section className="section section--noir-2 deux-acheteurs-sec">
         <div className="container">
-          <Reveal className="section__head">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>L’écart de valeur</Eyebrow>
             <h2>Deux acheteurs qui n’achètent pas la même chose</h2>
             <p className="lead">
