@@ -326,7 +326,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   d'abord, huit immeubles au plus du plus cher au moins cher, puis « Voir tous nos immeubles ».
   Liste des immeubles à vendre au téléphone : la vignette off-market n'est plus collée au premier
   immeuble (12 px, le filet, 12 px, comme entre deux immeubles). Espace client : « Me déconnecter »
-  en bas du menu de gauche sur ordinateur, en haut de l'accueil et du profil au téléphone.
+  en bas du menu de gauche sur ordinateur, en bas de l'accueil au téléphone (en haut, « ça tue
+  la lecture », MAV) et toujours dans Mon profil. Sous offre gardés dans la ligne (« c'est stylé »).
+  **Lot 91 en production le 05/11/2026** (« Passe en prod direct »).
 
 ### Garde-fous non négociables
 

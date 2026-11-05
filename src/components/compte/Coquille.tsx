@@ -80,14 +80,15 @@ export function Coquille({
         </div>
       </aside>
       <div className="compte-contenu">
-        {/* Au téléphone, pas de menu de gauche : la sortie en haut de l'accueil et du profil. */}
-        {(actif("/mon-compte/") || actif("/mon-compte/profil/")) && (
+        {children}
+        {/* Au téléphone, pas de menu de gauche : la sortie en bas de l'accueil (MAV, 05/11/2026 :
+            en haut, « ça tue la lecture »). « Me déconnecter » reste aussi dans Mon profil. */}
+        {actif("/mon-compte/") && (
           <div className="compte-sortie-mob">
             <Link href="/" className="compte-menu__retour">Retour au site</Link>
             <Deconnexion className="compte-menu__retour"><Picto nom="sortie" taille={16} /> Me déconnecter</Deconnexion>
           </div>
         )}
-        {children}
       </div>
       <nav className="compte-barre" aria-label="Menu de mon espace">
         {onglets.map((r) => (

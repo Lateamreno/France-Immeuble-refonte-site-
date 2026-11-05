@@ -3485,7 +3485,7 @@ button.compte-menu__retour{background:none;border:0;font:inherit;font-size:var(-
 button.compte-menu__retour:disabled{opacity:.6;cursor:default;}
 .compte-menu__retour:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;border-radius:8px;}
 .compte-menu__pied{display:flex;flex-direction:column;gap:2px;}
-.compte-sortie-mob{display:flex;justify-content:space-between;align-items:center;margin:-8px -14px 0;}
+.compte-sortie-mob{display:flex;justify-content:space-between;align-items:center;margin:var(--space-s) -14px 0;padding-top:var(--space-s);border-top:1px solid var(--color-ligne);}
 @media (min-width:960px){.compte-sortie-mob{display:none;}}
 
 /* Les cinq onglets du téléphone, collés en bas. */
