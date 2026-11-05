@@ -18,7 +18,10 @@ import { ouvrirEstimation } from "./ModaleEstimation";
  * - au formulaire (`cible`). Il reste affiché sur le pied de page (retour #201,
  *   MAV, 04/11/2026 : « garder le bouton affiché jusqu'à la fin du pied de page ») ;
  * - aux rangées de boutons qui portent l'action elles-mêmes (`.porte-action`,
- *   les deux boutons collés de « Vendez votre immeuble » sur l'accueil).
+ *   les deux boutons collés de « Vendez votre immeuble » sur l'accueil) ;
+ * - à tout autre bouton de la page dès qu'il entre à l'écran : la pilule
+ *   s'efface tant qu'une section montre ses propres boutons, et revient
+ *   après (MAV, 05/11/2026 : « sinon des boutons peuvent se superposer »).
  * Sur ordinateur, rien : les boutons des sections suffisent.
  */
 export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
@@ -39,7 +42,13 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
       (modale || b.getAttribute("href") === href) && !b.closest(".hero-media, .bouton-fixe-mob, .porte-action") &&
       !(zoneCible && zoneCible.contains(b)));
     doubles.forEach((b) => b.classList.add("double-fixe"));
-    const porteurs = Array.from(document.querySelectorAll<HTMLElement>("main .porte-action"));
+    const porteurs = [
+      ...Array.from(document.querySelectorAll<HTMLElement>("main .porte-action")),
+      // Les autres boutons de la page. Un bouton masqué (`double-fixe`, fenêtre
+      // fermée) n'a pas de taille : il ne compte jamais comme visible.
+      ...Array.from(document.querySelectorAll<HTMLElement>("main .btn")).filter((b) =>
+        !b.closest(".hero-media, .bouton-fixe-mob, .porte-action") && !doubles.includes(b)),
+    ];
     const calcul = () => {
       const heroVisible = hero ? etats.get(hero) ?? true : false;
       const finVisible = fin.some((x) => etats.get(x));
