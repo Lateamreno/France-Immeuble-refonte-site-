@@ -32,7 +32,9 @@ export function Coquille({
   const chemin = usePathname() ?? "/mon-compte/";
   const rubriques: Rubrique[] = [
     { href: "/mon-compte/", nom: "Accueil", court: "Accueil", picto: "logement", visible: true },
-    { href: "/mon-compte/immeubles/", nom: "Mes immeubles", court: "Immeubles", picto: "immeubles", visible: vendeur },
+    // Toujours visible (MAV, 05/11/2026) : un propriétaire doit trouver ses biens même
+    // avant que le BO les ait déposés ; la rubrique vide l'invite à remplir son dossier.
+    { href: "/mon-compte/immeubles/", nom: "Mes immeubles", court: "Immeubles", picto: "immeubles", visible: true },
     { href: "/mon-compte/biens/", nom: "Biens proposés", court: "Biens", picto: "loupe", badge: nouveauxBiens, visible: acheteur },
     { href: "/mon-compte/favoris/", nom: "Mes favoris", court: "Favoris", picto: "coeur", visible: acheteur },
     { href: "/mon-compte/recherches/", nom: "Mes recherches", court: "Recherches", picto: "reglages", visible: acheteur },
@@ -49,7 +51,7 @@ export function Coquille({
   const onglets = [
     visibles[0],
     ...visibles.filter((r) => ["/mon-compte/immeubles/", "/mon-compte/biens/"].includes(r.href)),
-    ...(vendeur && acheteur ? [] : visibles.filter((r) => r.href === (acheteur ? "/mon-compte/favoris/" : "/mon-compte/rendez-vous/"))),
+    ...(acheteur ? [] : visibles.filter((r) => r.href === "/mon-compte/rendez-vous/")),
     visibles.find((r) => r.href === "/mon-compte/messages/")!,
     visibles.find((r) => r.href === "/mon-compte/profil/")!,
   ].slice(0, 5);

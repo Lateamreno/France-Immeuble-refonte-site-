@@ -5233,3 +5233,6 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 @media (max-width:899px){ .fond-photo.fond-photo--clair{opacity:.42;} }
 .section:has(> .fond-photo--clair) .split > :first-child :is(h2,.lead,.eyebrow){text-shadow:0 1px 14px color-mix(in srgb,var(--color-noir) 70%,transparent);}
 .section:has(> .fond-photo--clair) .split > :first-child .lead{color:var(--color-creme);}
+/* L'espace client dans le menu : au téléphone seulement, l'icône suffit sur ordinateur. */
+.nav > .nav__compte{display:none;}
+@media (max-width:980px){ .nav > .nav__compte{display:block;} }

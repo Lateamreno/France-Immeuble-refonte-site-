@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { NAV, SITE, type LienNav } from "@/lib/site";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
@@ -74,8 +74,16 @@ export function Header() {
             }
           }}
         >
-          {NAV.map((item) =>
-            item.enfants ? (
+          {NAV.map((item) => (
+            <Fragment key={item.href}>
+            {/* MAV, 05/11/2026 : l'espace client dans le menu du téléphone, juste avant Contact. */}
+            {item.href === "/contactez-nous/" && (
+              <Link href="/mon-compte/" className="nav__compte"
+                aria-current={pathname.startsWith("/mon-compte") ? "page" : undefined}>
+                Mon espace client
+              </Link>
+            )}
+            {item.enfants ? (
               <SousMenu
                 key={item.href}
                 item={item}
@@ -93,8 +101,9 @@ export function Header() {
               >
                 {item.label}
               </Link>
-            ),
-          )}
+            )}
+            </Fragment>
+          ))}
           {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. */}
           <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
         </nav>
