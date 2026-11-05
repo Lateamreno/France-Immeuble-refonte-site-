@@ -2680,7 +2680,13 @@ fieldset.field legend,.lot label{
 .compte-reponse{margin:6px 0 0;font-size:var(--fs-small);color:var(--color-gris);}
 .compte-confirme{display:flex;flex-direction:column;gap:6px;align-items:flex-start;color:var(--color-creme);font-size:var(--fs-small);}
 .compte-recherche-form{width:100%;display:grid;gap:var(--space-s);margin-top:var(--space-s);}
-.compte-recherche-form .field-nav{justify-content:flex-start;}
+/* MAV, 05/11/2026 : « beaucoup trop d'écart entre chaque barrette ». Les bornes collent à
+   leur curseur, et les champs à curseurs se suivent de plus près. */
+.compte-recherche-form .curseur__bornes,.form-recherche .curseur__bornes{margin:2px 0 0;}
+.compte-recherche-form .field:has(.curseur,.double-curseur),.form-recherche .field:has(.curseur,.double-curseur){gap:10px;}
+.compte-recherche-form .fields--2{gap:var(--space-s);}
+.compte-recherche-form{gap:18px;}
+.compte-recherche-form .field-nav{justify-content:center;}
 .compte-liste{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
 .compte-liste li{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--color-ligne);color:var(--color-creme);}
 .compte-biens{display:grid;gap:var(--space-m);}
@@ -5308,6 +5314,10 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .fourchette__alerte > div{display:flex;flex-direction:column;gap:8px;color:var(--color-creme);}
 .fourchette__alerte strong{color:var(--color-bronze-clair);font-size:1.05em;}
 .fourchette__alerte p{margin:0;}
+.fourchette-curseur{margin-bottom:var(--space-s);padding-bottom:var(--space-s);border-bottom:1px solid var(--color-ligne);}
+.fourchette-curseur .compte-chiffres{margin-top:var(--space-xs);}
+.fourchette-curseur dd.fourchette-curseur__ecart{margin-top:2px;font-family:var(--font-body);font-variation-settings:normal;font-size:var(--fs-small);
+  font-weight:400;letter-spacing:0;line-height:1.35;color:var(--color-creme);}
 /* #268, deuxième version (MAV, 05/11/2026 : « c'était plus lisible avant ») : retour à la
    mise en page d'avant le lot 82, titre sur deux lignes, liste à sa taille, bouton juste
    au-dessus de la fin de la section. Seuls les écrans de moins de 760 px de haut resserrent

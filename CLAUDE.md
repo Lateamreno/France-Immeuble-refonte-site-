@@ -286,6 +286,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   droite (#272). Estimer, Analyses : retour à la mise en page d'avant le lot 82 (#268), resserrée
   seulement sous 760 px de haut. Pilule du téléphone : cachée dès qu'on entre dans une section
   qui a ses propres boutons, et revient après.
+- **Lot 86** (MAV, 05/11/2026). Fourchette : **réglette** (`FourchetteAuCurseur`) du bas de la
+  fourchette jusqu'au prix au m² du secteur, avec prix au m² et rendement brut face au secteur
+  et net vendeur ; « J'ai terminé » annonce « un premier jet d'estimation » et mène à l'onglet
+  Estimation. **Alerte aussi quand bureaux, commerces et locaux d'activité font plus d'un tiers
+  de la surface** (le rendement de la ville est celui des appartements). Issue d'une recherche
+  connecté : ni « Voir mes recherches » ni demande d'appel, un seul bouton « Appeler le 01 72 87
+  52 22 » tant que l'agent n'a pas appelé. Curseurs des recherches resserrés (bornes collées,
+  18 à 22 px entre deux réglettes au lieu de 44).
 
 ### Garde-fous non négociables
 

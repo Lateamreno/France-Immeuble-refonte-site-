@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Picto } from "@/components/Picto";
 import { ProposerPrix } from "@/components/compte/Actions";
 import { DepotPiece } from "@/components/compte/DepotPiece";
-import { EstimationAuCurseur } from "@/components/compte/Curseurs";
+import { EstimationAuCurseur, FourchetteAuCurseur } from "@/components/compte/Curseurs";
 import { Chiffres, Frise, Panneau, TeteCompte, Vide } from "@/components/compte/Ecrans";
 import { CATEGORIES } from "@/lib/compte/categories";
 import { ecranCompte } from "@/lib/compte/ecran";
@@ -396,7 +396,12 @@ function AlerteAgent({ fo }: { fo: Extract<EtatFourchette, { etat: "agent" }> })
         <Picto nom="reglages" taille={22} />
         <div>
           <p><strong>Votre immeuble demande le passage d’un agent.</strong></p>
-          {fo.raison === "decote" ? (
+          {fo.raison === "mixte" ? (
+            <p>
+              Bureaux, commerces ou locaux d’activité font {fo.partPro} % de la surface. Le rendement du secteur que nous
+              connaissons est celui des appartements : il ne dit rien de juste sur ces lots, leurs baux ni leurs loyers.
+            </p>
+          ) : fo.raison === "decote" ? (
             <p>
               Au rendement du secteur{fo.rendementSecteur != null ? ` (${pct(fo.rendementSecteur)} brut)` : ""}, vos loyers
               donneraient un prix au m² inférieur de {fo.decote} % à celui des ventes du secteur ({euros(fo.prixM2)} le m²).
@@ -429,8 +434,8 @@ function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
     return (
       <Panneau titre="Première fourchette" picto="calculatrice">
         <p className="compte-calme">
-          Remplissez et envoyez l’état locatif, avec les loyers et les surfaces Carrez : une première fourchette
-          s’affiche ici, calculée au rendement du secteur.
+          Remplissez l’état locatif, avec les loyers et les surfaces Carrez, puis cliquez sur « J’ai terminé » : un
+          premier jet d’estimation s’affiche ici, calculé au rendement du secteur, avec une réglette pour comparer.
         </p>
         <div className="compte-panneau__pied">
           <Link className="btn btn--primary" href={`/mon-compte/immeubles/${cle}/?onglet=etat-locatif`}>Remplir l’état locatif</Link>
@@ -451,10 +456,12 @@ function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
   return (
     <Panneau titre="Première fourchette" picto="calculatrice">
       <p className="fourchette__montant">{millions(f.basse)} à {millions(f.haute)}</p>
+      <FourchetteAuCurseur basse={f.basse} haute={f.haute} plafond={f.plafond} surface={f.surface} prixM2={f.prixM2}
+        loyerAnnuel={f.loyerAnnuel} rendementSecteur={f.rendementSecteur} lieu={lieu} />
       <Chiffres items={[
         ["Loyer annuel hors charges", euros(f.loyerAnnuel)],
         ["Rendement brut du secteur", pct(f.rendementSecteur)],
-        ["Prix au m² de la fourchette", `${euros(f.prixM2Obtenu)} (${f.surface.toLocaleString("fr-FR")} m² Carrez)`],
+        ["Surface Carrez", `${f.surface.toLocaleString("fr-FR")} m²`],
         [`Prix médian au m² ${lieu}`, euros(f.prixM2)],
         ["Ventes prises en compte", f.nbVentes != null ? `${f.nbVentes}${f.fenetreMois ? ` en ${f.fenetreMois} mois` : ""}` : null],
       ]} />

@@ -159,3 +159,59 @@ export function EstimationAuCurseur({ valeur, prixM2, rendement }: { valeur: num
     </div>
   );
 }
+
+/**
+ * La première fourchette, à la réglette (MAV, 05/11/2026 : « je veux qu'il ait la
+ * réglette pour voir lui-même l'écart avec le secteur »). Le client fait glisser
+ * le prix, du bas de la fourchette jusqu'au prix au m² du secteur, et lit le
+ * prix au m² et le rendement brut face à ceux du secteur.
+ */
+export function FourchetteAuCurseur({ basse, haute, plafond, surface, prixM2, loyerAnnuel, rendementSecteur, lieu }: {
+  basse: number; haute: number; plafond: number; surface: number; prixM2: number;
+  loyerAnnuel: number; rendementSecteur: number; lieu: string;
+}) {
+  const uid = useId();
+  const p = pas(haute);
+  const min = Math.floor(basse / p) * p;
+  const max = Math.max(Math.ceil(plafond / p) * p, Math.ceil(haute / p) * p);
+  const [prix, setPrix] = useState(Math.round((basse + haute) / 2 / p) * p);
+  const m2 = prix / surface;
+  const ecartM2 = ((m2 - prixM2) / prixM2) * 100;
+  const rdt = (loyerAnnuel / prix) * 100;
+  const ecartRdt = rdt - rendementSecteur;
+  const dans = prix <= haute;
+  return (
+    <div className="curseur-estimation fourchette-curseur">
+      <div className="curseur__valeur">
+        <output htmlFor={`${uid}-c`} className="curseur__montant">{euros(prix)}</output>
+        <span className="curseur__note">{dans ? "Dans la fourchette" : "Au-dessus de la fourchette"}</span>
+      </div>
+      <label htmlFor={`${uid}-c`} className="sr-only">Prix de vente</label>
+      <input id={`${uid}-c`} className="curseur" type="range" min={min} max={max} step={p} value={prix}
+        style={piste(prix, min, max)} onChange={(e) => setPrix(Number(e.target.value))} aria-valuetext={euros(prix)} />
+      <div className="curseur__bornes"><span>{euros(min)}</span><span>{euros(max)} · prix au m² du secteur</span></div>
+      <dl className="compte-chiffres fourchette-curseur__ecarts">
+        <div>
+          <dt>Prix au m²</dt>
+          <dd>{euros(m2)}</dd>
+          <dd className="fourchette-curseur__ecart">
+            {Math.abs(ecartM2) < 0.5 ? `Au prix médian ${lieu}` : `${pct(Math.abs(ecartM2), 0)} ${ecartM2 < 0 ? "sous le" : "au-dessus du"} prix médian ${lieu} (${euros(prixM2)})`}
+          </dd>
+        </div>
+        <div>
+          <dt>Rendement brut</dt>
+          <dd>{pct(rdt, 2)}</dd>
+          <dd className="fourchette-curseur__ecart">
+            {Math.abs(ecartRdt) < 0.05 ? `Celui du secteur` : `${ecartRdt > 0 ? "+" : "−"}${Math.abs(ecartRdt).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} point${Math.abs(ecartRdt) >= 2 ? "s" : ""} face au secteur (${pct(rendementSecteur)})`}
+          </dd>
+        </div>
+        <div><dt>Net vendeur</dt><dd>{euros(prix / 1.05)}</dd></div>
+      </dl>
+      <p className="compte-form__aide">
+        {ecartRdt < -0.3
+          ? "À ce prix, le rendement passe sous celui du secteur : les investisseurs le comparent d’abord à ce qu’ils trouvent ailleurs."
+          : "Un investisseur regarde d’abord le rendement, puis le prix au m² face aux ventes du secteur."}
+      </p>
+    </div>
+  );
+}

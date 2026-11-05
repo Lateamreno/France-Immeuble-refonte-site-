@@ -9,7 +9,6 @@ import { DoubleCurseur } from "./DoubleCurseur";
 import { CurseurMinimum } from "./CurseurMinimum";
 import { Picto } from "./Picto";
 import { ouvrirCompte, useEtatCompte, useGarderALaConnexion } from "./biens/etat";
-import { DemanderAppel } from "./compte/Messagerie";
 
 /**
  * Dépôt de recherche acquéreur.
@@ -278,16 +277,13 @@ export function RechercheForm({ contact, commentaire, refContact }: {
           <p>Votre agent la reçoit. Les immeubles qui y correspondent arrivent dans votre compte et par e-mail, y compris les off-market.</p>
         ) : (
           <>
-            <p>
-              Pour recevoir les dossiers off-market, un appel de quelques minutes avec un agent ouvre votre accès.
-              Dites-nous quand vous joindre&nbsp;:
-            </p>
-            <DemanderAppel telephone={etatCompte?.telephone} />
+            {/* MAV, 05/11/2026 : ni « Voir mes recherches » ni demande d'appel, notre numéro. */}
+            <p>Pour recevoir les dossiers off-market, un appel de quelques minutes avec un agent ouvre votre accès.</p>
+            <div className="btn-row">
+              <a className="btn btn--primary" href={SITE.telHref}>Appeler le {SITE.tel}</a>
+            </div>
           </>
         )}
-        <div className="btn-row">
-          <a className="btn btn--primary" href="/mon-compte/recherches/">Voir mes recherches</a>
-        </div>
       </div>
     );
   }

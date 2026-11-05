@@ -276,11 +276,15 @@ export function DossierForm({
   if (etape === "fini" && cible) {
     return (
       <div className="form-shell outcome dossier-fin">
-        <span className="outcome__badge">État locatif envoyé</span>
-        <h3 tabIndex={-1}>Votre agent a reçu votre état locatif.</h3>
-        <p>Il s’en sert pour l’estimation et pour présenter l’immeuble. Vous pouvez le compléter à tout moment&nbsp;: chaque envoi remplace le précédent.</p>
+        <span className="outcome__badge">État locatif terminé</span>
+        <h3 tabIndex={-1}>Votre premier jet d’estimation est prêt.</h3>
+        <p>
+          Votre agent a reçu votre état locatif. Dans l’onglet Estimation, une réglette vous montre le prix au m² et le
+          rendement face au secteur. Vous pouvez compléter l’état locatif à tout moment.
+        </p>
         <div className="btn-row">
-          <button type="button" className="btn btn--primary" onClick={() => setEtape("saisie")}>Modifier l’état locatif</button>
+          <button type="button" className="btn btn--outline" onClick={() => setEtape("saisie")}>Modifier</button>
+          <a className="btn btn--primary" href={`/mon-compte/immeubles/${cible}/?onglet=estimation`}>Voir l’estimation</a>
         </div>
       </div>
     );
@@ -443,7 +447,10 @@ export function DossierForm({
           </button>
         </div>
         {cible && (
-          <p className="form-note dossier__deja">« J’ai terminé » prévient votre agent et affiche une première fourchette.</p>
+          <p className="form-note dossier__deja">
+            En cliquant sur « J’ai terminé », vous obtenez tout de suite un premier jet d’estimation, avec une réglette
+            pour comparer le prix au secteur. Votre agent est prévenu.
+          </p>
         )}
         {!connecte && (
           <p className="form-note dossier__deja">
