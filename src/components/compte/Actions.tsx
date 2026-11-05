@@ -144,7 +144,7 @@ export function ProposerPrix({ bien }: { bien: string }) {
       <div className="fields fields--2">
         <div className="field">
           <label htmlFor={`${uid}-prix`}>Votre prix (€)</label>
-          <input id={`${uid}-prix`} inputMode="numeric" value={prix} onChange={(e) => setPrix(e.target.value)} placeholder="2 400 000" />
+          <input id={`${uid}-prix`} inputMode="numeric" value={prix} onChange={(e) => setPrix(e.target.value)} placeholder="Ex. : 2 400 000" />
         </div>
         <div className="field">
           <label htmlFor={`${uid}-msg`}>Un mot (facultatif)</label>

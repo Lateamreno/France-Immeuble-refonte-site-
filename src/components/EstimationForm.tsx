@@ -355,12 +355,12 @@ export function EstimationForm({
             <Champ id={`${uid}-surface`} label="Surface habitable (m²)" err={erreurs.surface}
               hint="Tous lots confondus">
               <input id={`${uid}-surface`} value={d.surface} onChange={(e) => set("surface", e.target.value)}
-                placeholder="420" inputMode="numeric" aria-invalid={!!erreurs.surface} />
+                placeholder="Ex. : 420" inputMode="numeric" aria-invalid={!!erreurs.surface} />
             </Champ>
             <Champ id={`${uid}-loyer`} label="Loyer annuel HC (€)" err={erreurs.loyerAnnuel}
               hint="Tous lots, hors charges, encaissé sur un an">
               <input id={`${uid}-loyer`} value={d.loyerAnnuel} onChange={(e) => set("loyerAnnuel", e.target.value)}
-                placeholder="180 000" inputMode="numeric" aria-invalid={!!erreurs.loyerAnnuel} />
+                placeholder="Ex. : 180 000" inputMode="numeric" aria-invalid={!!erreurs.loyerAnnuel} />
             </Champ>
 
             <Choix label="Travaux à prévoir" options={TRAVAUX} valeur={d.travaux} onChange={(v) => set("travaux", v)} />
@@ -705,17 +705,17 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
             </Champ>
             <Champ id={`${uid}-rue`} label="Rue" err={erreurs.rue}>
               <input id={`${uid}-rue`} value={d.rue} onChange={(e) => set("rue", e.target.value)}
-                placeholder="rue de la Paix" autoComplete="address-line1" aria-invalid={!!erreurs.rue} />
+                placeholder="Ex. : rue de la Paix" autoComplete="address-line1" aria-invalid={!!erreurs.rue} />
             </Champ>
           </div>
           <Champ id={`${uid}-cp`} label="Code postal" err={erreurs.codePostal}>
             <input id={`${uid}-cp`} value={d.codePostal} onChange={(e) => set("codePostal", e.target.value)}
-              placeholder="75002" inputMode="numeric" maxLength={5} autoComplete="postal-code"
+              placeholder="Ex. : 75002" inputMode="numeric" maxLength={5} autoComplete="postal-code"
               aria-invalid={!!erreurs.codePostal} />
           </Champ>
           <Champ id={`${uid}-ville`} label="Ville" err={erreurs.ville}>
             <input id={`${uid}-ville`} value={d.ville} onChange={(e) => set("ville", e.target.value)}
-              placeholder="Paris" autoComplete="address-level2" aria-invalid={!!erreurs.ville} />
+              placeholder="Ex. : Paris" autoComplete="address-level2" aria-invalid={!!erreurs.ville} />
           </Champ>
         </div>
         {recherche !== "panne" && (
@@ -734,7 +734,7 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
       <label htmlFor={`${uid}-adresse`}>Adresse de l’immeuble</label>
       <div className="adresse__boite">
         <input id={`${uid}-adresse`} value={etat.saisie} autoComplete="off" spellCheck={false}
-          placeholder="12 rue de la Paix, Paris"
+          placeholder="Ex. : 12 rue de la Paix, Paris"
           role="combobox" aria-autocomplete="list" aria-expanded={montrer} aria-controls={idListe}
           aria-activedescendant={montrer && actif >= 0 ? (actif < liste.length ? `${idListe}-${actif}` : idMain) : undefined}
           aria-invalid={!!erreurs.adresse}

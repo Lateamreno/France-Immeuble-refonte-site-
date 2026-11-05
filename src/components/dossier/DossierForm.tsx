@@ -354,9 +354,9 @@ export function DossierForm({
         </div>
         <div className="fields fields--2">
           <Nombre id={`${uid}-tf`} label="Taxe foncière annuelle (€)" valeur={d.taxeFonciere}
-            onChange={(v) => setD((p) => ({ ...p, taxeFonciere: v }))} placeholder="8 400" />
+            onChange={(v) => setD((p) => ({ ...p, taxeFonciere: v }))} placeholder="Ex. : 8 400" />
           <Nombre id={`${uid}-teom`} label="Dont récupéré sur les locataires, TEOM (€)" valeur={d.teom}
-            onChange={(v) => setD((p) => ({ ...p, teom: v }))} placeholder="1 200" />
+            onChange={(v) => setD((p) => ({ ...p, teom: v }))} placeholder="Ex. : 1 200" />
         </div>
       </div>
 

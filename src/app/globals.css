@@ -541,6 +541,9 @@ section:target,section[id]{scroll-margin-top:0;}
   transition:border-color var(--dur) var(--ease),background-color var(--dur) var(--ease);
 }
 .field textarea{min-height:110px;resize:vertical;}
+/* Un client (MAV, 05/11/2026) : le texte d'aide disparaît dès qu'on clique dans la case,
+   pour ne pas croire qu'il est déjà rempli. Partout, pour toutes les cases. */
+input:focus::placeholder,textarea:focus::placeholder{color:transparent !important;opacity:0;}
 .field input::placeholder,.field textarea::placeholder{
   /* dérivé des tokens, jamais un gris inventé (CLAUDE.md §3) */
   color:var(--color-gris);

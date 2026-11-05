@@ -312,6 +312,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   le sitemap ; `/contact/` et l'ancienne URL « decouvrez-tout-le-potentiel… » redirigées ; anciens
   PDF de `/wp-content/` vers leur page (tarifs → Vendre, CGU → mentions légales), tout autre
   fichier de `/wp-content/` sans équivalent en 410.
+- **Lot 89** (un client de MAV, 05/11/2026 : le texte d'aide restait quand il cliquait dans une
+  case) : sur tous les formulaires, le texte d'aide d'une case disparaît dès qu'on clique dedans ;
+  les exemples de saisie commencent par « Ex. : » (surface, loyer, rue, code postal, ville,
+  adresse, taxe foncière, TEOM, prix), sauf dans les cases trop étroites (téléphone, numéro).
 
 ### Garde-fous non négociables
 
