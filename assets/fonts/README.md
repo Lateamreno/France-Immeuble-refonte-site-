@@ -9,19 +9,24 @@ sert depuis `/_next/static/media/`.
 
 | Fichier | Rôle | Axes | Poids |
 |---|---|---|---|
-| `Archivo-wdth-wght.woff2` | Display — titres H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 145 Ko |
-| `Inter-opsz-wght.woff2` | Body — texte, navigation, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 199 Ko |
-| `JetBrainsMono-wght.woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 45 Ko |
-| `Caveat-wght.woff2` | Écriture — légendes des polaroïds de l'accueil, rien d'autre | `wght` 400-700 | 75 Ko |
+| `Archivo-wdth-wght.woff2` | Display — titres H1-H3, chiffres clés | `wght` 100-900 · `wdth` 62-125 | 89 Ko |
+| `Inter-opsz-wght.woff2` | Body — texte, navigation, boutons, formulaires | `wght` 100-900 · `opsz` 14-32 | 91 Ko |
+| `JetBrainsMono-wght.woff2` | Data — chiffres, surtitres, labels | `wght` 100-800 | 39 Ko |
+| `Caveat-wght.woff2` | Écriture — légendes des polaroïds de l'accueil, rien d'autre | `wght` 400-700 | 72 Ko |
 
 Caveat (Pablo Impallari, SIL Open Font License 1.1) a été ajoutée le 22/10/2026
 sur validation de MAV. Fichier pris tel quel chez Google Fonts (sous-ensemble
 latin, version 2.000, variable), puis hébergé ici : le navigateur ne contacte
 jamais Google.
 
-Sous-ensemblés au latin étendu (couverture FR complète : accents, ligatures,
-guillemets français, tirets cadratins, €, exposants). Licence SIL Open Font
-License pour les quatre.
+**Français et anglais seulement depuis le 05/11/2026** (accord de MAV, vitesse au
+téléphone) : latin de base, latin-1 complet (tous les accents français), Œ œ Ÿ,
+ponctuation (« » – — ’ … espace fine), €, ™, flèches, − ≈ ≠ ≤ ≥, et tous les
+caractères relevés sur les 77 pages en ligne et dans les sources. Axes, ligatures
+et chiffres tabulaires gardés (`pyftsubset --layout-features=*`). Avant : latin
+étendu, 463 Ko pour les quatre ; après : 291 Ko. Pour ajouter un caractère,
+repartir des fichiers d'origine (historique git avant ce jour). Licence SIL Open
+Font License pour les quatre.
 
 ## Le point à ne jamais casser
 
