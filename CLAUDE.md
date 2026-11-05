@@ -262,6 +262,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Écartés après mesure : `inlineCss` (page de 22 à 167 Ko compressés) et ne précharger
   qu'Archivo (premier affichage de 1,8 à 3,2 s). Le plus gros poids restant est le conteneur
   GTM (Universal Analytics éteint et deux GA4, 528 Ko), à nettoyer dans GTM par MAV.
+  Même jour (MAV) : nombre de lots avec deux petites flèches haut et bas à droite dans la case ;
+  « Surface habitable (m²) » et « Loyer annuel HC (€) » sur une ligne, cases alignées.
+  **Première fourchette dans le compte** (`src/lib/compte/fourchette.ts`), seulement une fois
+  l'état locatif envoyé avec ses surfaces Carrez : Carrez × prix médian DVF des appartements de
+  la commune (`marche.ts`), ±10 %, avec le rendement brut que ce prix donnerait et l'avertissement
+  de MAV : données secteur automatiques et non vérifiées, prix de découpe, l'agent adapte à
+  l'immeuble puis au rendement attendu des investisseurs ; son estimation fait foi.
 
 ### Garde-fous non négociables
 

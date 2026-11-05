@@ -13,7 +13,8 @@ import { DossierForm } from "@/components/dossier/DossierForm";
 import { dossierInitial } from "@/lib/dossier/modele";
 import { copieDuBien, demandesEnCours, departementDe, nomDemande, resumeDemande, type DemandeEstimation } from "@/lib/compte/immeubles";
 import type { DonneesCompte } from "@/lib/compte/donnees";
-import { ETAPES_VENTE, STATUTS_OFFRE, dateCourte, dateLongue, euros, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
+import { fourchetteDe, type EtatFourchette } from "@/lib/compte/fourchette";
+import { ETAPES_VENTE, STATUTS_OFFRE, dateCourte, dateLongue, euros, millions, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
 
 export const dynamic = "force-dynamic";
 
@@ -283,6 +284,7 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
     commerce: lotsAnnonces.commerce ?? 0, local_activite: lotsAnnonces.local_activite ?? 0,
   });
   const adresse = [c.rue, [c.codePostal, c.ville].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  const fo = await fourchetteDe(c);
 
   return (
     <>
@@ -305,6 +307,15 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
             <Frise rang={1} />
             <p className="frise__legende">Étape en cours : <strong>{ETAPES_VENTE[0]}</strong>. Demande envoyée le {dateLongue(envoye_le)}.</p>
           </Panneau>
+          {fo.etat === "prete" && (
+            <Panneau titre="Première fourchette" picto="calculatrice">
+              <p className="fourchette__montant">{millions(fo.f.basse)} à {millions(fo.f.haute)}</p>
+              <p className="compte-form__aide">
+                Calcul automatique, prix de vente à la découpe.{" "}
+                <Link className="lien-discret" href={`/mon-compte/immeubles/${ref}/?onglet=estimation`}>Comment la lire</Link>
+              </p>
+            </Panneau>
+          )}
           <Panneau titre="Ce que vous nous avez indiqué" picto="immeubles">
             <Chiffres items={[
               ["Adresse", adresse || null],
@@ -336,7 +347,12 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
         </>
       )}
 
-      {onglet === "estimation" && <OngletEstimation dept={departementDe(c.codePostal)} />}
+      {onglet === "estimation" && (
+        <>
+          <PanneauFourchette fo={fo} cle={ref} />
+          <OngletEstimation dept={departementDe(c.codePostal)} />
+        </>
+      )}
 
       {onglet === "etat-locatif" && <EtatLocatif cle={ref} nom={adresse || nom} initial={initial} envoyeLe={c.dossier_envoye_le} />}
 
@@ -362,5 +378,63 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
         </Panneau>
       )}
     </>
+  );
+}
+
+/**
+ * La première fourchette, avec ce qu'elle vaut (MAV, 05/11/2026 : « attention,
+ * les données secteur sont automatiques et non vérifiées, et les chiffres ne
+ * correspondent qu'au prix de la découpe ; il faut adapter à l'immeuble puis
+ * aux attentes des clients en termes de rentabilité »).
+ */
+function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
+  if (fo.etat === "etat-locatif") {
+    return (
+      <Panneau titre="Première fourchette" picto="calculatrice">
+        <p className="compte-calme">
+          Remplissez et envoyez l’état locatif, avec les surfaces Carrez : une première fourchette s’affiche ici,
+          calculée sur les ventes du secteur.
+        </p>
+        <div className="compte-panneau__pied">
+          <Link className="btn btn--primary" href={`/mon-compte/immeubles/${cle}/?onglet=etat-locatif`}>Remplir l’état locatif</Link>
+        </div>
+      </Panneau>
+    );
+  }
+  if (fo.etat === "sans-marche") {
+    return (
+      <Panneau titre="Première fourchette" picto="calculatrice">
+        <p className="compte-calme">Pas assez de ventes publiques dans le secteur pour un calcul automatique. Votre agent vous donne son estimation.</p>
+      </Panneau>
+    );
+  }
+  const f = fo.f;
+  const lieu = f.echelle === "commune" ? "de la commune" : "du département";
+  return (
+    <Panneau titre="Première fourchette" picto="calculatrice">
+      <p className="fourchette__montant">{millions(f.basse)} à {millions(f.haute)}</p>
+      <Chiffres items={[
+        ["Surface Carrez de l’état locatif", `${f.surface.toLocaleString("fr-FR")} m²`],
+        [`Prix médian au m² ${lieu}`, euros(f.prixM2)],
+        ["Ventes prises en compte", f.nbVentes != null ? `${f.nbVentes}${f.fenetreMois ? ` en ${f.fenetreMois} mois` : ""}` : null],
+        ["Rendement brut à ces prix", f.rendementBas != null && f.rendementHaut != null ? `${pct(f.rendementBas)} à ${pct(f.rendementHaut)}` : null],
+      ]} />
+      <div className="fourchette__avertissement" role="note">
+        <Picto nom="reglages" taille={20} />
+        <div>
+          <p><strong>Une fourchette automatique, à prendre avec précaution.</strong></p>
+          <p>
+            Les données du secteur sont automatiques et non vérifiées : prix médian des appartements vendus,
+            relevé dans les ventes publiques (DVF). Ce prix correspond à une vente à la découpe, appartement par
+            appartement.
+          </p>
+          <p>
+            Un immeuble vendu en bloc ne se vend pas à ce prix. Votre agent l’adapte d’abord à l’immeuble (état,
+            occupation, baux, travaux), puis au rendement qu’attendent les investisseurs. C’est son estimation qui
+            fait foi.
+          </p>
+        </div>
+      </div>
+    </Panneau>
   );
 }

@@ -352,13 +352,13 @@ export function EstimationForm({
               </div>
             </fieldset>
 
-            <Champ id={`${uid}-surface`} label="Surface habitable totale (m²)" err={erreurs.surface}
+            <Champ id={`${uid}-surface`} label="Surface habitable (m²)" err={erreurs.surface}
               hint="Tous lots confondus">
               <input id={`${uid}-surface`} value={d.surface} onChange={(e) => set("surface", e.target.value)}
                 placeholder="420" inputMode="numeric" aria-invalid={!!erreurs.surface} />
             </Champ>
-            <Champ id={`${uid}-loyer`} label="Loyer annuel HC total (€)" err={erreurs.loyerAnnuel}
-              hint="Hors charges, tel qu’encaissé sur un an">
+            <Champ id={`${uid}-loyer`} label="Loyer annuel HC (€)" err={erreurs.loyerAnnuel}
+              hint="Tous lots, hors charges, encaissé sur un an">
               <input id={`${uid}-loyer`} value={d.loyerAnnuel} onChange={(e) => set("loyerAnnuel", e.target.value)}
                 placeholder="180 000" inputMode="numeric" aria-invalid={!!erreurs.loyerAnnuel} />
             </Champ>
@@ -400,22 +400,32 @@ function Champ({ id, label, hint, err, full, children }: {
   );
 }
 
-/** Un nombre de lots, au clavier ou avec − et + (retour #276, MAV, 05/11/2026). */
+/**
+ * Un nombre de lots, au clavier ou avec deux petites flèches posées l'une sur
+ * l'autre à droite de la case (retour #276, puis MAV, 05/11/2026 : « une flèche
+ * haut et bas à droite dans la case »).
+ */
 function Lot({ id, label, valeur, onChange }: {
   id: string; label: string; valeur: string; onChange: (v: string) => void;
 }) {
   const n = Number(valeur) || 0;
   const pas = (k: number) => onChange(String(Math.max(0, Math.min(999, n + k))));
+  const fleche = (d: string) => (
+    <svg viewBox="0 0 12 8" width="11" height="8" aria-hidden="true"><path d={d} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  );
   return (
     <div className="lot">
       <label htmlFor={id}>{label}</label>
       <div className="lot__pas">
-        <button type="button" className="lot__bouton" onClick={() => pas(-1)} disabled={n <= 0}
-          aria-label={`Un lot ${label.toLowerCase()} de moins`}>−</button>
         <input id={id} value={valeur} onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 3))}
+          onKeyDown={(e) => { if (e.key === "ArrowUp") { e.preventDefault(); pas(1); } else if (e.key === "ArrowDown") { e.preventDefault(); pas(-1); } }}
           inputMode="numeric" placeholder="0" />
-        <button type="button" className="lot__bouton" onClick={() => pas(1)}
-          aria-label={`Un lot ${label.toLowerCase()} de plus`}>+</button>
+        <span className="lot__fleches">
+          <button type="button" className="lot__fleche" onClick={() => pas(1)} tabIndex={-1}
+            aria-label={`Un lot ${label.toLowerCase()} de plus`}>{fleche("M1.5 6.5 6 2l4.5 4.5")}</button>
+          <button type="button" className="lot__fleche" onClick={() => pas(-1)} disabled={n <= 0} tabIndex={-1}
+            aria-label={`Un lot ${label.toLowerCase()} de moins`}>{fleche("M1.5 1.5 6 6l4.5-4.5")}</button>
+        </span>
       </div>
     </div>
   );

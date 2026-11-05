@@ -5244,16 +5244,16 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   background:color-mix(in srgb,var(--color-noir-3) 80%,transparent);font-size:var(--fs-small);color:var(--color-creme);}
 .identite-compte__qui{display:flex;align-items:center;gap:10px;min-width:0;overflow-wrap:anywhere;}
 .identite-compte__qui svg{color:var(--color-bronze);flex:none;}
-/* #276 : − et + de part et d'autre de chaque nombre de lots. */
-.lot__pas{display:flex;align-items:stretch;gap:6px;}
-.lot__pas input{flex:1;min-width:0;}
-.lot__bouton{flex:none;width:44px;border:1px solid var(--color-ligne);border-radius:var(--radius-pill);
-  background:var(--color-noir);color:var(--color-bronze);font:600 1.2rem/1 var(--font-body);cursor:pointer;
-  display:grid;place-items:center;touch-action:manipulation;}
-.lot__bouton:hover:not(:disabled){border-color:var(--color-bronze);}
-.lot__bouton:disabled{opacity:.35;cursor:default;}
-.lot__bouton:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
-.section--creme .lot__bouton{background:var(--color-noir);}
+/* #276 : deux petites flèches l'une sur l'autre, à droite dans la case (MAV, 05/11/2026). */
+.lot__pas{position:relative;}
+.lot__pas input{width:100%;padding-right:44px;padding-left:44px;}
+.lot__fleches{position:absolute;top:1px;right:1px;bottom:1px;width:36px;display:flex;flex-direction:column;
+  border-left:1px solid var(--color-ligne);border-radius:0 9px 9px 0;overflow:hidden;}
+.lot__fleche{flex:1;display:grid;place-items:center;min-height:22px;padding:0;border:0;background:none;
+  color:var(--color-bronze);cursor:pointer;touch-action:manipulation;}
+.lot__fleche + .lot__fleche{border-top:1px solid var(--color-ligne);}
+.lot__fleche:hover:not(:disabled){background:color-mix(in srgb,var(--color-bronze) 14%,transparent);}
+.lot__fleche:disabled{opacity:.3;cursor:default;}
 /* #261 : l'état locatif dans l'immeuble du compte. */
 .compte-etat-locatif{display:flex;flex-direction:column;gap:var(--space-s);}
 .compte-etat-locatif .dossier{margin:0;}
@@ -5295,3 +5295,11 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   .sec-analyses--pin .analyses-sch__entete h2{font-size:clamp(26px,3.4vh,40px);}
 }
 .compte-grille:has(> .compte-carte--recherche){grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));}
+/* Première fourchette dans le compte (MAV, 05/11/2026). */
+.fourchette__montant{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:clamp(1.6rem,1.2rem + 1.4vw,2.3rem);line-height:1.1;letter-spacing:-.015em;color:var(--color-bronze);margin-bottom:var(--space-s);}
+.fourchette__avertissement{display:flex;gap:14px;align-items:flex-start;margin-top:var(--space-s);padding:16px 18px;
+  border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-bronze) 8%,transparent);border-radius:0 12px 12px 0;}
+.fourchette__avertissement svg{color:var(--color-bronze);flex:none;margin-top:2px;}
+.fourchette__avertissement > div{display:flex;flex-direction:column;gap:8px;font-size:var(--fs-small);color:var(--color-creme);}
+.fourchette__avertissement p{margin:0;}

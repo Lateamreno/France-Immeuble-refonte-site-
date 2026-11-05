@@ -4,7 +4,8 @@ import { Chiffres, Frise, Panneau, TeteCompte, Vide } from "@/components/compte/
 import { OuvrirSurAncre } from "@/components/compte/OuvrirSurAncre";
 import { ecranCompte } from "@/lib/compte/ecran";
 import { demandesEnCours, nomDemande, resumeDemande } from "@/lib/compte/immeubles";
-import { dateLongue, euros, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
+import { dateLongue, euros, millions, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
+import { fourchetteDe } from "@/lib/compte/fourchette";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export default async function MesImmeubles() {
   const { d } = await ecranCompte();
   const seules = d.estimations.filter((e) => !e.bien_cle || !d.biens.some((b) => b.cle === e.bien_cle));
   const demandes = demandesEnCours(d);
+  const fourchettes = await Promise.all(demandes.map((x) => fourchetteDe(x.c)));
   const vide = d.biens.length === 0 && demandes.length === 0 && seules.length === 0;
 
   return (
@@ -62,8 +64,9 @@ export default async function MesImmeubles() {
               </li>
             );
           })}
-          {demandes.map(({ ref, envoye_le, c }) => {
+          {demandes.map(({ ref, envoye_le, c }, i) => {
             const lots = c.dossier?.lots.length ?? 0;
+            const fo = fourchettes[i];
             return (
               <li key={ref}>
                 <Link href={`/mon-compte/immeubles/${ref}/`} className="vente-carte">
@@ -76,7 +79,9 @@ export default async function MesImmeubles() {
                   </div>
                   <Frise rang={1} />
                   <Chiffres items={[
-                    ["Estimation", "En cours"],
+                    fo.etat === "prete"
+                      ? ["Première fourchette", `${millions(fo.f.basse)} à ${millions(fo.f.haute)}`]
+                      : ["Estimation", "En cours"],
                     ["Loyer annuel HC", euros(c.loyerAnnuel)],
                     ["Surface", c.surface ? `${Math.round(c.surface).toLocaleString("fr-FR")} m²` : null],
                     ["Lots remplis", lots ? String(lots) : null],

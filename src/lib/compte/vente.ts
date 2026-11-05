@@ -50,3 +50,9 @@ export const STATUTS_OFFRE: Record<string, string> = {
 /** Le nom d'un immeuble du vendeur : sa commune et son département. */
 export const nomImmeuble = (b: { commune: string | null; dept: string | null }) =>
   [b.commune ?? "Votre immeuble", b.dept ? `(${b.dept})` : null].filter(Boolean).join(" ");
+
+/** « 2,35 M€ », « 980 000 € » : les montants d'une fourchette. */
+export const millions = (n: number) =>
+  n >= 1_000_000
+    ? `${(n / 1_000_000).toLocaleString("fr-FR", { maximumFractionDigits: 2 })}\u00a0M€`
+    : `${Math.round(n).toLocaleString("fr-FR")}\u00a0€`;
