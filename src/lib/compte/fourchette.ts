@@ -18,12 +18,13 @@ import { departementDe, type CopieEstimation } from "./immeubles";
  *   (Plein Bail, `marche.ts`), à ±15 % ;
  * - plafond = surface Carrez × prix médian au m² des appartements vendus
  *   (DVF) : la fourchette ne le dépasse jamais ;
- * - décote au m² de plus de 25 % : pas de chiffre, une alerte (état `agent`).
- *   Même chose sans loyer (immeuble libre) : le rendement ne dit rien.
- * - plus d'un tiers de la surface en bureaux, commerces ou locaux d'activité :
- *   le rendement de la ville est celui des appartements, il ne vaut pas pour
- *   ces lots (MAV, 05/11/2026 : « alerte si y a beaucoup de bureaux ou de
- *   commerces »).
+ * - décote au m² de plus de 25 %, ou plus d'un tiers de la surface en bureaux,
+ *   commerces ou locaux d'activité (le rendement de la ville est celui des
+ *   appartements) : la fourchette reste affichée, avec une alerte en grand
+ *   « passage d'un agent nécessaire » (MAV, 05/11/2026 : « laisse-leur le prix
+ *   affiché mais mets quand même l'alerte en gros »).
+ * - sans loyer (immeuble libre) : le rendement ne dit rien, pas de chiffre,
+ *   l'alerte seule (état `agent`).
  */
 export type Fourchette = {
   basse: number;
@@ -41,11 +42,18 @@ export type Fourchette = {
   nbVentes: number | null;
   rendementSecteur: number;
   loyerAnnuel: number;
+  /** Les raisons de faire venir un agent, s'il y en a. */
+  alertes: Alerte[];
+  /** Décote au m² face au secteur, en %, et part des bureaux et commerces dans la surface. */
+  decote: number;
+  partPro: number;
 };
+
+export type Alerte = "decote" | "mixte";
 
 export type EtatFourchette =
   | { etat: "prete"; f: Fourchette }
-  | { etat: "agent"; raison: "decote" | "sans-loyer" | "mixte"; decote: number | null; prixM2: number; rendementSecteur: number | null; partPro?: number }
+  | { etat: "agent"; raison: "sans-loyer"; prixM2: number; rendementSecteur: number | null }
   | { etat: "etat-locatif" }   // l'état locatif n'est pas encore envoyé
   | { etat: "sans-marche" };   // pas assez de données dans le secteur
 
@@ -70,20 +78,17 @@ export async function fourchetteDe(c: CopieEstimation): Promise<EtatFourchette> 
   const loyerAnnuel = loyerLots > 0 ? loyerLots : (c.loyerAnnuel ?? 0);
   const rendementSecteur = m.rentaVille && !m.rentaAVerifier ? m.rentaVille : null;
   const surfacePro = lots.reduce((t, l) => t + (PRO.has(l.type) ? (enNombre(l.surface) ?? 0) : 0), 0);
-  if (surfacePro / carrez > PART_PRO_MAX) {
-    return { etat: "agent", raison: "mixte", decote: null, prixM2: m.prixM2, rendementSecteur, partPro: Math.round((surfacePro / carrez) * 100) };
-  }
   if (loyerAnnuel <= 0) {
-    return { etat: "agent", raison: "sans-loyer", decote: null, prixM2: m.prixM2, rendementSecteur };
+    return { etat: "agent", raison: "sans-loyer", prixM2: m.prixM2, rendementSecteur };
   }
   if (!rendementSecteur) return { etat: "sans-marche" };
 
   const plafond = carrez * m.prixM2;
   const valeur = loyerAnnuel / (rendementSecteur / 100);
   const decote = 1 - valeur / plafond;
-  if (decote > DECOTE_MAX) {
-    return { etat: "agent", raison: "decote", decote: Math.round(decote * 100), prixM2: m.prixM2, rendementSecteur };
-  }
+  const alertes: Alerte[] = [];
+  if (decote > DECOTE_MAX) alertes.push("decote");
+  if (surfacePro / carrez > PART_PRO_MAX) alertes.push("mixte");
 
   const haute = Math.min(valeur * (1 + ECART), plafond);
   const basse = Math.min(valeur * (1 - ECART), haute * (1 - ECART));
@@ -96,6 +101,7 @@ export async function fourchetteDe(c: CopieEstimation): Promise<EtatFourchette> 
       prixM2: m.prixM2, prixM2Obtenu: Math.round(milieu / carrez), surface: Math.round(carrez),
       echelle: m.prixEchelle, fenetreMois: m.prixFenetreMois, nbVentes: m.nbVentes,
       rendementSecteur, loyerAnnuel,
+      alertes, decote: Math.round(decote * 100), partPro: Math.round((surfacePro / carrez) * 100),
     },
   };
 }

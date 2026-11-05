@@ -13,7 +13,7 @@ import { DossierForm } from "@/components/dossier/DossierForm";
 import { dossierInitial } from "@/lib/dossier/modele";
 import { copieDuBien, demandesEnCours, departementDe, nomDemande, resumeDemande, type DemandeEstimation } from "@/lib/compte/immeubles";
 import type { DonneesCompte } from "@/lib/compte/donnees";
-import { fourchetteDe, type EtatFourchette } from "@/lib/compte/fourchette";
+import { fourchetteDe, type EtatFourchette, type Fourchette } from "@/lib/compte/fourchette";
 import { ETAPES_VENTE, STATUTS_OFFRE, dateCourte, dateLongue, euros, millions, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
 
 export const dynamic = "force-dynamic";
@@ -308,7 +308,8 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
             <p className="frise__legende">Étape en cours : <strong>{ETAPES_VENTE[0]}</strong>. Demande envoyée le {dateLongue(envoye_le)}.</p>
           </Panneau>
           {fo.etat === "prete" && (
-            <Panneau titre="Première fourchette" picto="calculatrice">
+            <Panneau titre="Estimation provisoire" picto="calculatrice">
+              {fo.f.alertes.length > 0 && <BlocAlerte avecPrix raisons={raisonsDe(fo.f)} />}
               <p className="fourchette__montant">{millions(fo.f.basse)} à {millions(fo.f.haute)}</p>
               <p className="compte-form__aide">
                 Calcul automatique, au rendement du secteur.{" "}
@@ -316,7 +317,7 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
               </p>
             </Panneau>
           )}
-          {fo.etat === "agent" && <AlerteAgent fo={fo} />}
+          {fo.etat === "agent" && <AlerteAgent />}
           <Panneau titre="Ce que vous nous avez indiqué" picto="immeubles">
             <Chiffres items={[
               ["Adresse", adresse || null],
@@ -385,40 +386,43 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
 }
 
 /**
- * Quand le calcul automatique ne tient plus (MAV, 05/11/2026 : « on met
- * vraiment une alerte pour dire au client que le passage d'un agent est
- * nécessaire pour analyser et donner une vraie valeur du bien »).
+ * L'alerte « passage d'un agent » (MAV, 05/11/2026 : « on met vraiment une
+ * alerte » ; puis « laisse-leur le prix affiché mais mets quand même l'alerte
+ * en gros »). Avec un prix pour une décote forte ou beaucoup de bureaux et de
+ * commerces ; seule pour un immeuble sans loyer.
  */
-function AlerteAgent({ fo }: { fo: Extract<EtatFourchette, { etat: "agent" }> }) {
+function BlocAlerte({ raisons, avecPrix }: { raisons: string[]; avecPrix: boolean }) {
   return (
-    <Panneau titre="Estimation" picto="calculatrice">
-      <div className="fourchette__alerte" role="alert">
-        <Picto nom="reglages" taille={22} />
-        <div>
-          <p><strong>Votre immeuble demande le passage d’un agent.</strong></p>
-          {fo.raison === "mixte" ? (
-            <p>
-              Bureaux, commerces ou locaux d’activité font {fo.partPro} % de la surface. Le rendement du secteur que nous
-              connaissons est celui des appartements : il ne dit rien de juste sur ces lots, leurs baux ni leurs loyers.
-            </p>
-          ) : fo.raison === "decote" ? (
-            <p>
-              Au rendement du secteur{fo.rendementSecteur != null ? ` (${pct(fo.rendementSecteur)} brut)` : ""}, vos loyers
-              donneraient un prix au m² inférieur de {fo.decote} % à celui des ventes du secteur ({euros(fo.prixM2)} le m²).
-              Un écart pareil ne se lit pas sur des chiffres : loyers à revoir, lots vacants, travaux, situation.
-            </p>
-          ) : (
-            <p>
-              L’état locatif ne porte aucun loyer : un immeuble libre ne s’estime pas au rendement. Sa valeur dépend de ce
-              qu’on peut en faire, lot par lot.
-            </p>
-          )}
-          <p>Aucun chiffre automatique ici : votre agent visite l’immeuble, l’analyse et vous donne sa vraie valeur.</p>
+    <div className="fourchette__alerte" role="alert">
+      <Picto nom="reglages" taille={26} />
+      <div>
+        <p className="fourchette__alerte-titre">Votre immeuble demande le passage d’un agent.</p>
+        {raisons.map((r, i) => <p key={i}>{r.replace(/ (%|€)/g, "\u00a0$1")}</p>)}
+        <p>
+          {avecPrix
+            ? "Le prix ci-dessous est un calcul automatique qui ne voit pas ces particularités. Votre agent visite l’immeuble, l’analyse et vous donne sa vraie valeur."
+            : "Aucun chiffre automatique ici : votre agent visite l’immeuble, l’analyse et vous donne sa vraie valeur."}
+        </p>
+        <div className="fourchette__alerte-action">
+          <Link className="btn btn--primary" href="/mon-compte/rendez-vous/">Prendre rendez-vous</Link>
         </div>
       </div>
-      <div className="compte-panneau__pied">
-        <Link className="btn btn--primary" href="/mon-compte/rendez-vous/">Prendre rendez-vous</Link>
-      </div>
+    </div>
+  );
+}
+
+function raisonsDe(f: Fourchette): string[] {
+  return f.alertes.map((a) => a === "mixte"
+    ? `Bureaux, commerces ou locaux d’activité font ${f.partPro} % de la surface. Le rendement du secteur que nous connaissons est celui des appartements : il ne dit rien de juste sur ces lots, leurs baux ni leurs loyers.`
+    : `Au rendement du secteur (${pct(f.rendementSecteur)} brut), vos loyers donnent un prix au m² inférieur de ${f.decote} % à celui des ventes du secteur (${euros(f.prixM2)} le m²). Un écart pareil ne se lit pas sur des chiffres : loyers à revoir, lots vacants, travaux, situation.`);
+}
+
+function AlerteAgent() {
+  return (
+    <Panneau titre="Estimation" picto="calculatrice">
+      <BlocAlerte avecPrix={false} raisons={[
+        "L’état locatif ne porte aucun loyer : un immeuble libre ne s’estime pas au rendement. Sa valeur dépend de ce qu’on peut en faire, lot par lot.",
+      ]} />
     </Panneau>
   );
 }
@@ -432,10 +436,10 @@ function AlerteAgent({ fo }: { fo: Extract<EtatFourchette, { etat: "agent" }> })
 function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
   if (fo.etat === "etat-locatif") {
     return (
-      <Panneau titre="Première fourchette" picto="calculatrice">
+      <Panneau titre="Estimation provisoire" picto="calculatrice">
         <p className="compte-calme">
-          Remplissez l’état locatif, avec les loyers et les surfaces Carrez, puis cliquez sur « J’ai terminé » : un
-          premier jet d’estimation s’affiche ici, calculé au rendement du secteur, avec une réglette pour comparer.
+          Remplissez l’état locatif, avec les loyers et les surfaces Carrez, puis cliquez sur « Voir l’estimation
+          provisoire » : elle s’affiche ici, calculée au rendement du secteur, avec une réglette pour comparer.
         </p>
         <div className="compte-panneau__pied">
           <Link className="btn btn--primary" href={`/mon-compte/immeubles/${cle}/?onglet=etat-locatif`}>Remplir l’état locatif</Link>
@@ -445,16 +449,17 @@ function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
   }
   if (fo.etat === "sans-marche") {
     return (
-      <Panneau titre="Première fourchette" picto="calculatrice">
+      <Panneau titre="Estimation provisoire" picto="calculatrice">
         <p className="compte-calme">Pas assez de données publiques dans le secteur pour un calcul automatique. Votre agent vous donne son estimation.</p>
       </Panneau>
     );
   }
-  if (fo.etat === "agent") return <AlerteAgent fo={fo} />;
+  if (fo.etat === "agent") return <AlerteAgent />;
   const f = fo.f;
   const lieu = f.echelle === "commune" ? "de la commune" : "du département";
   return (
-    <Panneau titre="Première fourchette" picto="calculatrice">
+    <Panneau titre="Estimation provisoire" picto="calculatrice">
+      {f.alertes.length > 0 && <BlocAlerte avecPrix raisons={raisonsDe(f)} />}
       <p className="fourchette__montant">{millions(f.basse)} à {millions(f.haute)}</p>
       <FourchetteAuCurseur basse={f.basse} haute={f.haute} plafond={f.plafond} surface={f.surface} prixM2={f.prixM2}
         loyerAnnuel={f.loyerAnnuel} rendementSecteur={f.rendementSecteur} lieu={lieu} />

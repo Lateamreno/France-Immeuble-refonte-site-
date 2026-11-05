@@ -163,8 +163,9 @@ export function EstimationAuCurseur({ valeur, prixM2, rendement }: { valeur: num
 /**
  * La première fourchette, à la réglette (MAV, 05/11/2026 : « je veux qu'il ait la
  * réglette pour voir lui-même l'écart avec le secteur »). Le client fait glisser
- * le prix, du bas de la fourchette jusqu'au prix au m² du secteur, et lit le
- * prix au m² et le rendement brut face à ceux du secteur.
+ * le prix sous la fourchette, dedans et au-dessus (MAV : « elle peut descendre
+ * sous et sur la fourchette »), et lit le prix au m² et le rendement brut face
+ * à ceux du secteur.
  */
 export function FourchetteAuCurseur({ basse, haute, plafond, surface, prixM2, loyerAnnuel, rendementSecteur, lieu }: {
   basse: number; haute: number; plafond: number; surface: number; prixM2: number;
@@ -172,24 +173,28 @@ export function FourchetteAuCurseur({ basse, haute, plafond, surface, prixM2, lo
 }) {
   const uid = useId();
   const p = pas(haute);
-  const min = Math.floor(basse / p) * p;
-  const max = Math.max(Math.ceil(plafond / p) * p, Math.ceil(haute / p) * p);
+  const min = Math.floor((basse * 0.8) / p) * p;
+  const max = Math.ceil(Math.max(haute * 1.2, plafond) / p) * p;
   const [prix, setPrix] = useState(Math.round((basse + haute) / 2 / p) * p);
   const m2 = prix / surface;
   const ecartM2 = ((m2 - prixM2) / prixM2) * 100;
   const rdt = (loyerAnnuel / prix) * 100;
   const ecartRdt = rdt - rendementSecteur;
-  const dans = prix <= haute;
+  const position = prix < basse ? "Sous la fourchette" : prix > haute ? "Au-dessus de la fourchette" : "Dans la fourchette";
   return (
     <div className="curseur-estimation fourchette-curseur">
       <div className="curseur__valeur">
         <output htmlFor={`${uid}-c`} className="curseur__montant">{euros(prix)}</output>
-        <span className="curseur__note">{dans ? "Dans la fourchette" : "Au-dessus de la fourchette"}</span>
+        <span className="curseur__note">{position}</span>
       </div>
       <label htmlFor={`${uid}-c`} className="sr-only">Prix de vente</label>
       <input id={`${uid}-c`} className="curseur" type="range" min={min} max={max} step={p} value={prix}
         style={piste(prix, min, max)} onChange={(e) => setPrix(Number(e.target.value))} aria-valuetext={euros(prix)} />
-      <div className="curseur__bornes"><span>{euros(min)}</span><span>{euros(max)} · prix au m² du secteur</span></div>
+      {/* La fourchette, repérée sous la piste. */}
+      <div className="fourchette-curseur__repere" aria-hidden="true">
+        <span style={{ left: `${((basse - min) / (max - min)) * 100}%`, width: `${((haute - basse) / (max - min)) * 100}%` }}>fourchette</span>
+      </div>
+      <div className="curseur__bornes"><span>{euros(min)}</span><span>{euros(max)}</span></div>
       <dl className="compte-chiffres fourchette-curseur__ecarts">
         <div>
           <dt>Prix au m²</dt>

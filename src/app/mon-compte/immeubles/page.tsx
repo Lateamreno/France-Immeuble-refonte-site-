@@ -80,7 +80,7 @@ export default async function MesImmeubles() {
                   <Frise rang={1} />
                   <Chiffres items={[
                     fo.etat === "prete"
-                      ? ["Première fourchette", `${millions(fo.f.basse)} à ${millions(fo.f.haute)}`]
+                      ? ["Estimation provisoire", `${millions(fo.f.basse)} à ${millions(fo.f.haute)}`]
                       : ["Estimation", fo.etat === "agent" ? "Visite d’un agent nécessaire" : "En cours"],
                     ["Loyer annuel HC", euros(c.loyerAnnuel)],
                     ["Surface", c.surface ? `${Math.round(c.surface).toLocaleString("fr-FR")} m²` : null],

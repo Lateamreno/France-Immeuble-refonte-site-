@@ -294,6 +294,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   connecté : ni « Voir mes recherches » ni demande d'appel, un seul bouton « Appeler le 01 72 87
   52 22 » tant que l'agent n'a pas appelé. Curseurs des recherches resserrés (bornes collées,
   18 à 22 px entre deux réglettes au lieu de 44).
+- **Lot 87** (MAV, 05/11/2026). Plus de bouton « Enregistrer » (l'état locatif s'enregistre
+  seul) ; « J'ai terminé » devient **« Voir l'estimation provisoire »** (« Estimation
+  provisoire » au téléphone) et mène droit à l'onglet Estimation ; le panneau s'appelle
+  « Estimation provisoire ». **Décote de plus de 25 % ou plus d'un tiers de bureaux et commerces :
+  le prix reste affiché, l'alerte en grand au-dessus** (« laisse-leur le prix affiché mais mets
+  quand même l'alerte en gros ») ; sans loyer, l'alerte seule. La réglette va de 20 % sous le bas
+  de la fourchette à 20 % au-dessus du haut (ou au prix au m² du secteur), la fourchette repérée
+  sous la piste. Seuils confirmés par MAV : 25 % de décote, un tiers de surface.
 
 ### Garde-fous non négociables
 

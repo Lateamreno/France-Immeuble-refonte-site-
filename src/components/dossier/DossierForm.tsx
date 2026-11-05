@@ -18,8 +18,8 @@ import { ouvrirCompte as ouvrirFenetreCompte, useEtatCompte, useGarderALaConnexi
  * (§16 : ni localStorage ni sessionStorage).
  *
  * Retour #266 (MAV, 05/11/2026) : la saisie part aussi au BO sans bouton,
- * toutes les 45 s au plus et quand la page se ferme. Une mention le dit, et
- * « Enregistrer » le fait tout de suite, pour qu'on n'ait pas peur de quitter.
+ * toutes les 45 s au plus et quand la page se ferme. Une mention le dit, pour
+ * qu'on n'ait pas peur de quitter ; pas de bouton « Enregistrer » (MAV, 05/11/2026).
  *
  * À la fin, « Valider et créer mon compte » : le dossier part à l'agence, puis
  * le visiteur choisit un mot de passe et saisit le code reçu par e-mail.
@@ -130,13 +130,6 @@ export function DossierForm({
     }
   }
 
-  /** « Enregistrer » : tout de suite, au site et au BO. */
-  function enregistrerMaintenant() {
-    if (minuterie.current) clearTimeout(minuterie.current);
-    setSauvegarde("attente");
-    void enregistrer(d, true);
-  }
-
   // La page se ferme ou passe en arrière-plan : la dernière saisie part au BO.
   useEffect(() => {
     if (etape !== "saisie") return;
@@ -198,7 +191,9 @@ export function DossierForm({
         const j = (await r.json()) as { ok?: boolean; envoye_le?: string; erreur?: string };
         if (!r.ok || !j.ok) { setErreur(j.erreur ?? "Une erreur est survenue. Réessayez."); return; }
         setDernierEnvoi(j.envoye_le ?? new Date().toISOString());
-        setEtape("fini");
+        // MAV, 05/11/2026 : le bouton mène droit à l'estimation provisoire.
+        window.location.assign(`/mon-compte/immeubles/${cible}/?onglet=estimation`);
+        return;
       } catch {
         setErreur("La connexion a été coupée. Réessayez.");
       } finally {
@@ -439,17 +434,14 @@ export function DossierForm({
           </span>
         </p>
         <div className="field-nav dossier__boutons">
-          <button type="button" className="btn btn--outline" onClick={enregistrerMaintenant} disabled={envoi || sauvegarde === "attente"}>
-            Enregistrer
-          </button>
           <button type="submit" className="btn btn--primary" disabled={envoi}>
-            {envoi ? "Envoi…" : cible ? "J’ai terminé" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
+            {envoi ? "Envoi…" : cible ? <><span className="btn__long">Voir l’estimation provisoire</span><span className="btn__court">Estimation provisoire</span></> : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
           </button>
         </div>
         {cible && (
           <p className="form-note dossier__deja">
-            En cliquant sur « J’ai terminé », vous obtenez tout de suite un premier jet d’estimation, avec une réglette
-            pour comparer le prix au secteur. Votre agent est prévenu.
+            Votre estimation provisoire s’affiche tout de suite, avec une réglette pour comparer le prix au secteur.
+            Votre agent est prévenu.
           </p>
         )}
         {!connecte && (

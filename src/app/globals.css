@@ -5316,6 +5316,18 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .fourchette__alerte p{margin:0;}
 .fourchette-curseur{margin-bottom:var(--space-s);padding-bottom:var(--space-s);border-bottom:1px solid var(--color-ligne);}
 .fourchette-curseur .compte-chiffres{margin-top:var(--space-xs);}
+/* Lot 87 : la zone de la fourchette sous la piste, la réglette va de part et d'autre. */
+.fourchette-curseur__repere{position:relative;height:18px;margin:2px 13px 0;}
+.fourchette-curseur__repere span{position:absolute;top:0;height:18px;border-top:2px solid var(--color-bronze);
+  font-family:var(--font-mono-site);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze);
+  text-align:center;padding-top:3px;white-space:nowrap;}
+/* L'alerte en grand, au-dessus du prix (MAV, 05/11/2026 : « mets quand même l'alerte en gros »). */
+.fourchette__alerte{margin-bottom:var(--space-s);}
+.fourchette__alerte-titre{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:clamp(1.15rem,1rem + .6vw,1.45rem);line-height:1.2;letter-spacing:-.01em;color:var(--color-bronze-clair);}
+.fourchette__alerte-action{display:flex;justify-content:center;margin-top:6px;}
+.fourchette__alerte-action .btn{margin-inline:0;}
+@media (max-width:600px){.fourchette__alerte{flex-direction:column;gap:10px;padding:16px 16px 18px;}}
 .fourchette-curseur dd.fourchette-curseur__ecart{margin-top:2px;font-family:var(--font-body);font-variation-settings:normal;font-size:var(--fs-small);
   font-weight:400;letter-spacing:0;line-height:1.35;color:var(--color-creme);}
 /* #268, deuxième version (MAV, 05/11/2026 : « c'était plus lisible avant ») : retour à la
