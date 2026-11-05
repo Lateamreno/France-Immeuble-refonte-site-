@@ -47,14 +47,17 @@ export function Coquille({
     href === "/mon-compte/" ? chemin === "/mon-compte/" || chemin === "/mon-compte" : chemin.startsWith(href) ||
       (href === "/mon-compte/immeubles/" && chemin.startsWith("/mon-compte/dossier"));
 
-  // Au téléphone, cinq onglets au plus : Accueil, les rubriques du profil, Messages, Profil.
-  const onglets = [
-    visibles[0],
-    ...visibles.filter((r) => ["/mon-compte/immeubles/", "/mon-compte/biens/"].includes(r.href)),
-    ...(acheteur ? [] : visibles.filter((r) => r.href === "/mon-compte/rendez-vous/")),
-    visibles.find((r) => r.href === "/mon-compte/messages/")!,
-    visibles.find((r) => r.href === "/mon-compte/profil/")!,
-  ].slice(0, 5);
+  // Au téléphone, cinq onglets (MAV, 05/11/2026) : Accueil, Vendre (immeubles et
+  // estimations), Acheter (biens proposés et recherches), Favoris, Profil. Messages et
+  // rendez-vous restent dans l'accueil, qui porte le nombre de messages à lire.
+  const onglets: (Rubrique & { aussi?: string[] })[] = [
+    { ...rubriques[0], badge: messagesAgent },
+    { href: "/mon-compte/immeubles/", nom: "Vendre", court: "Vendre", picto: "immeubles", visible: true, aussi: ["/mon-compte/dossier"] },
+    { href: "/mon-compte/biens/", nom: "Acheter", court: "Acheter", picto: "loupe", badge: nouveauxBiens, visible: true, aussi: ["/mon-compte/recherches"] },
+    { href: "/mon-compte/favoris/", nom: "Favoris", court: "Favoris", picto: "coeur", visible: true },
+    { href: "/mon-compte/profil/", nom: "Mon profil", court: "Profil", picto: "profil", visible: true },
+  ];
+  const ongletActif = (o: (typeof onglets)[number]) => actif(o.href) || !!o.aussi?.some((a) => chemin.startsWith(a));
 
   return (
     <div className="compte-appli">
@@ -74,8 +77,8 @@ export function Coquille({
       <div className="compte-contenu">{children}</div>
       <nav className="compte-barre" aria-label="Menu de mon espace">
         {onglets.map((r) => (
-          <Link key={r.href} href={r.href} className={`compte-barre__i${actif(r.href) ? " est-actif" : ""}`}
-            aria-current={actif(r.href) ? "page" : undefined}>
+          <Link key={r.href} href={r.href} className={`compte-barre__i${ongletActif(r) ? " est-actif" : ""}`}
+            aria-current={ongletActif(r) ? "page" : undefined}>
             <Picto nom={r.picto} taille={21} />
             <small>{r.court}</small>
             {!!r.badge && <b className="pastille">{r.badge}</b>}

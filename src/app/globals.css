@@ -2649,8 +2649,9 @@ fieldset.field legend,.lot label{
 .compte-atouts li::before{content:"";position:absolute;left:0;top:.6em;width:10px;height:1px;background:var(--color-bronze);}
 .compte-bandeau{padding-block:var(--space-m);}
 .compte-vide{color:var(--color-gris);max-width:60ch;}
-.compte-action{margin-top:var(--space-m);}
+.compte-action{margin-top:var(--space-m);display:flex;flex-direction:column;align-items:center;text-align:center;}
 .compte-action > .btn{margin-inline:0;}
+.compte-action .compte-confirme{align-items:center;}
 .compte-sous-titre{font-size:var(--fs-h3);margin:var(--space-xl) 0 var(--space-m);}
 .compte-grille{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-s);
   grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));}
@@ -3317,6 +3318,13 @@ fieldset.field legend,.lot label{
 :is(.dossier-vendeur-sec,.fin) .err{color:var(--color-bronze-clair);font-size:var(--fs-small);}
 .dossier__mdp{width:min(100%,360px);text-align:left;}
 .dossier__etat{margin:0;font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);letter-spacing:.06em;color:var(--color-gris);}
+/* Retour #266 : la mention « enregistré et transmis » se voit, au-dessus des boutons, centrée. */
+.dossier__valider .dossier__etat{display:flex;gap:8px;align-items:flex-start;justify-content:center;text-align:center;margin-top:var(--space-s);
+  font-family:var(--font-body);font-size:var(--fs-small);letter-spacing:0;line-height:1.45;}
+.dossier__valider .dossier__etat--ok{color:var(--color-creme);}
+.dossier__etat--ok svg{color:var(--color-bronze);flex:none;margin-top:2px;}
+.dossier__boutons,.compte-contenu .dossier__valider .field-nav{justify-content:center;}
+.compte-contenu .dossier__valider .field-nav .btn{margin-inline:0;}
 .mdp{position:relative;}
 .mdp input{padding-right:84px !important;}
 .mdp__voir{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;}
@@ -3495,7 +3503,7 @@ body:has(.compte-appli) .site-footer{display:none;}
   font-family:var(--font-mono-site);font-variation-settings:normal;font-weight:500;letter-spacing:.15em;
   text-transform:uppercase;font-size:var(--fs-eyebrow);line-height:1.4;color:var(--color-bronze);
 }
-.compte-panneau__pied{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:var(--space-xs);}
+.compte-panneau__pied{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;margin-top:var(--space-xs);}
 .compte-panneau__pied .btn{margin-inline:0;}
 .compte-panneau__pied--colonne{flex-direction:column;align-items:stretch;margin-top:0;}
 .compte-panneau__pied--colonne .lien-discret{text-align:center;}
@@ -5284,16 +5292,6 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
     -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 40%,rgba(0,0,0,.35) 100%);
             mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 40%,rgba(0,0,0,.35) 100%);}
 }
-/* #268 : sur un écran peu haut, la liste des six analyses se resserre ; le
-   bouton garde au moins 50 px d'air avant la section suivante (mesuré de 720
-   à 1080 px de haut). */
-@media (min-width:760px) and (min-height:700px) and (max-height:1000px){
-  .sec-analyses--pin .analyses-sch__item{padding-block:6px;}
-  .sec-analyses--pin .analyses-sch__item h3{font-size:17px;}
-  .sec-analyses--pin .analyses-sch__item p{font-size:13.5px;line-height:1.4;}
-  .sec-analyses--pin .analyses-sch__scene svg{max-height:max(240px,calc(var(--ecran) - 400px));}
-  .sec-analyses--pin .analyses-sch__entete h2{font-size:clamp(26px,3.4vh,40px);}
-}
 .compte-grille:has(> .compte-carte--recherche){grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));}
 /* Première fourchette dans le compte (MAV, 05/11/2026). */
 .fourchette__montant{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
@@ -5303,3 +5301,45 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .fourchette__avertissement svg{color:var(--color-bronze);flex:none;margin-top:2px;}
 .fourchette__avertissement > div{display:flex;flex-direction:column;gap:8px;font-size:var(--fs-small);color:var(--color-creme);}
 .fourchette__avertissement p{margin:0;}
+/* Alerte « passage d'un agent nécessaire » (MAV, 05/11/2026) : plus marquée que l'avertissement. */
+.fourchette__alerte{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border:1px solid var(--color-bronze);
+  border-left-width:3px;background:color-mix(in srgb,var(--color-bronze) 14%,transparent);border-radius:0 12px 12px 0;}
+.fourchette__alerte svg{color:var(--color-bronze);flex:none;margin-top:2px;}
+.fourchette__alerte > div{display:flex;flex-direction:column;gap:8px;color:var(--color-creme);}
+.fourchette__alerte strong{color:var(--color-bronze-clair);font-size:1.05em;}
+.fourchette__alerte p{margin:0;}
+/* #268, deuxième version (MAV, 05/11/2026 : « c'était plus lisible avant ») : retour à la
+   mise en page d'avant le lot 82, titre sur deux lignes, liste à sa taille, bouton juste
+   au-dessus de la fin de la section. Seuls les écrans de moins de 760 px de haut resserrent
+   la liste et l'immeuble, pour que le bouton ne soit jamais coupé. */
+@media (min-width:760px) and (max-height:760px){
+  .sec-analyses--pin .analyses-sch__item{padding-block:6px;}
+  .sec-analyses--pin .analyses-sch__item p{font-size:13.5px;line-height:1.4;}
+  .sec-analyses--pin .analyses-sch__scene svg{max-height:max(220px,calc(var(--ecran) - 400px));}
+}
+/* #270 (MAV, 05/11/2026) : après une recherche, pastille, texte et boutons centrés,
+   à l'ordinateur comme au téléphone. */
+.outcome--centre{align-items:center;text-align:center;}
+.outcome--centre > p{max-width:56ch;margin-inline:auto;}
+.outcome--centre .btn-row{justify-content:center;}
+.outcome--centre .outcome__atouts{justify-items:start;margin-inline:auto;text-align:left;}
+.outcome--centre .appel{display:flex;flex-direction:column;align-items:center;gap:var(--space-s);}
+.outcome--centre .appel .choices{justify-content:center;}
+.outcome--centre .compte-confirme{align-items:center;}
+/* #272 : un minimum au curseur, la partie retenue va du pouce vers la droite. */
+.curseur.curseur--droite::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,var(--color-ligne) var(--pos,0%),var(--color-bronze) var(--pos,0%),var(--color-bronze-profond));}
+.curseur.curseur--droite::-moz-range-track{
+  background:linear-gradient(90deg,var(--color-ligne) var(--pos,0%),var(--color-bronze) var(--pos,0%),var(--color-bronze-profond));}
+.curseur.curseur--droite::-moz-range-progress{background:transparent;}
+/* Dans un .field, le curseur ne prend pas l'habit d'une case de saisie. */
+.field input[type=range].curseur{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;min-height:0;height:28px;}
+.field input[type=range].curseur:focus{border:0;box-shadow:none;}
+/* Onglet « Acheter » du téléphone : biens proposés et recherches (MAV, 05/11/2026). */
+.onglets-acheter{display:flex;gap:6px;padding:4px;margin-bottom:var(--space-s);border:1px solid var(--color-ligne);
+  border-radius:var(--radius-pill);background:var(--color-noir-2);}
+.onglets-acheter__i{flex:1;text-align:center;padding:10px 12px;border-radius:var(--radius-pill);color:var(--color-gris);
+  text-decoration:none;font-size:var(--fs-small);font-weight:500;}
+.onglets-acheter__i.est-actif{background:var(--color-noir-3);color:var(--color-bronze);}
+.onglets-acheter__i:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
+@media (min-width:960px){ .onglets-acheter{display:none;} }

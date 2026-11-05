@@ -7,6 +7,7 @@ import { LIBELLE_DESTINATION } from "@/lib/annonce";
 import { CIBLES, LIBELLE_OPERATION, villeDe } from "@/lib/recherche-biens";
 import { ChoixLieux } from "@/components/biens/ChoixLieux";
 import { DoubleCurseur } from "@/components/DoubleCurseur";
+import { CurseurMinimum } from "@/components/CurseurMinimum";
 import { envoyer } from "./envoyer";
 
 // Les quatre types d'immeuble de l'agence (MAV, 02/11/2026), valeurs des destinations du BO.
@@ -83,7 +84,7 @@ export function RechercheCompte({ valeurs, onFerme, onFini }: {
   const [zones, setZones] = useState<string[]>(versZones(valeurs));
   const [prixMin, setPrixMin] = useState<number | null>(valeurs?.prix_min ?? null);
   const [prixMax, setPrixMax] = useState<number | null>(valeurs?.prix_max ?? null);
-  const [rdt, setRdt] = useState(valeurs?.rendement_min?.toString() ?? "");
+  const [rdt, setRdt] = useState<number | null>(valeurs?.rendement_min ?? null);
   const [occMin, setOccMin] = useState<number | null>(valeurs?.occupation_min ?? null);
   const [occMax, setOccMax] = useState<number | null>(valeurs?.occupation_max ?? null);
   const [dest, setDest] = useState<string[]>(valeurs?.destinations ?? []);
@@ -163,11 +164,11 @@ export function RechercheCompte({ valeurs, onFerme, onFini }: {
       </div>
       <div className="fields fields--2">
         <div className="field">
-          <label htmlFor={`${uid}-rdt`}>Rendement minimum (%)</label>
-          <input id={`${uid}-rdt`} inputMode="decimal" value={rdt} onChange={(e) => setRdt(e.target.value)} />
+          <span className="field__lbl">Rendement minimum : {rdt == null ? "tous" : `${rdt.toLocaleString("fr-FR")} % et plus`}</span>
+          <CurseurMinimum id={`${uid}-rdt`} min={0} max={12} pas={0.5} valeur={rdt} onChange={setRdt} libelle="Rendement minimum" />
         </div>
         <div className="field">
-          <span className="field__lbl">Occupation : {occMin == null && occMax == null ? "toutes" : `${occMin ?? 0} à ${occMax ?? 100} %`}</span>
+          <span className="field__lbl">Occupation : de {occMin ?? 0} à {occMax ?? 100} %</span>
           <DoubleCurseur min={0} max={100} pas={10} de={occMin} a={occMax} libelle="Occupation"
             valeurTexte={(v) => `${v} %`} onChange={(d, x) => { setOccMin(d); setOccMax(x); }} />
         </div>

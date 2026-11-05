@@ -75,13 +75,13 @@ export default async function MesImmeubles() {
                       <p className="vente-carte__nom">{nomDemande(c)}</p>
                       <p className="vente-carte__type">{resumeDemande(c) || "Demande d’estimation"}</p>
                     </div>
-                    <b className="pastille pastille--texte">{c.dossier_envoye_le ? "État locatif envoyé" : "État locatif à remplir"}</b>
+                    <b className="pastille pastille--texte">{c.dossier_envoye_le ? "État locatif terminé" : c.dossier_transmis_le ? "État locatif commencé" : "État locatif à remplir"}</b>
                   </div>
                   <Frise rang={1} />
                   <Chiffres items={[
                     fo.etat === "prete"
                       ? ["Première fourchette", `${millions(fo.f.basse)} à ${millions(fo.f.haute)}`]
-                      : ["Estimation", "En cours"],
+                      : ["Estimation", fo.etat === "agent" ? "Visite d’un agent nécessaire" : "En cours"],
                     ["Loyer annuel HC", euros(c.loyerAnnuel)],
                     ["Surface", c.surface ? `${Math.round(c.surface).toLocaleString("fr-FR")} m²` : null],
                     ["Lots remplis", lots ? String(lots) : null],

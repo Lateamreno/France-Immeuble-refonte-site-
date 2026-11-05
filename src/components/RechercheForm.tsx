@@ -6,6 +6,7 @@ import { LIBELLE_OPERATION, libelleLieu, villeDe, type Cible } from "@/lib/reche
 import { SITE } from "@/lib/site";
 import { ChoixLieux } from "./biens/ChoixLieux";
 import { DoubleCurseur } from "./DoubleCurseur";
+import { CurseurMinimum } from "./CurseurMinimum";
 import { Picto } from "./Picto";
 import { ouvrirCompte, useEtatCompte, useGarderALaConnexion } from "./biens/etat";
 import { DemanderAppel } from "./compte/Messagerie";
@@ -268,7 +269,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
     // Retour #270 : connecté, ni création de compte ni connexion. L'accès se
     // valide par un appel tant que l'agent n'a pas appelé ; ensuite, plus rien à valider.
     return (
-      <div className="form-shell outcome" ref={refFini}>
+      <div className="form-shell outcome outcome--centre" ref={refFini}>
         <span className="outcome__badge">
           {deplier(rs).length > 1 ? `${deplier(rs).length} recherches enregistrées` : "Recherche enregistrée"}
         </span>
@@ -294,7 +295,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
   if (fini === "ok") {
     // Le rappel est acquis (retour #91) : la suite, c'est le compte, mis en avant.
     return (
-      <div className="form-shell outcome" ref={refFini}>
+      <div className="form-shell outcome outcome--centre" ref={refFini}>
         <span className="outcome__badge">
           {deplier(rs).length > 1 ? `${deplier(rs).length} recherches enregistrées` : "Recherche enregistrée"}
         </span>
@@ -383,10 +384,15 @@ export function RechercheForm({ contact, commentaire, refContact }: {
               ))}
             </div>
           </Champ>
-          <Champ id={`${uid}-${i}-rdt`} label="Rendement brut minimum (%)" hint="Facultatif">
-            <input id={`${uid}-${i}-rdt`} value={r.rendementMin}
-              onChange={(e) => setR(i, "rendementMin", e.target.value)} placeholder="7" inputMode="decimal" />
-          </Champ>
+          <div className="field field--full">
+            <label htmlFor={`${uid}-${i}-rdt`}>
+              Rendement brut minimum : {Number(r.rendementMin.replace(",", ".")) > 0 ? `${r.rendementMin.replace(".", ",")} % et plus` : "tous"}
+            </label>
+            {/* Retour #272 (MAV, 05/11/2026) : au curseur, de 0 à 12 %. */}
+            <CurseurMinimum id={`${uid}-${i}-rdt`} min={0} max={12} pas={0.5}
+              valeur={Number(r.rendementMin.replace(",", ".")) > 0 ? Number(r.rendementMin.replace(",", ".")) : null}
+              onChange={(v) => setR(i, "rendementMin", v == null ? "" : String(v))} libelle="Rendement brut minimum" />
+          </div>
           <Champ id={`${uid}-${i}-com`} label="Précisions (facultatif)" full>
             <textarea id={`${uid}-${i}-com`} rows={4} maxLength={1000} value={r.commentaire}
               onChange={(e) => setR(i, "commentaire", e.target.value)}

@@ -177,7 +177,7 @@ export default async function Immeuble({
 
       {onglet === "etat-locatif" && (
         <EtatLocatif cle={b.cle} nom={nomImmeuble(b)} initial={copie?.c.dossier ?? dossierInitial({ habitation: b.lots ?? 1 })}
-          envoyeLe={copie?.c.dossier_envoye_le} />
+          envoyeLe={copie?.c.dossier_envoye_le} transmisLe={copie?.c.dossier_transmis_le} />
       )}
 
       {onglet === "mandat" && (
@@ -244,16 +244,16 @@ async function OngletEstimation({ dept, estimation }: { dept: string | null; est
 }
 
 /** L'état locatif, à remplir sur place (retours #261 et #277). */
-function EtatLocatif({ cle, nom, initial, envoyeLe }: {
-  cle: string; nom: string; initial: ReturnType<typeof dossierInitial>; envoyeLe?: string;
+function EtatLocatif({ cle, nom, initial, envoyeLe, transmisLe }: {
+  cle: string; nom: string; initial: ReturnType<typeof dossierInitial>; envoyeLe?: string; transmisLe?: string;
 }) {
   return (
     <section className="compte-panneau compte-etat-locatif">
       <p className="compte-calme">
         Lot par lot : type, surface, loyer, bail, DPE. Votre agent s’en sert pour l’estimation et pour présenter
-        l’immeuble aux acquéreurs. Tout est enregistré au fur et à mesure.
+        l’immeuble aux acquéreurs. Tout est enregistré et lui est transmis au fur et à mesure.
       </p>
-      <DossierForm initial={initial} adresse={nom} connecte dejaValide={false} cible={cle} envoyeLe={envoyeLe} />
+      <DossierForm initial={initial} adresse={nom} connecte dejaValide={false} cible={cle} envoyeLe={envoyeLe} transmisLe={transmisLe} />
     </section>
   );
 }
@@ -311,11 +311,12 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
             <Panneau titre="Première fourchette" picto="calculatrice">
               <p className="fourchette__montant">{millions(fo.f.basse)} à {millions(fo.f.haute)}</p>
               <p className="compte-form__aide">
-                Calcul automatique, prix de vente à la découpe.{" "}
+                Calcul automatique, au rendement du secteur.{" "}
                 <Link className="lien-discret" href={`/mon-compte/immeubles/${ref}/?onglet=estimation`}>Comment la lire</Link>
               </p>
             </Panneau>
           )}
+          {fo.etat === "agent" && <AlerteAgent fo={fo} />}
           <Panneau titre="Ce que vous nous avez indiqué" picto="immeubles">
             <Chiffres items={[
               ["Adresse", adresse || null],
@@ -331,8 +332,10 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
               <li>
                 <Link href={`/mon-compte/immeubles/${ref}/?onglet=etat-locatif`}>
                   <Picto nom={c.dossier_envoye_le ? "valide" : "logement"} taille={20} />
-                  <span>{c.dossier_envoye_le ? `État locatif envoyé le ${dateLongue(c.dossier_envoye_le)}` : "Remplir l’état locatif, lot par lot"}</span>
-                  <span className="lien-discret">{c.dossier_envoye_le ? "Modifier" : "Remplir"}</span>
+                  <span>{c.dossier_envoye_le ? `État locatif terminé le ${dateLongue(c.dossier_envoye_le)}`
+                    : c.dossier_transmis_le ? "État locatif commencé, déjà transmis à votre agent"
+                    : "Remplir l’état locatif, lot par lot"}</span>
+                  <span className="lien-discret">{c.dossier_envoye_le ? "Modifier" : c.dossier_transmis_le ? "Continuer" : "Remplir"}</span>
                 </Link>
               </li>
               <li>
@@ -354,7 +357,7 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
         </>
       )}
 
-      {onglet === "etat-locatif" && <EtatLocatif cle={ref} nom={adresse || nom} initial={initial} envoyeLe={c.dossier_envoye_le} />}
+      {onglet === "etat-locatif" && <EtatLocatif cle={ref} nom={adresse || nom} initial={initial} envoyeLe={c.dossier_envoye_le} transmisLe={c.dossier_transmis_le} />}
 
       {onglet === "documents" && (
         <Panneau titre="Pièces à nous transmettre" picto="dossier">
@@ -382,18 +385,52 @@ async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstima
 }
 
 /**
- * La première fourchette, avec ce qu'elle vaut (MAV, 05/11/2026 : « attention,
- * les données secteur sont automatiques et non vérifiées, et les chiffres ne
- * correspondent qu'au prix de la découpe ; il faut adapter à l'immeuble puis
- * aux attentes des clients en termes de rentabilité »).
+ * Quand le calcul automatique ne tient plus (MAV, 05/11/2026 : « on met
+ * vraiment une alerte pour dire au client que le passage d'un agent est
+ * nécessaire pour analyser et donner une vraie valeur du bien »).
+ */
+function AlerteAgent({ fo }: { fo: Extract<EtatFourchette, { etat: "agent" }> }) {
+  return (
+    <Panneau titre="Estimation" picto="calculatrice">
+      <div className="fourchette__alerte" role="alert">
+        <Picto nom="reglages" taille={22} />
+        <div>
+          <p><strong>Votre immeuble demande le passage d’un agent.</strong></p>
+          {fo.raison === "decote" ? (
+            <p>
+              Au rendement du secteur{fo.rendementSecteur != null ? ` (${pct(fo.rendementSecteur)} brut)` : ""}, vos loyers
+              donneraient un prix au m² inférieur de {fo.decote} % à celui des ventes du secteur ({euros(fo.prixM2)} le m²).
+              Un écart pareil ne se lit pas sur des chiffres : loyers à revoir, lots vacants, travaux, situation.
+            </p>
+          ) : (
+            <p>
+              L’état locatif ne porte aucun loyer : un immeuble libre ne s’estime pas au rendement. Sa valeur dépend de ce
+              qu’on peut en faire, lot par lot.
+            </p>
+          )}
+          <p>Aucun chiffre automatique ici : votre agent visite l’immeuble, l’analyse et vous donne sa vraie valeur.</p>
+        </div>
+      </div>
+      <div className="compte-panneau__pied">
+        <Link className="btn btn--primary" href="/mon-compte/rendez-vous/">Prendre rendez-vous</Link>
+      </div>
+    </Panneau>
+  );
+}
+
+/**
+ * La première fourchette, avec ce qu'elle vaut. Règle de MAV (05/11/2026) :
+ * rendement du secteur à ±15 %, jamais au-dessus du prix au m² du secteur,
+ * alerte au-delà de 25 % de décote ; données automatiques et non vérifiées,
+ * l'estimation de l'agent fait foi.
  */
 function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
   if (fo.etat === "etat-locatif") {
     return (
       <Panneau titre="Première fourchette" picto="calculatrice">
         <p className="compte-calme">
-          Remplissez et envoyez l’état locatif, avec les surfaces Carrez : une première fourchette s’affiche ici,
-          calculée sur les ventes du secteur.
+          Remplissez et envoyez l’état locatif, avec les loyers et les surfaces Carrez : une première fourchette
+          s’affiche ici, calculée au rendement du secteur.
         </p>
         <div className="compte-panneau__pied">
           <Link className="btn btn--primary" href={`/mon-compte/immeubles/${cle}/?onglet=etat-locatif`}>Remplir l’état locatif</Link>
@@ -404,34 +441,36 @@ function PanneauFourchette({ fo, cle }: { fo: EtatFourchette; cle: string }) {
   if (fo.etat === "sans-marche") {
     return (
       <Panneau titre="Première fourchette" picto="calculatrice">
-        <p className="compte-calme">Pas assez de ventes publiques dans le secteur pour un calcul automatique. Votre agent vous donne son estimation.</p>
+        <p className="compte-calme">Pas assez de données publiques dans le secteur pour un calcul automatique. Votre agent vous donne son estimation.</p>
       </Panneau>
     );
   }
+  if (fo.etat === "agent") return <AlerteAgent fo={fo} />;
   const f = fo.f;
   const lieu = f.echelle === "commune" ? "de la commune" : "du département";
   return (
     <Panneau titre="Première fourchette" picto="calculatrice">
       <p className="fourchette__montant">{millions(f.basse)} à {millions(f.haute)}</p>
       <Chiffres items={[
-        ["Surface Carrez de l’état locatif", `${f.surface.toLocaleString("fr-FR")} m²`],
+        ["Loyer annuel hors charges", euros(f.loyerAnnuel)],
+        ["Rendement brut du secteur", pct(f.rendementSecteur)],
+        ["Prix au m² de la fourchette", `${euros(f.prixM2Obtenu)} (${f.surface.toLocaleString("fr-FR")} m² Carrez)`],
         [`Prix médian au m² ${lieu}`, euros(f.prixM2)],
         ["Ventes prises en compte", f.nbVentes != null ? `${f.nbVentes}${f.fenetreMois ? ` en ${f.fenetreMois} mois` : ""}` : null],
-        ["Rendement brut à ces prix", f.rendementBas != null && f.rendementHaut != null ? `${pct(f.rendementBas)} à ${pct(f.rendementHaut)}` : null],
       ]} />
       <div className="fourchette__avertissement" role="note">
         <Picto nom="reglages" taille={20} />
         <div>
           <p><strong>Une fourchette automatique, à prendre avec précaution.</strong></p>
           <p>
-            Les données du secteur sont automatiques et non vérifiées : prix médian des appartements vendus,
-            relevé dans les ventes publiques (DVF). Ce prix correspond à une vente à la découpe, appartement par
-            appartement.
+            Elle part de vos loyers et du rendement brut constaté dans le secteur, à 15 % près, sans jamais dépasser
+            le prix au m² des appartements vendus autour (ventes publiques DVF).
+            {f.plafonnee ? " Ici, c’est ce prix au m² qui la limite." : ""}
           </p>
           <p>
-            Un immeuble vendu en bloc ne se vend pas à ce prix. Votre agent l’adapte d’abord à l’immeuble (état,
-            occupation, baux, travaux), puis au rendement qu’attendent les investisseurs. C’est son estimation qui
-            fait foi.
+            Les données du secteur sont automatiques et non vérifiées. Votre agent adapte ce calcul à l’immeuble
+            (état, occupation, baux, travaux) et au rendement qu’attendent les investisseurs. C’est son estimation
+            qui fait foi.
           </p>
         </div>
       </div>

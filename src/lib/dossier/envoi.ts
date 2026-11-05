@@ -4,8 +4,9 @@ import { fusionnerSaisie } from "../compte/saisies";
 import { rueSansNumero } from "../compte/immeubles";
 import { envoyerAuClient } from "../notifications";
 import { COULEURS, echap, gabarit, paragraphe, piedTexte } from "../courriel";
-import { pourBO, type Dossier } from "./modele";
-import type { LigneDossier } from "./serveur";
+import { createHash } from "node:crypto";
+import { enNombre, pourBO, type Dossier } from "./modele";
+import { modifier, type LigneDossier } from "./serveur";
 
 /**
  * Le dossier part au BO comme une suite de l'estimation : même `type`, même
@@ -29,6 +30,56 @@ export async function transmettreDossier(l: LigneDossier, d: Dossier, compte?: s
     recuLe: new Date().toISOString(),
   };
   return deposerLead(lead);
+}
+
+/**
+ * L'état locatif au fil de la saisie (retour #266, MAV, 05/11/2026 : « même si
+ * le client ne veut pas créer son compte, on a quand même les infos qui sont
+ * remontées »). Même dépôt que l'envoi final, avec `enCours: true` : le BO
+ * remplace l'état locatif de l'immeuble à chaque dépôt. Pas d'e-mail à
+ * l'agence (elle l'a eu à l'estimation, elle l'aura à la validation) ; en
+ * file, la dernière version remplace la précédente (`leads.ts`).
+ */
+export const PAS_TRANSMISSION = 45_000;
+
+/** Un état locatif qui dit quelque chose : au moins une surface ou un loyer. */
+export const dossierRempli = (d: Dossier) =>
+  d.lots.some((l) => (enNombre(l.surface) ?? 0) > 0 || (enNombre(l.loyer) ?? 0) > 0) || !!d.commentaire.trim();
+
+export const empreinteDossier = (d: Dossier) =>
+  createHash("sha1").update(JSON.stringify(pourBO(d))).digest("hex");
+
+/**
+ * Transmet le brouillon s'il a changé depuis le dernier dépôt, au plus une
+ * fois toutes les 45 s, sauf `maintenant` (la page se ferme, la tâche de la
+ * nuit). Renvoie l'heure de la dernière transmission.
+ */
+export async function transmettreEnCours(
+  l: LigneDossier & { transmis_le?: string | null; transmis_empreinte?: string | null },
+  d: Dossier,
+  { maintenant = false, compte }: { maintenant?: boolean; compte?: string } = {},
+): Promise<string | null> {
+  const dernier = l.transmis_le ?? null;
+  if (l.valide_le || !dossierRempli(d)) return dernier;
+  const empreinte = empreinteDossier(d);
+  if (empreinte === l.transmis_empreinte) return dernier;
+  if (!maintenant && dernier && Date.now() - Date.parse(dernier) < PAS_TRANSMISSION) return dernier;
+  const issue = await deposerLead({
+    type: "estimation",
+    etat: "dossier",
+    enCours: true,
+    ref: l.ref,
+    ...l.identite,
+    email: l.email,
+    ...pourBO(d),
+    ...(compte ? { compte } : {}),
+    recuLe: new Date().toISOString(),
+  }, { silencieux: true });
+  if (issue === "perdu" || issue === "refuse") return dernier;
+  const le = new Date().toISOString();
+  // `maj_le` n'est pas touché : il date la dernière saisie, pas le dépôt.
+  await modifier(l.empreinte, { transmis_le: le, transmis_empreinte: empreinte, maj_le: undefined });
+  return le;
 }
 
 /**

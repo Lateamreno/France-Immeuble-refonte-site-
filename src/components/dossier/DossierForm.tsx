@@ -17,6 +17,10 @@ import { ouvrirCompte as ouvrirFenetreCompte, useEtatCompte, useGarderALaConnexi
  * vendeur peut fermer la page et revenir. Rien n'est gardé dans le navigateur
  * (§16 : ni localStorage ni sessionStorage).
  *
+ * Retour #266 (MAV, 05/11/2026) : la saisie part aussi au BO sans bouton,
+ * toutes les 45 s au plus et quand la page se ferme. Une mention le dit, et
+ * « Enregistrer » le fait tout de suite, pour qu'on n'ait pas peur de quitter.
+ *
  * À la fin, « Valider et créer mon compte » : le dossier part à l'agence, puis
  * le visiteur choisit un mot de passe et saisit le code reçu par e-mail.
  */
@@ -31,6 +35,7 @@ export function DossierForm({
   cible,
   envoyeLe,
   email: emailDossier,
+  transmisLe: transmisInitial,
 }: {
   initial: Dossier;
   adresse: string;
@@ -48,6 +53,8 @@ export function DossierForm({
   envoyeLe?: string;
   /** L'adresse du dossier : connecté sous cette adresse, plus de mot de passe (retour #266). */
   email?: string;
+  /** Dernier dépôt au BO pendant la saisie. */
+  transmisLe?: string | null;
 }) {
   const uid = useId();
   const etat = useEtatCompte();
@@ -59,6 +66,12 @@ export function DossierForm({
   const [d, setD] = useState<Dossier>(initial);
   const [etape, setEtape] = useState<Etape>(dejaValide ? "code" : "saisie");
   const [sauvegarde, setSauvegarde] = useState<"" | "attente" | "ok" | "erreur">("");
+  const [enregistreLe, setEnregistreLe] = useState("");
+  const [transmis, setTransmis] = useState(transmisInitial ?? "");
+  /** Des changements pas encore déposés au BO, et la saisie la plus récente. */
+  const aTransmettre = useRef(false);
+  const version = useRef(0);
+  const courant = useRef(initial);
   const [motDePasse, setMotDePasse] = useState("");
   const [voir, setVoir] = useState(false);
   const [code, setCode] = useState("");
@@ -76,6 +89,9 @@ export function DossierForm({
   useEffect(() => {
     if (premier.current) { premier.current = false; return; }
     if (etape !== "saisie") return;
+    courant.current = d;
+    version.current++;
+    aTransmettre.current = true;
     setSauvegarde("attente");
     if (minuterie.current) clearTimeout(minuterie.current);
     minuterie.current = setTimeout(() => { void enregistrer(d); }, 1200);
@@ -86,20 +102,64 @@ export function DossierForm({
     if (etape === "code") titreCode.current?.focus();
   }, [etape]);
 
-  async function enregistrer(donnees: Dossier): Promise<boolean> {
+  const urlBrouillon = cible ? "/api/compte/immeuble/" : "/api/dossier/";
+  const corps = (donnees: Dossier, maintenant: boolean) =>
+    JSON.stringify({ ...(cible ? { cle: cible } : {}), donnees, ...(maintenant ? { maintenant: true } : {}) });
+
+  async function enregistrer(donnees: Dossier, maintenant = false): Promise<boolean> {
+    const v = version.current;
     try {
-      const r = await fetch(cible ? "/api/compte/immeuble/" : "/api/dossier/", {
+      const r = await fetch(urlBrouillon, {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(cible ? { cle: cible, donnees } : { donnees }),
+        body: corps(donnees, maintenant),
       });
+      const j = (await r.json().catch(() => ({}))) as { transmis_le?: string | null };
       setSauvegarde(r.ok ? "ok" : "erreur");
+      if (r.ok) {
+        setEnregistreLe(new Date().toISOString());
+        if (j.transmis_le && j.transmis_le !== transmis) {
+          setTransmis(j.transmis_le);
+          if (v === version.current) aTransmettre.current = false;
+        }
+      }
       return r.ok;
     } catch {
       setSauvegarde("erreur");
       return false;
     }
   }
+
+  /** « Enregistrer » : tout de suite, au site et au BO. */
+  function enregistrerMaintenant() {
+    if (minuterie.current) clearTimeout(minuterie.current);
+    setSauvegarde("attente");
+    void enregistrer(d, true);
+  }
+
+  // La page se ferme ou passe en arrière-plan : la dernière saisie part au BO.
+  useEffect(() => {
+    if (etape !== "saisie") return;
+    const partir = () => {
+      if (!aTransmettre.current) return;
+      aTransmettre.current = false;
+      if (minuterie.current) clearTimeout(minuterie.current);
+      try {
+        void fetch(urlBrouillon, {
+          method: "PUT", keepalive: true,
+          headers: { "content-type": "application/json" },
+          body: corps(courant.current, true),
+        });
+      } catch { /* la tâche de la nuit rattrape */ }
+    };
+    const cache = () => { if (document.visibilityState === "hidden") partir(); };
+    window.addEventListener("pagehide", partir);
+    document.addEventListener("visibilitychange", cache);
+    return () => {
+      window.removeEventListener("pagehide", partir);
+      document.removeEventListener("visibilitychange", cache);
+    };
+  }, [etape]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const majLot = (i: number, champ: keyof Lot, v: string) =>
     setD((p) => ({
@@ -350,22 +410,41 @@ export function DossierForm({
         {connecte ? (
           <>
             <h3>{cible ? "Votre état locatif est prêt ?" : "Votre dossier est prêt ?"}</h3>
-            {dernierEnvoi && <p className="dossier__envoye">Dernier envoi à votre agent le {new Date(dernierEnvoi).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}.</p>}
+            {dernierEnvoi && <p className="dossier__envoye">Votre agent a été prévenu le {new Date(dernierEnvoi).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}.</p>}
           </>
         ) : (
           <>
             <h3>Valider et créer mon compte</h3>
-            <p>Votre compte est prêt. Il ne manque que votre mot de passe.</p>
+            <p>
+              Votre saisie est déjà transmise à votre agent. Le compte, facultatif, vous permet de suivre l’estimation
+              et de déposer vos documents : il ne manque que votre mot de passe.
+            </p>
             <ChampMotDePasse id={`${uid}-mdp`} valeur={motDePasse} onChange={(v) => { setMotDePasse(v); setErreur(""); }}
               voir={voir} setVoir={setVoir} />
           </>
         )}
         {erreur && <p className="err" role="alert">{erreur}</p>}
-        <div className="field-nav">
+        <p className={`dossier__etat${sauvegarde === "ok" ? " dossier__etat--ok" : ""}`} aria-live="polite">
+          {sauvegarde === "ok" && <Picto nom="valide" taille={16} />}
+          <span>
+            {sauvegarde === "attente" ? "Enregistrement…"
+              : sauvegarde === "ok" ? `Enregistré à ${heure(enregistreLe)} et transmis à votre agent. Vous pouvez quitter la page et revenir plus tard.`
+              : sauvegarde === "erreur" ? "Enregistrement impossible pour l’instant. Votre saisie est gardée sur cette page."
+              : transmis ? `Transmis à votre agent le ${jour(transmis)}. Chaque modification lui parvient, sans rien valider.`
+              : "Votre saisie est enregistrée et transmise à votre agent au fur et à mesure, sans rien valider."}
+          </span>
+        </p>
+        <div className="field-nav dossier__boutons">
+          <button type="button" className="btn btn--outline" onClick={enregistrerMaintenant} disabled={envoi || sauvegarde === "attente"}>
+            Enregistrer
+          </button>
           <button type="submit" className="btn btn--primary" disabled={envoi}>
-            {envoi ? "Envoi…" : cible ? "Envoyer à mon agent" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
+            {envoi ? "Envoi…" : cible ? "J’ai terminé" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
           </button>
         </div>
+        {cible && (
+          <p className="form-note dossier__deja">« J’ai terminé » prévient votre agent et affiche une première fourchette.</p>
+        )}
         {!connecte && (
           <p className="form-note dossier__deja">
             Vous avez déjà un compte&nbsp;?{" "}
@@ -373,16 +452,15 @@ export function DossierForm({
             {" "}: votre dossier y sera rattaché, sans nouveau mot de passe.
           </p>
         )}
-        <p className="dossier__etat" aria-live="polite">
-          {sauvegarde === "attente" ? "Enregistrement…"
-            : sauvegarde === "ok" ? "Enregistré. Vous pouvez revenir plus tard."
-            : sauvegarde === "erreur" ? "Enregistrement impossible pour l’instant. Votre saisie est gardée sur cette page."
-            : "Votre saisie est enregistrée au fur et à mesure."}
-        </p>
       </div>
     </form>
   );
 }
+
+const heure = (iso: string) =>
+  new Date(iso || Date.now()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" });
+const jour = (iso: string) =>
+  new Date(iso).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" });
 
 function LigneLot({ i, uid, l, onChange, onRetirer }: {
   i: number; uid: string; l: Lot;

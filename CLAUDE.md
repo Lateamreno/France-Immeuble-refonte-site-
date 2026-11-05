@@ -264,11 +264,28 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   GTM (Universal Analytics éteint et deux GA4, 528 Ko), à nettoyer dans GTM par MAV.
   Même jour (MAV) : nombre de lots avec deux petites flèches haut et bas à droite dans la case ;
   « Surface habitable (m²) » et « Loyer annuel HC (€) » sur une ligne, cases alignées.
-  **Première fourchette dans le compte** (`src/lib/compte/fourchette.ts`), seulement une fois
-  l'état locatif envoyé avec ses surfaces Carrez : Carrez × prix médian DVF des appartements de
-  la commune (`marche.ts`), ±10 %, avec le rendement brut que ce prix donnerait et l'avertissement
-  de MAV : données secteur automatiques et non vérifiées, prix de découpe, l'agent adapte à
-  l'immeuble puis au rendement attendu des investisseurs ; son estimation fait foi.
+  **Première fourchette dans le compte** (`src/lib/compte/fourchette.ts`), une fois l'état
+  locatif terminé (« J'ai terminé ») avec ses surfaces Carrez. **Règle de MAV (05/11/2026)** :
+  loyer annuel HC ÷ rendement brut de la ville (Plein Bail, `marche.ts`), à ±15 % ; **jamais
+  au-dessus** de Carrez × prix médian DVF des appartements (souvent 10 à 15 % en dessous) ;
+  **plus de 25 % de décote au m²** (ou aucun loyer) : pas de chiffre, une alerte « votre
+  immeuble demande le passage d'un agent » avec un bouton de rendez-vous. Avertissement : données
+  secteur automatiques et non vérifiées, l'agent adapte à l'immeuble et au rendement attendu
+  des investisseurs ; son estimation fait foi.
+- **Lot 85** (MAV, 05/11/2026). **L'état locatif part au BO pendant la saisie** (#266, « même si
+  le client ne veut pas créer son compte, on a quand même les infos ») : même dépôt que l'envoi
+  final avec `enCours: true`, sans e-mail à l'agence, toutes les 45 s au plus, tout de suite quand
+  la page se ferme (`pagehide`, `fetch keepalive`) ou sur « Enregistrer » ; la tâche de la nuit
+  rattrape un brouillon modifié et non transmis (empreinte, migration 0018) ; en file, la dernière
+  version remplace la précédente. Mention « Enregistré à HH:MM et transmis à votre agent. Vous
+  pouvez quitter la page ». Le compte devient facultatif ; dans le compte, « J'ai terminé »
+  prévient l'agent et ouvre la fourchette. Onglets du bas au téléphone : Accueil, Vendre (immeubles
+  et estimations), Acheter (biens proposés et recherches, deux sous-onglets en pilule), Favoris,
+  Profil. Boutons centrés partout, ordinateur et téléphone (#270). Recherches : occupation « de 0
+  à 100 % », rendement minimum au curseur de 0 à 12 %, la partie retenue va du point vers la
+  droite (#272). Estimer, Analyses : retour à la mise en page d'avant le lot 82 (#268), resserrée
+  seulement sous 760 px de haut. Pilule du téléphone : cachée dès qu'on entre dans une section
+  qui a ses propres boutons, et revient après.
 
 ### Garde-fous non négociables
 

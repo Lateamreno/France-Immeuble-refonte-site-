@@ -1,4 +1,5 @@
 import { NouvelleRecherche, RechercheEditable, TitreRecherche } from "@/components/compte/RechercheCompte";
+import { OngletsAcheter } from "@/components/compte/OngletsAcheter";
 import { Panneau, TeteCompte } from "@/components/compte/Ecrans";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { ecranCompte } from "@/lib/compte/ecran";
@@ -53,6 +54,7 @@ export default async function MesRecherches() {
   );
   return (
     <>
+      <OngletsAcheter actif="recherches" />
       <TeteCompte surtitre="Acheter" titre="Mes recherches" />
       {d.recherches.length === 0 ? (
         <Panneau>

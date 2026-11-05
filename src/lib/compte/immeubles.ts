@@ -24,6 +24,9 @@ export type CopieEstimation = {
   /** L'état locatif en cours de saisie, ou le dernier envoyé. */
   dossier?: Dossier;
   dossier_envoye_le?: string;
+  /** Dernier dépôt au BO pendant la saisie (retour #266) et empreinte de ce qui est parti. */
+  dossier_transmis_le?: string;
+  dossier_transmis_empreinte?: string;
   /** Les pièces envoyées depuis le compte, en attendant `compte_documents`. */
   pieces?: { nom: string; categorie: string; recu_le: string }[];
   /** Immeuble déjà déposé par le BO, sans `ref` : l'état locatif lui est rattaché. */

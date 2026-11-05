@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { relancerFile } from "@/lib/leads";
 import { nettoyerMorceaux } from "@/lib/compte/stockage";
 import { purgerComptesInutilises } from "@/lib/compte/purge";
-import { purgerDossiers } from "@/lib/dossier/serveur";
+import { brouillonsATransmettre, purgerDossiers } from "@/lib/dossier/serveur";
+import { transmettreEnCours } from "@/lib/dossier/envoi";
 import { aviserClients } from "@/lib/compte/avis";
 import { purgerSaisies } from "@/lib/compte/saisies";
 
@@ -16,7 +17,9 @@ import { purgerSaisies } from "@/lib/compte/saisies";
  * dépôts que le BO dédoublonne de toute façon.
  *
  * Elle supprime aussi les comptes vendeurs jamais ouverts depuis 30 jours
- * (`compte/purge.ts`) et les brouillons de dossier abandonnés (`dossier/serveur.ts`).
+ * (`compte/purge.ts`) et les brouillons de dossier abandonnés (`dossier/serveur.ts`),
+ * après avoir transmis au BO ceux qui ont changé depuis leur dernier dépôt
+ * (retour #266 : la page fermée avant le dépôt, le BO injoignable).
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,6 +43,15 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[compte] purge impossible —", e);
     }
+    let brouillonsTransmis = 0;
+    try {
+      for (const l of await brouillonsATransmettre()) {
+        const avant = l.transmis_le ?? null;
+        if ((await transmettreEnCours(l, l.donnees, { maintenant: true })) !== avant) brouillonsTransmis++;
+      }
+    } catch (e) {
+      console.error("[dossier] rattrapage des brouillons impossible —", e);
+    }
     let dossiersEffaces = 0;
     try {
       dossiersEffaces = await purgerDossiers();
@@ -53,7 +65,7 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[avis] annonce impossible —", e);
     }
-    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, dossiersEffaces, avis });
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, brouillonsTransmis, dossiersEffaces, avis });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

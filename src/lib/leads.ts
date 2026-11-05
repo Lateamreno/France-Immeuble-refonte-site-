@@ -111,9 +111,12 @@ async function sb(chemin: string, init: RequestInit = {}) {
 
 async function mettreEnFile(lead: Record<string, unknown>, erreur: string): Promise<boolean> {
   try {
+    // Un état locatif déposé au fil de la saisie (retour #266) : la dernière
+    // version remplace celle qui attend. Les autres dépôts rejoués sont ignorés.
+    const remplacer = lead.etat === "dossier";
     await sb("leads_outbox?on_conflict=ref", {
       method: "POST",
-      headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+      headers: { Prefer: `resolution=${remplacer ? "merge" : "ignore"}-duplicates,return=minimal` },
       body: JSON.stringify({
         ref: cleFile(lead),
         type: categorie(lead.type),

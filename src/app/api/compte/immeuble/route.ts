@@ -5,7 +5,8 @@ import { type CopieEstimation } from "@/lib/compte/immeubles";
 import { contexteDe, erreurEnReponse, exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
 import { fusionnerSaisie, saisieDuCompte } from "@/lib/compte/saisies";
 import { deposerLead } from "@/lib/leads";
-import { nettoyer, pourBO } from "@/lib/dossier/modele";
+import { nettoyer, pourBO, type Dossier } from "@/lib/dossier/modele";
+import { dossierRempli, empreinteDossier, PAS_TRANSMISSION } from "@/lib/dossier/envoi";
 
 export const runtime = "nodejs";
 
@@ -17,9 +18,11 @@ export const runtime = "nodejs";
  * par le BO. Le serveur vérifie que l'un ou l'autre appartient au compte,
  * puis garde le brouillon dans la copie de l'estimation (`compte_saisies`).
  *
- * PUT : brouillon, au fil de la saisie. POST : envoi au BO, comme un troisième
- * envoi de l'estimation (`etat: "dossier"`, même `ref`), avec `bien` quand
- * l'immeuble est déjà au BO.
+ * PUT : brouillon, au fil de la saisie, déposé aussi au BO avec `enCours: true`
+ * (retour #266) : toutes les 45 s au plus, tout de suite quand la page se
+ * ferme ou sur « Enregistrer » (`maintenant`). POST : envoi au BO, comme un
+ * troisième envoi de l'estimation (`etat: "dossier"`, même `ref`), avec
+ * `bien` quand l'immeuble est déjà au BO, et l'alerte de l'agence.
  */
 async function immeuble(s: Connecte, cle: string): Promise<{ ref: string; bien?: string; c: CopieEstimation } | null> {
   if (!UUID.test(cle)) return null;
@@ -43,15 +46,49 @@ async function lire(req: Request) {
   return { s, b, i };
 }
 
+function leadDossier(s: Connecte, i: { ref: string; bien?: string; c: CopieEstimation }, dossier: Dossier) {
+  const u = s.utilisateur;
+  return {
+    type: "estimation",
+    etat: "dossier",
+    ref: i.ref,
+    ...(i.bien ? { bien: i.bien } : {}),
+    compte: u.id,
+    formulaire: i.c.formulaire || "compte",
+    prenom: u.user_metadata?.prenom ?? "",
+    nom: u.user_metadata?.nom ?? "",
+    telephone: u.user_metadata?.telephone ?? "",
+    email: u.email,
+    rue: i.c.rue ?? "",
+    codePostal: i.c.codePostal ?? "",
+    ville: i.c.ville ?? "",
+    ...pourBO(dossier),
+    recuLe: new Date().toISOString(),
+  };
+}
+
 export async function PUT(req: Request) {
   try {
     const r = await lire(req);
     if ("erreur" in r) return r.erreur;
     const { s, b, i } = r;
+    const dossier = nettoyer(b.donnees);
+    let transmis: { dossier_transmis_le: string; dossier_transmis_empreinte: string } | null = null;
+    const empreinte = empreinteDossier(dossier);
+    const dernier = i.c.dossier_transmis_le;
+    if (dossierRempli(dossier) && empreinte !== i.c.dossier_transmis_empreinte &&
+        (b.maintenant === true || !dernier || Date.now() - Date.parse(dernier) >= PAS_TRANSMISSION)) {
+      const issue = await deposerLead({ ...leadDossier(s, i, dossier), enCours: true }, { silencieux: true });
+      if (issue === "bo" || issue === "file") {
+        transmis = { dossier_transmis_le: new Date().toISOString(), dossier_transmis_empreinte: empreinte };
+      }
+    }
     const ok = await fusionnerSaisie(s.utilisateur.id, i.ref, "estimation", {
-      dossier: nettoyer(b.donnees), ...(i.bien ? { bien: i.bien } : {}),
+      dossier, ...(i.bien ? { bien: i.bien } : {}), ...(transmis ?? {}),
     });
-    return ok ? NextResponse.json({ ok: true }) : refus("Enregistrement impossible pour l’instant.", 503);
+    return ok
+      ? NextResponse.json({ ok: true, transmis_le: transmis?.dossier_transmis_le ?? dernier ?? null })
+      : refus("Enregistrement impossible pour l’instant.", 503);
   } catch (e) {
     return erreurEnReponse(e);
   }
@@ -64,26 +101,13 @@ export async function POST(req: Request) {
     const { s, b, i } = r;
     const dossier = nettoyer(b.donnees);
     const u = s.utilisateur;
-    const issue = await deposerLead({
-      type: "estimation",
-      etat: "dossier",
-      ref: i.ref,
-      ...(i.bien ? { bien: i.bien } : {}),
-      compte: u.id,
-      formulaire: i.c.formulaire || "compte",
-      prenom: u.user_metadata?.prenom ?? "",
-      nom: u.user_metadata?.nom ?? "",
-      telephone: u.user_metadata?.telephone ?? "",
-      email: u.email,
-      rue: i.c.rue ?? "",
-      codePostal: i.c.codePostal ?? "",
-      ville: i.c.ville ?? "",
-      ...pourBO(dossier),
-      recuLe: new Date().toISOString(),
-    }, { contexte: contexteDe(u) });
+    const issue = await deposerLead(leadDossier(s, i, dossier), { contexte: contexteDe(u) });
     if (issue === "perdu") return refus("Votre état locatif n’a pas pu partir. Réessayez dans un instant, ou appelez-nous.", 503);
     const envoye_le = new Date().toISOString();
-    await fusionnerSaisie(u.id, i.ref, "estimation", { dossier, dossier_envoye_le: envoye_le, ...(i.bien ? { bien: i.bien } : {}) });
+    await fusionnerSaisie(u.id, i.ref, "estimation", {
+      dossier, dossier_envoye_le: envoye_le, dossier_transmis_le: envoye_le, dossier_transmis_empreinte: empreinteDossier(dossier),
+      ...(i.bien ? { bien: i.bien } : {}),
+    });
     return NextResponse.json({ ok: true, envoye_le });
   } catch (e) {
     return erreurEnReponse(e);

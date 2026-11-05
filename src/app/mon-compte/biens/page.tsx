@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CarteBien } from "@/components/CarteBien";
+import { OngletsAcheter } from "@/components/compte/OngletsAcheter";
 import { Panneau, TeteCompte, Vide } from "@/components/compte/Ecrans";
 import { ecranCompte, nomProposition } from "@/lib/compte/ecran";
 import { biensCorrespondants } from "@/lib/compte/correspondances";
@@ -32,6 +33,7 @@ export default async function BiensProposes({ searchParams }: { searchParams: Pr
 
   return (
     <>
+      <OngletsAcheter actif="biens" />
       <TeteCompte surtitre="Acheter" titre="Biens proposés">
         <Link href="/mon-compte/favoris/" className="lien-discret">Mes favoris</Link>
         <Link href="/mon-compte/recherches/" className="btn btn--primary">Mes recherches</Link>

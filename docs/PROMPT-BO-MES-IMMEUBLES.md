@@ -53,6 +53,22 @@ Deux nouveautés :
   `cle` de `compte_biens`) et une `ref` calculée par le site, que vous ne connaissez
   pas : rattachez les lots à `bien`.
 
+### 3 bis. L'état locatif arrive aussi pendant la saisie (lot 85, MAV, 05/11/2026)
+
+Le client n'a plus besoin de valider pour que ses lots vous parviennent. Le site dépose le
+même `etat: "dossier"` (même `ref`, même format de lots) **pendant la saisie**, avec
+**`enCours: true`** : toutes les 45 s au plus, quand le client quitte la page ou appuie sur
+« Enregistrer », et chaque nuit pour un brouillon modifié puis abandonné. Un client qui ne crée
+pas de compte vous a donc quand même transmis ses lots.
+
+- Chaque dépôt **remplace** l'état locatif de l'immeuble, comme un renvoi.
+- `enCours: true` = saisie pas terminée : pas d'alerte, pas de tâche pour l'agent. Le dépôt
+  final (sans `enCours`) arrive quand le client valide ou appuie sur « J'ai terminé », avec
+  l'alerte habituelle à l'agence.
+- Le site n'envoie un nouveau dépôt que si les lots ont changé. Attendez-vous quand même à
+  plusieurs dépôts par immeuble : répondez 200 à chacun, le rate limiting ne doit pas les
+  refuser (comptez une dizaine par client et par heure au plus).
+
 ## 4. Pièces d'un immeuble pas encore déposé
 
 Le type `document` peut porter **`refEstimation`** à la place de `bien` : la pièce

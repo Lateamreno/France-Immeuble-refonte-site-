@@ -40,6 +40,9 @@ export type LigneDossier = {
   valide_le: string | null;
   cree_le: string;
   maj_le: string;
+  /** Dernier dépôt au BO pendant la saisie (retour #266, migration 0018). */
+  transmis_le?: string | null;
+  transmis_empreinte?: string | null;
 };
 
 const empreinteDe = (jeton: string) => createHash("sha256").update(jeton).digest("hex");
@@ -134,7 +137,7 @@ export async function modifier(empreinte: string, champs: Partial<Omit<LigneDoss
   await sb(`dossiers_vendeurs?empreinte=eq.${empreinte}`, {
     method: "PATCH",
     headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({ ...champs, maj_le: new Date().toISOString() }),
+    body: JSON.stringify({ maj_le: new Date().toISOString(), ...champs }),
   });
 }
 
@@ -168,4 +171,14 @@ export async function purgerDossiers(): Promise<number> {
     n += ((await r.json()) as unknown[]).length;
   }
   return n;
+}
+
+/**
+ * Tâche quotidienne (retour #266) : les brouillons non validés, pour
+ * transmettre au BO ceux qui ont changé depuis leur dernier dépôt (page
+ * fermée avant le dépôt, BO injoignable…).
+ */
+export async function brouillonsATransmettre(limite = 200): Promise<LigneDossier[]> {
+  const r = await sb(`dossiers_vendeurs?valide_le=is.null&select=*&order=maj_le.desc&limit=${limite}`);
+  return ((await r.json()) as Record<string, unknown>[]).map(lire);
 }

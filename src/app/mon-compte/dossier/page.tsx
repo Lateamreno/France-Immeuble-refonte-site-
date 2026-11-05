@@ -55,7 +55,7 @@ export default async function PageDossier() {
               <h1>Votre <span className="accent">dossier</span> en ligne</h1>
               <p>Remplissez ce que vous avez sous la main, lot par lot. Tout est enregistré au fur et à mesure&nbsp;: vous pouvez revenir plus tard.</p>
             </header>
-            <DossierForm initial={l.donnees} adresse={adresse} connecte={connecte} dejaValide={!!l.valide_le && !connecte} email={l.email} />
+            <DossierForm initial={l.donnees} adresse={adresse} connecte={connecte} dejaValide={!!l.valide_le && !connecte} email={l.email} transmisLe={l.transmis_le} />
             </>
           ) : (
             <div className="container--narrow dossier-absent">

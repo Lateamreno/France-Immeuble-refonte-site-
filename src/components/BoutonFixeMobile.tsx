@@ -19,9 +19,10 @@ import { ouvrirEstimation } from "./ModaleEstimation";
  *   MAV, 04/11/2026 : « garder le bouton affiché jusqu'à la fin du pied de page ») ;
  * - aux rangées de boutons qui portent l'action elles-mêmes (`.porte-action`,
  *   les deux boutons collés de « Vendez votre immeuble » sur l'accueil) ;
- * - à tout autre bouton de la page dès qu'il entre à l'écran : la pilule
- *   s'efface tant qu'une section montre ses propres boutons, et revient
- *   après (MAV, 05/11/2026 : « sinon des boutons peuvent se superposer »).
+ * - à toute section qui porte ses propres boutons : la pilule s'efface dès
+ *   qu'on arrive dans la section et revient quand on en sort (MAV, 05/11/2026 :
+ *   « sinon des boutons peuvent se superposer », puis « dès qu'on arrive sur
+ *   une section à bouton »).
  * Sur ordinateur, rien : les boutons des sections suffisent.
  */
 export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
@@ -42,18 +43,21 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
       (modale || b.getAttribute("href") === href) && !b.closest(".hero-media, .bouton-fixe-mob, .porte-action") &&
       !(zoneCible && zoneCible.contains(b)));
     doubles.forEach((b) => b.classList.add("double-fixe"));
-    const porteurs = [
-      ...Array.from(document.querySelectorAll<HTMLElement>("main .porte-action")),
-      // Les autres boutons de la page. Un bouton masqué (`double-fixe`, fenêtre
-      // fermée) n'a pas de taille : il ne compte jamais comme visible.
-      ...Array.from(document.querySelectorAll<HTMLElement>("main .btn")).filter((b) =>
-        !b.closest(".hero-media, .bouton-fixe-mob, .porte-action") && !doubles.includes(b)),
-    ];
+    const porteurs = Array.from(document.querySelectorAll<HTMLElement>("main .porte-action"));
+    // Les sections qui ont leurs propres boutons (hors pilule, hero et doubles
+    // masqués, hors fenêtres fermées) : on y entre, la pilule s'efface.
+    const sections = [...new Set(
+      Array.from(document.querySelectorAll<HTMLElement>("main .btn"))
+        .filter((b) => !b.closest(".hero-media, .bouton-fixe-mob, dialog") && !doubles.includes(b) && b.getClientRects().length > 0)
+        .map((b) => b.closest<HTMLElement>("main > section, main section"))
+        .filter((x): x is HTMLElement => !!x),
+    )];
     const calcul = () => {
       const heroVisible = hero ? etats.get(hero) ?? true : false;
       const finVisible = fin.some((x) => etats.get(x));
       const sectionPorte = porteurs.some((b) => etats.get(b));
-      setVisible(!heroVisible && !finVisible && !sectionPorte);
+      const sectionABoutons = sections.some((x) => dansSection.get(x));
+      setVisible(!heroVisible && !finVisible && !sectionPorte && !sectionABoutons);
     };
     const obs = new IntersectionObserver((entrees) => {
       for (const e of entrees) etats.set(e.target, e.isIntersecting);
@@ -62,7 +66,15 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
     if (hero) obs.observe(hero);
     fin.forEach((x) => obs.observe(x));
     porteurs.forEach((b) => obs.observe(b));
-    return () => { obs.disconnect(); doubles.forEach((b) => b.classList.remove("double-fixe")); };
+    // « On arrive » dans une section quand son haut passe aux deux tiers de l'écran ;
+    // on en sort quand son bas a quitté l'écran par le haut.
+    const dansSection = new Map<Element, boolean>();
+    const obsSections = new IntersectionObserver((entrees) => {
+      for (const e of entrees) dansSection.set(e.target, e.isIntersecting);
+      calcul();
+    }, { rootMargin: "0px 0px -35% 0px", threshold: 0 });
+    sections.forEach((x) => obsSections.observe(x));
+    return () => { obs.disconnect(); obsSections.disconnect(); doubles.forEach((b) => b.classList.remove("double-fixe")); };
   }, [cible, href, modale]);
   return (
     <div className={`bouton-fixe-mob${visible ? " est-visible" : ""}`} aria-hidden={!visible}>
