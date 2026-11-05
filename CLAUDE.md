@@ -302,6 +302,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   quand même l'alerte en gros ») ; sans loyer, l'alerte seule. La réglette va de 20 % sous le bas
   de la fourchette à 20 % au-dessus du haut (ou au prix au m² du secteur), la fourchette repérée
   sous la piste. Seuils confirmés par MAV : 25 % de décote, un tiers de surface.
+- **Lots 82 à 87 en production le 05/11/2026** (« go production », MAV).
+- **Lot 88** (MAV, 05/11/2026). Blog : les articles l'un sous l'autre sur ordinateur aussi
+  (`.articles-liste`). Articles : La Team Reno (www.lateamreno.fr) là où l'on parle de chiffrer
+  des travaux (DPE, hausse des taux, vendre plus cher, insalubrité, estimer, acheter en bloc),
+  Plein Bail (www.pleinbail.fr) là où l'on parle de vendre un bien loué (préemption, habitation ou
+  bureaux, vendre un immeuble de rapport), liens vers Vendre à la découpe, Immeubles à vendre,
+  Off-market, Immeubles vendus et Acheter. Search Console : `/contactez-nous/` indexable et dans
+  le sitemap ; `/contact/` et l'ancienne URL « decouvrez-tout-le-potentiel… » redirigées ; anciens
+  PDF de `/wp-content/` vers leur page (tarifs → Vendre, CGU → mentions légales), tout autre
+  fichier de `/wp-content/` sans équivalent en 410.
 
 ### Garde-fous non négociables
 

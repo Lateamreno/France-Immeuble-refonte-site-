@@ -72,18 +72,25 @@ function imageWp(chemin: string): string | null {
   return null;
 }
 
+/** Les PDF de l'ancien site encore connus de Google, vers la page qui les remplace. */
+const DOCUMENTS_WP: Record<string, string> = {
+  "tarifs-2020.pdf": "/vendre-un-immeuble/",
+  "cgu-france-immeuble-27112018-1.pdf": "/mentions-legales-2/",
+};
+
 function redirection(req: NextRequest, chemin: string) {
-  const url = req.nextUrl.clone();
-  url.pathname = chemin;
-  url.search = "";
-  return NextResponse.redirect(url, 301);
+  // Une URL absolue : la barre finale de /vendre-un-immeuble/ reste (sinon une redirection de plus).
+  return NextResponse.redirect(new URL(chemin, req.nextUrl.origin), 301);
 }
 
 export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   if (pathname.startsWith("/wp-content/")) {
-    const cible = imageWp(pathname);
-    return cible ? redirection(req, cible) : NextResponse.next();
+    const cible = imageWp(pathname) ?? DOCUMENTS_WP[pathname.split("/").pop()?.toLowerCase() ?? ""];
+    if (cible) return redirection(req, cible);
+    // Search Console, 05/11/2026 : un ancien fichier sans équivalent est « parti »
+    // (410) plutôt que refusé, pour que Google l'oublie vite.
+    return new NextResponse("Ce document n’existe plus.", { status: 410, headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
   if (pathname === "/") {
     const id = searchParams.get("p") ?? searchParams.get("page_id");

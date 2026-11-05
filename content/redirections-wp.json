@@ -1138,5 +1138,13 @@
 {
 "source": "/img-logo-header/",
 "destination": "/"
+},
+{
+"source": "/contact/",
+"destination": "/contactez-nous/"
+},
+{
+"source": "/:chemin(decouvrez.*)",
+"destination": "/estimer-un-immeuble/"
 }
 ]

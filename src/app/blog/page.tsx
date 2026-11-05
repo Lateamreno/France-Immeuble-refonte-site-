@@ -5,7 +5,6 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { Button } from "@/components/Button";
-import { LigneDefilante } from "@/components/LigneDefilante";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane } from "@/lib/schema";
 import { PREUVES, SITE } from "@/lib/site";
@@ -68,18 +67,18 @@ export default async function BlogPage() {
         </>
       </HeroMedia>
 
-      {/* Les articles sur une ligne qui défile : la liste tient sur un écran
-          (MAV, 27/10/2026). Chaque carte porte son visuel, son titre, son
-          résumé et sa date ; tous les liens restent dans la page. */}
+      {/* Les articles l'un sous l'autre, au téléphone (#213) comme sur ordinateur
+          (MAV, 05/11/2026 : « sur PC aussi, en défilement vertical »). Chaque
+          carte porte son visuel, son titre, son résumé et sa date. */}
       <section className="section articles-sec">
         <div className="container">
           <div className="section__head">
             <Eyebrow>Les articles</Eyebrow>
             <h2>{articles.length} articles sur la vente d’immeubles de rapport</h2>
           </div>
-          <LigneDefilante className="articles-ligne" marches>
+          <ul className="articles-liste">
             {articles.map((a, i) => (
-              <article key={a.slug} className="article-carte">
+              <li key={a.slug}><article className="article-carte">
                 <Link href={a.chemin} className="article-carte__lien">
                   {a.imageUne && (
                     <span className="article-carte__visuel">
@@ -88,7 +87,7 @@ export default async function BlogPage() {
                         alt={a.imageUneAlt ?? ""}
                         width={380}
                         height={254}
-                        sizes="(max-width: 760px) 85vw, 380px"
+                        sizes="(max-width: 760px) 112px, 300px"
                         priority={i < 3}
                       />
                     </span>
@@ -103,9 +102,9 @@ export default async function BlogPage() {
                     </span>
                   </span>
                 </Link>
-              </article>
+              </article></li>
             ))}
-          </LigneDefilante>
+          </ul>
         </div>
       </section>
 
