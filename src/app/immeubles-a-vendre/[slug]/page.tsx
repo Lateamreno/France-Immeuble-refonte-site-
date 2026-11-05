@@ -213,6 +213,15 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
   }
   for (const x of parNature.values()) x.potentiel *= 12;
   const deuxColonnes = !!r.potentiel;
+  // Le BO dépose ses totaux à part des lots (loyer_hc_an, loyer_hc_an_potentiel). Quand ils ne
+  // tombent pas sur la somme des lots, l'écart a sa propre ligne : sinon les lignes ne font
+  // pas le total affiché (Sin-le-Noble, 05/11/2026 : lots 57 372 €, potentiel du BO 60 372 €).
+  const somme = [...parNature.values()].reduce((t, x) => ({ actuel: t.actuel + x.actuel, potentiel: t.potentiel + x.potentiel }), { actuel: 0, potentiel: 0 });
+  const ecart = {
+    actuel: parNature.size && b.loyerHcAn != null ? b.loyerHcAn - somme.actuel : 0,
+    potentiel: parNature.size && deuxColonnes && b.loyerPotentielAn != null ? b.loyerPotentielAn - somme.potentiel : 0,
+  };
+  const avecEcart = Math.abs(ecart.actuel) >= 1 || Math.abs(ecart.potentiel) >= 1;
 
   return (
     <div className="etat-financier-pb">
@@ -247,9 +256,18 @@ function EtatFinancier({ b, lots }: { b: BienAVendre; lots: LotAnnonce[] }) {
             <table className="etat-financier">
               {deuxColonnes && <thead><tr><td /><th scope="col">Actuel</th><th scope="col">Potentiel</th></tr></thead>}
               <tbody>
-                {parNature.size > 1 && [...parNature.entries()].map(([k, x]) => (
+                {(parNature.size > 1 || avecEcart) && [...parNature.entries()].map(([k, x]) => (
                   <tr key={k}><th scope="row">{k}</th><td>{eur(x.actuel)}</td>{deuxColonnes && <td>{eur(x.potentiel)}</td>}</tr>
                 ))}
+                {avecEcart && (
+                  <tr>
+                    <th scope="row">{ecart.potentiel > 0 && Math.abs(ecart.actuel) < 1
+                      ? <>Hausse de loyers prévue <small>non détaillée par lot</small></>
+                      : <>Autres loyers <small>non détaillés par lot</small></>}</th>
+                    <td>{Math.abs(ecart.actuel) >= 1 ? eur(ecart.actuel) : "—"}</td>
+                    {deuxColonnes && <td>{Math.abs(ecart.potentiel) >= 1 ? eur(ecart.potentiel) : "—"}</td>}
+                  </tr>
+                )}
                 <tr className="etat-financier__total">
                   <th scope="row">Total des loyers HC</th>
                   <td>{b.loyerHcAn != null ? eur(b.loyerHcAn) : "—"}</td>

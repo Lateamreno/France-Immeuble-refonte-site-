@@ -316,6 +316,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   case) : sur tous les formulaires, le texte d'aide d'une case disparaît dès qu'on clique dedans ;
   les exemples de saisie commencent par « Ex. : » (surface, loyer, rue, code postal, ville,
   adresse, taxe foncière, TEOM, prix), sauf dans les cases trop étroites (téléphone, numéro).
+- **Lot 90** (MAV, 05/11/2026, fiche de Sin-le-Noble : « les mêmes chiffres mais pas le même
+  résultat ») : quand les totaux du BO (`loyer_hc_an`, `loyer_hc_an_potentiel`) ne tombent pas sur
+  la somme des lots, l'écart a sa ligne dans « Revenus annuels » (« Hausse de loyers prévue, non
+  détaillée par lot » ou « Autres loyers ») ; demande au BO, point 8 de
+  `docs/PROMPT-BO-MES-IMMEUBLES.md`.
 
 ### Garde-fous non négociables
 

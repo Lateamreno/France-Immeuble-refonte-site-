@@ -5380,3 +5380,5 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .onglets-acheter__i.est-actif{background:var(--color-noir-3);color:var(--color-bronze);}
 .onglets-acheter__i:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:2px;}
 @media (min-width:960px){ .onglets-acheter{display:none;} }
+/* Ligne d'écart des loyers (05/11/2026) : la précision sous le libellé, pas au milieu. */
+.etat-financier th > small{display:block;margin-top:2px;font-size:var(--fs-eyebrow);font-weight:400;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}

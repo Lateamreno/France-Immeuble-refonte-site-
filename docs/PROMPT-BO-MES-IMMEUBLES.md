@@ -101,3 +101,14 @@ Retour #269 : l'ancien formulaire du site pouvait envoyer une recherche « March
 biens » restée cachée quand le client revenait en arrière pour ne garder
 qu'« Investissement ». C'est corrigé côté site. S'il en reste dans le CRM pour MAV,
 merci de la retirer.
+
+## 8. Annonces : le loyer potentiel doit se retrouver dans les lots (05/11/2026)
+
+Sur l'annonce de Sin-le-Noble, `loyer_hc_an_potentiel` vaut 60 372 € alors que les sept lots
+déposés dans `biens_lots`, tous occupés, font 57 372 € par an. Un acquéreur l'a vu : les lignes
+du tableau ne faisaient pas le total. Le site affiche maintenant l'écart sur sa propre ligne
+(« Hausse de loyers prévue, non détaillée par lot »), mais la bonne correction est au BO :
+
+- soit déposer, pour chaque lot concerné, le loyer attendu dans `loyer_marche_mois` (le site
+  le prendra comme potentiel du lot, même occupé, si vous nous le confirmez) ;
+- soit corriger `loyer_hc_an_potentiel` s'il ne correspond à rien.
