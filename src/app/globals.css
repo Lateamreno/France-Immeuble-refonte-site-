@@ -5236,3 +5236,62 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 /* L'espace client dans le menu : au téléphone seulement, l'icône suffit sur ordinateur. */
 .nav > .nav__compte{display:none;}
 @media (max-width:980px){ .nav > .nav__compte{display:block;} }
+
+/* ===== Lot 82 (retours #261 à #278, MAV, 05/11/2026) ===== */
+/* #263, #275, #262 : connecté, les coordonnées du compte en une ligne, modifiables d'un clic. */
+.identite-compte{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin:0 0 var(--space-xs);
+  padding:12px 16px;border:1px solid var(--color-ligne);border-radius:var(--radius-card);
+  background:color-mix(in srgb,var(--color-noir-3) 80%,transparent);font-size:var(--fs-small);color:var(--color-creme);}
+.identite-compte__qui{display:flex;align-items:center;gap:10px;min-width:0;overflow-wrap:anywhere;}
+.identite-compte__qui svg{color:var(--color-bronze);flex:none;}
+/* #276 : − et + de part et d'autre de chaque nombre de lots. */
+.lot__pas{display:flex;align-items:stretch;gap:6px;}
+.lot__pas input{flex:1;min-width:0;}
+.lot__bouton{flex:none;width:44px;border:1px solid var(--color-ligne);border-radius:var(--radius-pill);
+  background:var(--color-noir);color:var(--color-bronze);font:600 1.2rem/1 var(--font-body);cursor:pointer;
+  display:grid;place-items:center;touch-action:manipulation;}
+.lot__bouton:hover:not(:disabled){border-color:var(--color-bronze);}
+.lot__bouton:disabled{opacity:.35;cursor:default;}
+.lot__bouton:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.section--creme .lot__bouton{background:var(--color-noir);}
+/* #261 : l'état locatif dans l'immeuble du compte. */
+.compte-etat-locatif{display:flex;flex-direction:column;gap:var(--space-s);}
+.compte-etat-locatif .dossier{margin:0;}
+.dossier__envoye{margin:0;color:var(--color-gris);font-size:var(--fs-small);}
+/* #271 : le titre d'une recherche, renommable au crayon, et ses critères en pictos. */
+.recherche-titre{display:flex;align-items:center;gap:8px;width:100%;}
+.recherche-titre .compte-carte__titre{flex:0 1 auto;}
+.recherche-titre__crayon{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;
+  border:1px solid transparent;background:none;color:var(--color-bronze);cursor:pointer;}
+.recherche-titre__crayon:hover{border-color:var(--color-ligne);}
+.recherche-titre__crayon:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.recherche-titre--edition{flex-wrap:wrap;}
+.recherche-titre--edition input{flex:1;min-width:160px;padding:8px 12px;border-radius:var(--radius-card);
+  border:1px solid var(--color-bronze);background:var(--color-noir);color:var(--color-creme);font:inherit;font-size:16px;}
+.recherche-criteres{list-style:none;margin:6px 0 4px;padding:0;display:flex;flex-direction:column;gap:8px;width:100%;}
+.recherche-criteres li{display:grid;grid-template-columns:20px 92px 1fr;align-items:baseline;gap:10px;font-size:var(--fs-small);}
+.recherche-criteres svg{color:var(--color-bronze);align-self:center;}
+.recherche-criteres__nom{color:var(--color-gris);font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;}
+.recherche-criteres__valeur{color:var(--color-creme);font-weight:500;}
+.compte-carte--recherche .compte-confirme{margin:4px 0;}
+/* #264 : la photo du formulaire de Vendre sur toute la largeur, teintée or comme les atouts. */
+.fond-photo.fond-photo--clair{width:100%;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.85) 45%,rgba(0,0,0,.45) 100%);
+          mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.85) 45%,rgba(0,0,0,.45) 100%);}
+.fond-photo.fond-photo--clair img{filter:grayscale(.25) sepia(.4) saturate(1) brightness(.68) contrast(1.1);}
+@media (max-width:899px){
+  .fond-photo.fond-photo--clair{height:100%;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 40%,rgba(0,0,0,.35) 100%);
+            mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 40%,rgba(0,0,0,.35) 100%);}
+}
+/* #268 : sur un écran peu haut, la liste des six analyses se resserre ; le
+   bouton garde au moins 50 px d'air avant la section suivante (mesuré de 720
+   à 1080 px de haut). */
+@media (min-width:760px) and (min-height:700px) and (max-height:1000px){
+  .sec-analyses--pin .analyses-sch__item{padding-block:6px;}
+  .sec-analyses--pin .analyses-sch__item h3{font-size:17px;}
+  .sec-analyses--pin .analyses-sch__item p{font-size:13.5px;line-height:1.4;}
+  .sec-analyses--pin .analyses-sch__scene svg{max-height:max(240px,calc(var(--ecran) - 400px));}
+  .sec-analyses--pin .analyses-sch__entete h2{font-size:clamp(26px,3.4vh,40px);}
+}
+.compte-grille:has(> .compte-carte--recherche){grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));}

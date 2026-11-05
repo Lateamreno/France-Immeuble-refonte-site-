@@ -7,7 +7,7 @@ import {
 } from "@/lib/dossier/modele";
 import { SITE } from "@/lib/site";
 import { Picto } from "@/components/Picto";
-import { ouvrirCompte as ouvrirFenetreCompte } from "@/components/biens/etat";
+import { ouvrirCompte as ouvrirFenetreCompte, useEtatCompte, useGarderALaConnexion } from "@/components/biens/etat";
 
 /**
  * L'état locatif du vendeur, lot par lot (retour #64 de MAV, 27/10/2026).
@@ -26,8 +26,11 @@ type Etape = "saisie" | "code" | "fini";
 export function DossierForm({
   initial,
   adresse,
-  connecte,
+  connecte: connecteServeur,
   dejaValide,
+  cible,
+  envoyeLe,
+  email: emailDossier,
 }: {
   initial: Dossier;
   adresse: string;
@@ -35,8 +38,24 @@ export function DossierForm({
   connecte: boolean;
   /** Dossier déjà envoyé, compte pas encore ouvert : on reprend au code. */
   dejaValide: boolean;
+  /**
+   * Un immeuble du compte (« Mes immeubles », retours #261 et #277) : la clé
+   * qu'il porte dans le compte. Le brouillon et l'envoi passent par
+   * /api/compte/immeuble/, sans mot de passe ni code.
+   */
+  cible?: string;
+  /** Dernier envoi de cet état locatif à l'agent. */
+  envoyeLe?: string;
+  /** L'adresse du dossier : connecté sous cette adresse, plus de mot de passe (retour #266). */
+  email?: string;
 }) {
   const uid = useId();
+  const etat = useEtatCompte();
+  const connecte = connecteServeur || !!cible ||
+    (!!etat?.connecte && !!emailDossier && etat.email?.toLowerCase() === emailDossier.trim().toLowerCase());
+  // Se connecter dans la fenêtre ne recharge pas la page : la saisie reste (retour #267).
+  useGarderALaConnexion(true);
+  const [dernierEnvoi, setDernierEnvoi] = useState(envoyeLe ?? "");
   const [d, setD] = useState<Dossier>(initial);
   const [etape, setEtape] = useState<Etape>(dejaValide ? "code" : "saisie");
   const [sauvegarde, setSauvegarde] = useState<"" | "attente" | "ok" | "erreur">("");
@@ -69,10 +88,10 @@ export function DossierForm({
 
   async function enregistrer(donnees: Dossier): Promise<boolean> {
     try {
-      const r = await fetch("/api/dossier/", {
+      const r = await fetch(cible ? "/api/compte/immeuble/" : "/api/dossier/", {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ donnees }),
+        body: JSON.stringify(cible ? { cle: cible, donnees } : { donnees }),
       });
       setSauvegarde(r.ok ? "ok" : "erreur");
       return r.ok;
@@ -109,6 +128,24 @@ export function DossierForm({
     }
     setEnvoi(true);
     if (minuterie.current) clearTimeout(minuterie.current);
+    if (cible) {
+      try {
+        const r = await fetch("/api/compte/immeuble/", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ cle: cible, donnees: d }),
+        });
+        const j = (await r.json()) as { ok?: boolean; envoye_le?: string; erreur?: string };
+        if (!r.ok || !j.ok) { setErreur(j.erreur ?? "Une erreur est survenue. Réessayez."); return; }
+        setDernierEnvoi(j.envoye_le ?? new Date().toISOString());
+        setEtape("fini");
+      } catch {
+        setErreur("La connexion a été coupée. Réessayez.");
+      } finally {
+        setEnvoi(false);
+      }
+      return;
+    }
     try {
       const r = await fetch("/api/dossier/valider/", {
         method: "POST",
@@ -175,6 +212,19 @@ export function DossierForm({
   }
 
   const { surface, loyerAn } = totaux(d);
+
+  if (etape === "fini" && cible) {
+    return (
+      <div className="form-shell outcome dossier-fin">
+        <span className="outcome__badge">État locatif envoyé</span>
+        <h3 tabIndex={-1}>Votre agent a reçu votre état locatif.</h3>
+        <p>Il s’en sert pour l’estimation et pour présenter l’immeuble. Vous pouvez le compléter à tout moment&nbsp;: chaque envoi remplace le précédent.</p>
+        <div className="btn-row">
+          <button type="button" className="btn btn--primary" onClick={() => setEtape("saisie")}>Modifier l’état locatif</button>
+        </div>
+      </div>
+    );
+  }
 
   if (etape === "fini") {
     return (
@@ -282,16 +332,26 @@ export function DossierForm({
             onChange={(e) => setD((p) => ({ ...p, commentaire: e.target.value }))}
             placeholder="Travaux réalisés ou à prévoir, lots vacants, particularités…" />
         </div>
-        <p className="dossier__note">
-          Plans et photos&nbsp;: envoyez-les à{" "}
-          <a className="lien-discret" href={`mailto:${SITE.email}`}>{SITE.email}</a>, en rappelant l’adresse
-          de l’immeuble.
-        </p>
+        {cible ? (
+          <p className="dossier__note">
+            Plans, photos, baux&nbsp;: déposez-les dans l’onglet{" "}
+            <a className="lien-discret" href={`/mon-compte/immeubles/${cible}/?onglet=documents`}>Documents</a> de l’immeuble.
+          </p>
+        ) : (
+          <p className="dossier__note">
+            Plans et photos&nbsp;: envoyez-les à{" "}
+            <a className="lien-discret" href={`mailto:${SITE.email}`}>{SITE.email}</a>, en rappelant l’adresse
+            de l’immeuble.
+          </p>
+        )}
       </div>
 
       <div className="dossier__bloc dossier__valider">
         {connecte ? (
-          <h3>Votre dossier est prêt&nbsp;?</h3>
+          <>
+            <h3>{cible ? "Votre état locatif est prêt ?" : "Votre dossier est prêt ?"}</h3>
+            {dernierEnvoi && <p className="dossier__envoye">Dernier envoi à votre agent le {new Date(dernierEnvoi).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}.</p>}
+          </>
         ) : (
           <>
             <h3>Valider et créer mon compte</h3>
@@ -303,7 +363,7 @@ export function DossierForm({
         {erreur && <p className="err" role="alert">{erreur}</p>}
         <div className="field-nav">
           <button type="submit" className="btn btn--primary" disabled={envoi}>
-            {envoi ? "Envoi…" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
+            {envoi ? "Envoi…" : cible ? "Envoyer à mon agent" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
           </button>
         </div>
         {!connecte && (

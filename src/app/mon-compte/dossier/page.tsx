@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Button } from "@/components/Button";
 import { DossierForm } from "@/components/dossier/DossierForm";
-import { sessionCourante, uuidDe } from "@/lib/compte/auth";
-import { creerDossier, dossierCourant, type LigneDossier } from "@/lib/dossier/serveur";
+import { sessionCourante } from "@/lib/compte/auth";
+import { dossierCourant, type LigneDossier } from "@/lib/dossier/serveur";
 import { SITE } from "@/lib/site";
+import { redirect } from "next/navigation";
 
 /**
  * /mon-compte/dossier/ — l'état locatif du vendeur (retour #64 de MAV).
@@ -25,27 +26,17 @@ export default async function PageDossier() {
   const verifie = s?.utilisateur.email_confirmed_at ? s.utilisateur : null;
 
   let l: LigneDossier | null = null;
+  let versImmeubles = false;
   try {
     l = await dossierCourant(verifie?.id ?? null);
-    if (!l && verifie) {
-      const est = verifie.app_metadata?.estimation;
-      l = await creerDossier({
-        ref: est?.ref ?? uuidDe(`dossier|${verifie.id}`),
-        email: verifie.email,
-        compte: verifie.id,
-        identite: {
-          prenom: verifie.user_metadata?.prenom,
-          nom: verifie.user_metadata?.nom,
-          telephone: verifie.user_metadata?.telephone,
-        },
-        comptes: est?.lots ?? {},
-        cookie: false,
-      });
-    }
+    // Connecté sans brouillon en cours : l'état locatif se remplit dans chaque
+    // immeuble de « Mes immeubles » (retour #261, MAV, 05/11/2026).
+    if (!l && verifie) versImmeubles = true;
   } catch (e) {
     console.error("[dossier] lecture impossible —", e instanceof Error ? e.message : e);
   }
 
+  if (versImmeubles) redirect("/mon-compte/immeubles/");
   const i = l?.identite ?? {};
   const adresse = [[i.numero, i.rue].filter(Boolean).join(" "), [i.codePostal, i.ville].filter(Boolean).join(" ")]
     .filter(Boolean)
@@ -64,7 +55,7 @@ export default async function PageDossier() {
               <h1>Votre <span className="accent">dossier</span> en ligne</h1>
               <p>Remplissez ce que vous avez sous la main, lot par lot. Tout est enregistré au fur et à mesure&nbsp;: vous pouvez revenir plus tard.</p>
             </header>
-            <DossierForm initial={l.donnees} adresse={adresse} connecte={connecte} dejaValide={!!l.valide_le && !connecte} />
+            <DossierForm initial={l.donnees} adresse={adresse} connecte={connecte} dejaValide={!!l.valide_le && !connecte} email={l.email} />
             </>
           ) : (
             <div className="container--narrow dossier-absent">

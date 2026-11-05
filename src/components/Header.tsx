@@ -40,6 +40,25 @@ export function Header() {
     return () => document.documentElement.classList.remove("menu-ouvert");
   }, [ouvert]);
 
+  /* Retour #278 (MAV, 05/11/2026) : un clic ailleurs sur la page, ou en dehors
+     de la fenêtre, referme le sous-menu ouvert, même s'il gardait le focus. */
+  useEffect(() => {
+    const fermer = () => {
+      setDeroule(null);
+      const actif = document.activeElement as HTMLElement | null;
+      if (actif?.closest(".nav-groupe")) actif.blur();
+    };
+    const dehors = (e: PointerEvent) => {
+      if (!(e.target as HTMLElement | null)?.closest?.(".nav-groupe")) fermer();
+    };
+    document.addEventListener("pointerdown", dehors);
+    window.addEventListener("blur", fermer);
+    return () => {
+      document.removeEventListener("pointerdown", dehors);
+      window.removeEventListener("blur", fermer);
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

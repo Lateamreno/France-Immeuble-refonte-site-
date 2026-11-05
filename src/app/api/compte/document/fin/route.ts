@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { deposerLead } from "@/lib/leads";
-import { appartient } from "@/lib/compte/donnees";
+import { fusionnerSaisie, saisieDuCompte } from "@/lib/compte/saisies";
+import { immeubleDuCompte } from "@/lib/compte/donnees";
 import { contenuConforme, contenuSuspect, controlerAnnonce, estCategorie } from "@/lib/compte/pieces";
 import { deposerObjet, effacerObjets, extension, FORMATS, lireObjet, nomDeFichier, TAILLE_MAX } from "@/lib/compte/stockage";
 import { exigerCompte, lireJson, refus, texte, UUID, contexteDe } from "@/lib/compte/requete";
@@ -35,8 +36,9 @@ export async function POST(req: Request) {
     return refus("Dépôt illisible.", 422);
   }
   const pourMessage = b?.pour === "message";
+  let sorte: "bien" | "estimation" | null = null;
   if (!pourMessage) {
-    if (!UUID.test(bien) || !(await appartient(s.jeton, "compte_biens", bien))) {
+    if (!UUID.test(bien) || !(sorte = await immeubleDuCompte(s.jeton, bien))) {
       return refus("Immeuble introuvable.", 404);
     }
     if (!estCategorie(categorie)) return refus("Catégorie inconnue.", 422);
@@ -78,8 +80,11 @@ export async function POST(req: Request) {
   }
   if (pourMessage) return NextResponse.json({ ok: true, chemin, nom: nom.slice(0, 120) });
 
+  // Un immeuble pas encore déposé par le BO n'a que la `ref` de son estimation :
+  // le BO range la pièce avec l'immeuble créé par cette estimation (retour #261).
+  const immeuble = sorte === "estimation" ? { refEstimation: bien } : { bien };
   const issue = await deposerLead(
-    { type: "document", ref: depot, compte, bien, categorie, chemin, nom },
+    { type: "document", ref: depot, compte, ...immeuble, categorie, chemin, nom },
     { refusDefinitif: true, contexte: contexteDe(s.utilisateur) },
   );
   if (issue === "refuse") {
@@ -89,6 +94,14 @@ export async function POST(req: Request) {
   if (issue === "perdu") {
     await effacerObjets([chemin]);
     return refus("Envoi impossible pour le moment. Réessayez.", 503);
+  }
+  if (sorte === "estimation") {
+    // La pièce s'affiche dans l'immeuble en attendant que le BO la redépose.
+    const l = await saisieDuCompte(compte, bien, "estimation").catch(() => null);
+    const pieces = Array.isArray(l?.donnees.pieces) ? (l!.donnees.pieces as unknown[]) : [];
+    await fusionnerSaisie(compte, bien, "estimation", {
+      pieces: [...pieces, { nom: nom.slice(0, 120), categorie, recu_le: new Date().toISOString() }].slice(-60),
+    });
   }
   return NextResponse.json({ ok: true, stocke: issue });
 }

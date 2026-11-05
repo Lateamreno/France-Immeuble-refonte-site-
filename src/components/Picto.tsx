@@ -20,9 +20,11 @@ export type NomPicto =
   | "loupeCible" | "ecoute" | "euro" | "equipe" | "dossierCible" | "bulles" | "france"
   | "logement" | "commerce" | "entrepot" | "parking" | "cave" | "autre"
   | "loupe" | "reglages" | "agenda" | "profil" | "valide" | "plus" | "sortie" | "trombone" | "coeur"
-  | "detective";
+  | "detective" | "crayon";
 
 const TRACES: Record<NomPicto, React.ReactNode> = {
+  /* Renommer une recherche (retour #271, MAV, 05/11/2026). */
+  crayon: <><path d="M15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8.6 19.2 4 20l.8-4.6Z"/><path d="m13.8 6.4 3.8 3.8"/></>,
   /* Retour #231 puis exemples de MAV (04/11/2026) : l'off-market, un détective
      en chapeau mou à large bord, sans visage, col du trench relevé, cravate. */
   detective: <><path d="M8.6 7.4c.1-2.4.9-3.6 2-3.6l1.4.6 1.4-.6c1.1 0 1.9 1.2 2 3.6"/><path d="M8.7 6.3h6.6"/><path d="M3.8 8.5c1.6-.9 4.6-1.4 8.2-1.4s6.6.5 8.2 1.4c-1.6.9-4.6 1.4-8.2 1.4s-6.6-.5-8.2-1.4Z"/><path d="M9.4 10.2c.2 2.1 1.2 3.3 2.6 3.3s2.4-1.2 2.6-3.3"/><path d="M9.7 12.8 8.3 11.3l-.9 3.1M14.3 12.8l1.4-1.5.9 3.1"/><path d="M7.4 14.4c-2 .5-3.2 2.1-3.4 6.1h16c-.2-4-1.4-5.6-3.4-6.1"/><path d="M7.4 14.4 12 20.5l4.6-6.1"/><path d="m11.3 16.9.7-1 .7 1-.7 2.6z"/></>,

@@ -28,6 +28,8 @@ export type BienCompte = {
   cle: string; commune: string | null; dept: string | null; type: string | null; lots: number | null;
   etape: string | null; prix: number | null; sollicites: number | null; visites: number | null;
   offres: number | null; bien: string | null;
+  /** La `ref` de l'estimation dont l'immeuble est issu (0017), quand le BO la dépose. */
+  ref?: string | null;
 };
 export type Estimation = {
   cle: string; bien_cle: string | null; valeur: number | null; prix_m2: number | null;
@@ -58,7 +60,7 @@ export type Agent = {
 
 /** Ce que le client a envoyé depuis son compte, gardé par le site jusqu'au retour du BO (0012). */
 export type Saisie = {
-  ref: string; type: "message" | "rendez_vous" | "offre_acquereur" | "profil_investisseur";
+  ref: string; type: "message" | "rendez_vous" | "offre_acquereur" | "profil_investisseur" | "estimation" | "nom_recherche";
   donnees: Record<string, unknown>; envoye_le: string;
 };
 
@@ -128,4 +130,15 @@ export async function appartient(
 ): Promise<boolean> {
   const l = await lire<{ cle: string }>(jeton, `${table}?select=cle&cle=eq.${encodeURIComponent(cle)}&limit=1`);
   return l.length === 1;
+}
+
+/**
+ * « bien » ou « estimation » si `cle` désigne un immeuble du compte : un
+ * immeuble déposé par le BO, ou une estimation envoyée par le client et pas
+ * encore déposée (retour #261). null sinon.
+ */
+export async function immeubleDuCompte(jeton: string, cle: string): Promise<"bien" | "estimation" | null> {
+  if (await appartient(jeton, "compte_biens", cle)) return "bien";
+  const l = await lire<{ ref: string }>(jeton, `compte_saisies?select=ref&type=eq.estimation&ref=eq.${encodeURIComponent(cle)}&limit=1`);
+  return l.length === 1 ? "estimation" : null;
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appartient } from "@/lib/compte/donnees";
+import { immeubleDuCompte } from "@/lib/compte/donnees";
 import { controlerAnnonce, estCategorie, nombreDeMorceaux } from "@/lib/compte/pieces";
 import { exigerCompte, lireJson, refus, texte, UUID } from "@/lib/compte/requete";
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const nom = texte(b?.nom, 200);
   const taille = Number(b?.taille);
   if (b?.pour !== "message") {
-    if (!UUID.test(bien) || !(await appartient(s.jeton, "compte_biens", bien))) {
+    if (!UUID.test(bien) || !(await immeubleDuCompte(s.jeton, bien))) {
       return refus("Immeuble introuvable.", 404);
     }
     if (!estCategorie(categorie)) return refus("Catégorie inconnue.", 422);

@@ -3,6 +3,8 @@ import { router, type Dossier } from "@/lib/routage";
 import { deposerLead, relancerFile } from "@/lib/leads";
 import { sessionCourante } from "@/lib/compte/auth";
 import { accueillirVendeur } from "@/lib/compte/accueil";
+import { copieDepuisLead } from "@/lib/compte/immeubles";
+import { fusionnerSaisie } from "@/lib/compte/saisies";
 
 /**
  * Réception des leads — CLAUDE.md §2 et §9, contrat BO du 21/10/2026.
@@ -77,6 +79,12 @@ export async function POST(req: Request) {
       ? { email: u.email, prenom: u.user_metadata?.prenom, nom: u.user_metadata?.nom, telephone: u.user_metadata?.telephone }
       : {},
   });
+
+  // Connecté : l'immeuble apparaît tout de suite dans « Mes immeubles »
+  // (retours #261 et #274, MAV, 05/11/2026), sans attendre le dépôt du BO.
+  if (compte && body.type === "estimation" && issue !== "perdu" && /^[0-9a-f-]{36}$/i.test(ref)) {
+    await fusionnerSaisie(compte, ref, "estimation", copieDepuisLead(body));
+  }
 
   // Chaque lead qui arrive est l'occasion de vider la file : si le BO vient de
   // répondre, ceux qui attendaient partent aussi. Après la réponse, pour ne pas

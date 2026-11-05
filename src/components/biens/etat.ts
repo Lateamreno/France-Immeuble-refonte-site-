@@ -12,9 +12,13 @@ export type EtatCompte = {
   favoris?: string[];
   offres?: { annonce: string; montant: number; envoye_le: string }[];
   profil?: boolean;
-  /** Pour préremplir l'offre ; jamais mis en cache (réponse privée). */
+  /** Pour préremplir l'offre et les formulaires ; jamais mis en cache (réponse privée). */
   prenom?: string;
   nom?: string;
+  email?: string;
+  telephone?: string;
+  /** L'agent a appelé le client : l'accès complet est ouvert (retour #270). */
+  appele?: boolean;
 };
 
 let promesse: Promise<EtatCompte> | null = null;
@@ -37,6 +41,31 @@ export function useEtatCompte(): EtatCompte | null {
     return () => { abonnes.delete(setE); };
   }, []);
   return e;
+}
+
+/**
+ * Relit l'état après une connexion faite sans recharger la page (retour #267) :
+ * tous les composants abonnés se mettent à jour.
+ */
+export function rechargerEtatCompte() {
+  promesse = null;
+  void charger().then((e) => { for (const f of abonnes) f(e); });
+}
+
+/**
+ * Juste après une connexion dans la fenêtre de compte. Un formulaire en cours
+ * de saisie appelle `preventDefault()` : la page ne se recharge pas, sa saisie
+ * reste, et il relit l'état du compte (retour #267, MAV, 05/11/2026).
+ */
+export const EVENEMENT_CONNEXION = "fi:connecte";
+
+export function useGarderALaConnexion(garder: boolean) {
+  useEffect(() => {
+    if (!garder) return;
+    const f = (e: Event) => e.preventDefault();
+    window.addEventListener(EVENEMENT_CONNEXION, f);
+    return () => window.removeEventListener(EVENEMENT_CONNEXION, f);
+  }, [garder]);
 }
 
 /** Après un clic sur un cœur : tous les boutons de la page se mettent à jour. */

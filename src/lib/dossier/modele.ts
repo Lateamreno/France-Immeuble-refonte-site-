@@ -66,7 +66,7 @@ export const STATUTS: Option[] = [
 ];
 
 const BAUX_HABITATION: Option[] = [
-  { cle: "nu_89", libelle: "Vide (loi de 1989)" },
+  { cle: "nu_89", libelle: "Nu (loi de 1989)" },
   { cle: "meuble", libelle: "Meublé" },
   { cle: "mobilite", libelle: "Bail mobilité" },
   { cle: "nu_48", libelle: "Loi de 1948" },

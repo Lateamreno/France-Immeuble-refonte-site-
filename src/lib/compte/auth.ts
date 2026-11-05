@@ -262,7 +262,7 @@ export async function lienDAcces(
   email: string,
   meta: { prenom?: string; nom?: string; telephone?: string },
   estimation?: Estimation,
-): Promise<{ type: "invite" | "magiclink"; empreinte: string }> {
+): Promise<{ type: "invite" | "magiclink"; empreinte: string; id?: string }> {
   const cfg = cfgSecrete();
   type Reponse = { id?: string; hashed_token?: string; properties?: { hashed_token?: string } };
   const lire = (r: Reponse) => r.hashed_token ?? r.properties?.hashed_token ?? "";
@@ -277,7 +277,7 @@ export async function lienDAcces(
     // le client ne peut pas modifier : un compte vendeur jamais ouvert est
     // supprimé au bout de 30 jours (`purge.ts`), un compte acquéreur jamais.
     if (r.id) await noterEstimation(r.id, { origine: "estimation", ...(estimation ? { estimation } : {}) });
-    return { type: "invite", empreinte: lire(r) };
+    return { type: "invite", empreinte: lire(r), id: r.id };
   } catch (e) {
     if (!(e instanceof ErreurAuth) || !["email_exists", "user_already_exists", "422"].includes(e.code)) throw e;
     const r = await gotrue<Reponse>("admin/generate_link", {
@@ -287,7 +287,7 @@ export async function lienDAcces(
       body: JSON.stringify({ type: "magiclink", email }),
     });
     if (r.id && estimation) await noterEstimation(r.id, { estimation });
-    return { type: "magiclink", empreinte: lire(r) };
+    return { type: "magiclink", empreinte: lire(r), id: r.id };
   }
 }
 

@@ -4,6 +4,7 @@ import { rattacher } from "@/lib/compte/rattachement";
 import { erreurEnReponse, lireJson, memeOrigine, refus } from "@/lib/compte/requete";
 import { motDePasseValide } from "@/lib/dossier/modele";
 import { dossierCourant, modifier, oublierCookie, supprimer } from "@/lib/dossier/serveur";
+import { garderDansLeCompte } from "@/lib/dossier/envoi";
 
 export const runtime = "nodejs";
 
@@ -48,6 +49,8 @@ export async function POST(req: Request) {
       console.error("[dossier] mot de passe non posé —", e instanceof Error ? e.message : e);
     }
     await rattacher(s.user);
+    // L'adresse est prouvée : l'immeuble et son état locatif rejoignent le compte (retour #274).
+    await garderDansLeCompte(s.user.id, l, l.donnees);
     await supprimer(l.empreinte);
     await oublierCookie();
     return NextResponse.json({ ok: true, suite: motDePassePose ? "/mon-compte/?etat=dossier-envoye" : "/mon-compte/?etat=choisir-mot-de-passe" });

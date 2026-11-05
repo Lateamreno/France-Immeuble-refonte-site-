@@ -3,7 +3,7 @@ import { conversations } from "./messagerie";
 
 /** Vendeur s'il a un immeuble ou une estimation ; acheteur s'il cherche, ou s'il n'est pas vendeur. */
 export function profils(d: DonneesCompte) {
-  const vendeur = d.biens.length > 0 || d.estimations.length > 0;
+  const vendeur = d.biens.length > 0 || d.estimations.length > 0 || d.saisies.some((s) => s.type === "estimation");
   const acheteur = d.recherches.length > 0 || d.propositions.length > 0 || d.demandes.length > 0 || !vendeur;
   return { vendeur, acheteur };
 }

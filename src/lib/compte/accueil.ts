@@ -5,6 +5,8 @@ import { envoyerAuClient } from "../notifications";
 import { bouton as bouton_, COULEURS, echap, gabarit, liste, origineLiens, paragraphe, piedTexte, sansLienAuto } from "../courriel";
 import { ELEMENTS_ATTENDUS } from "../dossier/modele";
 import { lienDAcces } from "./auth";
+import { copieDepuisLead } from "./immeubles";
+import { fusionnerSaisie } from "./saisies";
 
 /**
  * Après une estimation complète, partie 2 comprise, le client reçoit un
@@ -150,7 +152,7 @@ export async function accueillirVendeur(l: Record<string, unknown>): Promise<str
   let lien: string | null = null;
   try {
     const n = (v: unknown) => Math.max(0, Math.min(99, Math.floor(Number(v) || 0)));
-    const { type, empreinte: jeton } = await lienDAcces(
+    const { type, empreinte: jeton, id } = await lienDAcces(
       email,
       { prenom: t(l.prenom), nom: t(l.nom), telephone: t(l.telephone) },
       // De quoi préremplir le dossier ouvert depuis le compte (retour #64).
@@ -161,6 +163,10 @@ export async function accueillirVendeur(l: Record<string, unknown>): Promise<str
           }
         : undefined,
     );
+    // L'immeuble est dans « Mes immeubles » dès l'ouverture du compte (retour #274).
+    // Seulement pour un compte créé ici : sur un compte qui existait déjà,
+    // n'importe qui pourrait ajouter un immeuble en tapant l'adresse d'un autre.
+    if (id && type === "invite" && typeof l.ref === "string") await fusionnerSaisie(id, l.ref, "estimation", copieDepuisLead(l));
     if (jeton) lien = `${origineLiens()}/mon-compte/activer/?type=${type}&jeton=${encodeURIComponent(jeton)}`;
   } catch (e) {
     // Sans compte, l'e-mail part quand même : la liste des pièces reste utile.

@@ -238,6 +238,21 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   en fin de fiche ; état financier en blocs à picto ; sous 1150 px de haut (retour #180), la simulation passe
   dans la feuille d'offre et la colonne tient sans défiler. DPE : fourchette des lots, de la
   meilleure classe à la moins bonne, quand le BO dépose les lots.
+- **Lot 82, « Mes immeubles » dès le formulaire** (retours #261 à #278, MAV, 05/11/2026) :
+  une estimation envoyée connecté (ou dont le compte s'ouvre avec le code du dossier) est
+  copiée dans `compte_saisies` (type `estimation`, migration 0017 ; **rue sans numéro**,
+  `rueSansNumero` de `src/lib/compte/immeubles.ts`) et s'affiche tout de suite dans Mes
+  immeubles, avec sa page : vue d'ensemble, estimation en cours et marché du département,
+  état locatif à remplir sur place (`DossierForm` avec `cible`, route `/api/compte/immeuble/`)
+  et documents (`refEstimation` au BO). La copie s'efface devant la fiche du BO quand
+  `compte_biens.ref` vaut sa `ref`. Plus de bouton « Mon dossier en ligne ». Connecté, les
+  formulaires ne redemandent ni nom, ni e-mail, ni téléphone (une ligne « Modifier ») ; une
+  connexion par la fenêtre ne recharge plus une page où un formulaire est en cours
+  (`fi:connecte`, `useGarderALaConnexion`) ; l'écran de fin montre l'état locatif tout de
+  suite ; lots au − et + ; bail « Nu » ; recherches en pictos, renommées au crayon
+  (`recherche_nom`), budget au curseur avec espaces des milliers, liste relue seule après
+  un ajout. Demande au BO : `docs/PROMPT-BO-MES-IMMEUBLES.md` (dont l'incident du 05/11 :
+  le compte de MAV vidé d'un coup par le BO).
 
 ### Garde-fous non négociables
 

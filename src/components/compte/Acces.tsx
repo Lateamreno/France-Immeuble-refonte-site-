@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { envoyer } from "./envoyer";
+import { EVENEMENT_CONNEXION, rechargerEtatCompte } from "@/components/biens/etat";
 
 type Onglet = "connexion" | "creation" | "oubli";
 
@@ -51,6 +52,13 @@ export function Acces({ etat, retour, dansModale = false, ongletInitial = "conne
       const cible = retourSur(retour);
       // Même page (au plus une ancre de plus) : on recharge sur place.
       if (dansModale && cible.split("#")[0] === `${window.location.pathname}${window.location.search}`) {
+        // Un formulaire en cours sur la page : il garde sa saisie, pas de rechargement (retour #267).
+        const garde = new Event(EVENEMENT_CONNEXION, { cancelable: true });
+        if (!window.dispatchEvent(garde)) {
+          (ev.target as HTMLElement).closest("dialog")?.close();
+          rechargerEtatCompte();
+          return;
+        }
         const ancre = cible.includes("#") ? cible.slice(cible.indexOf("#")) : "";
         if (ancre) history.replaceState(null, "", ancre);
         window.location.reload();

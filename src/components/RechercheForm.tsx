@@ -7,7 +7,8 @@ import { SITE } from "@/lib/site";
 import { ChoixLieux } from "./biens/ChoixLieux";
 import { DoubleCurseur } from "./DoubleCurseur";
 import { Picto } from "./Picto";
-import { ouvrirCompte } from "./biens/etat";
+import { ouvrirCompte, useEtatCompte, useGarderALaConnexion } from "./biens/etat";
+import { DemanderAppel } from "./compte/Messagerie";
 
 /**
  * Dépôt de recherche acquéreur.
@@ -117,6 +118,27 @@ export function RechercheForm({ contact, commentaire, refContact }: {
   const refForm = useRef<HTMLFormElement>(null);
   const premier = useRef(true);
 
+  /* Connecté : les coordonnées viennent du compte, sans les redemander
+     (retour #262, MAV, 05/11/2026). Un clic les rouvre. */
+  const etatCompte = useEtatCompte();
+  const connecte = !!etatCompte?.connecte;
+  const [coordonneesOuvertes, setCoordonneesOuvertes] = useState(false);
+  useEffect(() => {
+    if (!etatCompte?.connecte) return;
+    setC((p) => ({
+      ...p,
+      prenom: p.prenom || etatCompte.prenom || "",
+      nom: p.nom || etatCompte.nom || "",
+      email: p.email || etatCompte.email || "",
+      telephone: p.telephone || etatCompte.telephone || "",
+    }));
+  }, [etatCompte]);
+  const coordonneesCompletes = connecte && !!c.prenom.trim() && !!c.nom.trim() &&
+    /^\S+@\S+\.\S+$/.test(c.email.trim()) && c.telephone.replace(/\D/g, "").length >= 9;
+  const coordonneesCachees = coordonneesCompletes && !coordonneesOuvertes;
+  // Se connecter dans la fenêtre pendant la saisie ne recharge pas la page (retour #267).
+  useGarderALaConnexion(etape > 0 || rs[0].zones.length > 0 || rs[0].cibles.length > 0);
+
   // À chaque étape, le haut du formulaire revient sous le menu s'il en est sorti.
   useEffect(() => {
     if (premier.current) { premier.current = false; return; }
@@ -164,8 +186,9 @@ export function RechercheForm({ contact, commentaire, refContact }: {
     setErreurs(e);
     if (Object.keys(e).length) return;
     if (etape === 0) { setEtape(1); return; }
-    // Vers les coordonnées : deux types d'opération font deux recherches à l'écran.
-    setRs((p) => deplier(p));
+    // Deux types d'opération font deux recherches, mais seulement à l'écran et à
+    // l'envoi : revenir en arrière et en retirer un ne laisse plus de recherche
+    // cachée (retour #269, MAV, 05/11/2026).
     setEtape(2);
   }
 
@@ -216,7 +239,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
       type DL = { push: (o: Record<string, unknown>) => void };
       (window as unknown as { dataLayer?: DL }).dataLayer?.push({
         event: "form_submit_recherche",
-        recherches: rs.length,
+        recherches: deplier(rs).length,
       });
     }
     setEnvoi(false);
@@ -241,12 +264,39 @@ export function RechercheForm({ contact, commentaire, refContact }: {
     );
   }
 
+  if (fini === "ok" && connecte) {
+    // Retour #270 : connecté, ni création de compte ni connexion. L'accès se
+    // valide par un appel tant que l'agent n'a pas appelé ; ensuite, plus rien à valider.
+    return (
+      <div className="form-shell outcome" ref={refFini}>
+        <span className="outcome__badge">
+          {deplier(rs).length > 1 ? `${deplier(rs).length} recherches enregistrées` : "Recherche enregistrée"}
+        </span>
+        <h3>Votre recherche est dans votre compte.</h3>
+        {etatCompte?.appele ? (
+          <p>Votre agent la reçoit. Les immeubles qui y correspondent arrivent dans votre compte et par e-mail, y compris les off-market.</p>
+        ) : (
+          <>
+            <p>
+              Pour recevoir les dossiers off-market, un appel de quelques minutes avec un agent ouvre votre accès.
+              Dites-nous quand vous joindre&nbsp;:
+            </p>
+            <DemanderAppel telephone={etatCompte?.telephone} />
+          </>
+        )}
+        <div className="btn-row">
+          <a className="btn btn--primary" href="/mon-compte/recherches/">Voir mes recherches</a>
+        </div>
+      </div>
+    );
+  }
+
   if (fini === "ok") {
     // Le rappel est acquis (retour #91) : la suite, c'est le compte, mis en avant.
     return (
       <div className="form-shell outcome" ref={refFini}>
         <span className="outcome__badge">
-          {rs.length > 1 ? `${rs.length} recherches enregistrées` : "Recherche enregistrée"}
+          {deplier(rs).length > 1 ? `${deplier(rs).length} recherches enregistrées` : "Recherche enregistrée"}
         </span>
         {/* Retour #101 (MAV, 02/11/2026) : la recherche est enregistrée, mais
             l'accès à l'off-market se valide par un appel. Pas de promesse de rappel. */}
@@ -271,7 +321,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
 
   const i = courante;
   const r = rs[i];
-  const TITRES = ["Ce que vous cherchez", "Votre budget", "Vos coordonnées"];
+  const TITRES = ["Ce que vous cherchez", "Votre budget", coordonneesCachees ? "Votre récapitulatif" : "Vos coordonnées"];
 
   return (
     <form className="form-shell form-recherche" onSubmit={envoyer} noValidate ref={refForm}>
@@ -348,15 +398,20 @@ export function RechercheForm({ contact, commentaire, refContact }: {
       {etape === 2 && (
         <>
           <ul className="recherche-resume">
-            {rs.map((x, k) => (
-              <li key={k}>
-                <span>{[x.cibles.map((t) => LIBELLE_OPERATION[t as Cible] ?? t).join(" + "), libelleLieu(x.zones), libelleBudget(x)].filter(Boolean).join(" · ")}</span>
+            {rs.flatMap((x, k) => x.cibles.map((cible) => ({ x, k, cible }))).map(({ x, k, cible }, n, tout) => (
+              <li key={`${k}-${cible}`}>
+                <span>{[LIBELLE_OPERATION[cible as Cible] ?? cible, libelleLieu(x.zones), libelleBudget(x)].filter(Boolean).join(" · ")}</span>
                 <button type="button" className="recherche__retirer" onClick={() => { setCourante(k); setEtape(0); }}>
                   Modifier
                 </button>
-                {rs.length > 1 && (
+                {tout.length > 1 && (
                   <button type="button" className="recherche__retirer"
-                    onClick={() => { setRs((p) => p.filter((_, j) => j !== k)); setCourante(0); }}>
+                    onClick={() => {
+                      setRs((p) => (x.cibles.length > 1
+                        ? p.map((r, j) => (j === k ? { ...r, cibles: r.cibles.filter((t) => t !== cible) } : r))
+                        : p.filter((_, j) => j !== k)));
+                      setCourante(0);
+                    }}>
                     Retirer
                   </button>
                 )}
@@ -367,6 +422,15 @@ export function RechercheForm({ contact, commentaire, refContact }: {
             onClick={() => { setRs((p) => [...p, RECHERCHE_VIDE]); setCourante(rs.length); setEtape(0); }}>
             + Ajouter une autre recherche
           </button>
+          {coordonneesCachees ? (
+            <p className="identite-compte">
+              <span className="identite-compte__qui">
+                <Picto nom="profil" taille={18} />
+                {[c.societe.trim(), `${c.prenom} ${c.nom}`, c.email, c.telephone].filter(Boolean).join(" · ")}
+              </span>
+              <button type="button" className="lien-discret" onClick={() => setCoordonneesOuvertes(true)}>Modifier</button>
+            </p>
+          ) : (
           <div className="fields fields--2">
             <Champ id={`${uid}-societe`} label="Société (facultatif)" full>
               <input id={`${uid}-societe`} value={c.societe} onChange={(e) => setContact("societe", e.target.value)} autoComplete="organization" />
@@ -384,6 +448,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
               <input id={`${uid}-tel`} type="tel" value={c.telephone} onChange={(e) => setContact("telephone", e.target.value)} autoComplete="tel" />
             </Champ>
           </div>
+          )}
         </>
       )}
 
@@ -394,7 +459,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
           </button>
         )}
         <button type="submit" className="btn btn--primary" disabled={envoi}>
-          {etape < 2 ? "Continuer" : envoi ? "Envoi…" : rs.length > 1 ? "Déposer mes recherches" : "Déposer ma recherche"}
+          {etape < 2 ? "Continuer" : envoi ? "Envoi…" : deplier(rs).length > 1 ? "Déposer mes recherches" : "Déposer ma recherche"}
         </button>
       </div>
     </form>

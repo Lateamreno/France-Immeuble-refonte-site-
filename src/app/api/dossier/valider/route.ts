@@ -3,7 +3,7 @@ import { codeDeConfirmation, sessionCourante } from "@/lib/compte/auth";
 import { erreurEnReponse, lireJson, memeOrigine, refus } from "@/lib/compte/requete";
 import { motDePasseValide, nettoyer } from "@/lib/dossier/modele";
 import { codesRecents, dossierCourant, modifier, oublierCookie, supprimer } from "@/lib/dossier/serveur";
-import { envoyerCode, transmettreDossier } from "@/lib/dossier/envoi";
+import { envoyerCode, garderDansLeCompte, transmettreDossier } from "@/lib/dossier/envoi";
 
 export const runtime = "nodejs";
 
@@ -51,13 +51,17 @@ export async function POST(req: Request) {
         return refus("Votre dossier n’a pas pu partir. Réessayez dans un instant, ou appelez-nous.", 503);
       }
       if (connecte) {
+        await garderDansLeCompte(verifie!.id, l, donnees);
         await supprimer(l.empreinte);
         await oublierCookie();
         return NextResponse.json({ ok: true, etape: "fini" });
       }
-      // Envoyé : le brouillon est vidé. Il ne reste que l'adresse, le temps du code.
-      await modifier(l.empreinte, { valide_le: new Date().toISOString(), donnees: nettoyer({}), identite: {} });
+      // Envoyé. Le brouillon garde l'immeuble et ses lots le temps du code
+      // (deux jours au plus) : le compte ouvert les montrera dans « Mes immeubles ».
+      await modifier(l.empreinte, { valide_le: new Date().toISOString(), donnees });
     } else if (connecte) {
+      // Envoyé avant de se connecter : il rejoint le compte, sans code.
+      await garderDansLeCompte(verifie!.id, l, l.donnees);
       await supprimer(l.empreinte);
       await oublierCookie();
       return NextResponse.json({ ok: true, etape: "fini" });

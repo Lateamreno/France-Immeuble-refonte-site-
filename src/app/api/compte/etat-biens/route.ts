@@ -25,5 +25,9 @@ export async function GET() {
     profil: d.saisies.some((x) => x.type === "profil_investisseur"),
     prenom: s.utilisateur.user_metadata?.prenom ?? "",
     nom: s.utilisateur.user_metadata?.nom ?? "",
+    // Les formulaires du site se préremplissent quand on est connecté (retours #262, #263, #275).
+    email: s.utilisateur.email,
+    telephone: s.utilisateur.user_metadata?.telephone ?? "",
+    appele: !!d.agent?.appele,
   }, { headers: entete });
 }

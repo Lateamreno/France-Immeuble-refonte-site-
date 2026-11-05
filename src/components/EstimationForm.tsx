@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEtatCompte, useGarderALaConnexion } from "./biens/etat";
 import { PropositionCompte } from "./compte/PropositionCompte";
 import { SITE, CALIBRE } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
-import { ELEMENTS_ATTENDUS, dossierInitial, PICTO_TYPE, TYPES_LOT, type Dossier } from "@/lib/dossier/modele";
+import { ELEMENTS_ATTENDUS, dossierInitial, type Dossier } from "@/lib/dossier/modele";
 import { DossierForm } from "./dossier/DossierForm";
 import { Picto } from "./Picto";
 
@@ -91,6 +93,31 @@ export function EstimationForm({
   const ref = useRef<string>("");
   const bloc = useRef<HTMLDivElement>(null);
   const titre = useRef<HTMLHeadingElement>(null);
+  const routeur = useRouter();
+
+  /* Connecté : nom, e-mail et téléphone viennent du compte, sans les
+     redemander (retours #263 et #275, MAV, 05/11/2026). Ils restent
+     modifiables d'un clic. */
+  const etat = useEtatCompte();
+  const connecte = !!etat?.connecte;
+  const [identiteOuverte, setIdentiteOuverte] = useState(false);
+  /** L'estimation est partie avec le compte : l'état locatif se range dans « Mes immeubles ». */
+  const [avecCompte, setAvecCompte] = useState(false);
+  useEffect(() => {
+    if (!etat?.connecte) return;
+    setD((p) => ({
+      ...p,
+      prenom: p.prenom || etat.prenom || "",
+      nom: p.nom || etat.nom || "",
+      email: p.email || etat.email || "",
+      telephone: p.telephone || etat.telephone || "",
+    }));
+  }, [etat]);
+  const identiteComplete = connecte && !!d.prenom.trim() && !!d.nom.trim() && emailValide(d.email) &&
+    lireTelephone(indicatif, d.telephone).valide;
+  const identiteCachee = identiteComplete && !identiteOuverte;
+  // Se connecter dans la fenêtre pendant la saisie ne recharge pas la page (retour #267).
+  useGarderALaConnexion(phase !== "saisie" || !!(d.prenom || d.email || d.telephone || adresse.saisie || d.rue));
 
   const set = (k: keyof Data, v: string) => {
     setD((p) => ({ ...p, [k]: v }));
@@ -197,6 +224,7 @@ export function EstimationForm({
 
     const ok = await transmettre(d, "principal");
     setStocke(ok);
+    setAvecCompte(ok && connecte);
 
     // Event GTM sur soumission réussie (CLAUDE.md §9). Il part ICI, au premier
     // envoi : c'est là que la conversion a lieu. Le complément n'en est pas une.
@@ -224,6 +252,8 @@ export function EstimationForm({
     );
     setPhase("fin");
     setEnvoi(false);
+    // Depuis le compte, le nouvel immeuble apparaît tout de suite dans la liste.
+    if (dansLeCompte) routeur.refresh();
   }
 
   /**
@@ -255,6 +285,15 @@ export function EstimationForm({
           </div>
 
           <div className="fields fields--2">
+            {identiteCachee ? (
+              <p className="field--full identite-compte">
+                <span className="identite-compte__qui">
+                  <Picto nom="profil" taille={18} />
+                  {d.prenom} {d.nom} · {d.email} · {d.telephone}
+                </span>
+                <button type="button" className="lien-discret" onClick={() => setIdentiteOuverte(true)}>Modifier</button>
+              </p>
+            ) : (<>
             <Champ id={`${uid}-prenom`} label="Prénom" err={erreurs.prenom}>
               <input id={`${uid}-prenom`} value={d.prenom} onChange={(e) => set("prenom", e.target.value)}
                 autoComplete="given-name" aria-invalid={!!erreurs.prenom} />
@@ -268,6 +307,7 @@ export function EstimationForm({
             <ChampTelephone id={`${uid}-tel`} indicatif={indicatif} valeur={d.telephone} err={erreurs.telephone}
               onIndicatif={(i) => { setIndicatif(i); setErreurs((p) => ({ ...p, telephone: "" })); }}
               onChange={(v) => set("telephone", v)} />
+            </>)}
 
             <ChampAdresse uid={uid} etat={adresse} setEtat={setAdresse} d={d} set={set}
               setPlusieurs={setPlusieurs} erreurs={erreurs} />
@@ -336,7 +376,8 @@ export function EstimationForm({
       )}
 
       {phase === "fin" && (
-        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte} ouvrir={ouvrirDossier} />
+        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte || connecte}
+          cible={avecCompte ? ref.current : undefined} ouvrir={ouvrirDossier} />
       )}
     </div>
   );
@@ -359,14 +400,23 @@ function Champ({ id, label, hint, err, full, children }: {
   );
 }
 
+/** Un nombre de lots, au clavier ou avec − et + (retour #276, MAV, 05/11/2026). */
 function Lot({ id, label, valeur, onChange }: {
   id: string; label: string; valeur: string; onChange: (v: string) => void;
 }) {
+  const n = Number(valeur) || 0;
+  const pas = (k: number) => onChange(String(Math.max(0, Math.min(999, n + k))));
   return (
     <div className="lot">
       <label htmlFor={id}>{label}</label>
-      <input id={id} value={valeur} onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 3))}
-        inputMode="numeric" placeholder="0" />
+      <div className="lot__pas">
+        <button type="button" className="lot__bouton" onClick={() => pas(-1)} disabled={n <= 0}
+          aria-label={`Un lot ${label.toLowerCase()} de moins`}>−</button>
+        <input id={id} value={valeur} onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 3))}
+          inputMode="numeric" placeholder="0" />
+        <button type="button" className="lot__bouton" onClick={() => pas(1)}
+          aria-label={`Un lot ${label.toLowerCase()} de plus`}>+</button>
+      </div>
     </div>
   );
 }
@@ -722,19 +772,41 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
 /* Fin du parcours                                                     */
 /* ------------------------------------------------------------------ */
 
-function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
+function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir }: {
   titre: React.RefObject<HTMLHeadingElement | null>;
   /** false : la demande n'a pu être enregistrée nulle part. */
   stocke: boolean;
   verdict: Verdict | null;
   d: Data;
   dansLeCompte: boolean;
+  /** Estimation partie avec le compte : l'état locatif se range dans l'immeuble du compte. */
+  cible?: string;
   /** Ouvre le dossier en ligne ; renvoie null s'il n'a pas pu s'ouvrir. */
   ouvrir: () => Promise<Dossier | null>;
 }) {
   const [ouverture, setOuverture] = useState<"" | "envoi" | "erreur">("");
   const [dossier, setDossier] = useState<Dossier | null>(null);
-  const tableau = useRef<HTMLDivElement>(null);
+  const lots = {
+    habitation: nombre(d.lotsHabitation) || 0, bureau: nombre(d.lotsBureaux) || 0,
+    commerce: nombre(d.lotsCommerces) || 0, local_activite: nombre(d.lotsActivite) || 0,
+  };
+  const pret = stocke && !!verdict && verdict.piste !== "pleinbail";
+
+  /* Retour #277 (MAV, 05/11/2026) : l'état locatif s'affiche tout de suite,
+     déjà prérempli avec les lots annoncés, sans bouton à cliquer avant. */
+  useEffect(() => {
+    if (!pret || dossier) return;
+    if (cible) { setDossier(dossierInitial(lots)); return; }
+    let fini = false;
+    setOuverture("envoi");
+    void ouvrir().then((donnees) => {
+      if (fini) return;
+      if (!donnees) { setOuverture("erreur"); return; }
+      setOuverture("");
+      setDossier(donnees);
+    });
+    return () => { fini = true; };
+  }, [pret, cible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* Cas extrême : ni le BO ni la file d'attente n'ont répondu. On ne fait pas
      croire au visiteur que sa demande est partie : on lui donne le numéro. */
@@ -779,22 +851,8 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
   const objet = encodeURIComponent(
     `Éléments pour l’estimation : ${[d.numero, d.rue].filter(Boolean).join(" ")}, ${d.ville}`.trim(),
   );
-  const apercu = dossierInitial({
-    habitation: nombre(d.lotsHabitation) || 0, bureau: nombre(d.lotsBureaux) || 0,
-    commerce: nombre(d.lotsCommerces) || 0, local_activite: nombre(d.lotsActivite) || 0,
-  }).lots;
   const adresse = [[d.numero, d.rue].filter(Boolean).join(" "), [d.codePostal, d.ville].filter(Boolean).join(" ")]
     .filter(Boolean).join(", ");
-
-  async function deplier() {
-    if (ouverture === "envoi") return;
-    setOuverture("envoi");
-    const donnees = await ouvrir();
-    if (!donnees) { setOuverture("erreur"); return; }
-    setOuverture("");
-    setDossier(donnees);
-    requestAnimationFrame(() => tableau.current?.scrollIntoView({ block: "start" }));
-  }
 
   // Texte de MAV (retour #64, 27/10/2026), au mot près ou presque.
   return (
@@ -812,45 +870,13 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
         <p>
           Vous pouvez les envoyer à{" "}
           <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>
-          {dansLeCompte
-            ? ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte."
-            : ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte client."}
+          {cible
+            ? ", ou remplir l’état locatif ci-dessous. L’immeuble est déjà dans « Mes immeubles » de votre compte : vous pourrez y revenir et y déposer vos documents."
+            : dansLeCompte
+              ? ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte."
+              : ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte client."}
         </p>
-
-        {/* Retour #66 : les premières lignes de l'état locatif, déjà préremplies
-            avec les lots annoncés ; le bas se fond dans un voile flou. Un clic
-            n'importe où, ou le bouton, déplie le tableau complet sur place. */}
-        {!dossier && (
-          <div className="fin-apercu">
-            <p className="fin-apercu__titre">
-              Votre état locatif · {apercu.length} lot{apercu.length > 1 ? "s" : ""} à remplir
-            </p>
-            <div className="fin-apercu__cadre" onClick={deplier} role="presentation">
-              <div className="fin-apercu__ligne fin-apercu__entete" aria-hidden="true">
-                <span>Lot</span><span>Type</span><span>Typologie</span><span>Carrez</span><span>État</span><span>Loyer HC</span>
-              </div>
-              {apercu.slice(0, 5).map((l, i) => (
-                <div key={i} className={`fin-apercu__ligne${i >= 2 ? " fin-apercu__ligne--floue" : ""}`} aria-hidden="true">
-                  <span className="fin-apercu__num">
-                    <Picto nom={PICTO_TYPE[l.type] ?? "autre"} taille={18} />Lot {i + 1}
-                  </span>
-                  <span className="fin-apercu__champ fin-apercu__type">{TYPES_LOT.find((t) => t.cle === l.type)?.libelle}</span>
-                  <span className="fin-apercu__champ">{l.type === "habitation" ? "Choisir" : ""}</span>
-                  <span className="fin-apercu__champ"></span>
-                  <span className="fin-apercu__champ">Choisir</span>
-                  <span className="fin-apercu__champ"></span>
-                  <span className="fin-apercu__fleche" />
-                </div>
-              ))}
-              <div className="fin-apercu__voile">
-                <button type="button" className="btn btn--primary" disabled={ouverture === "envoi"}
-                  onClick={(e) => { e.stopPropagation(); deplier(); }}>
-                  {ouverture === "envoi" ? "Ouverture…" : "Voir tout et remplir"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {ouverture === "envoi" && <p className="compte-calme" aria-live="polite">Ouverture de votre état locatif…</p>}
         {ouverture === "erreur" && (
           <p className="err" role="alert">
             Le tableau n’a pas pu s’ouvrir. Réessayez dans un instant, ou envoyez les éléments par e-mail.
@@ -859,8 +885,9 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, ouvrir }: {
       </div>
 
       {dossier && (
-        <div className="fin-dossier" ref={tableau}>
-          <DossierForm initial={dossier} adresse={adresse} connecte={dansLeCompte} dejaValide={false} />
+        <div className="fin-dossier">
+          <DossierForm initial={dossier} adresse={adresse} connecte={!!cible} dejaValide={false}
+            cible={cible} email={d.email} />
         </div>
       )}
     </>

@@ -1,5 +1,7 @@
 // Serveur uniquement.
 import { deposerLead, type Issue } from "../leads";
+import { fusionnerSaisie } from "../compte/saisies";
+import { rueSansNumero } from "../compte/immeubles";
 import { envoyerAuClient } from "../notifications";
 import { COULEURS, echap, gabarit, paragraphe, piedTexte } from "../courriel";
 import { pourBO, type Dossier } from "./modele";
@@ -27,6 +29,22 @@ export async function transmettreDossier(l: LigneDossier, d: Dossier, compte?: s
     recuLe: new Date().toISOString(),
   };
   return deposerLead(lead);
+}
+
+/**
+ * Le dossier envoyé rejoint « Mes immeubles » du compte (retour #274) : la
+ * copie de l'estimation, avec son état locatif. Rue sans numéro.
+ */
+export async function garderDansLeCompte(compte: string, l: LigneDossier, d: Dossier): Promise<void> {
+  const i = l.identite;
+  await fusionnerSaisie(compte, l.ref, "estimation", {
+    formulaire: i.formulaire ?? "",
+    rue: rueSansNumero(i.rue),
+    codePostal: i.codePostal ?? "",
+    ville: i.ville ?? "",
+    dossier: d,
+    dossier_envoye_le: new Date().toISOString(),
+  });
 }
 
 /** L’e-mail du code de confirmation. Rien d’autre dedans : pas de lien, pas de publicité. */

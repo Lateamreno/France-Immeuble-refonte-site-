@@ -9,6 +9,10 @@ import { CATEGORIES } from "@/lib/compte/categories";
 import { ecranCompte } from "@/lib/compte/ecran";
 import { secteurDe } from "@/lib/compte/secteur";
 import { biensAVendre } from "@/lib/biens";
+import { DossierForm } from "@/components/dossier/DossierForm";
+import { dossierInitial } from "@/lib/dossier/modele";
+import { copieDuBien, demandesEnCours, departementDe, nomDemande, resumeDemande, type DemandeEstimation } from "@/lib/compte/immeubles";
+import type { DonneesCompte } from "@/lib/compte/donnees";
 import { ETAPES_VENTE, STATUTS_OFFRE, dateCourte, dateLongue, euros, nomImmeuble, pct, rangEtape } from "@/lib/compte/vente";
 
 export const dynamic = "force-dynamic";
@@ -38,8 +42,14 @@ export default async function Immeuble({
   const [{ cle }, { onglet: demande }] = await Promise.all([params, searchParams]);
   const { d } = await ecranCompte();
   const b = d.biens.find((x) => x.cle === cle);
-  if (!b) notFound();
   const onglet: Onglet = (ONGLETS.find(([k]) => k === demande)?.[0] ?? "apercu");
+  if (!b) {
+    // Une estimation envoyée que le BO n'a pas encore déposée (retour #261).
+    const dem = demandesEnCours(d).find((x) => x.ref === cle);
+    if (!dem) notFound();
+    return <ImmeubleDemande dem={dem} d={d} onglet={onglet} />;
+  }
+  const copie = copieDuBien(d, b);
 
   const estimation = d.estimations.find((e) => e.bien_cle === b.cle);
   const offres = d.offres.filter((o) => o.bien_cle === b.cle);
@@ -165,13 +175,8 @@ export default async function Immeuble({
       )}
 
       {onglet === "etat-locatif" && (
-        <Panneau titre="État locatif" picto="logement">
-          <p className="compte-calme">
-            Lot par lot : type, surface, loyer, bail, DPE. Votre agent s’en sert pour l’estimation et pour présenter
-            l’immeuble aux acquéreurs. Vous pouvez le compléter à tout moment.
-          </p>
-          <div className="compte-panneau__pied"><Link href="/mon-compte/dossier/" className="btn btn--primary">Ouvrir l’état locatif</Link></div>
-        </Panneau>
+        <EtatLocatif cle={b.cle} nom={nomImmeuble(b)} initial={copie?.c.dossier ?? dossierInitial({ habitation: b.lots ?? 1 })}
+          envoyeLe={copie?.c.dossier_envoye_le} />
       )}
 
       {onglet === "mandat" && (
@@ -231,6 +236,129 @@ async function OngletEstimation({ dept, estimation }: { dept: string | null; est
             </ul>
           )}
           <p className="compte-form__aide">Ventes réalisées par France Immeuble dans le département, telles que publiées sur le site.</p>
+        </Panneau>
+      )}
+    </>
+  );
+}
+
+/** L'état locatif, à remplir sur place (retours #261 et #277). */
+function EtatLocatif({ cle, nom, initial, envoyeLe }: {
+  cle: string; nom: string; initial: ReturnType<typeof dossierInitial>; envoyeLe?: string;
+}) {
+  return (
+    <section className="compte-panneau compte-etat-locatif">
+      <p className="compte-calme">
+        Lot par lot : type, surface, loyer, bail, DPE. Votre agent s’en sert pour l’estimation et pour présenter
+        l’immeuble aux acquéreurs. Tout est enregistré au fur et à mesure.
+      </p>
+      <DossierForm initial={initial} adresse={nom} connecte dejaValide={false} cible={cle} envoyeLe={envoyeLe} />
+    </section>
+  );
+}
+
+const ONGLETS_DEMANDE = [
+  ["apercu", "Vue d’ensemble"],
+  ["estimation", "Estimation"],
+  ["etat-locatif", "État locatif"],
+  ["documents", "Documents"],
+] as const;
+
+/**
+ * Un immeuble que le client a fait estimer, avant son dépôt par le BO : ce
+ * qu'il a envoyé, l'estimation en cours avec le marché du département, l'état
+ * locatif à remplir et les pièces à déposer.
+ */
+async function ImmeubleDemande({ dem, d, onglet: demande }: { dem: DemandeEstimation; d: DonneesCompte; onglet: string }) {
+  const { ref, envoye_le, c } = dem;
+  const onglet = ONGLETS_DEMANDE.find(([k]) => k === demande)?.[0] ?? "apercu";
+  const nom = nomDemande(c);
+  const pieces = [
+    ...(c.pieces ?? []),
+    ...d.documents.filter((x) => x.bien_cle === ref).map((x) => ({ nom: x.nom, categorie: x.categorie, recu_le: x.recu_le })),
+  ];
+  const lotsAnnonces = c.lots ?? {};
+  const initial = c.dossier ?? dossierInitial({
+    habitation: lotsAnnonces.habitation ?? 0, bureau: lotsAnnonces.bureau ?? 0,
+    commerce: lotsAnnonces.commerce ?? 0, local_activite: lotsAnnonces.local_activite ?? 0,
+  });
+  const adresse = [c.rue, [c.codePostal, c.ville].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+
+  return (
+    <>
+      <TeteCompte surtitre={resumeDemande(c) || "Mon immeuble"} titre={nom} retour={{ href: "/mon-compte/immeubles/", nom: "Mes immeubles" }}>
+        <Link href={`/mon-compte/messages/?nouveau=1&titre=${encodeURIComponent(`Mon immeuble, ${nom}`)}`} className="btn btn--primary">Écrire à mon agent</Link>
+      </TeteCompte>
+
+      <nav className="onglets-bien" aria-label="Rubriques de l’immeuble">
+        {ONGLETS_DEMANDE.map(([k, n]) => (
+          <Link key={k} href={`/mon-compte/immeubles/${ref}/${k === "apercu" ? "" : `?onglet=${k}`}`}
+            className={`onglet-bien${k === onglet ? " est-actif" : ""}`} aria-current={k === onglet ? "page" : undefined}>
+            {n}
+          </Link>
+        ))}
+      </nav>
+
+      {onglet === "apercu" && (
+        <>
+          <Panneau titre="Où en est la vente" picto="stats">
+            <Frise rang={1} />
+            <p className="frise__legende">Étape en cours : <strong>{ETAPES_VENTE[0]}</strong>. Demande envoyée le {dateLongue(envoye_le)}.</p>
+          </Panneau>
+          <Panneau titre="Ce que vous nous avez indiqué" picto="immeubles">
+            <Chiffres items={[
+              ["Adresse", adresse || null],
+              ["Lots", resumeDemande(c).split(" · ")[0] || null],
+              ["Surface habitable", c.surface ? `${Math.round(c.surface).toLocaleString("fr-FR")} m²` : null],
+              ["Loyer annuel HC", euros(c.loyerAnnuel)],
+              ["Travaux", c.travaux || null],
+              ["Vente", c.echeance || null],
+            ]} />
+          </Panneau>
+          <Panneau titre="À faire" picto="dossier">
+            <ul className="afaire">
+              <li>
+                <Link href={`/mon-compte/immeubles/${ref}/?onglet=etat-locatif`}>
+                  <Picto nom={c.dossier_envoye_le ? "valide" : "logement"} taille={20} />
+                  <span>{c.dossier_envoye_le ? `État locatif envoyé le ${dateLongue(c.dossier_envoye_le)}` : "Remplir l’état locatif, lot par lot"}</span>
+                  <span className="lien-discret">{c.dossier_envoye_le ? "Modifier" : "Remplir"}</span>
+                </Link>
+              </li>
+              <li>
+                <Link href={`/mon-compte/immeubles/${ref}/?onglet=documents`}>
+                  <Picto nom={pieces.length ? "valide" : "dossier"} taille={20} />
+                  <span>{pieces.length ? `${pieces.length} pièce${pieces.length > 1 ? "s" : ""} envoyée${pieces.length > 1 ? "s" : ""}` : "Déposer les baux, la taxe foncière, les plans, les photos"}</span>
+                  <span className="lien-discret">Déposer</span>
+                </Link>
+              </li>
+            </ul>
+          </Panneau>
+        </>
+      )}
+
+      {onglet === "estimation" && <OngletEstimation dept={departementDe(c.codePostal)} />}
+
+      {onglet === "etat-locatif" && <EtatLocatif cle={ref} nom={adresse || nom} initial={initial} envoyeLe={c.dossier_envoye_le} />}
+
+      {onglet === "documents" && (
+        <Panneau titre="Pièces à nous transmettre" picto="dossier">
+          <ul className="compte-pieces">
+            {CATEGORIES.map((cat) => {
+              const recues = pieces.filter((x) => x.categorie === cat.cle);
+              return (
+                <li key={cat.cle} className="compte-piece">
+                  <div className="compte-piece__texte">
+                    <span className="compte-piece__nom">{recues.length > 0 && <Picto nom="valide" taille={16} />}{cat.titre}</span>
+                    <span className="compte-piece__aide">{cat.aide}</span>
+                    {recues.map((x, i) => (
+                      <span key={i} className="compte-piece__recue">{x.nom} · envoyée le {dateLongue(x.recu_le)}</span>
+                    ))}
+                  </div>
+                  <DepotPiece bien={ref} categorie={cat.cle} titre={cat.titre} />
+                </li>
+              );
+            })}
+          </ul>
         </Panneau>
       )}
     </>
