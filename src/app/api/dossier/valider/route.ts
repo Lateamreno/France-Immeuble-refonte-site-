@@ -65,7 +65,7 @@ export async function POST(req: Request) {
 
     if (l.codes >= CODES_MAX || (await codesRecents(l.email)) >= CODES_MAX) {
       return NextResponse.json(
-        { ok: true, etape: "code", email: masquer(l.email), erreur: "Plusieurs codes sont déjà partis. Utilisez le dernier reçu, ou réessayez demain." },
+        { ok: true, etape: "code", email: masquer(l.email), existant: l.code_type === "magiclink", erreur: "Plusieurs codes sont déjà partis. Utilisez le dernier reçu, ou réessayez demain." },
       );
     }
     const { type, code } = await codeDeConfirmation(l.email, {
@@ -80,7 +80,9 @@ export async function POST(req: Request) {
       code_type: type,
       essais: 0,
     });
-    return NextResponse.json({ ok: true, etape: "code", email: masquer(l.email) });
+    // Retour de MAV (05/11/2026) : une adresse qui a déjà un compte. Le code y donne
+    // accès ; le visiteur peut aussi se connecter avec son mot de passe.
+    return NextResponse.json({ ok: true, etape: "code", email: masquer(l.email), existant: type === "magiclink" });
   } catch (e) {
     return erreurEnReponse(e);
   }

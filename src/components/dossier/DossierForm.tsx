@@ -7,6 +7,7 @@ import {
 } from "@/lib/dossier/modele";
 import { SITE } from "@/lib/site";
 import { Picto } from "@/components/Picto";
+import { ouvrirCompte as ouvrirFenetreCompte } from "@/components/biens/etat";
 
 /**
  * L'état locatif du vendeur, lot par lot (retour #64 de MAV, 27/10/2026).
@@ -43,6 +44,8 @@ export function DossierForm({
   const [voir, setVoir] = useState(false);
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
+  /** L'adresse a déjà un compte : on le dit, et on propose de se connecter. */
+  const [existant, setExistant] = useState(false);
   const [erreur, setErreur] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [renvoye, setRenvoye] = useState(false);
@@ -101,7 +104,7 @@ export function DossierForm({
     ev.preventDefault();
     setErreur("");
     if (!connecte && !motDePasseValide(motDePasse)) {
-      setErreur("Choisissez un mot de passe de 8 caractères au moins, avec des lettres et des chiffres.");
+      setErreur(motDePasse ? "Ce mot de passe est trop court ou n’a pas à la fois des lettres et des chiffres." : "Saisissez un mot de passe pour créer votre compte.");
       return;
     }
     setEnvoi(true);
@@ -112,10 +115,11 @@ export function DossierForm({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ donnees: d, motDePasse }),
       });
-      const j = (await r.json()) as { ok?: boolean; etape?: Etape; email?: string; erreur?: string };
+      const j = (await r.json()) as { ok?: boolean; etape?: Etape; email?: string; erreur?: string; existant?: boolean };
       if (!r.ok || !j.ok) { setErreur(j.erreur ?? "Une erreur est survenue. Réessayez."); return; }
       if (j.etape === "fini") { setEtape("fini"); return; }
       setEmail(j.email ?? "");
+      setExistant(!!j.existant);
       if (j.erreur) setErreur(j.erreur);
       setEtape("code");
     } catch {
@@ -190,11 +194,19 @@ export function DossierForm({
       <form className="form-shell dossier-code" onSubmit={ouvrirCompte} noValidate>
         <div className="step-head">
           <span className="outcome__badge">Dossier envoyé</span>
-          <h3 ref={titreCode} tabIndex={-1}>Plus qu’une étape pour ouvrir votre compte</h3>
-          <p>
-            Nous venons d’envoyer un code{email ? <> à <strong>{email}</strong></> : null}. Il
-            confirme que cette adresse est bien la vôtre.
-          </p>
+          <h3 ref={titreCode} tabIndex={-1}>{existant ? "Vous avez déjà un compte" : "Plus qu’une étape pour ouvrir votre compte"}</h3>
+          {existant ? (
+            <p>
+              Un compte existe déjà avec cette adresse. Votre dossier est envoyé : il y sera
+              rattaché. <button type="button" className="lien-discret" onClick={() => ouvrirFenetreCompte({ onglet: "connexion" })}>Connectez-vous avec votre mot de passe</button>,
+              ou saisissez le code envoyé{email ? <> à <strong>{email}</strong></> : null} pour choisir un nouveau mot de passe.
+            </p>
+          ) : (
+            <p>
+              Nous venons d’envoyer un code{email ? <> à <strong>{email}</strong></> : null}. Il
+              confirme que cette adresse est bien la vôtre.
+            </p>
+          )}
         </div>
         <div className="fields">
           <div className="field">
@@ -294,6 +306,13 @@ export function DossierForm({
             {envoi ? "Envoi…" : connecte ? "Valider mon dossier" : "Valider et créer mon compte"}
           </button>
         </div>
+        {!connecte && (
+          <p className="form-note dossier__deja">
+            Vous avez déjà un compte&nbsp;?{" "}
+            <button type="button" className="lien-discret" onClick={() => ouvrirFenetreCompte({ onglet: "connexion" })}>Connectez-vous</button>
+            {" "}: votre dossier y sera rattaché, sans nouveau mot de passe.
+          </p>
+        )}
         <p className="dossier__etat" aria-live="polite">
           {sauvegarde === "attente" ? "Enregistrement…"
             : sauvegarde === "ok" ? "Enregistré. Vous pouvez revenir plus tard."
