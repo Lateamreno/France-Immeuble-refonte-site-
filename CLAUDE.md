@@ -253,6 +253,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (`recherche_nom`), budget au curseur avec espaces des milliers, liste relue seule après
   un ajout. Demande au BO : `docs/PROMPT-BO-MES-IMMEUBLES.md` (dont l'incident du 05/11 :
   le compte de MAV vidé d'un coup par le BO).
+  Même jour : la pilule fixe du téléphone s'efface dès qu'un autre bouton de la page est à
+  l'écran, et revient après (« sinon des boutons peuvent se superposer »).
 
 ### Garde-fous non négociables
 
