@@ -255,6 +255,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   le compte de MAV vidé d'un coup par le BO).
   Même jour : la pilule fixe du téléphone s'efface dès qu'un autre bouton de la page est à
   l'écran, et revient après (« sinon des boutons peuvent se superposer »).
+  Vitesse (PageSpeed de MAV, 05/11/2026) : le 10,5 s de LCP mobile est une simulation ; en
+  ralenti réel le titre du hero s'affiche à 2,5 s. Chargés à l'usage seulement (`next/dynamic`) :
+  l'outil de recette, la fenêtre de connexion, les formulaires des fenêtres et la suite du
+  message de contact ; carnet de l'accueil en priorité basse ; `/media/…?dpl=` un an en cache.
+  Écartés après mesure : `inlineCss` (page de 22 à 167 Ko compressés) et ne précharger
+  qu'Archivo (premier affichage de 1,8 à 3,2 s). Le plus gros poids restant est le conteneur
+  GTM (Universal Analytics éteint et deux GA4, 528 Ko), à nettoyer dans GTM par MAV.
 
 ### Garde-fous non négociables
 

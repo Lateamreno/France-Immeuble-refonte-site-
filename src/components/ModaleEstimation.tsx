@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { EstimationForm } from "./EstimationForm";
+import dynamic from "next/dynamic";
+
+// Le formulaire ne se télécharge qu'à l'ouverture de la fenêtre (vitesse, 05/11/2026).
+const EstimationForm = dynamic(() => import("./EstimationForm").then((m) => m.EstimationForm), {
+  ssr: false,
+  loading: () => <p className="compte-calme">Chargement du formulaire…</p>,
+});
 
 /**
  * Le formulaire d'estimation dans une fenêtre, sans quitter la page (retours

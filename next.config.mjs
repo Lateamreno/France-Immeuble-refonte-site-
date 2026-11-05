@@ -16,6 +16,8 @@ const nextConfig = {
   // limite par défaut (1 Mo) refusait une capture d'écran collée (04/11/2026).
   // Les captures sont allégées dans le navigateur ; cette marge couvre plusieurs
   // captures dans un même retour, sous la limite de 4,5 Mo de Vercel.
+  // `inlineCss` essayé le 05/11/2026 et écarté : Next recopie la feuille dans les données
+  // de la page, qui passait de 22 à 167 Ko compressés. Plus lent qu'un fichier à part.
   experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Les URLs existantes se terminent toutes par un slash (voir CLAUDE.md §10).
   // Objectif zéro perte : ne jamais servir /vendre-un-immeuble sans slash final.
@@ -30,6 +32,13 @@ const nextConfig = {
     // Les fichiers de /public/media (photos, carte) : un jour en cache, puis rafraîchis en
     // arrière-plan. Par défaut, Vercel les revalide à chaque visite.
     { source: "/media/:chemin*", headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }] },
+    // Appelés depuis une page, ces fichiers portent le numéro du déploiement (`?dpl=`) :
+    // l'adresse change à chaque mise en ligne, ils peuvent rester un an en cache.
+    {
+      source: "/media/:chemin*",
+      has: [{ type: "query", key: "dpl" }],
+      headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+    },
     {
       source: "/:chemin*",
       has: [{ type: "host", value: "(?<sous>.*)\\.vercel\\.app" }],

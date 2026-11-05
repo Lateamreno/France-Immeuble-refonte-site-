@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Acces } from "./Acces";
+import dynamic from "next/dynamic";
+
+// Le formulaire de connexion ne se télécharge qu'à l'ouverture de la fenêtre (vitesse, 05/11/2026).
+const Acces = dynamic(() => import("./Acces").then((m) => m.Acces), { ssr: false });
 
 /**
  * La fenêtre de connexion et de création de compte, ouverte par tout bouton

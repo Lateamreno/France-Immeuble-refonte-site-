@@ -7,7 +7,10 @@ import { Footer } from "@/components/Footer";
 import { ModaleCompte } from "@/components/compte/ModaleCompte";
 import { AncreStable } from "@/components/AncreStable";
 import { SITE } from "@/lib/site";
-import { RevueButton } from "@/components/revue";
+import dynamic from "next/dynamic";
+// Outil de recette, absent de la production : chargé seulement là où il s'affiche,
+// sinon son script et sa feuille partaient vers chaque visiteur (vitesse, 05/11/2026).
+const RevueButton = dynamic(() => import("@/components/revue").then((m) => m.RevueButton));
 import { listFeedbackOuverts } from "@/lib/bo/feedback";
 
 /**

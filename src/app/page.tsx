@@ -116,9 +116,11 @@ export default async function Accueil() {
               sizes="(max-width: 900px) 100vw, 760px"
               // Retour #79 : chez MAV le carnet ne s'affichait pas. Nom de fichier
               // neutre (« Mock-up » peut être écarté par un bloqueur), fichier servi
-              // tel quel (97 Ko) et chargé sans attendre le défilement.
+              // tel quel (97 Ko) et chargé sans attendre le défilement. Il passe
+              // après le titre et la photo du hero (vitesse, 05/11/2026).
               unoptimized
               loading="eager"
+              fetchPriority="low"
             />
           </Reveal>
         </div>

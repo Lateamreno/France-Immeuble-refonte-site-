@@ -3,8 +3,13 @@
 import { useId, useState } from "react";
 import { SITE } from "@/lib/site";
 import { PropositionCompte } from "./compte/PropositionCompte";
-import { EstimationForm } from "./EstimationForm";
-import { RechercheForm } from "./RechercheForm";
+import dynamic from "next/dynamic";
+
+// La suite du message (recherche ou estimation) ne se télécharge qu'une fois le
+// message parti : sur l'accueil, elle chargeait deux formulaires pour rien (vitesse, 05/11/2026).
+const chargement = () => <p className="compte-calme">Chargement…</p>;
+const EstimationForm = dynamic(() => import("./EstimationForm").then((m) => m.EstimationForm), { ssr: false, loading: chargement });
+const RechercheForm = dynamic(() => import("./RechercheForm").then((m) => m.RechercheForm), { ssr: false, loading: chargement });
 
 /**
  * Formulaire de contact — repris du WordPress.

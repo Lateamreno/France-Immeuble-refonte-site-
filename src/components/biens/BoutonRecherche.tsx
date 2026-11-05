@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import { RechercheForm } from "@/components/RechercheForm";
+import dynamic from "next/dynamic";
+
+// Le formulaire ne se télécharge qu'à l'ouverture de la fenêtre (vitesse, 05/11/2026).
+const RechercheForm = dynamic(() => import("@/components/RechercheForm").then((m) => m.RechercheForm), {
+  ssr: false,
+  loading: () => <p className="compte-calme">Chargement du formulaire…</p>,
+});
 
 /**
  * Un bouton qui ouvre le dépôt de recherche dans une fenêtre, sans quitter la
