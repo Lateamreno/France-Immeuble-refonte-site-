@@ -32,7 +32,10 @@ export const metadata: Metadata = {
 };
 
 /** Pose .js avant le premier rendu — voir §10 de globals.css. */
-const scriptJs = `document.documentElement.classList.add('js');`;
+/* Pose aussi la hauteur d'écran figée (MAV, 06/11/2026) : voir `--h-ecran` dans globals.css.
+   Elle ne suit la fenêtre que si la largeur change (rotation) ou à la souris (ordinateur) :
+   ni la barre d'un navigateur intégré qui se replie, ni le clavier ne font sauter la page. */
+const scriptJs = `(function(){var d=document.documentElement,w=-1;d.classList.add('js');function f(){if(innerWidth!==w||matchMedia('(pointer: fine)').matches){w=innerWidth;var h=innerHeight;d.style.setProperty('--h-ecran',h+'px');[600,700,720,760,820].forEach(function(t){d.classList.toggle('h-'+t,h<=t)})}}f();addEventListener('resize',f)})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (

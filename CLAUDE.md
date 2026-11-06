@@ -335,6 +335,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   deux cartes l'une sous l'autre, dessin à gauche dont la hauteur suit l'écran : la section tient
   sur un écran (#287). Propositions en attente de MAV : titres de la Découpe (#288 à #290), FAQ
   (#291 à #294, #296), menu déroulant (#283), pied de page (#295).
+- **Lot 93** (vidéo de MAV dans Messenger, 06/11/2026 : « des bugs au défilement »). Dans les
+  navigateurs intégrés (Messenger, Instagram…), la fenêtre change de taille quand leur barre se
+  replie : `svh` suivait, chaque section calée sur l'écran changeait de hauteur et la page sautait
+  (jusqu'à 449 px sur Vendre). **La hauteur d'écran est figée au chargement** : le script de la
+  mise en page pose `--h-ecran` en pixels (et `--u-svh`, 1 % de cette hauteur) et ne le change
+  qu'avec la largeur (rotation) ou à la souris (ordinateur). Plus aucun `svh` ni
+  `@media (max-height)` sur le téléphone dans `globals.css` : les règles « écran bas » passent
+  par les classes `h-600` à `h-820` posées par le même script. Ne pas en réintroduire.
 
 ### Garde-fous non négociables
 
