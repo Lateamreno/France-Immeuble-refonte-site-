@@ -1,4 +1,6 @@
 import { BoutonEstimation, ModaleEstimation } from "@/components/ModaleEstimation";
+import { SectionFaq } from "@/components/SectionFaq";
+import { chiffresFaq, faqVendus } from "@/lib/faq";
 import type { Metadata } from "next";
 import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
@@ -177,6 +179,9 @@ export default async function ImmeublesVendus() {
       {/* Apres la preuve chiffree : les 44 ventes disent ce qu'on a fait, les
           avis disent comment ca s'est passe. */}
       <Avis titre="Ce qu'en disent ceux qui ont signé" compact fond="creme" />
+
+      {/* Retour #293 (MAV, 09/11/2026). */}
+      <SectionFaq items={faqVendus(chiffresFaq(ventes))} titre={<>Nos ventes en chiffres : <span className="accent">vos questions</span></>} />
 
       <section className="section section--noir">
         <div className="container" style={{ textAlign: "center" }}>

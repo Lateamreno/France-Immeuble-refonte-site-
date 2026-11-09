@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SectionFaq } from "@/components/SectionFaq";
+import { faqAVendre } from "@/lib/faq";
 import { PageFond } from "@/components/PageFond";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -196,6 +198,9 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
           <RechercheForm />
         </div>
       </section>
+
+      {/* Retour #294 (MAV, 09/11/2026). */}
+      <SectionFaq items={faqAVendre()} className="" titre={<>Acheter un immeuble en vente : <span className="accent">vos questions</span></>} />
       </PageFond>
     </>
   );

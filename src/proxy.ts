@@ -74,7 +74,9 @@ function imageWp(chemin: string): string | null {
 
 /** Les PDF de l'ancien site encore connus de Google, vers la page qui les remplace. */
 const DOCUMENTS_WP: Record<string, string> = {
-  "tarifs-2020.pdf": "/vendre-un-immeuble/",
+  // Le barème est une page depuis le 09/11/2026 (MAV).
+  "tarifs-2020.pdf": "/nos-honoraires/",
+  "tarifs-2022.pdf": "/nos-honoraires/",
   "cgu-france-immeuble-27112018-1.pdf": "/mentions-legales-2/",
 };
 

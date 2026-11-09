@@ -229,7 +229,7 @@
 },
 {
 "source": "/wp-content/uploads/2022/05/Tarifs-2022.pdf",
-"destination": "/docs/Tarifs-2022.pdf"
+"destination": "/nos-honoraires/"
 },
 {
 "source": "/wp-content/uploads/2019/01/CGU-France-Immeuble-27112018.pdf",
@@ -345,7 +345,7 @@
 },
 {
 "source": "/tarifs-2022/",
-"destination": "/"
+"destination": "/nos-honoraires/"
 },
 {
 "source": "/agence-specialiste-vente-immeubles/france_immeuble_210922_12_38_15_web-2/",
@@ -705,7 +705,7 @@
 },
 {
 "source": "/tarifs-2020/",
-"destination": "/"
+"destination": "/nos-honoraires/"
 },
 {
 "source": "/cgu-france-immeuble-27112018-2/",
@@ -1146,5 +1146,13 @@
 {
 "source": "/:chemin(decouvrez.*)",
 "destination": "/estimer-un-immeuble/"
+},
+{
+"source": "/docs/Tarifs-2022.pdf",
+"destination": "/nos-honoraires/"
+},
+{
+"source": "/docs/Tarifs-2020.pdf",
+"destination": "/nos-honoraires/"
 }
 ]

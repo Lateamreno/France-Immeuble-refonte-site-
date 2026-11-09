@@ -24,6 +24,7 @@ const PAGES: Entree[] = [
   { chemin: "/immeubles-a-vendre/", priorite: 0.7, frequence: "weekly" },
   { chemin: "/immeubles-off-market/", priorite: 0.7, frequence: "monthly" },
   { chemin: "/blog/", priorite: 0.6, frequence: "weekly" },
+  { chemin: "/nos-honoraires/", priorite: 0.5, frequence: "yearly" },
 ];
 
 /** Les fiches arrivent du BO : le sitemap se régénère avec elles. */

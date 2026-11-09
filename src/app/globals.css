@@ -473,19 +473,22 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 }
 
 /* --- 9. FOOTER ------------------------------------------------------------ */
-.site-footer{background:var(--color-noir-2);border-top:1px solid var(--color-ligne);padding-block:var(--space-xl) var(--space-m);}
-.footer-grid{display:grid;gap:var(--space-l);grid-template-columns:1fr;}
-@media (min-width:760px){.footer-grid{grid-template-columns:1.6fr 1fr 1fr;}}
+.site-footer{background:var(--color-noir-2);border-top:1px solid var(--color-ligne);padding-block:40px 18px;}
+/* Pied de page « C » (retour #295, MAV, 09/11/2026) : deux fois moins haut. */
+.footer-grid{display:grid;gap:24px 16px;grid-template-columns:1fr 1fr;}
+.footer-col--marque{grid-column:1 / -1;}
+.footer-coords{display:flex;flex-direction:column;gap:6px;margin-top:var(--space-s);}
+@media (min-width:760px){.footer-grid{grid-template-columns:1.3fr 1fr 1fr 1fr;gap:24px;}.footer-col--marque{grid-column:auto;}}
 .footer-col h4{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
   letter-spacing:0.15em;text-transform:uppercase;color:var(--color-bronze);
   margin:0 0 var(--space-s);font-weight:500;
 }
-.footer-col li{margin-bottom:10px;}
+.footer-col li{margin-bottom:6px;}
 .footer-col a{font-size:var(--fs-small);color:var(--color-gris);transition:color var(--dur) var(--ease);}
 .footer-col a:hover{color:var(--color-creme);}
 .footer-bottom{
-  margin-top:var(--space-xl);padding-top:var(--space-s);
+  margin-top:24px;padding-top:14px;
   border-top:1px solid var(--color-ligne);
   display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:space-between;
   font-size:var(--fs-small);color:var(--color-gris);
@@ -2263,7 +2266,7 @@ fieldset.field legend,.lot label{
    marges restantes sont réduites d'autant. */
 @media (pointer:coarse),(max-width:1024px){
   .footer-col li{margin-bottom:0;}
-  .footer-col a{display:inline-flex;align-items:center;min-height:44px;}
+  .footer-col a,.footer-legal a{display:inline-flex;align-items:center;min-height:36px;}
   .fiche-contact a,
   .header-tel{display:inline-flex;align-items:center;min-height:44px;}
   .brand{min-height:44px;}
@@ -4932,19 +4935,19 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .da-attentes{display:flex;flex-direction:column;gap:6px;margin:4px 0 0;padding:0;list-style:none;color:var(--color-gris);}
 .da-attentes li{padding-left:18px;position:relative;}
 .da-attentes li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--color-bronze);}
-/* #287 (MAV, 05/11/2026) : la section tient dans l'écran sur ordinateur. Les deux cartes
-   l'une sous l'autre, le dessin à gauche, le texte sur toute la largeur ; la hauteur du
-   dessin suit celle de l'écran. */
+/* #287 (MAV, 05/11/2026) puis 09/11/2026 : « la comparaison côte à côte », sur un écran. Sur
+   ordinateur, les deux cartes restent côte à côte ; c'est la hauteur des dessins qui suit
+   celle de l'écran pour que la section tienne. */
 @media (min-width:960px){
   .deux-acheteurs-sec{--section-y:clamp(24px,calc(4 * var(--u-svh)),56px);}
   .deux-acheteurs-sec .section__head{margin-bottom:var(--space-m);}
   .deux-acheteurs-sec .tete-2col.tete-2col{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);}
   .deux-acheteurs-sec .section__head h2{max-width:none;}
-  .deux-acheteurs{--h-dessin:clamp(120px,calc((var(--h-ecran) - 530px) / 2),280px);grid-template-columns:1fr;gap:var(--space-s);}
-  .da-carte{display:grid;grid-template-columns:var(--h-dessin) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:var(--space-l);row-gap:8px;align-items:start;padding:20px var(--space-m);}
-  .da-dessin{grid-row:1 / -1;align-self:center;margin:0;}
+  .deux-acheteurs{--h-dessin:clamp(130px,calc(var(--h-ecran) - 652px),340px);}
+  .da-carte{padding:20px var(--space-m) 24px;gap:8px;}
+  .da-dessin{margin:0;}
   .da-dessin svg{height:var(--h-dessin);width:100%;max-width:none;}
-  .da-vente{align-self:end;}
+  .da-attentes{gap:4px;font-size:15px;line-height:1.45;}
 }
 @media (max-width:759px){
   .deux-acheteurs{grid-template-columns:1fr;gap:var(--space-s);}
@@ -5224,6 +5227,10 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 }
 /* #211 : un picto devant le téléphone et l'e-mail du pied de page. */
 .footer-coord{display:inline-flex;align-items:center;gap:8px;}
+.footer-legal{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 20px;}
+.footer-legal a{color:var(--color-gris);}
+.footer-legal a:hover{color:var(--color-creme);}
+@media (max-width:759px){.footer-bottom{flex-direction:column;align-items:flex-start;gap:10px;}}
 .footer-coord svg{color:var(--color-bronze);flex:none;}
 .ville--reste .ville__nom{color:var(--color-gris);}
 /* #206 : sous 16 px, l'iPhone zoome sur le champ touché et la page reste
@@ -5439,3 +5446,16 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .carte-tous__nb{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:1.45rem;line-height:1.08;letter-spacing:-.015em;}
 .carte-tous:hover .carte-tous__btn{background:var(--color-bronze-clair-2);}
 .carte-tous:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+
+/* Liens dans les réponses des FAQ (MAV, 09/11/2026 : le barème depuis « Combien coûte… »). */
+.lien-texte{color:var(--color-bronze);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;}
+.lien-texte:hover{color:var(--color-bronze-clair-2);}
+.lien-texte:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;border-radius:2px;}
+
+/* Barème des honoraires (/nos-honoraires/, MAV, 09/11/2026). */
+.bareme tbody th{font-family:var(--font-body);font-weight:500;font-size:.92rem;color:var(--color-creme);text-align:left;white-space:normal;padding:13px 14px;border-bottom:1px solid var(--color-ligne);}
+.bareme td{text-align:center;}
+.bareme thead th:not(:first-child){text-align:center;}
+.bareme__inclus{display:inline-flex;align-items:center;color:var(--color-bronze);}
+.bareme__inclus sup{margin-left:2px;}
+.bareme-legal{margin-top:var(--space-l);}

@@ -351,7 +351,7 @@ export default function Decoupe() {
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Ce qui reste dans votre poche</Eyebrow>
-            <h2>Le même dossier, tous frais déduits</h2>
+            <h2>Même immeuble, <span className="accent">844 000 € de plus</span> à la découpe</h2>
             <p className="lead">
               Un écart de prix ne veut rien dire tant qu’on n’a pas payé l’opération. Voici le
               bilan complet : nos honoraires de vente, les honoraires de montage de l’opération et
@@ -458,7 +458,7 @@ export default function Decoupe() {
         <div className="container">
           <Reveal className="section__head tete-2col">
             <Eyebrow>Notre mission</Eyebrow>
-            <h2>Vous n’avez pas à devenir marchand de biens</h2>
+            <h2>La marge du marchand de biens, <span className="accent">le travail en moins</span></h2>
             <p className="lead" style={{ marginTop: "var(--space-s)" }}>
               C’est un métier : cinq corps d’intervenants, un calendrier légal contraint, des
               négociations locataire par locataire. Nous nous en occupons pour vous, afin de vous
@@ -532,7 +532,7 @@ export default function Decoupe() {
         <div className="container container--narrow">
           <Reveal className="section__head">
             <Eyebrow>Le cadre à respecter</Eyebrow>
-            <h2>Ce que la loi impose avant la première vente</h2>
+            <h2>Ce que la loi exige, et que nous gérons <span className="accent">à votre place</span></h2>
             <p className="lead">
               Rien d’insurmontable, mais rien d’optionnel non plus. L’ordre compte : un diagnostic
               manquant bloque le règlement de copropriété, un règlement non publié bloque toute

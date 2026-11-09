@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SectionFaq } from "@/components/SectionFaq";
+import { faqOffMarket } from "@/lib/faq";
 import { chiffres } from "@/lib/chiffres";
 import { Chiffre } from "@/components/Chiffre";
 import { HeroMedia } from "@/components/HeroMedia";
@@ -202,6 +204,9 @@ export default async function ImmeublesOffMarket() {
           <RechercheForm />
         </div>
       </section>
+
+      {/* Retour #296 (MAV, 09/11/2026). */}
+      <SectionFaq items={faqOffMarket()} titre={<>L’off-market : <span className="accent">vos questions</span></>} />
       <BoutonFixeMobile href="#deposer" libelle="Déposer ma recherche" cible="deposer" />
     </>
   );

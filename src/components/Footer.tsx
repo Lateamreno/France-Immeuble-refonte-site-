@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { SITE, nombre } from "@/lib/site";
-import { chiffres } from "@/lib/chiffres";
+import { SITE } from "@/lib/site";
 import { Logo } from "./Logo";
 import { Picto } from "./Picto";
 
@@ -12,26 +11,21 @@ import { Picto } from "./Picto";
  *    page n'est pas créée. Un lien mort vaut moins que pas de lien.
  *  - la colonne « Vendre par ville » arrivera en M6, avec les pages.
  */
-export async function Footer() {
-  const { investisseurs } = await chiffres();
+export function Footer() {
   return (
     <footer className="site-footer">
       <div className="container">
+        {/* Pied de page « C » (retour #295, MAV, 09/11/2026) : une rangée de colonnes, les
+            mentions sur la dernière ligne, une colonne « Nos biens ». */}
         <div className="footer-grid">
-          <div className="footer-col">
-            <Link className="brand" href="/" aria-label="France Immeuble — accueil">
+          <div className="footer-col footer-col--marque">
+            <Link className="brand" href="/" aria-label="France Immeuble, accueil">
               <Logo titre={null} />
             </Link>
-            <p className="small muted" style={{ marginTop: "var(--space-s)", maxWidth: "34ch" }}>
-              Agence spécialisée dans la vente d&rsquo;immeubles de rapport en bloc, à Paris, en
-              Île-de-France et en région.
-            </p>
-            <p className="small mono" style={{ marginTop: "var(--space-s)" }}>
+            <p className="small mono footer-coords">
               {/* Retour #211 (MAV, 04/11/2026) : un picto devant le téléphone et l'e-mail. */}
               <a className="footer-coord" href={SITE.telHref}><Picto nom="telephone" taille={16} />{SITE.tel}</a>
-              <br />
               <a className="footer-coord" href={`mailto:${SITE.email}`}><Picto nom="mail" taille={16} />{SITE.email}</a>
-              <br />
               {/* Retour #233 (MAV, 04/11/2026). */}
               <span className="footer-adresse"><Picto nom="secteur" taille={16} /><span>{SITE.adresse}<br />{SITE.codePostalVille}</span></span>
             </p>
@@ -43,7 +37,7 @@ export async function Footer() {
               <li><Link href="/vendre-un-immeuble/">Vendre un immeuble</Link></li>
               <li><Link href="/vendre-a-la-decoupe/">Vendre à la découpe</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
-              <li><Link href="/immeubles-vendus/">Nos biens vendus</Link></li>
+              <li><Link href="/nos-honoraires/">Nos honoraires</Link></li>
               <li><Link href="/blog/">Blog</Link></li>
             </ul>
           </div>
@@ -54,26 +48,29 @@ export async function Footer() {
               <li><Link href="/acheter-un-immeuble/">Acheter un immeuble</Link></li>
               <li>
                 <a href={SITE.pleinbail} target="_blank" rel="noopener">
-                  PleinBail — biens loués
+                  PleinBail, biens loués
                 </a>
               </li>
             </ul>
           </div>
-        </div>
 
-        <div className="footer-col" style={{ gridColumn: "1 / -1", marginTop: "var(--space-m)" }}>
-            <ul style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-s)" }}>
-              <li><Link href="/contactez-nous/">Nous contacter</Link></li>
-              <li><Link href="/plan-du-site/">Plan du site</Link></li>
-              <li><Link href="/mentions-legales-2/">Mentions légales</Link></li>
+          <div className="footer-col">
+            <h4>Nos biens</h4>
+            <ul>
+              <li><Link href="/immeubles-a-vendre/">Biens à vendre</Link></li>
+              <li><Link href="/immeubles-off-market/">Biens off-market</Link></li>
+              <li><Link href="/immeubles-vendus/">Biens vendus</Link></li>
             </ul>
           </div>
+        </div>
 
         <div className="footer-bottom">
           <span>&copy; 2026 {SITE.nom}</span>
-          <span className="mono">
-            {nombre(investisseurs)} investisseurs · Paris 8<sup>e</sup>
-          </span>
+          <ul className="footer-legal">
+            <li><Link href="/contactez-nous/">Nous contacter</Link></li>
+            <li><Link href="/plan-du-site/">Plan du site</Link></li>
+            <li><Link href="/mentions-legales-2/">Mentions légales</Link></li>
+          </ul>
         </div>
       </div>
     </footer>

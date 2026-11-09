@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { SectionFaq } from "@/components/SectionFaq";
+import { chiffresFaq, faqEstimer } from "@/lib/faq";
+import { ventes as lesVentes } from "@/lib/biens";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
@@ -65,7 +68,8 @@ const ANALYSES: { picto: NomPicto; titre: string; texte: string }[] = [
 /** Le dessin est calculé une fois, au rendu du serveur. */
 const SCHEMA = schemaImmeuble();
 
-export default function EstimerUnImmeuble() {
+export default async function EstimerUnImmeuble() {
+  const faq = faqEstimer(chiffresFaq(await lesVentes()));
   return (
     <>
       <JsonLd
@@ -148,6 +152,9 @@ export default function EstimerUnImmeuble() {
           <EstimationForm formulaire="estimer" />
         </div>
       </section>
+
+      {/* Retour #292 (MAV, 09/11/2026) : après le formulaire, qui reste ce qu'on voit d'abord. */}
+      <SectionFaq items={faq} titre={<>Estimer un immeuble de rapport : <span className="accent">vos questions</span></>} />
 
       <BoutonFixeMobile href="#estimer" libelle="Estimer mon immeuble" cible="estimer" />
     </>

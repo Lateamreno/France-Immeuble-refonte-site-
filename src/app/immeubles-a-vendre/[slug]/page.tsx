@@ -498,7 +498,7 @@ export default async function FicheBien({ params }: Params) {
               <p>
                 Prix de {eur(b.prixHai)} honoraires inclus, dont {eur(b.prixHai - net)} TTC d’honoraires à la charge de l’acquéreur,
                 soit {pct(((b.prixHai - net) / net) * 100, 1)} du prix net vendeur de {eur(net)}.{" "}
-                <a href="/docs/Tarifs-2022.pdf">Barème de nos honoraires</a>.
+                <a href="/nos-honoraires/">Barème de nos honoraires</a>.
               </p>
               <p>
                 France Immeuble SAS, carte professionnelle Transactions CPI 7501 2018 000 026 004 délivrée par la CCI Paris

@@ -343,6 +343,19 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   qu'avec la largeur (rotation) ou à la souris (ordinateur). Plus aucun `svh` ni
   `@media (max-height)` sur le téléphone dans `globals.css` : les règles « écran bas » passent
   par les classes `h-600` à `h-820` posées par le même script. Ne pas en réintroduire.
+- **Lot 94** (MAV, 09/11/2026). Mots en or : « Estimez » et « immeuble » dans le titre du
+  formulaire d'estimation (pas la phrase entière), « immeuble » en plus sur Vendre. Découpe :
+  les deux acheteurs **côte à côte**, la hauteur des dessins suit l'écran (`--h-dessin`), la
+  section tient sur un écran. Titres de la Découpe : « Même immeuble, 844 000 € de plus à la
+  découpe », « La marge du marchand de biens, le travail en moins », « Ce que la loi exige, et
+  que nous gérons à votre place ». Pied de page « C » (colonne Nos biens, mentions sur la
+  dernière ligne). **Barème en page** `/nos-honoraires/` (chiffres du PDF 2022 et de la
+  découpe) ; les PDF Tarifs 2020 et 2022 redirigent vers elle. **FAQ partout** (« pour le SEO
+  on peut en mettre partout ») : Vendre et Estimer aussi, repliées après le formulaire, ce qui
+  lève la règle du 04/11 pour la FAQ seulement ; Nos ventes, Biens à vendre, Off-market.
+  Réponses dans `src/lib/faq.tsx`, chiffres tirés des ventes publiées ; `SectionFaq` pose les
+  données FAQPage. À ne pas écrire : le nombre de ventes (« moins de 50, pas exceptionnel »),
+  l'adresse non publiée, « visites organisées avec vous ».
 
 ### Garde-fous non négociables
 

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { SectionFaq } from "@/components/SectionFaq";
+import { chiffresFaq, faqVendre } from "@/lib/faq";
+import { ventes as lesVentes } from "@/lib/biens";
 import Image from "next/image";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -128,7 +131,8 @@ function atouts(acheteurs: number): { picto: NomPicto; photo: string; titre: str
 }
 
 export default async function VendreUnImmeuble() {
-  const ch = await chiffres();
+  const [ch, ventesPubliees] = await Promise.all([chiffres(), lesVentes()]);
+  const faq = faqVendre(chiffresFaq(ventesPubliees));
   return (
     <>
       <JsonLd
@@ -166,7 +170,7 @@ export default async function VendreUnImmeuble() {
         coin={{ width: 900, height: 437 }}
         className="portes-sec"
         surtitre="Votre projet"
-        titre={<>Nous <span className="accent">estimons</span> puis trouvons le <span className="accent">meilleur acheteur</span> pour votre immeuble</>}
+        titre={<>Nous <span className="accent">estimons</span> puis trouvons le <span className="accent">meilleur acheteur</span> pour votre <span className="accent">immeuble</span></>}
       >
         <ol className="portes-libres">
           <li className="porte">
@@ -297,6 +301,9 @@ export default async function VendreUnImmeuble() {
           <EstimationForm formulaire="vendre" />
         </div>
       </section>
+
+      {/* Retour #291 (MAV, 09/11/2026) : une FAQ repliée après le formulaire, pour le SEO. */}
+      <SectionFaq items={faq} titre={<>Vendre un immeuble de rapport : <span className="accent">vos questions</span></>} />
 
       {/* Retour #77 : le bouton toujours à portée au téléphone, sauf sur le hero et le formulaire. */}
       <BoutonFixeMobile href="#estimer" libelle="Vendre mon immeuble" cible="estimer" />
