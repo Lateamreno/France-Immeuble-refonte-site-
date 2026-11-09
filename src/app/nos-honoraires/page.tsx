@@ -18,7 +18,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Barème de nos honoraires",
   description:
-    "Les honoraires de France Immeuble pour vendre un immeuble de rapport : de 3 à 5 % selon le prix, dus seulement à la signature de l’acte. Services inclus et tarifs de la vente à la découpe.",
+    "Les honoraires de France Immeuble pour vendre un immeuble de rapport : de 3 à 5 % selon le prix, dus seulement à la signature de l’acte. Et les tarifs de la vente à la découpe.",
   alternates: { canonical: `${SITE.url}/nos-honoraires/` },
 };
 
@@ -27,32 +27,6 @@ const TRANCHES = [
   { prix: "De 5 000 000 à 10 000 000 €", taux: "4 %", note: "Minimum 250 000 €" },
   { prix: "Plus de 10 000 000 €", taux: "3 %", note: "Minimum 400 000 €" },
 ];
-
-type Case = string | true | false;
-/** Hors mandat, mandat simple, semi-exclusif, exclusif. `true` : inclus. */
-const SERVICES: { nom: string; cases: [Case, Case, Case, Case]; deduit?: boolean }[] = [
-  { nom: "Estimation simple", cases: ["Gratuit", true, true, true] },
-  { nom: "Estimation complète", cases: ["500 €", false, false, true] },
-  { nom: "Pré-étude de constructibilité", cases: ["250 €", true, true, true] },
-  { nom: "Étude de constructibilité", cases: ["500 €", false, false, true], deduit: true },
-  { nom: "Étude de constructibilité et certificat d’urbanisme", cases: ["600 €", false, false, true], deduit: true },
-  { nom: "Panneau petit format", cases: [false, true, true, true] },
-  { nom: "Panneau moyen format", cases: [false, false, true, true] },
-  { nom: "Panneau grand format", cases: [false, false, false, true] },
-  { nom: "Suivi en ligne dans votre espace client", cases: [false, true, true, true] },
-];
-
-function Cellule({ v, deduit }: { v: Case; deduit?: boolean }) {
-  if (v === true)
-    return (
-      <span className="bareme__inclus">
-        <Picto nom="valide" taille={18} /> <span className="sr-only">Inclus</span>
-        {deduit && <sup aria-label="voir la note">*</sup>}
-      </span>
-    );
-  if (v === false) return <span aria-label="Non proposé">–</span>;
-  return <>{v}</>;
-}
 
 export default function NosHonoraires() {
   return (
@@ -112,60 +86,30 @@ export default function NosHonoraires() {
       <section className="section section--noir bareme-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
-            <Eyebrow>Services</Eyebrow>
-            <h2>Ce qui est <span className="accent">inclus</span> selon le mandat</h2>
-          </Reveal>
-          <Reveal className="tableau-wrap">
-            <table className="tableau bareme">
-              <caption className="sr-only">Services et tarifs selon le type de mandat de vente</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Service</th>
-                  <th scope="col">Hors mandat</th>
-                  <th scope="col">Simple</th>
-                  <th scope="col">Semi-exclusif</th>
-                  <th scope="col">Exclusif</th>
-                </tr>
-              </thead>
-              <tbody>
-                {SERVICES.map((s) => (
-                  <tr key={s.nom}>
-                    <th scope="row">{s.nom}</th>
-                    {s.cases.map((c, i) => (
-                      <td key={i}><Cellule v={c} deduit={s.deduit && i === 3} /></td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Reveal>
-          <p className="tableau__note">
-            * Payée à part, puis déduite de nos honoraires une fois la vente réalisée.
-          </p>
-        </div>
-      </section>
-
-      <section className="section section--noir-2 bareme-sec">
-        <div className="container container--narrow">
-          <Reveal className="section__head">
             <Eyebrow>Vente à la découpe</Eyebrow>
             <h2>Vendre <span className="accent">lot par lot</span></h2>
             <p className="lead">
-              Deux missions : la structuration de la copropriété, puis la vente des lots.
-              Géomètre, notaire, diagnostics et syndic vous facturent directement, sans marge de
-              notre part.
+              Deux missions : la structuration de la copropriété, puis la vente des lots. Seuls
+              5 000 € TTC sont exigibles à la signature ; le reste des frais de structuration est dû
+              à la première vente d’un lot.
             </p>
           </Reveal>
           <Reveal>
             <ul className="tarifs">
+              {/* MAV, 09/11/2026 : seuls 5 000 € TTC à la signature, le reste à la première vente. */}
+              <li>
+                <Picto nom="dossier" taille={24} className="tarifs__picto" />
+                <span className="tarifs__nom">À la signature du contrat de structuration</span>
+                <span className="tarifs__val">5 000 € TTC</span>
+                <span className="tarifs__note">
+                  Seule somme exigible à la signature. Le reste des forfaits de structuration est
+                  exigé à la première vente d’un lot.
+                </span>
+              </li>
               <li>
                 <Picto nom="profil" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
-                <span className="tarifs__note">
-                  5 000 € TTC à la signature du contrat de structuration, le solde des forfaits à la
-                  première vente d’un lot.
-                </span>
               </li>
               <li>
                 <Picto nom="logement" taille={24} className="tarifs__picto" />
@@ -193,6 +137,10 @@ export default function NosHonoraires() {
                 </span>
               </li>
             </ul>
+            <p className="tableau__note">
+              Les frais des autres intervenants (géomètre, notaire, diagnostics, syndic) sont réglés
+              directement par le mandant, sans marge de notre part.
+            </p>
           </Reveal>
           <div className="btn-row" style={{ justifyContent: "center", marginTop: "var(--space-m)" }}>
             <Button href="/vendre-a-la-decoupe/">Voir la vente à la découpe</Button>

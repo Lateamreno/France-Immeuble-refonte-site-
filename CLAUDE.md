@@ -356,6 +356,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Réponses dans `src/lib/faq.tsx`, chiffres tirés des ventes publiées ; `SectionFaq` pose les
   données FAQPage. À ne pas écrire : le nombre de ventes (« moins de 50, pas exceptionnel »),
   l'adresse non publiée, « visites organisées avec vous ».
+- **Lot 95** (MAV, 09/11/2026). Barème : plus de tableau des services selon le mandat (« on s'en
+  fout ») ; découpe : seuls 5 000 € TTC exigibles à la signature, le reste des frais de
+  structuration à la première vente, les autres intervenants réglés directement par le mandant.
+  **Menu déroulant « F »** sur ordinateur (#283) : sans cadre ni fond, filet or à gauche, ombre
+  portée sous le texte. **Lots 92 à 95 en production le 09/11/2026** (« Go production pour tout »).
 
 ### Garde-fous non négociables
 
