@@ -368,7 +368,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Barème 2022 confirmé à jour par MAV.
   Même jour (accord de MAV) : la FAQ de la Découpe porte ses données FAQPage (texte tiré du JSX par
   `texteFaq`, `src/lib/texte-react.ts`) ; `/contactez-nous/` reçoit une description, qu'elle n'avait
-  pas sur WordPress.
+  pas sur WordPress. **Lot 96 en production le 09/11/2026** (« Go », MAV).
 
 ### Garde-fous non négociables
 
