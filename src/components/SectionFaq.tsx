@@ -11,6 +11,9 @@ import { Reveal } from "./Reveal";
  */
 export type QR = { question: string; texte: string; reponse?: ReactNode };
 
+/** Espace insécable devant « ? : ; ! % » : pas de point d'interrogation seul en début de ligne. */
+const insecable = (t: string) => t.replace(/ ([?:;!%])/g, "\u00a0$1");
+
 export function SectionFaq({
   items,
   titre,
@@ -42,7 +45,7 @@ export function SectionFaq({
           <h2>{titre}</h2>
         </Reveal>
         <Reveal>
-          <Faq items={items.map((q) => ({ question: q.question, reponse: q.reponse ?? <p>{q.texte}</p> }))} />
+          <Faq items={items.map((q) => ({ question: insecable(q.question), reponse: q.reponse ?? <p>{insecable(q.texte)}</p> }))} />
         </Reveal>
       </div>
     </section>
