@@ -7,6 +7,7 @@ import { Faq, type QuestionFaq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
 import { SITE } from "@/lib/site";
+import { texteFaq } from "@/lib/texte-react";
 import { HeroMedia } from "@/components/HeroMedia";
 import { VISUELS } from "@/lib/visuels";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
@@ -234,6 +235,16 @@ export default function Decoupe() {
             "Étude comparative bloc / découpe, mise en copropriété, gestion des congés et préemptions, coordination des travaux et commercialisation lot par lot d’un immeuble de rapport.",
             "/vendre-a-la-decoupe/",
           ),
+          // MAV, 09/11/2026 : la FAQ de la Découpe lisible par Google, comme sur les autres pages.
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: QUESTIONS.map((q) => ({
+              "@type": "Question",
+              name: q.question,
+              acceptedAnswer: { "@type": "Answer", text: texteFaq(q.reponse) },
+            })),
+          },
         ]}
       />
 

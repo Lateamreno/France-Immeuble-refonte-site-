@@ -20,7 +20,15 @@ import { SITE } from "@/lib/site";
  * Le `<h1>Votre message</h1>` du corps d'origine devient un h2 : la page
  * portait deux h1, ce qu'aucun moteur n'apprécie. Le mot reste à l'écran.
  */
-export const metadata: Metadata = metadonneesWP("/contactez-nous/");
+/** Pas de description sur WordPress ; MAV, 09/11/2026 : on en ajoute une pour Google. */
+const DESCRIPTION =
+  `Contactez France Immeuble, agence de vente d’immeubles de rapport sur les Champs-Élysées, Paris 8e. Un projet de vente ou d’achat ? Appelez le ${SITE.tel}.`;
+const meta = metadonneesWP("/contactez-nous/");
+export const metadata: Metadata = {
+  ...meta,
+  description: DESCRIPTION,
+  openGraph: { ...meta.openGraph, description: DESCRIPTION },
+};
 
 export default function ContactezNous() {
   return (

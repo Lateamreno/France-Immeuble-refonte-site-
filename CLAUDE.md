@@ -366,6 +366,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   de 10 lots à 2 000 € par lot on leur prend pas 20 k€ de suite »). Barème et Découpe le disent avec
   l'exemple de dix lots occupés : 20 000 € TTC, 5 000 € à la signature, 15 000 € à la première vente.
   Barème 2022 confirmé à jour par MAV.
+  Même jour (accord de MAV) : la FAQ de la Découpe porte ses données FAQPage (texte tiré du JSX par
+  `texteFaq`, `src/lib/texte-react.ts`) ; `/contactez-nous/` reçoit une description, qu'elle n'avait
+  pas sur WordPress.
 
 ### Garde-fous non négociables
 
