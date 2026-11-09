@@ -361,6 +361,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   structuration à la première vente, les autres intervenants réglés directement par le mandant.
   **Menu déroulant « F »** sur ordinateur (#283) : sans cadre ni fond, filet or à gauche, ombre
   portée sous le texte. **Lots 92 à 95 en production le 09/11/2026** (« Go production pour tout »).
+- **Lot 96** (MAV, 09/11/2026). Les 5 000 € TTC de la découpe ne sont pas un frais en plus : c'est
+  l'acompte des forfaits de structuration, le reste à la première vente d'un lot (« sur un immeuble
+  de 10 lots à 2 000 € par lot on leur prend pas 20 k€ de suite »). Barème et Découpe le disent avec
+  l'exemple de dix lots occupés : 20 000 € TTC, 5 000 € à la signature, 15 000 € à la première vente.
+  Barème 2022 confirmé à jour par MAV.
 
 ### Garde-fous non négociables
 

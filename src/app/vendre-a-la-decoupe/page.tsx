@@ -175,8 +175,9 @@ const QUESTIONS: QuestionFaq[] = [
     question: "Quels frais faut-il avancer ?",
     reponse: (
       <p>
-        Nous prenons 5 000 € TTC d’avance à la signature de la mission de structuration. Comptez
-        ensuite de l’ordre de 20 000 à 25 000 € de frais d’intervenants pour un immeuble d’une
+        De nos forfaits de structuration, seuls 5 000 € TTC sont payés à la signature, le reste à
+        la première vente d’un lot. Pour dix lots occupés, 20 000 € TTC en tout : 5 000 € à la
+        signature, 15 000 € à la première vente. Comptez aussi de l’ordre de 20 000 à 25 000 € de frais d’intervenants pour un immeuble d’une
         dizaine de lots : géomètre, notaire, diagnostic technique global, diagnostics par lot,
         commissaire de justice, syndic provisoire. Ces frais sont réglés directement aux
         intervenants. Nous comparons toujours plusieurs devis pour trouver le meilleur rapport
@@ -618,8 +619,9 @@ export default function Decoupe() {
                 <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
                 <span className="tarifs__note">
-                  5 000 € TTC à la signature du contrat de structuration, le solde des forfaits à la
-                  première vente d’un lot.
+                  Les forfaits se paient en deux fois : 5 000 € TTC à la signature, le reste à la
+                  première vente d’un lot. Pour dix lots occupés, 20 000 € TTC en tout : 5 000 € à
+                  la signature, 15 000 € à la première vente.
                 </span>
               </li>
               <li>

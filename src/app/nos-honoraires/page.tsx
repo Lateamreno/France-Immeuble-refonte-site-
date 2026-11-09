@@ -89,27 +89,23 @@ export default function NosHonoraires() {
             <Eyebrow>Vente à la découpe</Eyebrow>
             <h2>Vendre <span className="accent">lot par lot</span></h2>
             <p className="lead">
-              Deux missions : la structuration de la copropriété, puis la vente des lots. Seuls
-              5 000 € TTC sont exigibles à la signature ; le reste des frais de structuration est dû
-              à la première vente d’un lot.
+              Deux missions : la structuration de la copropriété, puis la vente des lots. Les
+              forfaits de structuration ne sont pas payés d’un coup : un acompte à la signature,
+              le reste à la première vente d’un lot.
             </p>
           </Reveal>
           <Reveal>
             <ul className="tarifs">
-              {/* MAV, 09/11/2026 : seuls 5 000 € TTC à la signature, le reste à la première vente. */}
-              <li>
-                <Picto nom="dossier" taille={24} className="tarifs__picto" />
-                <span className="tarifs__nom">À la signature du contrat de structuration</span>
-                <span className="tarifs__val">5 000 € TTC</span>
-                <span className="tarifs__note">
-                  Seule somme exigible à la signature. Le reste des forfaits de structuration est
-                  exigé à la première vente d’un lot.
-                </span>
-              </li>
               <li>
                 <Picto nom="profil" taille={24} className="tarifs__picto" />
                 <span className="tarifs__nom">Forfait de structuration, par lot occupé</span>
                 <span className="tarifs__val">2 000 € TTC</span>
+                {/* MAV, 09/11/2026 : les 5 000 € sont un acompte sur les forfaits, pas un frais en plus. */}
+                <span className="tarifs__note">
+                  Les forfaits se paient en deux fois : 5 000 € TTC à la signature, le reste à la
+                  première vente d’un lot. Pour dix lots occupés, 20 000 € TTC en tout : 5 000 € à
+                  la signature, 15 000 € à la première vente.
+                </span>
               </li>
               <li>
                 <Picto nom="logement" taille={24} className="tarifs__picto" />
