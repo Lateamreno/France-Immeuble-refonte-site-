@@ -158,6 +158,8 @@ export type MarcheCommune = {
   periodeFin: string | null;
   rdtMin: number | null;
   rdtMax: number | null;
+  /** Loyer des appartements, toutes tailles, en €/m²/mois (ANIL, charges comprises). */
+  loyerM2: number | null;
   millesimeLoyers: number | null;
 };
 
@@ -191,6 +193,7 @@ export async function marchesDesCommunes(codes: string[]): Promise<Map<string, M
       periodeFin: p?.periode_fin ?? null,
       rdtMin: r(grand),
       rdtMax: r(petit),
+      loyerM2: loyer("appartement"),
       millesimeLoyers: millesime,
     });
   }

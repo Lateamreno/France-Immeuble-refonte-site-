@@ -425,6 +425,17 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   dans cette page aussi après le vote du 18/11/2026.
   Même jour : **le menu déroulant de l'ordinateur reprend son panneau à fond sombre** (MAV : « quand on
   est sur fond clair on voit rien ») ; la version « F » sans fond du lot 95 est retirée.
+- **Lot 102** (MAV, 10/11/2026 : « trop descriptif, je veux qu'on se vende et qu'on dise pourquoi France
+  Immeuble c'est bien. Comment on estime, comment on vend et à qui. Il faut des boutons réguliers. Pour
+  l'instant seule la page des prix est vraiment superbe »). Page Paris refaite : preuves (acheteurs,
+  immeubles étudiés, 4,9/5), tableau des 20 arrondissements enrichi des **immeubles entiers** (prix au m²
+  médian DVF, **écart en % avec les appartements**, **rendement brut déduit** = loyer ANIL des appartements
+  × 12 ÷ prix au m² des immeubles, ligne « Paris, en médiane »), « Comment nous estimons » (rendement,
+  baux un par un, état et DPE, bloc et découpe), « Comment nous vendons » (off-market, envoi ciblé, offres
+  vérifiées, jusqu'à l'acte), « À qui nous vendons » (recherches du BO par profil), dernières ventes,
+  découpe, avis, FAQ, formulaire ; un bouton d'estimation en fin de chaque section (`Relance`,
+  `.porte-action`). Retirés : textes de fond, « Ce qui pèse sur le prix », types d'architecture ; une
+  question « diagnostics » rejoint la FAQ.
 
 ### Garde-fous non négociables
 

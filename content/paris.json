@@ -212,7 +212,7 @@
   "questions": [
     {
       "question": "Peut-on louer un logement en Airbnb à Paris, et qu’est-ce que ça change pour la vente de l’immeuble ?",
-      "reponse": "Depuis le 1er janvier 2025, une résidence principale peut être louée en meublé de tourisme 90 jours par an au plus à Paris, avec un numéro d’enregistrement affiché sur chaque annonce. Tout autre logement loué en courte durée, comme ceux d’un immeuble de rapport, exige une autorisation de changement d’usage avec compensation : il faut transformer en logement une surface équivalente qui n’en était pas, un bureau ou un commerce. Sans autorisation, l’amende peut atteindre 100 000 €, avec une astreinte jusqu’à 1 000 € par jour et par m². Depuis le 21 novembre 2024, le changement d’usage exige aussi un DPE classé de A à E, et le PLU interdit les nouveaux meublés de tourisme dans les quartiers où ils sont déjà trop nombreux. Un acheteur ne retient donc un loyer de courte durée que si l’autorisation figure au dossier ; sinon, le lot est estimé comme un logement loué à l’année ou libre.",
+      "reponse": "Depuis le 1er janvier 2025, une résidence principale peut être louée en meublé de tourisme 90 jours par an au plus à Paris, avec un numéro d’enregistrement affiché sur chaque annonce. Tout autre logement loué en courte durée, comme ceux d’un immeuble de rapport, exige une autorisation de changement d’usage avec compensation : il faut transformer en logement une surface équivalente qui n’en était pas, un bureau ou un commerce. Sans autorisation, l’amende peut atteindre 100 000 €, avec une astreinte jusqu’à 1 000 € par jour et par m². Depuis le 21 novembre 2024, le changement d’usage exige aussi un DPE classé de A à E, et le PLU interdit les nouveaux meublés de tourisme dans les quartiers où ils sont déjà trop nombreux. Un acheteur ne retient donc un loyer de courte durée que si l’autorisation figure au dossier ; sinon, le lot est estimé comme un logement loué à l’année ou libre.",
       "sources": [
         "https://www.paris.fr/meubles-touristiques",
         "https://www.paris.fr/pages/location-limitee-a-90-jours-paris-serre-la-vis-sur-les-meubles-touristiques-29653",
@@ -256,6 +256,18 @@
       ]
     },
     {
+      "question": "Quels diagnostics faut-il pour vendre un immeuble à Paris ?",
+      "reponse": "Le vendeur fournit un dossier de diagnostic technique, annexé à la promesse puis à l’acte. Pour un immeuble ancien vendu en bloc, il comprend en général le constat de risque d’exposition au plomb pour les logements construits avant 1949, l’état relatif à l’amiante si le permis de construire date d’avant le 1er juillet 1997, et l’état des installations d’électricité et de gaz de plus de quinze ans. Tout Paris étant une zone de surveillance des termites, un état relatif aux termites s’ajoute, avec l’état des risques ; ces deux documents doivent dater de moins de six mois. Pour l’énergie, la vente en bloc demande un DPE à l’échelle du bâtiment, et un diagnostic à part pour les commerces et bureaux. Les acheteurs demandent souvent aussi le DPE de chaque logement, car c’est lui qui dit s’il peut encore être loué.",
+      "sources": [
+        "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006176358",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10798",
+        "https://www.paris.fr/pages/lutte-contre-les-termites-8103",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F12239",
+        "https://www.assemblee-nationale.fr/dyn/16/questions/QANR5L16QE8231",
+        "https://www.assemblee-nationale.fr/dyn/17/questions/QANR5L17QE4945"
+      ]
+    },
+    {
       "question": "La Ville de Paris peut-elle préempter mon immeuble ?",
       "reponse": "Oui. La vente d’un immeuble entier à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
       "sources": [
@@ -294,14 +306,14 @@
     },
     {
       "question": "Le ravalement est-il obligatoire à Paris, et faut-il le faire avant de vendre ?",
-      "reponse": "À Paris, les façades doivent être remises en état au moins une fois tous les dix ans. Le maire peut adresser une injonction au propriétaire, qui a six mois pour engager les travaux ; passé ce délai, il peut les prescrire dans un délai d’un an au plus, puis les faire réaliser aux frais du propriétaire avec l’autorisation du juge. Le refus est passible d’une amende de 3 750 €. Pour la vente, un ravalement récent rassure l’acheteur, alors qu’une injonction en cours se traduit par une décote qui tient compte du devis. Il n’est donc pas toujours utile de faire les travaux avant de vendre : un devis récent suffit souvent à cadrer la négociation.",
+      "reponse": "À Paris, les façades doivent être remises en état au moins une fois tous les dix ans. Le maire peut adresser une injonction au propriétaire, qui a six mois pour engager les travaux ; passé ce délai, il peut les prescrire dans un délai d’un an au plus, puis les faire réaliser aux frais du propriétaire avec l’autorisation du juge. Le refus est passible d’une amende de 3 750 €. Pour la vente, un ravalement récent rassure l’acheteur, alors qu’une injonction en cours se traduit par une décote qui tient compte du devis. Il n’est donc pas toujours utile de faire les travaux avant de vendre : un devis récent suffit souvent à cadrer la négociation.",
       "sources": [
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F640"
       ]
     },
     {
       "question": "Combien coûte la taxe foncière d’un immeuble à Paris ?",
-      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
+      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
       "sources": [
         "https://www.paris.fr/pages/budget-2023-pourquoi-une-augmentation-de-la-taxe-fonciere-22445",
         "https://www.paris.fr/pages/taxes-et-impots-2318"
@@ -318,16 +330,17 @@
     },
     {
       "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
-      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Un immeuble en bloc se valorise d’abord par son rendement comparé à celui du secteur, et non par le prix au m² d’un appartement.",
+      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Un immeuble en bloc se valorise d’abord par son rendement comparé à celui du secteur, et non par le prix au m² d’un appartement.",
       "sources": [
         "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf"
       ]
     },
     {
       "question": "Combien d’impôt sur la plus-value en vendant un immeuble à Paris ?",
-      "reponse": "Pour un particulier, une indivision ou une SCI à l’impôt sur le revenu, la plus-value est imposée à 19 %, plus les prélèvements sociaux, avec un abattement qui grandit avec la durée de détention. Elle est exonérée d’impôt sur le revenu après 22 ans et de prélèvements sociaux après 30 ans. Une taxe de 2 à 6 % s’ajoute quand la plus-value imposable dépasse 50 000 €. Pour des héritiers, le prix de départ est la valeur retenue dans la déclaration de succession. Une SCI à l’impôt sur les sociétés suit d’autres règles, sans abattement pour durée de détention. Le notaire calcule l’impôt et le prélève lors de la signature de l’acte.",
+      "reponse": "Pour un particulier, une indivision ou une SCI à l’impôt sur le revenu, la plus-value est imposée à 19 %, plus 17,2 % de prélèvements sociaux (la hausse de la CSG de 2026 ne s’applique pas aux plus-values immobilières), avec un abattement qui grandit avec la durée de détention. Elle est exonérée d’impôt sur le revenu après 22 ans et de prélèvements sociaux après 30 ans. Une taxe de 2 à 6 % s’ajoute quand la plus-value imposable dépasse 50 000 €. Pour des héritiers, le prix de départ est la valeur retenue dans la déclaration de succession. Une SCI à l’impôt sur les sociétés suit d’autres règles, sans abattement pour durée de détention. Le notaire calcule l’impôt et le prélève lors de la signature de l’acte.",
       "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10864"
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10864",
+        "https://www.mayerbrown.com/fr/insights/publications/2026/01/budget-social-2026-augmentation-du-taux-de-csg-et-perennisation-du-regime-social-management-package"
       ]
     },
     {
@@ -345,69 +358,5 @@
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
       ]
     }
-  ],
-  "blocs": {
-    "marche": {
-      "surtitre": "Le marché parisien",
-      "titre": "Qui achète un immeuble de rapport à Paris aujourd’hui",
-      "paragraphes": [
-        "Fin 2021, le taux moyen des nouveaux crédits à l’habitat était de 1,06 % selon la Banque de France. Il a atteint 4,17 % en janvier 2024, puis s’est stabilisé : 3,32 % en septembre 2026. Financé à crédit, un immeuble qui rapporte 2,5 % brut ne couvre plus les intérêts d’un emprunt à plus de 3 %. Les prix ont donc reculé. Fin août 2026, les appartements anciens se vendaient à Paris 9 590 € le m² selon les Notaires du Grand Paris, contre 10 850 € au plus haut d’octobre et novembre 2020, soit près de 12 % de moins.",
-        "D’après notre expérience, un immeuble de rapport se vend aujourd’hui à Paris sur un rendement brut de 3 à 6 %, selon l’arrondissement, l’état du bâti et l’occupation. L’encadrement des loyers, appliqué à Paris depuis le 1er juillet 2019, accentue le mouvement. Pour un bail signé ou renouvelé, le loyer ne peut pas dépasser, sauf complément justifié, le loyer de référence majoré du quartier. Les revenus ne pouvant pas suivre la hausse des taux, c’est le prix qui s’ajuste pour que le rendement remonte.",
-        "Les acheteurs que nous rencontrons forment plusieurs familles. Les investisseurs privés et les family offices, qui achètent souvent par une société civile, regardent le rendement et la qualité de l’immeuble. Les foncières visent en général des immeubles plus grands. Les marchands de biens achètent pour rénover ou revendre par lots, et leur prix intègre leur marge, leurs frais et leurs délais.",
-        "La Ville de Paris est devenue un acheteur à part entière. Elle indique avoir investi 1,1 milliard d’euros entre janvier 2023 et octobre 2024 pour acheter et préempter des immeubles du parc privé, souvent confiés ensuite à des bailleurs sociaux. Fin 2024, elle a aussi créé une foncière du logement abordable, chargée d’acheter des immeubles en bloc. Pour un vendeur, cette concurrence soutient la demande. Elle oblige aussi à prévoir la préemption dans le calendrier : si la Ville propose un prix plus bas, le vendeur peut l’accepter, renoncer à vendre ou laisser le juge de l’expropriation fixer le prix."
-      ],
-      "sources": [
-        "https://www.banque-france.fr/en/statistics/loans/loans-individuals-france-2021dec",
-        "https://www.banque-france.fr/fr/statistiques/credit/credits-aux-particuliers-fev-2024",
-        "https://www.banque-france.fr/fr/statistiques/credit/credits-aux-particuliers-2026-09",
-        "https://paris.notaires.fr/fr/presse/communication-immobiliere-mensuelle/conjoncture-immobiliere-en-ile-de-france-de-juin-aout-2026",
-        "https://paris.notaires.fr/sites/default/files/2021-03/communique_mensuel_2021-03.pdf",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1314",
-        "https://cdn.paris.fr/paris/2025/01/23/communication-logement-2025-WaFe.pdf",
-        "https://www.paris.fr/pages/des-logements-jusqu-a-25-moins-chers-grace-a-la-fonciere-du-logement-abordable-29348",
-        "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074075/LEGISCTA000006158572/ (L213-4, L213-7)"
-      ]
-    },
-    "etapes": {
-      "surtitre": "La vente pas à pas",
-      "titre": "Vendre un immeuble à Paris : étapes et obligations",
-      "paragraphes": [
-        "Avant la promesse de vente, le vendeur réunit le dossier de diagnostic technique, annexé à la promesse puis à l’acte. Pour un immeuble ancien vendu en bloc, il comprend en général le constat de risque d’exposition au plomb pour les logements construits avant le 1er janvier 1949, l’état relatif à l’amiante si le permis de construire a été délivré avant le 1er juillet 1997 et l’état des installations intérieures d’électricité et de gaz de plus de quinze ans. S’y ajoutent l’état relatif aux termites, car tout Paris est une zone de surveillance et de lutte contre les termites, et l’état des risques. Ces deux derniers documents doivent dater de moins de six mois.",
-        "Pour l’énergie, la vente en bloc demande un DPE à l’échelle du bâtiment. Le ministère du Logement a confirmé qu’aucun texte n’impose en plus un DPE pour chaque logement. Les commerces et bureaux de l’immeuble ont leur propre diagnostic, établi selon une autre méthode. Les acheteurs demandent pourtant souvent les DPE des logements, car c’est l’étiquette de chaque logement qui dit s’il peut encore être loué.",
-        "Après la promesse, le notaire adresse à la Ville de Paris une déclaration d’intention d’aliéner. La vente en bloc d’un immeuble est soumise au droit de préemption urbain. La Ville dispose de deux mois pour répondre et son silence vaut renonciation. Elle s’en sert notamment pour créer des logements sociaux.",
-        "Un acquéreur non professionnel d’un immeuble à usage d’habitation dispose de dix jours pour se rétracter après la notification de la promesse. Un marchand de biens qui achète dans le cadre de son métier n’en bénéficie en principe pas. Sur nos ventes, la première offre arrive en médiane {DELAI} après la mise en vente. Entre la promesse et l’acte, le calendrier suit surtout les deux mois de la préemption et, si l’acheteur emprunte, le délai d’obtention de son prêt."
-      ],
-      "sources": [
-        "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006176358 (CCH L271-4)",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10798",
-        "https://www.paris.fr/pages/lutte-contre-les-termites-8103",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F3150",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F12239",
-        "https://www.assemblee-nationale.fr/dyn/16/questions/QANR5L16QE8231",
-        "https://www.assemblee-nationale.fr/dyn/17/questions/QANR5L17QE4945",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F2042",
-        "https://www.paris.fr/pages/mutation-immobiliere-3548 (DIA, deux mois, L213-2)",
-        "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037667917 (CCH L271-1)"
-      ]
-    },
-    "fiscalite": {
-      "surtitre": "La fiscalité",
-      "titre": "Fiscalité de la vente d’un immeuble de rapport à Paris",
-      "paragraphes": [
-        "Un particulier, une indivision ou une SCI soumise à l’impôt sur le revenu relève du régime des plus-values immobilières des particuliers. La plus-value est imposée à 19 % d’impôt sur le revenu et à 17,2 % de prélèvements sociaux : la hausse de la CSG votée pour 2026 sur d’autres revenus du capital ne s’applique pas aux plus-values immobilières. Un abattement pour durée de détention s’applique dès la sixième année. L’exonération est totale après 22 ans pour l’impôt sur le revenu et après 30 ans pour les prélèvements sociaux. Au-delà de 50 000 € de plus-value imposable, une taxe de 2 à 6 % s’ajoute.",
-        "Une SCI soumise à l’impôt sur les sociétés suit une autre logique. La plus-value est la différence entre le prix de vente et le prix de revient de l’immeuble, diminué des amortissements déduits chaque année. Ces amortissements, qui ont réduit l’impôt pendant la détention, augmentent d’autant la plus-value à la vente. Elle est soumise à l’impôt sur les sociétés, à 25 %, ou à 15 % jusqu’à 42 500 € de bénéfice pour les sociétés qui remplissent les conditions, sans abattement pour durée de détention. Les sommes distribuées ensuite aux associés sont imposées à leur tour.",
-        "La vente à la découpe ne change pas, en principe, le régime d’un propriétaire qui a acheté pour louer. L’administration peut toutefois traiter l’opération comme celle d’un marchand de biens si les ventes sont habituelles et procèdent d’une intention de revendre, appréciée au moment de l’achat. Selon la doctrine fiscale, acheter un immeuble, le diviser et revendre les lots suffit à établir l’habitude. Les profits relèvent alors des bénéfices industriels et commerciaux. Pour la TVA, la vente d’un immeuble achevé depuis plus de cinq ans est en principe exonérée, mais elle peut être taxée sur option, sur la marge quand l’achat n’avait pas ouvert droit à déduction de TVA.",
-        "Ces règles se combinent selon les dates d’achat, les travaux réalisés et la façon dont l’immeuble est détenu. Faites valider le calcul par votre notaire avant de fixer votre prix net vendeur."
-      ],
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10864",
-        "https://www.mayerbrown.com/fr/insights/publications/2026/01/budget-social-2026-augmentation-du-taux-de-csg-et-perennisation-du-regime-social-management-package (LFSS 2026, CSS L136-8 IV)",
-        "https://bofip.impots.gouv.fr/bofip/6605-PGP.html/identifiant=BOI-BIC-PVMV-10-20120912",
-        "https://entreprendre.service-public.gouv.fr/vosdroits/F23575",
-        "https://bofip.impots.gouv.fr/bofip/4712-PGP.html/identifiant=BOI-BIC-CHAMP-20-10-10-20170104",
-        "https://bofip.impots.gouv.fr/bofip/2487-PGP.html/identifiant=BOI-TVA-IMM-10-20-10-20200513",
-        "https://bofip.impots.gouv.fr/bofip/2482-PGP.html/identifiant=BOI-TVA-IMM-10-10-10-30-20120912"
-      ]
-    }
-  }
+  ]
 }

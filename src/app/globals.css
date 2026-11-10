@@ -1202,10 +1202,22 @@ fieldset.field legend,.lot label{
 @media (min-width:760px){ .ligne-cartes.paris-poids{grid-auto-columns:calc((100% - var(--g)) / 2);} }
 @media (min-width:980px){ .ligne-cartes.paris-poids{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);} }
 .paris-poids .paris-archi__carte svg{color:var(--color-bronze);}
-/* Textes de fond de la page Paris (MAV, 10/11/2026) : prose courte, lisible, sans encadré. */
-.paris-texte{max-width:68ch;margin-inline:auto;display:grid;gap:1.1em;font-size:1.04rem;line-height:1.7;}
-.section--noir .paris-texte, .section--noir-2 .paris-texte{color:color-mix(in srgb, var(--color-creme) 86%, var(--color-noir));}
-.paris-texte-sec .section__head{text-align:center;}
+/* Page Paris, lot 102 (MAV, 10/11/2026 : « qu'on se vende », « des boutons réguliers »). */
+.paris-relance{margin-top:var(--space-l);}
+.paris-cartes{list-style:none;margin:var(--space-l) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-m);}
+.paris-carte{border-left:1px solid var(--color-bronze);padding:4px 0 4px var(--space-s);display:flex;flex-direction:column;gap:10px;}
+.paris-carte h3{font-size:1.15rem;margin:0;}
+.paris-carte p{margin:0;color:color-mix(in srgb, var(--color-creme) 82%, var(--color-noir));line-height:1.6;}
+.paris-carte svg{color:var(--color-bronze);}
+.paris-carte__val{font-family:var(--font-mono-site);color:var(--color-bronze);font-size:1.5rem;}
+.paris-carte__val small{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-gris);}
+@media (max-width:1100px){.paris-cartes{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:640px){.paris-cartes{grid-template-columns:1fr;gap:var(--space-s);}}
+.paris-arr__groupe{text-align:center;border-bottom:1px solid color-mix(in srgb, var(--color-noir) 18%, transparent);}
+.paris-arr__nb{font-size:.82em;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));font-family:var(--font-body);}
+.paris-arr__ecart{font-family:var(--font-mono-site);}
+.paris-arr__rdt{font-family:var(--font-mono-site);color:var(--color-bronze-profond);font-weight:600;}
+.paris-arr tfoot th,.paris-arr tfoot td{border-top:2px solid var(--color-bronze);font-weight:600;}
 .paris-decoupe{list-style:none;margin:var(--space-m) 0 0;padding:0;display:grid;gap:12px;}
 .paris-decoupe li{padding:14px 18px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-noir) 5%,transparent);color:color-mix(in srgb,var(--color-noir) 78%,var(--color-creme));line-height:1.5;}
 .paris-decoupe strong{color:var(--color-noir);}
@@ -1225,6 +1237,10 @@ fieldset.field legend,.lot label{
   .paris-arr tbody th{margin-bottom:4px;}
   .paris-arr td{display:flex;justify-content:space-between;gap:12px;white-space:normal;text-align:right;}
   .paris-arr td::before{content:attr(data-libelle);flex:none;white-space:nowrap;text-align:left;color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));font-weight:400;}
+  .paris-arr tfoot,.paris-arr tfoot tr{display:block;}
+  .paris-arr tfoot td:empty{display:none;}
+  .paris-arr td::before{font-family:var(--font-body);font-weight:400;color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));}
+  .paris-arr__nb{white-space:normal;}
 }
 .ligne-cartes.paris-archi{--g:clamp(16px,2vw,24px);gap:var(--g);grid-auto-columns:84%;padding-block:4px 6px;}
 @media (min-width:760px){ .ligne-cartes.paris-archi{grid-auto-columns:calc((100% - var(--g)) / 2);} }
