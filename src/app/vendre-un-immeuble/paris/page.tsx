@@ -26,7 +26,7 @@ import { SITE, nombre } from "@/lib/site";
  * /estimation-immeuble-paris/, hors index : les deux ne se concurrencent pas.
  */
 export const metadata: Metadata = {
-  title: { absolute: "Vendre un immeuble à Paris : prix, règles et démarches | France Immeuble" },
+  title: { absolute: "Vendre un immeuble à Paris : prix et règles | France Immeuble" },
   description:
     "Vendre un immeuble de rapport à Paris : prix au m² par arrondissement, rendement de 3 à 6 %, DPE, encadrement des loyers, meublés de tourisme, préemption. Estimation gratuite.",
   alternates: { canonical: `${SITE.url}/vendre-un-immeuble/paris/` },
@@ -47,7 +47,7 @@ export default async function VendreUnImmeubleParis() {
   const reperes: { picto: NomPicto; valeur: string; libelle: string }[] = [
     { picto: "stats", valeur: "3 à 6 %", libelle: "de rendement selon les arrondissements" },
     ...(min && max
-      ? [{ picto: "euro" as NomPicto, valeur: `${Math.round(min.prixM2! / 100) / 10}–${Math.round(max.prixM2! / 100) / 10} k€`, libelle: `au m² selon l’arrondissement (${min.nom} au ${max.nom})` }]
+      ? [{ picto: "euro" as NomPicto, valeur: `${(Math.round(min.prixM2! / 100) / 10).toLocaleString("fr-FR")}–${(Math.round(max.prixM2! / 100) / 10).toLocaleString("fr-FR")} k€`, libelle: `au m² selon l’arrondissement (${min.nom} au ${max.nom})` }]
       : []),
     { picto: "reseau", valeur: nombre(ch.investisseurs), libelle: "acheteurs d’immeubles en base" },
   ];
@@ -87,7 +87,7 @@ export default async function VendreUnImmeubleParis() {
 
       <section className="section section--noir-2 paris-reperes-sec">
         <div className="container">
-          <ul className="paris-reperes">
+          <ul className="paris-reperes paris-reperes--seul">
             {reperes.map((r) => (
               <li key={r.libelle}>
                 <Picto nom={r.picto} taille={30} />
@@ -96,23 +96,6 @@ export default async function VendreUnImmeubleParis() {
               </li>
             ))}
           </ul>
-          {paris.length > 0 && (
-            <>
-              <Reveal className="section__head" >
-                <Eyebrow>Nos ventes à Paris</Eyebrow>
-                <h2>
-                  Des immeubles parisiens <span className="accent">vendus en bloc</span>
-                </h2>
-              </Reveal>
-              <ul className="ventes">
-                {paris.map((v, i) => (
-                  <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
-                    <CarteVente v={v} />
-                  </Reveal>
-                ))}
-              </ul>
-            </>
-          )}
         </div>
       </section>
 
@@ -180,6 +163,26 @@ export default async function VendreUnImmeubleParis() {
           </LigneDefilante>
         </div>
       </section>
+
+      {paris.length > 0 && (
+        <section className="section section--creme">
+          <div className="container">
+            <Reveal className="section__head">
+              <Eyebrow>Nos ventes à Paris</Eyebrow>
+              <h2>
+                Des immeubles parisiens <span className="accent">vendus en bloc</span>
+              </h2>
+            </Reveal>
+            <ul className="ventes">
+              {paris.map((v, i) => (
+                <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
+                  <CarteVente v={v} />
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <SectionFaq
         items={questions.map((q) => ({ question: q.question, texte: q.reponse }))}

@@ -1,6 +1,335 @@
 {
-  "arrondissements": [],
-  "sourcePrix": { "libelle": "", "url": "" },
-  "architectures": [],
-  "questions": []
+  "arrondissements": [
+    {
+      "n": 1,
+      "nom": "1er",
+      "prixM2": 11840,
+      "evolution1an": "+0,1 %",
+      "architecture": "Immeubles des XVIIe et XVIIIe siècles autour du Palais-Royal et des Halles, immeubles à arcades de la rue de Rivoli et façades haussmanniennes de l’avenue de l’Opéra.",
+      "attention": "Peu de ventes d’appartements : fin 2025, les notaires jugeaient les prix non significatifs dans deux quartiers sur quatre (Saint-Germain-l’Auxerrois et Place Vendôme), ce qui rend les comparaisons au m² fragiles."
+    },
+    {
+      "n": 2,
+      "nom": "2e",
+      "prixM2": 11160,
+      "evolution1an": "+2,7 %",
+      "architecture": "Immeubles de rapport des XVIIIe et XIXe siècles, passages couverts (Vivienne, Panoramas) et anciens ateliers du Sentier.",
+      "attention": "Beaucoup d’anciens ateliers et bureaux dans le Sentier : les transformer en logements est un changement de destination, soumis aux règles de logement social du PLU."
+    },
+    {
+      "n": 3,
+      "nom": "3e",
+      "prixM2": 12420,
+      "evolution1an": "-2,7 %",
+      "architecture": "Haut-Marais : hôtels particuliers du XVIIe siècle, immeubles faubouriens enduits et anciens ateliers sur cour.",
+      "attention": "Le Marais relève d’un plan de sauvegarde et de mise en valeur (site patrimonial remarquable) : le PLU bioclimatique ne s’y applique pas et les travaux sur le bâti sont soumis à l’avis de l’architecte des Bâtiments de France."
+    },
+    {
+      "n": 4,
+      "nom": "4e",
+      "prixM2": 12760,
+      "evolution1an": "+0,6 %",
+      "architecture": "Marais historique, île Saint-Louis et île de la Cité : bâti des XVIIe et XVIIIe siècles, cours pavées, quelques façades haussmanniennes le long de la rue de Rivoli.",
+      "attention": "Une grande partie de l’arrondissement est couverte par le plan de sauvegarde du Marais : façades, cours et aménagements intérieurs protégés y sont contrôlés par l’architecte des Bâtiments de France."
+    },
+    {
+      "n": 5,
+      "nom": "5e",
+      "prixM2": 11590,
+      "evolution1an": "+2,1 %",
+      "architecture": "Quartier latin : immeubles anciens de la montagne Sainte-Geneviève et façades haussmanniennes des boulevards Saint-Michel et Saint-Germain.",
+      "attention": "Le PLU bioclimatique protège les commerces culturels, notamment sur le boulevard Saint-Michel : un rez-de-chaussée commercial ne peut pas changer librement d’activité."
+    },
+    {
+      "n": 6,
+      "nom": "6e",
+      "prixM2": 13980,
+      "evolution1an": "+5,0 %",
+      "architecture": "Saint-Germain-des-Prés et Odéon : immeubles des XVIIe et XVIIIe siècles, haussmannien du boulevard Raspail et du boulevard Saint-Germain.",
+      "attention": "Prix au m² le plus élevé de Paris au 2e trimestre 2026 ; plusieurs rues à commerces culturels sont protégées par le PLU, ce qui encadre l’usage des boutiques en pied d’immeuble."
+    },
+    {
+      "n": 7,
+      "nom": "7e",
+      "prixM2": 13010,
+      "evolution1an": "+1,4 %",
+      "architecture": "Hôtels particuliers du faubourg Saint-Germain, haussmannien et post-haussmannien autour du Champ-de-Mars, façades Art nouveau de l’avenue Rapp.",
+      "attention": "Le faubourg Saint-Germain relève du plan de sauvegarde et de mise en valeur du 7e : le PLU bioclimatique ne s’y applique pas et les travaux sont soumis à l’avis de l’architecte des Bâtiments de France."
+    },
+    {
+      "n": 8,
+      "nom": "8e",
+      "prixM2": 11620,
+      "evolution1an": "-0,8 %",
+      "architecture": "Haussmannien et post-haussmannien de la plaine Monceau, de l’Europe et des Champs-Élysées, nombreux hôtels particuliers.",
+      "attention": "Forte part de bureaux : un retour au logement est un changement de destination soumis aux règles de logement social du PLU, les plus exigeantes dans les quartiers du centre et de l’ouest qui en comptent le moins."
+    },
+    {
+      "n": 9,
+      "nom": "9e",
+      "prixM2": 10140,
+      "evolution1an": "+0,3 %",
+      "architecture": "Immeubles néoclassiques de la Nouvelle Athènes (1820-1840) au nord, haussmannien autour de l’Opéra et des grands boulevards.",
+      "attention": "Le sud de l’arrondissement (Chaussée-d’Antin, Opéra) compte beaucoup de bureaux et de grands magasins ; le marché résidentiel se concentre au nord des grands boulevards."
+    },
+    {
+      "n": 10,
+      "nom": "10e",
+      "prixM2": 9140,
+      "evolution1an": "+3,0 %",
+      "architecture": "Immeubles faubouriens des faubourgs Saint-Denis et Saint-Martin, haussmannien des boulevards de Magenta et de Strasbourg, bords du canal Saint-Martin.",
+      "attention": "Immeubles à courettes avec ateliers et commerces : l’usage déclaré de chaque lot (habitation, commerce, activité) est à vérifier avant la vente, car il conditionne sa valeur."
+    },
+    {
+      "n": 11,
+      "nom": "11e",
+      "prixM2": 9500,
+      "evolution1an": "+2,3 %",
+      "architecture": "Immeubles faubouriens et cours artisanales du faubourg Saint-Antoine, haussmannien du boulevard Voltaire et du boulevard Richard-Lenoir.",
+      "attention": "Nombreux ateliers et locaux d’activité en fond de cour : leur destination au PLU, activité ou habitation, fait varier fortement leur prix."
+    },
+    {
+      "n": 12,
+      "nom": "12e",
+      "prixM2": 8610,
+      "evolution1an": "+1,3 %",
+      "architecture": "Faubourien côté Bastille, haussmannien de l’avenue Daumesnil et de l’avenue Ledru-Rollin, HBM et immeubles des années 1960 vers les portes, quartier de Bercy reconstruit dans les années 1990.",
+      "attention": "Écarts marqués entre quartiers : fin 2025, Quinze-Vingts (côté Bastille) était à 10 940 €/m², contre 8 180 € à Bel-Air et 8 330 € à Picpus."
+    },
+    {
+      "n": 13,
+      "nom": "13e",
+      "prixM2": 8560,
+      "evolution1an": "+0,7 %",
+      "architecture": "Tours et barres des années 1960-1970 (secteur Italie, Olympiades), petit bâti ancien de la Butte-aux-Cailles, quartier Paris Rive Gauche récent.",
+      "attention": "Les immeubles de rapport anciens se concentrent dans quelques quartiers : fin 2025, Croulebarbe était le quartier le plus cher de l’arrondissement (10 110 €/m²)."
+    },
+    {
+      "n": 14,
+      "nom": "14e",
+      "prixM2": 9100,
+      "evolution1an": "+0,4 %",
+      "architecture": "Ateliers d’artistes et immeubles Art déco de Montparnasse, post-haussmannien, HBM en brique vers les portes.",
+      "attention": "Une grande partie du sous-sol est creusée d’anciennes carrières : pour une surélévation ou des travaux lourds, l’Inspection générale des carrières peut imposer des études et des confortements."
+    },
+    {
+      "n": 15,
+      "nom": "15e",
+      "prixM2": 8780,
+      "evolution1an": "-1,1 %",
+      "architecture": "Immeubles post-haussmanniens et des années 1920-1930 en pierre et brique, tours du Front de Seine des années 1970.",
+      "attention": "Arrondissement le plus peuplé de Paris, à dominante résidentielle : les petits et moyens logements y forment une demande locative régulière."
+    },
+    {
+      "n": 16,
+      "nom": "16e",
+      "prixM2": 10220,
+      "evolution1an": "+1,8 %",
+      "architecture": "Haussmannien et post-haussmannien, Art nouveau d’Auteuil (Guimard), Art déco et immeubles des années 1950-1970 vers les portes.",
+      "attention": "Arrondissement très peu pourvu en logement social : une surélévation ou un changement de destination qui crée des logements y relève souvent des obligations les plus fortes du PLU (jusqu’à 50 % de logement social)."
+    },
+    {
+      "n": 17,
+      "nom": "17e",
+      "prixM2": 9470,
+      "evolution1an": "+2,0 %",
+      "architecture": "Haussmannien de la plaine Monceau et des Ternes, ancien village des Batignolles, quartier Clichy-Batignolles construit dans les années 2010.",
+      "attention": "Contrastes forts entre quartiers : fin 2025, la plaine Monceau était à 9 720 €/m² et les Ternes à 9 530 €, contre 8 470 € aux Épinettes."
+    },
+    {
+      "n": 18,
+      "nom": "18e",
+      "prixM2": 8490,
+      "evolution1an": "+1,0 %",
+      "architecture": "Butte Montmartre et ses ateliers, faubourien de la Goutte-d’Or, haussmannien du boulevard Barbès et post-haussmannien de la rue Caulaincourt.",
+      "attention": "Les écarts de prix les plus forts de Paris : fin 2025, 6 640 €/m² à la Goutte-d’Or et 9 170 € aux Grandes-Carrières. Le PLU protège aussi certains linéaires commerciaux de l’arrondissement."
+    },
+    {
+      "n": 19,
+      "nom": "19e",
+      "prixM2": 7690,
+      "evolution1an": "+3,5 %",
+      "architecture": "Post-haussmannien et Art déco autour des Buttes-Chaumont, faubourien vers Belleville, grands ensembles des années 1960-1970, HBM vers les portes.",
+      "attention": "Prix au m² le plus bas de Paris au 2e trimestre 2026, avec l’une des plus fortes hausses sur un an ; le rendement locatif y est en général plus élevé qu’au centre."
+    },
+    {
+      "n": 20,
+      "nom": "20e",
+      "prixM2": 8210,
+      "evolution1an": "+1,7 %",
+      "architecture": "Petits immeubles faubouriens, villas et cités de Belleville, Ménilmontant et Charonne, îlots reconstruits dans les années 1960-1980, HBM vers les portes.",
+      "attention": null
+    }
+  ],
+  "sourcePrix": {
+    "libelle": "Notaires du Grand Paris, prix au m² standardisés des appartements anciens par arrondissement, 2e trimestre 2026",
+    "url": "https://paris.notaires.fr/fr/carte-des-prix"
+  },
+  "architectures": [
+    {
+      "type": "Faubourien et pré-haussmannien",
+      "periode": "XVIIe siècle à 1850",
+      "reperes": "Façades enduites au plâtre sur moellons ou pan de bois, souvent sans balcon, de quatre à six étages. Fenêtres étroites à persiennes, cours et courettes, ateliers en fond de parcelle.",
+      "pourLesAcheteurs": "L’emplacement et le cachet (Marais, faubourgs Saint-Antoine et Saint-Denis, Nouvelle Athènes) comptent plus que les volumes. Hauteurs sous plafond modestes, escaliers étroits et absence fréquente d’ascenseur pèsent sur la valeur des étages hauts. Les petites surfaces y sont nombreuses et se louent facilement.",
+      "travaux": "Structure à surveiller : planchers en bois, pans de bois, fissures et déformations. Le ravalement des enduits au plâtre demande des matériaux compatibles. Les petits logements chauffés à l’électricité sont souvent mal classés au DPE."
+    },
+    {
+      "type": "Haussmannien",
+      "periode": "1853-1914",
+      "reperes": "Façade en pierre de taille alignée sur la rue, balcons filants au 2e et au 5e étage, toiture en zinc avec chambres de service. Porte cochère, escalier principal et escalier de service.",
+      "pourLesAcheteurs": "Les étages nobles (2e et 3e), la hauteur sous plafond, souvent supérieure à 3 m aux premiers étages, les parquets, moulures et cheminées font le prix. L’ascenseur change la valeur des étages hauts. Les chambres de service sont un revenu d’appoint ou une surface à réunir.",
+      "travaux": "Ravalement de la pierre et des balcons, couverture en zinc à reprendre, colonnes et réseaux anciens. Les appartements des étages courants se classent souvent mieux au DPE que les chambres de service sous le toit, fréquemment en F ou G."
+    },
+    {
+      "type": "Post-haussmannien et Art nouveau",
+      "periode": "1890-1914",
+      "reperes": "Après le règlement de 1902, façades plus libres : bow-windows, oriels, combles plus hauts, ferronneries et décors végétaux, parfois brique et céramique.",
+      "pourLesAcheteurs": "Mêmes atouts que l’haussmannien, avec des plans plus modernes, des salles de bains prévues dès l’origine et souvent un ascenseur. Une façade signée (Guimard, Lavirotte) ajoute une valeur de prestige.",
+      "travaux": "Céramiques, ferronneries et bow-windows coûteux à restaurer. Beaucoup de ces immeubles sont protégés au PLU : les travaux de façade sont encadrés."
+    },
+    {
+      "type": "Art déco et brique (dont HBM)",
+      "periode": "1919-1939",
+      "reperes": "Lignes géométriques, béton armé avec remplissage de brique ou façade de brique, bow-windows à pans coupés, ferronneries stylisées. Les HBM de la ceinture de Paris, en brique rouge ou ocre, ont été bâtis sur l’emplacement des anciennes fortifications.",
+      "pourLesAcheteurs": "Plans rationnels, pièces lumineuses, cuisines et salles de bains d’origine, ascenseur fréquent. Les HBM appartiennent pour l’essentiel aux bailleurs sociaux ; les immeubles privés de cette époque se trouvent surtout dans les arrondissements extérieurs.",
+      "travaux": "Bétons et aciers des balcons et corniches (éclats, fers apparents), joints de brique, menuiseries métalliques. Murs peu isolés : le DPE dépend beaucoup du mode de chauffage."
+    },
+    {
+      "type": "Années 1950-1970",
+      "periode": "1950-1974",
+      "reperes": "Béton, murs-rideaux ou panneaux préfabriqués, toits-terrasses, immeubles souvent en retrait de la rue ; tours et barres des opérations de rénovation (Front de Seine, Italie, Belleville).",
+      "pourLesAcheteurs": "Logements fonctionnels avec ascenseur, parkings et parfois balcons. Le prix au m² est en général inférieur à celui des immeubles anciens en pierre du même quartier.",
+      "travaux": "Construits avant la première réglementation thermique de 1974 : façades non isolées, ponts thermiques, chauffage collectif ancien. Repérage de l’amiante obligatoire, étanchéité des toits-terrasses à vérifier."
+    },
+    {
+      "type": "Contemporain",
+      "periode": "1975 à aujourd’hui",
+      "reperes": "Béton isolé, façades enduites ou habillées, grandes baies ; quartiers d’aménagement comme Bercy, Paris Rive Gauche ou Clichy-Batignolles.",
+      "pourLesAcheteurs": "Bons DPE, peu de travaux à prévoir, parkings. La valeur tient à l’état et à la performance énergétique plus qu’au cachet.",
+      "travaux": "Garantie décennale à vérifier pour un immeuble de moins de dix ans, état de la ventilation, du chauffage et de l’ascenseur."
+    }
+  ],
+  "questions": [
+    {
+      "question": "Peut-on louer un logement en Airbnb à Paris, et qu’est-ce que ça change pour la vente de l’immeuble ?",
+      "reponse": "Depuis le 1er janvier 2025, une résidence principale peut être louée en meublé de tourisme 90 jours par an au plus à Paris, avec un numéro d’enregistrement affiché sur chaque annonce. Tout autre logement loué en courte durée, comme ceux d’un immeuble de rapport, exige une autorisation de changement d’usage avec compensation : il faut transformer en logement une surface équivalente qui n’en était pas, un bureau ou un commerce. Sans autorisation, l’amende peut atteindre 100 000 €, avec une astreinte jusqu’à 1 000 € par jour et par m². Depuis le 21 novembre 2024, le changement d’usage exige aussi un DPE classé de A à E, et le PLU interdit les nouveaux meublés de tourisme dans les quartiers où ils sont déjà trop nombreux. Un acheteur ne retient donc un loyer de courte durée que si l’autorisation figure au dossier ; sinon, le lot est estimé comme un logement loué à l’année ou libre.",
+      "sources": [
+        "https://www.paris.fr/meubles-touristiques",
+        "https://www.paris.fr/pages/location-limitee-a-90-jours-paris-serre-la-vis-sur-les-meubles-touristiques-29653",
+        "https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf",
+        "https://www.paris.fr/pages/plan-local-d-urbanisme-bioclimatique-vers-un-paris-plus-vert-et-plus-solidaire-23805"
+      ]
+    },
+    {
+      "question": "Quels logements ne peuvent plus être loués à cause du DPE ?",
+      "reponse": "Depuis le 1er janvier 2025, un logement classé G au DPE n’est plus considéré comme décent : il ne peut plus faire l’objet d’un nouveau bail, d’un renouvellement ou d’une reconduction tacite. Les logements classés F suivront le 1er janvier 2028, puis ceux classés E le 1er janvier 2034. Les loyers des logements F et G sont gelés depuis le 24 août 2022 : pas de révision annuelle et pas de hausse à la relocation ou au renouvellement. Le bail en cours reste valable, mais le locataire peut demander des travaux de mise en conformité.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/actualites/A17975",
+        "https://www.anil.org/parole-expert-logement-renovation-energetique-decence-energetique-logements/",
+        "https://www.ecologie.gouv.fr/politiques-publiques/location-gel-loyers-passoires-energetiques"
+      ]
+    },
+    {
+      "question": "Mon immeuble doit-il avoir un DPE collectif ou un audit énergétique pour être vendu ?",
+      "reponse": "Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Pour les copropriétés, l’obligation s’applique depuis 2024 au-delà de 200 lots, depuis 2025 de 50 à 200 lots et depuis 2026 en dessous. Ce DPE est valable dix ans. Pour la vente d’un immeuble qui n’est pas en copropriété, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37504",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37110",
+        "https://www.ecologie.gouv.fr/politiques-publiques/audit-energetique-reglementaire"
+      ]
+    },
+    {
+      "question": "Un mauvais DPE fait-il baisser le prix d’un immeuble à Paris ?",
+      "reponse": "Oui, quand des logements sont classés F ou G : l’acheteur déduit le coût des travaux et le risque de ne plus pouvoir louer. À Paris, ce sont souvent les chambres de service et les petites surfaces sous les toits, chauffées à l’électricité. Une pièce principale doit offrir au moins 9 m² avec 2,20 m sous plafond, ou 20 m³ : en dessous, une chambre de service ne peut pas être louée comme logement. Deux changements de calcul jouent en faveur de ces lots : des seuils corrigés pour les logements de 40 m² ou moins depuis le 1er juillet 2024, et le coefficient de l’électricité qui passe de 1,9 à 1,7 le 1er janvier 2027. Un DPE fait avant cette date reste valable et pourra être mis à jour gratuitement sur l’Observatoire DPE-Audit de l’ADEME, sans nouvelle visite. Avant de vendre, refaire le point sur les DPE des petits lots peut donc changer la valeur de l’immeuble.",
+      "sources": [
+        "https://www.ecologie.gouv.fr/presse/dpe-audits-energetiques-publication-larrete-abaissant-facteur-conversion-lelectricite-17-1er",
+        "https://www.ecologie.gouv.fr/actualites/dpe-etiquettes-plus-equitables-logements-petite-surface",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F2042"
+      ]
+    },
+    {
+      "question": "Encadrement des loyers à Paris : qu’est-ce que ça change pour un immeuble loué ?",
+      "reponse": "Pour un bail signé ou renouvelé à Paris depuis le 1er juillet 2019, le loyer hors charges ne peut pas dépasser le loyer de référence majoré, fixé chaque année par arrêté préfectoral selon le quartier, le nombre de pièces, l’époque de construction et la location vide ou meublée. Un complément de loyer est possible pour un logement aux caractéristiques exceptionnelles, mais il est interdit si le logement est classé F ou G. Ce dispositif, expérimenté depuis la loi ELAN, devait s’arrêter le 24 novembre 2026 : le Sénat a voté le 21 octobre 2026 une prolongation de deux ans, que l’Assemblée nationale doit encore adopter. Pour fixer son prix, l’acheteur retient les loyers que la loi permet d’encaisser, et non ceux d’un bail qui dépasse le plafond. Un état locatif conforme rassure et facilite la vente.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1314",
+        "https://www.publicsenat.fr/actualites/societe/encadrement-des-loyers-un-compromis-entre-lassemblee-et-le-senat-qui-permet-dechapper-au-pire-selon-le-senateur-communiste-ian"
+      ]
+    },
+    {
+      "question": "La Ville de Paris peut-elle préempter mon immeuble ?",
+      "reponse": "Oui. La vente d’un immeuble entier à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
+      "sources": [
+        "https://www.paris.fr/pages/mutation-immobiliere-3548",
+        "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074075/LEGISCTA000006158572/"
+      ]
+    },
+    {
+      "question": "Mes locataires peuvent-ils acheter en priorité si je vends l’immeuble entier ?",
+      "reponse": "Quand un immeuble de plus de cinq logements, d’habitation ou mixte, est vendu en totalité et en une seule fois, chaque locataire bénéficie d’un droit de préemption sur son logement (loi Aurillac). Le vendeur en est dispensé si l’acheteur s’engage dans l’acte à proroger les baux en cours pendant six ans à compter de la vente. C’est la solution courante dans une vente en bloc à un investisseur, car elle évite de découper la vente. Sinon, chaque locataire reçoit une offre au prix de son logement, valable quatre mois. D’autres exceptions existent, par exemple une vente à un parent jusqu’au quatrième degré ou à un organisme HLM.",
+      "sources": [
+        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
+      ]
+    },
+    {
+      "question": "Quelles sont les règles pour vendre un immeuble à la découpe à Paris ?",
+      "reponse": "Vendre à la découpe, c’est mettre l’immeuble en copropriété puis vendre les logements un par un. À la première vente d’un logement occupé après cette division, le locataire bénéficie d’un droit de préemption (article 10 de la loi du 31 décembre 1975) : l’offre lui est faite en priorité, au prix proposé. Quand un bailleur met en vente plusieurs logements d’un même immeuble, l’accord collectif du 16 mars 2005, rendu obligatoire par décret en 2006, peut imposer en plus une information préalable des locataires et protège les plus fragiles. La découpe peut rapporter davantage qu’une vente en bloc, mais elle demande plus de temps, des frais de mise en copropriété et une organisation lot par lot.",
+      "sources": [
+        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/analyses-juridiques/analyses-juridiques-2006/la-protection-des-locataires-en-cas-de-vente-par-lots-de-plus-de-dix-logements-appartenant-a-un-meme-bailleur-/-accords-collectifs/",
+        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/jurisprudence/jurisprudence-2014/vente-a-la-decoupe-droit-de-preemption-du-locataire/"
+      ]
+    },
+    {
+      "question": "Le ravalement est-il obligatoire à Paris, et faut-il le faire avant de vendre ?",
+      "reponse": "À Paris, les façades doivent être remises en état au moins une fois tous les dix ans. Le maire peut adresser une injonction au propriétaire, qui a six mois pour engager les travaux ; passé ce délai, il peut les prescrire dans un délai d’un an au plus, puis les faire réaliser aux frais du propriétaire avec l’autorisation du juge. Le refus est passible d’une amende de 3 750 €. Pour la vente, un ravalement récent rassure l’acheteur, alors qu’une injonction en cours se traduit par une décote qui tient compte du devis. Il n’est donc pas toujours utile de faire les travaux avant de vendre : un devis récent suffit souvent à cadrer la négociation.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F640"
+      ]
+    },
+    {
+      "question": "Combien coûte la taxe foncière d’un immeuble à Paris ?",
+      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
+      "sources": [
+        "https://www.paris.fr/pages/budget-2023-pourquoi-une-augmentation-de-la-taxe-fonciere-22445",
+        "https://www.paris.fr/pages/taxes-et-impots-2318"
+      ]
+    },
+    {
+      "question": "Que change le PLU bioclimatique de Paris pour un immeuble existant ?",
+      "reponse": "Le PLU bioclimatique a été adopté par le Conseil de Paris le 20 novembre 2024. Il touche surtout les projets : un immeuble que l’on vend en l’état n’est pas concerné. En revanche, une surélévation, une restructuration lourde ou un changement de destination qui crée des logements au-delà d’une certaine surface doit comporter une part de logements sociaux, plus forte dans les quartiers qui en comptent le moins. Les surélévations sont liées à la création de logements et à la désimperméabilisation des cours, et la réhabilitation devient la règle plutôt que la démolition. Avant de vendre, il est utile de vérifier si la parcelle porte un emplacement réservé pour du logement : cela change ce qu’un acheteur peut faire de l’immeuble.",
+      "sources": [
+        "https://www.paris.fr/pages/plan-local-d-urbanisme-bioclimatique-vers-un-paris-plus-vert-et-plus-solidaire-23805",
+        "https://www.paris.fr/pages/le-plan-local-d-urbanisme-plu-2329",
+        "https://www.cheuvreux.fr/actualites/plu-bioclimatique-de-la-ville-de-parie-principales-mesures-en-matiere-de-logement-dans-le-reglement-du-plub/"
+      ]
+    },
+    {
+      "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
+      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Un immeuble en bloc se valorise d’abord par son rendement comparé à celui du secteur, et non par le prix au m² d’un appartement.",
+      "sources": [
+        "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf"
+      ]
+    },
+    {
+      "question": "Combien d’impôt sur la plus-value en vendant un immeuble à Paris ?",
+      "reponse": "Pour un particulier, une indivision ou une SCI à l’impôt sur le revenu, la plus-value est imposée à 19 %, plus les prélèvements sociaux, avec un abattement qui grandit avec la durée de détention. Elle est exonérée d’impôt sur le revenu après 22 ans et de prélèvements sociaux après 30 ans. Une taxe de 2 à 6 % s’ajoute quand la plus-value imposable dépasse 50 000 €. Pour des héritiers, le prix de départ est la valeur retenue dans la déclaration de succession. Une SCI à l’impôt sur les sociétés suit d’autres règles, sans abattement pour durée de détention. Le notaire calcule l’impôt et le prélève lors de la signature de l’acte.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F10864"
+      ]
+    },
+    {
+      "question": "Combien de temps faut-il pour vendre un immeuble à Paris ?",
+      "reponse": "Le délai dépend surtout du prix demandé face au rendement du secteur, de la qualité du dossier et des droits de préemption. Un dossier complet dès le départ (titres de propriété, baux et état locatif, DPE et audit énergétique, diagnostics, avis de taxe foncière, derniers travaux) évite des semaines de questions. Une fois la promesse signée, la Ville de Paris dispose de deux mois pour exercer son droit de préemption, pendant que le notaire prépare l’acte. Si l’acheteur ne proroge pas les baux pendant six ans, les offres faites aux locataires restent valables quatre mois. Nous présentons d’abord l’immeuble en off-market aux 1 500 acheteurs de notre base, ce qui permet de tester un prix avant toute diffusion.",
+      "sources": [
+        "https://www.paris.fr/pages/mutation-immobiliere-3548",
+        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
+      ]
+    },
+    {
+      "question": "Faut-il vider l’immeuble avant de le vendre ?",
+      "reponse": "En règle générale, non. Un immeuble occupé se vend à un investisseur sur son rendement : les baux en place sont le revenu qu’il achète. Donner congé est d’ailleurs encadré : un bail d’habitation vide ne prend fin qu’à son échéance, avec six mois de préavis et pour un motif prévu par la loi (vente, reprise ou motif légitime et sérieux), et les locataires de 65 ans et plus aux revenus modestes sont protégés. En revanche, un logement qui se libère peut valoir plus vendu seul à un occupant qu’intégré au prix d’un immeuble loué : c’est l’intérêt de la vente à la découpe. Le bon choix se calcule lot par lot, à partir de l’état locatif.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
+      ]
+    }
+  ]
 }

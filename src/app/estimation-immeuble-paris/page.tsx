@@ -80,7 +80,7 @@ export default async function EstimationImmeubleParis() {
       </HeroMedia>
 
       {paris.length > 0 && (
-        <section className="section section--noir-2">
+        <section className="section section--creme">
           <div className="container">
             <Reveal className="section__head">
               <Eyebrow>Nos ventes à Paris</Eyebrow>

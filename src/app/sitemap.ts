@@ -18,6 +18,7 @@ const PAGES: Entree[] = [
   { chemin: "/vendre-un-immeuble/", priorite: 0.9, frequence: "monthly" },
   { chemin: "/estimer-un-immeuble/", priorite: 0.9, frequence: "monthly" },
   { chemin: "/vendre-a-la-decoupe/", priorite: 0.8, frequence: "monthly" },
+  { chemin: "/vendre-un-immeuble/paris/", priorite: 0.8, frequence: "monthly" },
   { chemin: "/acheter-un-immeuble/", priorite: 0.8, frequence: "monthly" },
   { chemin: "/immeubles-vendus/", priorite: 0.7, frequence: "weekly" },
   { chemin: "/contactez-nous/", priorite: 0.5, frequence: "yearly" },
