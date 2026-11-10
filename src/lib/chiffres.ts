@@ -18,6 +18,12 @@ export type Chiffres = {
   recherchesInvestisseur: number;
   recherchesMarchand: number;
   recherchesPromoteur: number | null;
+  /**
+   * Immeubles étudiés par zone, déposés par le BO sous `immeubles_traites_<zone>` :
+   * un département (`immeubles_traites_75`) ou une commune par son code INSEE
+   * (`immeubles_traites_92012`). Agrégat anonyme (CLAUDE.md §2, décision du 04/11/2026).
+   */
+  traitesPar: Record<string, number>;
   majLe: string | null;
 };
 
@@ -30,6 +36,7 @@ const REPLI: Chiffres = {
   recherchesInvestisseur: 1372,
   recherchesMarchand: 359,
   recherchesPromoteur: null,
+  traitesPar: {},
   majLe: null,
 };
 
@@ -53,6 +60,11 @@ export async function chiffres(): Promise<Chiffres> {
       recherchesInvestisseur: n("recherches_investisseur", REPLI.recherchesInvestisseur),
       recherchesMarchand: n("recherches_marchand", REPLI.recherchesMarchand),
       recherchesPromoteur: v.has("recherches_promoteur") ? n("recherches_promoteur", 0) : null,
+      traitesPar: Object.fromEntries(
+        [...v]
+          .filter(([cle, x]) => /^immeubles_traites_\w+$/.test(cle) && Number.isFinite(x) && x > 0)
+          .map(([cle, x]) => [cle.slice("immeubles_traites_".length), x]),
+      ),
       majLe: lignes.reduce((m, l) => (l.maj_le > m ? l.maj_le : m), ""),
     };
   } catch {

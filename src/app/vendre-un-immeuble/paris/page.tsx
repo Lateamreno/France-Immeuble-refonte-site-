@@ -15,7 +15,10 @@ import { filAriane, service } from "@/lib/schema";
 import { marchesDesCommunes } from "@/lib/marche";
 import { immeublesDesCommunes } from "@/lib/immeubles-dvf-lecture";
 import { chiffres } from "@/lib/chiffres";
-import { PARIS } from "@/lib/paris";
+import { chiffresFaq } from "@/lib/faq";
+import { ventes as lesVentes } from "@/lib/biens";
+import { CarteVente } from "@/components/CarteVente";
+import { PARIS, type BlocParis } from "@/lib/paris";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, nombre } from "@/lib/site";
 
@@ -72,10 +75,44 @@ const POIDS: { picto: NomPicto; titre: string; texte: string }[] = [
   },
 ];
 
+/** Un bloc de texte de fond : surtitre, titre, paragraphes ; `{DELAI}` prend notre délai médian. */
+function BlocTexte({ b, className, delai }: { b?: BlocParis; className: string; delai: string | null }) {
+  if (!b) return null;
+  const paragraphes = b.paragraphes
+    .map((p) => (p.includes("{DELAI}") ? (delai ? p.replace("{DELAI}", delai) : null) : p))
+    .filter((p): p is string => !!p);
+  return (
+    <section className={`section ${className} paris-texte-sec`}>
+      <div className="container container--narrow">
+        <Reveal className="section__head">
+          <Eyebrow>{b.surtitre}</Eyebrow>
+          <h2>{b.titre}</h2>
+        </Reveal>
+        <div className="paris-texte">
+          {paragraphes.map((p) => <p key={p.slice(0, 40)}>{p}</p>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default async function VendreUnImmeubleParis() {
   const codes = Array.from({ length: 20 }, (_, i) => `751${String(i + 1).padStart(2, "0")}`);
-  const [ch, marches, immeubles] = await Promise.all([chiffres(), marchesDesCommunes(codes), immeublesDesCommunes(codes)]);
+  const [ch, marches, immeubles, toutes] = await Promise.all([
+    chiffres(),
+    marchesDesCommunes(codes),
+    immeublesDesCommunes(codes),
+    lesVentes(),
+  ]);
+  // Nos dernières ventes d'immeubles à Paris : les murs d'une boutique n'y ont pas leur place (MAV, 10/11/2026).
+  const ventesParis = toutes
+    .filter((v) => v.dept === "75" && /immeuble/i.test(v.type ?? "immeuble"))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const etudiesParis = ch.traitesPar["75"] ?? null;
+  const delaiMedian = chiffresFaq(toutes).delaiMedian;
+  const delai = delaiMedian ? `${delaiMedian}\u00a0jours` : null;
   const { questions, architectures } = PARIS;
+  const blocs = PARIS.blocs ?? {};
   // Tant que le contenu relu n'est pas déposé dans content/paris.json, la page n'existe pas.
   if (!questions.length) notFound();
 
@@ -144,6 +181,8 @@ export default async function VendreUnImmeubleParis() {
           </ul>
         </div>
       </section>
+
+      <BlocTexte b={blocs.marche} className="section--noir" delai={delai} />
 
       <section className="section section--creme paris-arr-sec">
         <div className="container">
@@ -232,6 +271,36 @@ export default async function VendreUnImmeubleParis() {
         </div>
       </section>
 
+      {ventesParis.length > 0 && (
+        <section className="section section--creme paris-ventes-sec">
+          <div className="container">
+            <Reveal className="section__head">
+              <Eyebrow>Nos dernières ventes à Paris</Eyebrow>
+              <h2>
+                Des immeubles parisiens <span className="accent">vendus en bloc</span>
+              </h2>
+              <p className="lead">
+                {etudiesParis
+                  ? <>Depuis 2018, nous avons étudié {nombre(etudiesParis)} immeubles parisiens pour leurs propriétaires. </>
+                  : null}
+                Voici nos dernières ventes dans la capitale, avec leur rue, leur surface et leur prix.
+                Les ventes de 2020 datent d’avant la hausse des taux : les mêmes immeubles se
+                vendraient aujourd’hui à un rendement plus élevé.
+              </p>
+            </Reveal>
+            <ul className="ventes">
+              {ventesParis.map((v, i) => (
+                <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
+                  <CarteVente v={v} />
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <BlocTexte b={blocs.etapes} className="section--noir" delai={delai} />
+
       <section className="section section--creme paris-decoupe-sec">
         <div className="container container--narrow">
           <Reveal className="section__head">
@@ -256,6 +325,8 @@ export default async function VendreUnImmeubleParis() {
           </div>
         </div>
       </section>
+
+      <BlocTexte b={blocs.fiscalite} className="section--noir-2" delai={delai} />
 
       <section className="section section--noir paris-archi-sec">
         <div className="container">

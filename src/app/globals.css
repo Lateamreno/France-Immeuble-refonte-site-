@@ -1202,6 +1202,10 @@ fieldset.field legend,.lot label{
 @media (min-width:760px){ .ligne-cartes.paris-poids{grid-auto-columns:calc((100% - var(--g)) / 2);} }
 @media (min-width:980px){ .ligne-cartes.paris-poids{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);} }
 .paris-poids .paris-archi__carte svg{color:var(--color-bronze);}
+/* Textes de fond de la page Paris (MAV, 10/11/2026) : prose courte, lisible, sans encadré. */
+.paris-texte{max-width:68ch;margin-inline:auto;display:grid;gap:1.1em;font-size:1.04rem;line-height:1.7;}
+.section--noir .paris-texte, .section--noir-2 .paris-texte{color:color-mix(in srgb, var(--color-creme) 86%, var(--color-noir));}
+.paris-texte-sec .section__head{text-align:center;}
 .paris-decoupe{list-style:none;margin:var(--space-m) 0 0;padding:0;display:grid;gap:12px;}
 .paris-decoupe li{padding:14px 18px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-noir) 5%,transparent);color:color-mix(in srgb,var(--color-noir) 78%,var(--color-creme));line-height:1.5;}
 .paris-decoupe strong{color:var(--color-noir);}
