@@ -384,7 +384,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   **Chiffres et règles datés mis à jour** dans dix articles (DPE G/F/E 2025-2028-2034, taux Banque de France,
   réforme de l'habitat indigne de 2021, pénalités L511-22 CCH, loi Aurillac « au moins 6 logements »,
   commissaire de justice, 1 170 immeubles traités, rendements de nos ventes), date « mis à jour le » sous
-  l'article (`revuLe`). Nouveau titre et description pour l'article promoteur (4 557 impressions, 13 clics).
+  l'article (`revuLe`). Nouveau titre et description pour l'article promoteur (4 557 impressions, 13 clics). **Lot 97 en production le
+  10/11/2026** (« Go prod », MAV). Réponses de MAV le même jour : liens L511-22 et corrections « loi du
+  6 juillet 1989 » et « tribunal » validés ; à Paris, rendement de 3 à 6 % aujourd'hui tous arrondissements
+  confondus, nos ventes de 2020 (2,9 % et 3,4 %) comme exemples d'avant la hausse des taux, effet combiné
+  à l'encadrement des loyers ; période de test des mandats « de 2 à 4 semaines, l'idéal 4 » ; budget des
+  particuliers jusqu'à 2 M€ gardé ; ne pas parler du meublé résidence principale (« on parle aux bailleurs »).
 
 ### Garde-fous non négociables
 
