@@ -423,6 +423,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `chiffres` (`immeubles_traites_75`, `immeubles_traites_<code INSEE>`, lus dans `chiffres().traitesPar`),
   affichés seulement s'ils existent (`docs/PROMPT-BO-IMMEUBLES-ETUDIES.md`). Encadrement des loyers à revoir
   dans cette page aussi après le vote du 18/11/2026.
+  Même jour : **le menu déroulant de l'ordinateur reprend son panneau à fond sombre** (MAV : « quand on
+  est sur fond clair on voit rien ») ; la version « F » sans fond du lot 95 est retirée.
 
 ### Garde-fous non négociables
 
