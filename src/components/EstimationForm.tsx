@@ -231,7 +231,7 @@ export function EstimationForm({
     if (ok) {
       type DL = { push: (o: Record<string, unknown>) => void };
       const w = window as unknown as { dataLayer?: DL };
-      w.dataLayer?.push({ event: "form_submit_estimation", formulaire });
+      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname });
     }
 
     setPhase(ok ? "complement" : "fin");
