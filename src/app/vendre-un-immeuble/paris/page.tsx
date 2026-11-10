@@ -168,7 +168,7 @@ export default async function VendreUnImmeubleParis() {
       picto: "calculatrice",
       valeur: nombre(ch.recherchesMarchand),
       titre: "Marchands de biens",
-      texte: "Ils achètent les immeubles à rénover ou à diviser, et décident vite. Ce sont souvent eux qui paient le mieux un immeuble à travaux.",
+      texte: "Ils regardent les immeubles mal loués ou à gros travaux, où ils peuvent faire l’offre la plus haute. Quand les logements sont loués au prix du marché, c’est en général un investisseur qui fait la meilleure offre.",
     },
     {
       picto: "immeubles",

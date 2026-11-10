@@ -7,6 +7,8 @@
  * commune et par année civile. Règles :
  *  - une mutation de nature « Vente » (le neuf en VEFA est exclu) ;
  *  - plus de cinq logements distincts (appartements ou maisons) et un seul prix ;
+ *  - au moins 65 % de logements parmi les lots, caves et parkings exclus (MAV, 10/11/2026 :
+ *    les immeubles de bureaux et les grands commerces tiraient les prix vers le haut) ;
  *  - prix d'au moins 150 000 € ;
  *  - une même série de logements vendue plusieurs fois dans l'année (ventes de parts,
  *    démembrements) est écartée : on ne sait pas quel prix vaut pour l'immeuble entier ;
@@ -50,6 +52,9 @@ export function lireCsv(texte: string): Record<string, string>[] {
   return corps.filter((l) => l.length === tete.length).map((l) => Object.fromEntries(tete.map((h, i) => [h, l[i]])));
 }
 
+/** Part minimale de logements, en nombre de lots hors dépendances (MAV, 10/11/2026). */
+export const PART_HABITATION_MIN = 0.65;
+
 export type StatsImmeubles = { nbVentes: number; prixM2Median: number | null; prixMedian: number | null; surfaceMediane: number | null };
 
 const mediane = (xs: number[]) => {
@@ -81,6 +86,7 @@ export function ventesImmeubles(lignes: Record<string, string>[]): StatsImmeuble
     }
     const logements = [...locaux.values()].filter((r) => r.type_local === "Appartement" || r.type_local === "Maison");
     if (logements.length <= 5) continue;
+    if (logements.length / locaux.size < PART_HABITATION_MIN) continue;
     const surface = [...locaux.values()].reduce((s, r) => s + (Number(r.surface_reelle_bati) || 0), 0);
     if (!surface) continue;
     const signature = [...locaux.keys()].sort().join(";");
