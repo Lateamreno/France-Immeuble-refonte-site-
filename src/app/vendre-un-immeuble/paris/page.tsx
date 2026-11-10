@@ -6,14 +6,14 @@ import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { EstimationForm } from "@/components/EstimationForm";
 import { Picto, type NomPicto } from "@/components/Picto";
-import { CarteVente } from "@/components/CarteVente";
 import { LigneDefilante } from "@/components/LigneDefilante";
 import { SectionFaq } from "@/components/SectionFaq";
 import { FondPhoto } from "@/components/FondPhoto";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, service } from "@/lib/schema";
-import { ventes as lesVentes } from "@/lib/biens";
+import { marchesDesCommunes } from "@/lib/marche";
+import { immeublesDesCommunes } from "@/lib/immeubles-dvf-lecture";
 import { chiffres } from "@/lib/chiffres";
 import { PARIS } from "@/lib/paris";
 import { VISUELS } from "@/lib/visuels";
@@ -28,28 +28,74 @@ import { SITE, nombre } from "@/lib/site";
 export const metadata: Metadata = {
   title: { absolute: "Vendre un immeuble à Paris : prix et règles | France Immeuble" },
   description:
-    "Vendre un immeuble de rapport à Paris : prix au m² par arrondissement, rendement de 3 à 6 %, DPE, encadrement des loyers, meublés de tourisme, préemption. Estimation gratuite.",
+    "Vendre un immeuble de rapport à Paris : prix au m² par arrondissement, rendement de 3 à 6 %, DPE, encadrement des loyers, meublés de tourisme, préemption. Estimation gratuite.",
   alternates: { canonical: `${SITE.url}/vendre-un-immeuble/paris/` },
 };
 
-const fmtPrix = (n: number) => `${n.toLocaleString("fr-FR")} €/m²`;
+const fmtPrix = (n: number) => `${n.toLocaleString("fr-FR")}\u00a0€/m²`;
+const pc = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const nomArr = (n: number) => `${n}${n === 1 ? "er" : "e"} arrondissement`;
+const moisAnnee = (iso: string | null) =>
+  iso ? new Date(iso).toLocaleDateString("fr-FR", { month: "long", year: "numeric" }) : null;
+
+/** Ce qui pèse sur le prix d'un immeuble parisien (MAV, 10/11/2026 : « loi 48, locataires protégés, loyers sous-évalués, DPE »). */
+const POIDS: { picto: NomPicto; titre: string; texte: string }[] = [
+  {
+    picto: "dossier",
+    titre: "Les baux de la loi de 1948",
+    texte:
+      "Quelques logements d’immeubles anciens restent soumis à la loi du 1er septembre 1948 : loyer réglementé, souvent très inférieur au marché, et droit du locataire à se maintenir dans les lieux. L’acheteur les valorise sur ce loyer, ou comme un logement occupé pour longtemps.",
+  },
+  {
+    picto: "profil",
+    titre: "Les locataires protégés",
+    texte:
+      "Un locataire de plus de 65 ans aux ressources modestes ne peut pas recevoir de congé pour vente ou reprise sans offre de relogement adaptée, sauf si le bailleur a lui-même plus de 65 ans ou des ressources modestes. Son logement se vend donc occupé, à un prix plus bas.",
+  },
+  {
+    picto: "euro",
+    titre: "Les loyers sous-évalués",
+    texte:
+      "Beaucoup d’immeubles parisiens détenus depuis longtemps ont des loyers bien sous le marché. La hausse n’est possible qu’au renouvellement du bail, de façon encadrée et étalée dans le temps : l’acheteur paie le rendement d’aujourd’hui, en tenant compte de ce qu’il pourra rattraper.",
+  },
+  {
+    picto: "technique",
+    titre: "Le DPE",
+    texte:
+      "Un logement classé G ne peut plus faire l’objet d’un nouveau bail depuis 2025, F suivra en 2028 et E en 2034. Les chambres de service et petites surfaces sous les toits sont les premières concernées : l’acheteur déduit les travaux et le risque de vacance.",
+  },
+  {
+    picto: "logement",
+    titre: "Les petites surfaces",
+    texte:
+      "Une chambre de service de moins de 9 m² (ou de 20 m³) ne peut pas être louée comme logement. Réunie à un appartement voisin ou vendue à part, elle change pourtant la valeur de l’immeuble.",
+  },
+];
 
 export default async function VendreUnImmeubleParis() {
-  const [toutes, ch] = await Promise.all([lesVentes(), chiffres()]);
-  const paris = toutes.filter((v) => v.dept === "75").sort((a, b) => b.prix - a.prix);
-  const { arrondissements, architectures, questions, sourcePrix } = PARIS;
+  const codes = Array.from({ length: 20 }, (_, i) => `751${String(i + 1).padStart(2, "0")}`);
+  const [ch, marches, immeubles] = await Promise.all([chiffres(), marchesDesCommunes(codes), immeublesDesCommunes(codes)]);
+  const { questions, architectures } = PARIS;
   // Tant que le contenu relu n'est pas déposé dans content/paris.json, la page n'existe pas.
-  if (!arrondissements.length || !questions.length) notFound();
-  const avecPrix = arrondissements.filter((a) => a.prixM2 != null);
-  const min = avecPrix.reduce((m, a) => (a.prixM2! < m.prixM2! ? a : m), avecPrix[0]);
-  const max = avecPrix.reduce((m, a) => (a.prixM2! > m.prixM2! ? a : m), avecPrix[0]);
+  if (!questions.length) notFound();
+
+  const lignes = codes.map((code, i) => ({ n: i + 1, code, m: marches.get(code), imm: immeubles.get(code) }));
+  const avecPrix = lignes.filter((l) => l.m?.prixM2 != null);
+  const min = avecPrix.length ? avecPrix.reduce((a, b) => (b.m!.prixM2! < a.m!.prixM2! ? b : a)) : null;
+  const max = avecPrix.length ? avecPrix.reduce((a, b) => (b.m!.prixM2! > a.m!.prixM2! ? b : a)) : null;
+  const totalImmeubles = lignes.reduce((s, l) => s + (l.imm?.nbVentes ?? 0), 0);
+  const anneeImmeubles = lignes.find((l) => l.imm)?.imm?.annee ?? null;
+  const finPrix = moisAnnee(avecPrix[0]?.m?.periodeFin ?? null);
+  const millesime = lignes.find((l) => l.m?.millesimeLoyers)?.m?.millesimeLoyers ?? null;
 
   const reperes: { picto: NomPicto; valeur: string; libelle: string }[] = [
-    { picto: "stats", valeur: "3 à 6 %", libelle: "de rendement selon les arrondissements" },
+    { picto: "stats", valeur: "3 à 6\u00a0%", libelle: "de rendement pour un immeuble, selon les arrondissements" },
     ...(min && max
-      ? [{ picto: "euro" as NomPicto, valeur: `${(Math.round(min.prixM2! / 100) / 10).toLocaleString("fr-FR")}–${(Math.round(max.prixM2! / 100) / 10).toLocaleString("fr-FR")} k€`, libelle: `au m² selon l’arrondissement (${min.nom} au ${max.nom})` }]
+      ? [{ picto: "euro" as NomPicto, valeur: `${(Math.round(min.m!.prixM2! / 100) / 10).toLocaleString("fr-FR")}–${(Math.round(max.m!.prixM2! / 100) / 10).toLocaleString("fr-FR")}\u00a0k€`, libelle: `au m² pour un appartement, du ${nomArr(min.n)} au ${nomArr(max.n)}` }]
       : []),
-    { picto: "reseau", valeur: nombre(ch.investisseurs), libelle: "acheteurs d’immeubles en base" },
+    ...(totalImmeubles && anneeImmeubles
+      ? [{ picto: "immeubles" as NomPicto, valeur: nombre(totalImmeubles), libelle: `immeubles entiers vendus à Paris en ${anneeImmeubles} (DVF)` }]
+      : [{ picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs d’immeubles en base" }]),
   ];
 
   return (
@@ -104,12 +150,12 @@ export default async function VendreUnImmeubleParis() {
           <Reveal className="section__head">
             <Eyebrow>Arrondissement par arrondissement</Eyebrow>
             <h2>
-              Prix au m² et bâti des <span className="accent">20 arrondissements</span>
+              Prix, rendement et ventes d’immeubles dans les <span className="accent">20 arrondissements</span>
             </h2>
             <p className="lead">
-              Le prix au m² des appartements anciens donne un repère. Un immeuble entier se valorise
-              d’abord au rendement : il se vend en général en dessous de ce prix au m², d’autant plus
-              qu’il est occupé.
+              Le prix au m² et le rendement des appartements donnent le repère du secteur. Un immeuble
+              entier se négocie en général autour de 15 % sous ce prix au m², ce qui relève d’autant
+              son rendement.
             </p>
           </Reveal>
           <div className="paris-arr">
@@ -117,28 +163,97 @@ export default async function VendreUnImmeubleParis() {
               <thead>
                 <tr>
                   <th scope="col">Arrondissement</th>
-                  <th scope="col">Prix au m²</th>
-                  <th scope="col">Sur un an</th>
-                  <th scope="col">Bâti dominant</th>
-                  <th scope="col">À savoir</th>
+                  <th scope="col">Prix au m² d’un appartement</th>
+                  <th scope="col">Rendement brut d’un appartement</th>
+                  <th scope="col">Ventes d’immeubles entiers{anneeImmeubles ? ` en ${anneeImmeubles}` : ""}</th>
                 </tr>
               </thead>
               <tbody>
-                {arrondissements.map((a) => (
-                  <tr key={a.n}>
-                    <th scope="row">{a.nom}</th>
-                    <td className="paris-arr__prix">{a.prixM2 != null ? fmtPrix(a.prixM2) : "n.c."}</td>
-                    <td>{a.evolution1an ?? "n.c."}</td>
-                    <td>{a.architecture}</td>
-                    <td>{a.attention ?? ""}</td>
+                {lignes.map((l) => (
+                  <tr key={l.code}>
+                    <th scope="row">{nomArr(l.n)}</th>
+                    <td className="paris-arr__prix" data-libelle="Prix au m²">{l.m?.prixM2 != null ? fmtPrix(l.m.prixM2) : "n.c."}</td>
+                    <td data-libelle="Rendement">
+                      {l.m?.rdtMin != null && l.m?.rdtMax != null ? `${pc(l.m.rdtMin)} à ${pc(l.m.rdtMax)}\u00a0%` : "n.c."}
+                    </td>
+                    <td data-libelle="Immeubles vendus">
+                      {l.imm
+                        ? l.imm.nbVentes === 0
+                          ? "Aucune repérée"
+                          : `${l.imm.nbVentes} vente${l.imm.nbVentes > 1 ? "s" : ""}${l.imm.prixM2Median != null ? `, ${fmtPrix(l.imm.prixM2Median)} en médiane` : ""}`
+                        : "n.c."}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="tableau__note">
-            Source des prix : <a href={sourcePrix.url} target="_blank" rel="noopener">{sourcePrix.libelle}</a>.
-          </p>
+          <div className="paris-arr__notes">
+            <p>
+              <strong>Ce sont des chiffres d’appartements.</strong> Pour un immeuble entier, prévoyez
+              une décote d’environ 15 % sur le prix au m², plus ou moins selon l’occupation, les loyers et
+              l’état de l’immeuble. Le rendement brut d’un immeuble est donc plus élevé que celui affiché :
+              c’est la fourchette de 3 à 6 % que nous constatons à Paris.
+            </p>
+            <p>
+              Prix au m² : médiane des ventes d’appartements anciens sur douze mois
+              {finPrix ? `, à fin ${finPrix}` : ""} (DVF, base des notaires et de la DGFiP). Rendement brut :
+              loyer de marché des appartements, des grands logements aux petits (carte des loyers de
+              l’ANIL{millesime ? ` ${millesime}` : ""}, charges comprises), rapporté à ce prix. Ventes
+              d’immeubles entiers : ventes de plus de cinq logements en un seul acte et pour un seul prix,
+              repérées dans DVF ; le prix médian au m² n’est donné qu’à partir de trois ventes, commerces
+              compris dans la surface. Ces chiffres se mettent à jour seuls.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--noir-2 paris-poids-sec">
+        <div className="container">
+          <Reveal className="section__head">
+            <Eyebrow>Ce qui pèse sur le prix</Eyebrow>
+            <h2>
+              Loi de 1948, locataires protégés, DPE : <span className="accent">ce que l’acheteur déduit</span>
+            </h2>
+            <p className="lead">
+              À Paris, deux immeubles voisins peuvent se vendre à des prix très différents. Ce qui fait
+              l’écart tient souvent aux baux et aux occupants.
+            </p>
+          </Reveal>
+          <LigneDefilante className="paris-poids" marches>
+            {POIDS.map((x) => (
+              <article key={x.titre} className="paris-archi__carte">
+                <Picto nom={x.picto} taille={28} />
+                <h3>{x.titre}</h3>
+                <p>{x.texte}</p>
+              </article>
+            ))}
+          </LigneDefilante>
+        </div>
+      </section>
+
+      <section className="section section--creme paris-decoupe-sec">
+        <div className="container container--narrow">
+          <Reveal className="section__head">
+            <Eyebrow>En bloc ou à la découpe</Eyebrow>
+            <h2>
+              À Paris, la découpe <span className="accent">vaut souvent le coup</span>
+            </h2>
+            <p className="lead">
+              Vendu en bloc, un immeuble se négocie autour de 15 % sous le prix au m² des appartements.
+              Vendus un par un, les logements libres se vendent au prix du marché résidentiel. Sur un
+              immeuble parisien, cet écart couvre souvent largement les frais et le temps de la mise en
+              copropriété.
+            </p>
+          </Reveal>
+          <ul className="paris-decoupe">
+            <li><strong>Nous faisons les deux.</strong> Pour chaque immeuble, nous chiffrons la vente en bloc et la vente à la découpe avant de vous conseiller.</li>
+            <li><strong>Nous prenons tout en charge.</strong> Mise en copropriété, offres aux locataires, travaux, commercialisation lot par lot.</li>
+            <li><strong>Vous gardez le choix.</strong> Tant que le premier lot n’est pas vendu, l’immeuble reste vendable en bloc.</li>
+          </ul>
+          <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
+            <Button href="/vendre-a-la-decoupe/">Voir la vente à la découpe</Button>
+          </div>
         </div>
       </section>
 
@@ -163,26 +278,6 @@ export default async function VendreUnImmeubleParis() {
           </LigneDefilante>
         </div>
       </section>
-
-      {paris.length > 0 && (
-        <section className="section section--creme">
-          <div className="container">
-            <Reveal className="section__head">
-              <Eyebrow>Nos ventes à Paris</Eyebrow>
-              <h2>
-                Des immeubles parisiens <span className="accent">vendus en bloc</span>
-              </h2>
-            </Reveal>
-            <ul className="ventes">
-              {paris.map((v, i) => (
-                <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
-                  <CarteVente v={v} />
-                </Reveal>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
 
       <SectionFaq
         items={questions.map((q) => ({ question: q.question, texte: q.reponse }))}

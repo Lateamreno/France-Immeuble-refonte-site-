@@ -403,6 +403,19 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   à savoir), six types d'immeubles, nos ventes parisiennes, 15 questions de propriétaires avec données
   FAQPage, formulaire. Contenu relu dans `content/paris.json` (sources gardées), lu par `src/lib/paris.ts` ;
   la page renvoie une 404 tant que ce fichier est vide.
+- **Lot 100** (retours de MAV, 10/11/2026). Page Paris pour Google : plus de cartes de ventes (« ils font
+  un peu pitié », une boutique parmi elles) ; tableau des 20 arrondissements en toutes lettres (« 11e
+  arrondissement »), sans évolution ni bâti : **prix au m² des appartements** (médiane DVF 12 mois) et
+  **rendement brut des appartements en fourchette** (loyers ANIL des 3 pièces et plus, puis des 1-2 pièces,
+  rapportés au prix), lus chez Plein Bail (`marchesDesCommunes` de `src/lib/marche.ts`), à jour seuls ;
+  **ventes d'immeubles entiers** repérées dans DVF (plus de 5 logements, un acte, un prix ; parts et
+  démembrements écartés ; prix médian au m² dès 3 ventes) : `src/lib/dvf-immeubles.ts`, table publique
+  `marche_immeubles` (migration 0019, RLS lecture seule), recalcul mensuel `/api/marche/immeubles/`
+  (vercel.json), lecture `src/lib/immeubles-dvf-lecture.ts`. Note : chiffres d'appartements, **prévoir
+  environ 15 % de décote** pour un immeuble entier. Sections « Ce qui pèse sur le prix » (loi de 1948,
+  locataires protégés, loyers sous-évalués, DPE, petites surfaces) et « À Paris, la découpe vaut souvent
+  le coup ». Page des annonces : plus de cartes de ventes ; repères (3 à 6 %, immeubles vendus à Paris,
+  délai médian), quatre étapes de la vente, encadré bloc ou découpe.
 
 ### Garde-fous non négociables
 

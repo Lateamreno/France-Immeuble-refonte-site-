@@ -143,3 +143,56 @@ export async function marcheDuBien(b: { ville: string; dept: string; codePostal:
 /** Écart relatif en %, comme Plein Bail : (bien − marché) ÷ marché. */
 export const ecartPct = (valeur: number | null | undefined, reference: number | null | undefined) =>
   valeur != null && reference ? ((valeur - reference) / reference) * 100 : null;
+
+/**
+ * Le marché de plusieurs communes d'un coup (lot 100, pages Paris et communes, MAV, 10/11/2026) :
+ * prix médian DVF des appartements sur 12 mois, et rendement brut des appartements en fourchette,
+ * du loyer des 3 pièces et plus (le plus bas au m²) à celui des 1 et 2 pièces (le plus haut),
+ * rapportés au prix médian. Mêmes sources que Plein Bail (DVF, carte des loyers ANIL, loyers
+ * charges comprises). Mis à jour seul quand Plein Bail recharge ses données.
+ */
+export type MarcheCommune = {
+  code: string;
+  prixM2: number | null;
+  nbVentes: number | null;
+  periodeFin: string | null;
+  rdtMin: number | null;
+  rdtMax: number | null;
+  millesimeLoyers: number | null;
+};
+
+export async function marchesDesCommunes(codes: string[]): Promise<Map<string, MarcheCommune>> {
+  const liste = codes.join(",");
+  const [prixL, loyerL] = await Promise.all([
+    lire<(LigneDvf & { code: string; periode_fin: string })[]>(
+      `dvf_benchmarks?select=code,echelle,fenetre_mois,prix_m2_median,nb_transactions,type_bien,periode_fin&type_bien=eq.appartement&echelle=eq.commune&fenetre_mois=eq.12&code=in.(${liste})`,
+    ),
+    lire<(LigneLoyer & { code: string; millesime: number })[]>(
+      `loyers_benchmarks?select=code,echelle,typologie,loyer_m2,nb_observations,millesime&echelle=eq.commune&code=in.(${liste})`,
+    ),
+  ]);
+  const out = new Map<string, MarcheCommune>();
+  for (const code of codes) {
+    const p = (prixL ?? []).find((l) => l.code === code && l.nb_transactions >= SEUIL_AFFICHAGE);
+    const prix = p ? Number(p.prix_m2_median) : null;
+    const loyer = (t: string) => {
+      const l = (loyerL ?? []).find((x) => x.code === code && x.typologie === t);
+      return l && (l.nb_observations ?? 0) >= SEUIL_RENTA_OBS_LOYER ? Number(l.loyer_m2) : null;
+    };
+    const grand = loyer("appart_3p");
+    const petit = loyer("appart_1_2");
+    const r = (loyerM2: number | null) =>
+      prix && prix > SEUIL_RENTA_PRIX_M2 && loyerM2 ? Math.round(((loyerM2 * 12) / prix) * 1000) / 10 : null;
+    const millesime = (loyerL ?? []).find((x) => x.code === code)?.millesime ?? null;
+    out.set(code, {
+      code,
+      prixM2: prix != null ? Math.round(prix) : null,
+      nbVentes: p?.nb_transactions ?? null,
+      periodeFin: p?.periode_fin ?? null,
+      rdtMin: r(grand),
+      rdtMax: r(petit),
+      millesimeLoyers: millesime,
+    });
+  }
+  return out;
+}
