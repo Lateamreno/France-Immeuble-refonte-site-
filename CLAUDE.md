@@ -394,6 +394,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   immeubles sans qualité architecturale particulière, qui ne se vendraient sans doute plus à ces prix.
   Vérification du vote de l'encadrement des loyers programmée le 21/11/2026. **Lot 98 en production le
   10/11/2026** (« Go prod », MAV).
+- **Lot 99** (MAV, 10/11/2026). **Paris.** Page des annonces Google `/estimation-immeuble-paris/` :
+  formulaire d'estimation dans le premier écran (à droite sur ordinateur, sous le titre au téléphone),
+  trois preuves et la note Google, nos ventes à Paris, avis, FAQ ; **hors index et hors sitemap**,
+  absente des menus. L'événement GTM `form_submit_estimation` porte la page d'origine (`page`).
+  Page pour Google `/vendre-un-immeuble/paris/` : repères (3 à 6 %, prix au m² du 19e au 6e, acheteurs),
+  tableau des 20 arrondissements (prix des notaires du Grand Paris au 2e trimestre 2026, bâti, points
+  à savoir), six types d'immeubles, nos ventes parisiennes, 15 questions de propriétaires avec données
+  FAQPage, formulaire. Contenu relu dans `content/paris.json` (sources gardées), lu par `src/lib/paris.ts` ;
+  la page renvoie une 404 tant que ce fichier est vide.
 
 ### Garde-fous non négociables
 
