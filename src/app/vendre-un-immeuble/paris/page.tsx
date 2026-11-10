@@ -106,7 +106,7 @@ export default async function VendreUnImmeubleParis() {
   ]);
   // Nos dernières ventes d'immeubles à Paris : les murs d'une boutique n'y ont pas leur place (MAV, 10/11/2026).
   const ventesParis = toutes
-    .filter((v) => v.dept === "75" && /immeuble/i.test(v.type ?? "immeuble"))
+    .filter((v) => v.dept === "75" && (v.lots ?? 2) > 1 && (!v.type || /immeuble/i.test(v.type)))
     .sort((a, b) => b.date.localeCompare(a.date));
   const etudiesParis = ch.traitesPar["75"] ?? null;
   const delaiMedian = chiffresFaq(toutes).delaiMedian;

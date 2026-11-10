@@ -416,6 +416,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   locataires protégés, loyers sous-évalués, DPE, petites surfaces) et « À Paris, la découpe vaut souvent
   le coup ». Page des annonces : plus de cartes de ventes ; repères (3 à 6 %, immeubles vendus à Paris,
   délai médian), quatre étapes de la vente, encadré bloc ou découpe.
+- **Lot 101** (MAV, 10/11/2026 : « ça manque peut-être un peu de texte », « laisse les photos des immeubles,
+  jarte le local commercial »). Page Paris : « Nos dernières ventes à Paris » avec photos (immeubles de plus
+  d'un lot seulement) ; trois textes de fond sourcés dans `content/paris.json` (`blocs` : marché depuis la
+  hausse des taux, étapes et obligations, fiscalité) ; **immeubles étudiés par zone** déposés par le BO dans
+  `chiffres` (`immeubles_traites_75`, `immeubles_traites_<code INSEE>`, lus dans `chiffres().traitesPar`),
+  affichés seulement s'ils existent (`docs/PROMPT-BO-IMMEUBLES-ETUDIES.md`). Encadrement des loyers à revoir
+  dans cette page aussi après le vote du 18/11/2026.
 
 ### Garde-fous non négociables
 
