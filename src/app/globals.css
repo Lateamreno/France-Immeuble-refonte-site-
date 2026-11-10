@@ -5513,20 +5513,5 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 /* Barème des honoraires (/nos-honoraires/, MAV, 09/11/2026). */
 .bareme-legal{margin-top:var(--space-l);}
 
-/* Menu déroulant « F » (retour #283, MAV, 09/11/2026 : « plus discret, un peu transparent ») :
-   sans cadre ni fond, les liens flottent sous leur titre, un filet or à gauche. Une ombre
-   portée sous le texte le garde lisible sur les photos claires. Ordinateur seulement : au
-   téléphone, les sous-menus restent dépliés dans le menu plein écran. */
-@media (min-width:981px){
-  .nav-groupe__liste{
-    background:transparent;border:0;border-left:1px solid var(--color-bronze);border-radius:0;
-    box-shadow:none;padding:2px 0 2px 2px;left:0;top:calc(100% + 10px);min-width:0;
-  }
-  .nav-groupe__liste::before{inset:-10px 0 100% 0;}
-  .nav-groupe__liste a{
-    padding:7px 14px;border-radius:0;color:var(--color-creme);
-    text-shadow:0 1px 10px rgba(10,10,10,.9),0 0 2px rgba(10,10,10,.6);
-  }
-  .nav-groupe__liste a:hover,
-  .nav-groupe__liste a[aria-current="page"]{background:transparent;color:var(--color-bronze);}
-}
+/* Menu déroulant (MAV, 10/11/2026) : retour au panneau avec fond du lot 94. La version « F »
+   sans fond du retour #283 ne se lisait pas au-dessus des sections claires. */

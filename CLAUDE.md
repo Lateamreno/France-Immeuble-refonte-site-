@@ -394,6 +394,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   immeubles sans qualité architecturale particulière, qui ne se vendraient sans doute plus à ces prix.
   Vérification du vote de l'encadrement des loyers programmée le 21/11/2026. **Lot 98 en production le
   10/11/2026** (« Go prod », MAV).
+- **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
+  les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
+  retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
 
 ### Garde-fous non négociables
 
