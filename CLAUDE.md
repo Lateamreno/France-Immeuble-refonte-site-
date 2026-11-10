@@ -389,7 +389,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   6 juillet 1989 » et « tribunal » validés ; à Paris, rendement de 3 à 6 % aujourd'hui tous arrondissements
   confondus, nos ventes de 2020 (2,9 % et 3,4 %) comme exemples d'avant la hausse des taux, effet combiné
   à l'encadrement des loyers ; période de test des mandats « de 2 à 4 semaines, l'idéal 4 » ; budget des
-  particuliers jusqu'à 2 M€ gardé ; ne pas parler du meublé résidence principale (« on parle aux bailleurs »).
+  particuliers jusqu'à 2 M€ gardé ; ne pas parler du meublé résidence principale (« on parle aux bailleurs »). **Lot 98**
+  (deuxième passe, sources 2026) : « 3 à 6 % » partout pour Paris ; nos ventes de 2020 présentées comme des
+  immeubles sans qualité architecturale particulière, qui ne se vendraient sans doute plus à ces prix.
+  Vérification du vote de l'encadrement des loyers programmée le 21/11/2026. **Lot 98 en production le
+  10/11/2026** (« Go prod », MAV).
 
 ### Garde-fous non négociables
 
