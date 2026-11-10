@@ -369,6 +369,22 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Même jour (accord de MAV) : la FAQ de la Découpe porte ses données FAQPage (texte tiré du JSX par
   `texteFaq`, `src/lib/texte-react.ts`) ; `/contactez-nous/` reçoit une description, qu'elle n'avait
   pas sur WordPress. **Lot 96 en production le 09/11/2026** (« Go », MAV).
+- **Priorités SEO et SEA** (MAV, 10/11/2026) : **Paris d'abord**, une page de conversion pour les annonces
+  Google (« formulaire de transformation ++++ », « du SEA à mort ») et une page pour Google sur les
+  questions des propriétaires parisiens (meublés de tourisme, DPE, encadrement des loyers…), enrichie des
+  arrondissements et des types d'architecture. Puis les communes chères : Boulogne-Billancourt, Saint-Mandé,
+  Levallois-Perret, Ivry-sur-Seine, Neuilly-sur-Seine, **chaque page construite différemment** (ce qui lève
+  la règle « pas de page Boulogne ni Neuilly » du 04/11). Puis indivision et succession : vendre l'immeuble
+  entier, la vente des parts seulement dans un encadré de fin (décote selon le pourcentage détenu).
+- **Lot 97** (MAV, 10/11/2026). **Les articles en landing** : formulaire d'estimation dans la page (dépôt
+  de recherche pour « Pourquoi acheter un immeuble en bloc » et l'article off-market, `src/lib/article-landing.ts`),
+  collé à droite dès 1180 px et tenant dans l'écran, en fin d'article au téléphone ; encart au milieu du
+  texte (`porte-action`) ; trois repères tirés des ventes publiées en tête ; boutons d'estimation repris du
+  WordPress, bouton du hero et pilule vers `#estimer`. Texte, titre, description, H1 et adresse inchangés.
+  **Chiffres et règles datés mis à jour** dans dix articles (DPE G/F/E 2025-2028-2034, taux Banque de France,
+  réforme de l'habitat indigne de 2021, pénalités L511-22 CCH, loi Aurillac « au moins 6 logements »,
+  commissaire de justice, 1 170 immeubles traités, rendements de nos ventes), date « mis à jour le » sous
+  l'article (`revuLe`). Nouveau titre et description pour l'article promoteur (4 557 impressions, 13 clics).
 
 ### Garde-fous non négociables
 

@@ -111,14 +111,14 @@ export default async function ArticlePage({ params }: Params) {
       ? [
           { picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs déjà inscrits" },
           c.rdtMin && c.rdtMax
-            ? { picto: "stats" as NomPicto, valeur: `${pc(c.rdtMin.val)} à ${pc(c.rdtMax.val)} %`, libelle: "de rendement sur nos ventes" }
+            ? { picto: "stats" as NomPicto, valeur: `${pc(c.rdtMin.val)}–${pc(c.rdtMax.val)}\u00a0%`, libelle: "de rendement sur nos ventes" }
             : null,
           { picto: "detective" as NomPicto, valeur: "100 %", libelle: "de nos immeubles d’abord en off-market" },
         ]
       : [
-          c.delaiMedian ? { picto: "agenda" as NomPicto, valeur: `${c.delaiMedian} jours`, libelle: "avant la première offre, en médiane" } : null,
+          c.delaiMedian ? { picto: "agenda" as NomPicto, valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre, en médiane" } : null,
           c.ecartMedian != null && c.ecartN >= 5 && c.ecartMedian > 0
-            ? { picto: "augmentation" as NomPicto, valeur: `+${pc(c.ecartMedian)} %`, libelle: "meilleure offre face à notre estimation" }
+            ? { picto: "augmentation" as NomPicto, valeur: `+${pc(c.ecartMedian)}\u00a0%`, libelle: "meilleure offre face à notre estimation" }
             : null,
           { picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs d’immeubles en base" },
         ]
@@ -214,7 +214,8 @@ export default async function ArticlePage({ params }: Params) {
                 celle d'une passe technique groupee.
               */}
               <p className="article__date-note">
-                Article publié le <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>.
+                Article publié le <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
+                {a.revuLe && <>, chiffres et règles mis à jour le <time dateTime={a.revuLe}>{dateFr(a.revuLe)}</time></>}.
                 Pour une lecture à jour de votre situation, appelez-nous au{" "}
                 <a href={SITE.telHref}>{SITE.tel}</a>.
               </p>

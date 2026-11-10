@@ -30,6 +30,8 @@ export type Article = {
   noindex: boolean;
   publishedAt: string;
   updatedAt: string;
+  /** Date de la dernière relecture des chiffres et des règles (lot 97, MAV, 10/11/2026). */
+  revuLe?: string;
   contenuHtml: string;
 };
 
@@ -94,6 +96,8 @@ export type PageWP = {
   noindex: boolean;
   publishedAt: string;
   updatedAt: string;
+  /** Date de la dernière relecture des chiffres et des règles (lot 97, MAV, 10/11/2026). */
+  revuLe?: string;
   contenuHtml: string;
 };
 
