@@ -436,6 +436,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   découpe, avis, FAQ, formulaire ; un bouton d'estimation en fin de chaque section (`Relance`,
   `.porte-action`). Retirés : textes de fond, « Ce qui pèse sur le prix », types d'architecture ; une
   question « diagnostics » rejoint la FAQ.
+- **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
+  les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
+  retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
 
 ### Garde-fous non négociables
 
