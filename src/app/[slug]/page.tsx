@@ -17,6 +17,14 @@ import {
   type Article,
 } from "@/lib/contenu";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { EstimationForm } from "@/components/EstimationForm";
+import { RechercheForm } from "@/components/RechercheForm";
+import { Picto, type NomPicto } from "@/components/Picto";
+import { ventes as lesVentes } from "@/lib/biens";
+import { chiffres as lesChiffres } from "@/lib/chiffres";
+import { chiffresFaq } from "@/lib/faq";
+import { nombre } from "@/lib/site";
+import { cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -92,6 +100,30 @@ export default async function ArticlePage({ params }: Params) {
   const i = tous.findIndex((x) => x.slug === a.slug);
   const suite = [...tous.slice(i + 1), ...tous.slice(0, i)].slice(0, 3);
 
+  const acheteur = cibleArticle(a.slug) === "acheteur";
+  const [avant, apres] = couperTexte(ctaVersFormulaire(imagesDifferees(a.contenuHtml)));
+  const [ventesPubliees, ch] = await Promise.all([lesVentes(), lesChiffres()]);
+  const c = chiffresFaq(ventesPubliees);
+  const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
+  /** Trois repères tirés de nos ventes publiées et du BO, en tête de l'article. */
+  const reperes: { picto: NomPicto; valeur: string; libelle: string }[] = (
+    acheteur
+      ? [
+          { picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs déjà inscrits" },
+          c.rdtMin && c.rdtMax
+            ? { picto: "stats" as NomPicto, valeur: `${pc(c.rdtMin.val)} à ${pc(c.rdtMax.val)} %`, libelle: "de rendement sur nos ventes" }
+            : null,
+          { picto: "detective" as NomPicto, valeur: "100 %", libelle: "de nos immeubles d’abord en off-market" },
+        ]
+      : [
+          c.delaiMedian ? { picto: "agenda" as NomPicto, valeur: `${c.delaiMedian} jours`, libelle: "avant la première offre, en médiane" } : null,
+          c.ecartMedian != null && c.ecartN >= 5 && c.ecartMedian > 0
+            ? { picto: "augmentation" as NomPicto, valeur: `+${pc(c.ecartMedian)} %`, libelle: "meilleure offre face à notre estimation" }
+            : null,
+          { picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs d’immeubles en base" },
+        ]
+  ).filter((x): x is { picto: NomPicto; valeur: string; libelle: string } => !!x);
+
   return (
     <>
       <JsonLd data={schemaArticle(a)} />
@@ -121,62 +153,93 @@ export default async function ArticlePage({ params }: Params) {
               <span aria-hidden="true"> · </span>
               {dureeLecture(a.contenuHtml)} min de lecture
             </p>
+            <div className="btn-row">
+              <Button href="#estimer">{acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"}</Button>
+            </div>
           </>
         </HeroMedia>
 
         {/*
-          Corps sur fond crème, à rebours du reste du site : un texte long se
-          lit mal en clair sur sombre. Le rythme hero sombre → corps clair →
-          CTA sombre garde l'identité sans sacrifier le confort de lecture.
+          Lot 97 (MAV, 10/11/2026) : l'article devient une landing. Le texte reste
+          celui de l'article, sur fond crème ; le formulaire est dans la page, collé
+          à droite pendant la lecture sur ordinateur, en fin d'article au téléphone.
         */}
-        <div className="section--creme">
-          <div className="container container--narrow">
-            {/*
-              Contenu repris du WordPress : markup Gutenberg nettoyé (images
-              rapatriées en local, liens internes relatifs, classes retirées).
-              La source est notre propre export, pas une saisie utilisateur.
-            */}
-            <div
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: imagesDifferees(a.contenuHtml) }}
-            />
+        <div className="section--creme article-corps">
+          <div className="container article-grille">
+            <div className="article-texte">
+              <ul className="article-chiffres" aria-label="Nos chiffres" style={{ ["--n" as string]: reperes.length }}>
+                {reperes.map((r) => (
+                  <li key={r.libelle}>
+                    <Picto nom={r.picto} taille={26} />
+                    <span className="article-chiffres__val">{r.valeur}</span>
+                    <span className="article-chiffres__lib">{r.libelle}</span>
+                  </li>
+                ))}
+              </ul>
+              {/*
+                Contenu repris du WordPress : markup Gutenberg nettoyé (images
+                rapatriées en local, liens internes relatifs, classes retirées).
+                La source est notre propre export, pas une saisie utilisateur.
+              */}
+              <div className="prose" dangerouslySetInnerHTML={{ __html: avant }} />
+              {apres && (
+                <>
+                  {/* Au milieu du texte, sous 1180 px : le formulaire est plus bas. */}
+                  <aside className="article-encart" aria-label={acheteur ? "Déposer une recherche" : "Estimer votre immeuble"}>
+                    <p className="article-encart__titre">
+                      {acheteur ? (
+                        <>Recevez nos immeubles <span className="accent">avant leur diffusion</span></>
+                      ) : (
+                        <>Combien vaut <span className="accent">votre immeuble</span>&nbsp;?</>
+                      )}
+                    </p>
+                    <p>
+                      {acheteur
+                        ? "Déposez votre recherche : vous recevez les dossiers qui y correspondent, off-market compris."
+                        : "Estimation gratuite et confidentielle, par un agent spécialisé dans les immeubles de rapport."}
+                    </p>
+                    {/* « porte-action » : la pilule du téléphone s'efface devant ce bouton au lieu de le cacher. */}
+                    <div className="btn-row porte-action">
+                      <Button href="#estimer">{acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"}</Button>
+                    </div>
+                  </aside>
+                  <div className="prose prose--suite" dangerouslySetInnerHTML={{ __html: apres }} />
+                </>
+              )}
 
-            {/*
-              Les articles citent des chiffres et des seuils reglementaires
-              vrais a leur date : un reseau de 1 500 acheteurs en 2021, des
-              taux de 2023, des echeances DPE annoncees au futur et depuis
-              passees. Les reecrire trahirait le texte ; les laisser sans
-              reperes tromperait le lecteur. On date, c'est tout.
+              {/*
+                Les articles citent des chiffres et des seuils reglementaires
+                vrais a leur date. On date, c'est tout. La date de modification
+                WordPress n'est pas affichee : huit articles portent la meme,
+                celle d'une passe technique groupee.
+              */}
+              <p className="article__date-note">
+                Article publié le <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>.
+                Pour une lecture à jour de votre situation, appelez-nous au{" "}
+                <a href={SITE.telHref}>{SITE.tel}</a>.
+              </p>
+            </div>
 
-              La date de modification WordPress n'est pas affichee : huit
-              articles portent la meme, celle d'une passe technique groupee,
-              et la presenter comme une revision editoriale serait faux.
-            */}
-            <p className="article__date-note">
-              Article publié le <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>.
-              Les chiffres, taux et références réglementaires qu’il cite sont ceux en vigueur
-              à cette date. Pour une lecture à jour de votre situation,{" "}
-              <Link href="/estimer-un-immeuble/">demandez une estimation</Link> ou
-              appelez-nous au <a href={SITE.telHref}>{SITE.tel}</a>.
-            </p>
+            <aside id="estimer" className="article-form" aria-label={acheteur ? "Déposer une recherche" : "Estimer votre immeuble"}>
+              <div className="article-form__colle">
+                <p className="article-form__titre">
+                  {acheteur ? (
+                    <>Déposez votre <span className="accent">recherche</span></>
+                  ) : (
+                    <>Votre <span className="accent">estimation gratuite</span></>
+                  )}
+                </p>
+                <p className="article-form__lead">
+                  {acheteur
+                    ? `Rejoignez nos ${nombre(ch.investisseurs)} acheteurs et recevez les immeubles avant leur diffusion.`
+                    : "Gratuite et confidentielle. Ou appelez-nous :"}{" "}
+                  {!acheteur && <a href={SITE.telHref}>{SITE.tel}</a>}
+                </p>
+                {acheteur ? <RechercheForm /> : <EstimationForm formulaire="estimer" />}
+              </div>
+            </aside>
           </div>
         </div>
-
-        <section className="section section--noir">
-          <div className="container container--narrow article__cta">
-            <h2>Vous avez un immeuble à vendre&nbsp;?</h2>
-            <p className="lead">
-              Estimation gratuite et confidentielle. Nous présentons votre bien à notre
-              fichier d’investisseurs avant toute diffusion publique.
-            </p>
-            <div className="btn-row">
-              <Button href="/estimer-un-immeuble/">Estimer mon immeuble</Button>
-              <Button href={SITE.telHref} variant="outline">
-                {SITE.tel}
-              </Button>
-            </div>
-          </div>
-        </section>
 
         {suite.length > 0 && (
           <section className="section">
@@ -196,7 +259,7 @@ export default async function ArticlePage({ params }: Params) {
           </section>
         )}
       </article>
-      <BoutonFixeMobile href="/estimer-un-immeuble/" libelle="Estimer mon immeuble" />
+      <BoutonFixeMobile href="#estimer" cible="estimer" libelle={acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"} />
     </>
   );
 }

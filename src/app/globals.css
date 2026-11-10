@@ -1133,6 +1133,64 @@ fieldset.field legend,.lot label{
 }
 .article__date-note a:hover{ color:var(--color-noir); }
 
+/* Lot 97 (MAV, 10/11/2026) : l'article en landing. Le texte garde sa colonne de
+   lecture ; le formulaire se colle à droite sur ordinateur, passe en fin d'article
+   au téléphone. Un seul formulaire par page. */
+.article-grille{display:block;}
+.article-texte{min-width:0;}
+.article-corps .prose{padding-block:clamp(28px,4vw,48px) 0;}
+.article-corps .prose--suite{padding-top:0;}
+.article-corps .article__date-note{margin-top:clamp(28px,4vw,48px);padding-bottom:0;}
+.article-chiffres{list-style:none;margin:0 auto;padding:clamp(28px,4vw,44px) 0 0;max-width:68ch;
+  display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px;}
+.article-chiffres li{display:flex;flex-direction:column;gap:4px;padding:14px 14px 14px 16px;
+  border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-noir) 5%,transparent);
+  color:var(--color-bronze-profond);}
+.article-chiffres__val{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:clamp(1.25rem,2.4vw,1.6rem);line-height:1.05;color:var(--color-noir);letter-spacing:-.015em;}
+.article-chiffres__lib{font-size:.82rem;line-height:1.35;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+.article-encart{max-width:68ch;margin:clamp(28px,4vw,44px) auto;padding:22px 22px 24px;border-radius:var(--radius-card);
+  background:var(--color-noir);color:var(--color-creme);text-align:center;border-left:2px solid var(--color-bronze);}
+.article-encart__titre{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:clamp(1.25rem,2.6vw,1.6rem);line-height:1.1;letter-spacing:-.015em;margin:0 0 8px;}
+.article-encart p{margin:0 0 16px;}
+.article-encart p:last-of-type{color:color-mix(in srgb,var(--color-creme) 82%,var(--color-noir));}
+.article-encart .btn{max-width:100%;}
+.article-form{padding:clamp(32px,5vw,56px) 0 clamp(40px,6vw,72px);max-width:68ch;margin-inline:auto;scroll-margin-top:calc(var(--header-h) + 12px);}
+.article-form__titre{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.05;letter-spacing:-.015em;color:var(--color-noir);margin:0 0 8px;text-align:center;}
+.article-form__titre .accent{color:var(--color-bronze-profond);}
+.article-form__lead{margin:0 0 18px;text-align:center;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+.article-form__lead a{color:var(--color-bronze-profond);font-weight:600;white-space:nowrap;}
+@media (max-width:600px){
+  .article-chiffres{grid-template-columns:1fr;gap:8px;}
+  .article-chiffres li{flex-direction:row;align-items:baseline;gap:10px;padding:10px 12px;}
+  .article-chiffres li svg{align-self:center;flex:none;}
+  .article-chiffres__val{flex:none;}
+}
+@media (min-width:1180px){
+  .article-grille{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:56px;align-items:start;}
+  .article-chiffres,.article-corps .prose,.article-corps .article__date-note{margin-inline:0;}
+  .article-encart{display:none;}
+  .article-form{position:sticky;top:calc(var(--header-h) + 20px);padding:clamp(28px,4vw,44px) 0 40px;margin:0;
+    max-height:calc(var(--h-ecran) - var(--header-h) - 20px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+  /* Le formulaire porte déjà son titre : sur ordinateur, on garde une ligne et le formulaire resserré tient dans l'écran. */
+  .article-form__titre{display:none;}
+  .article-form__lead{text-align:left;font-size:.9rem;margin-bottom:12px;}
+  .article-form .form-bloc .fields{gap:12px;}
+  .article-form .form-bloc .field input,.article-form .form-bloc .field textarea,.article-form .form-bloc .field select{padding:9px 12px;}
+  .article-form .form-bloc .field{gap:5px;}
+  .article-form .form-bloc .step-head{margin-bottom:16px;}
+  .article-form .form-saisie .field textarea{min-height:72px;height:72px;}
+  .article-form .form-saisie .field-nav{margin-top:16px;}
+  .article-form .form-shell{padding:24px 26px;}
+  .article-form .step-head h3{font-size:1.45rem;}
+  .article-form{padding:20px 0 20px;}
+  html.h-760 .article-form__lead{display:none;}
+  html.h-760 .article-form .step-head{margin-bottom:10px;}
+  .article-corps{padding-bottom:clamp(40px,6vw,72px);}
+}
+
 /* Image à la une : elle chevauche la bascule sombre → crème, ce qui coud
    les deux sections au lieu de les empiler. */
 .article__une{
