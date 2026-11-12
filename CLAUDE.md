@@ -456,6 +456,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Google »), branchées par `imagesPartage()` de `src/lib/partage.ts` (pages WordPress, pages neuves, blog ;
   les articles gardent leur image) ; carte `summary_large_image` pour X. Les anciennes images WordPress de
   l'accueil, Vendre, Estimer et Contact sont remplacées ; title et meta de l'accueil inchangés.
+  Même jour (MAV : « je trouvais le H1 plus percutant ») : la découpe garde son H1 « La marge du marchand
+  de biens, sans lui vendre votre immeuble » ; « Vendre un immeuble à la découpe » passe dans le surtitre.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.

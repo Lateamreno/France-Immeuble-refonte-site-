@@ -262,12 +262,14 @@ export default function Decoupe() {
         alt={VISUELS.fenetresHeureBleue.alt}
       >
         <>
-          <Eyebrow>Vente à la découpe</Eyebrow>
+          {/* MAV, 12/11/2026 : le H1 d'origine est « plus percutant » ; le mot-clé passe dans le surtitre. */}
+          <Eyebrow>Vendre un immeuble à la découpe</Eyebrow>
           <h1>
-            Vendre un immeuble <span className="accent">à la découpe</span>
+            La marge du marchand de biens,{" "}
+            <span className="accent">sans lui vendre votre immeuble</span>
           </h1>
           <p className="lead">
-            La marge du marchand de biens, sans lui vendre votre immeuble. Celui qui rachète votre immeuble en bloc pour le découper fait un métier. Il le met en
+            Celui qui rachète votre immeuble en bloc pour le découper fait un métier. Il le met en
             copropriété, négocie les départs, rénove, revend lot par lot, et fait sa marge. Nous
             faisons ce travail pour vous, et la marge vous revient.
           </p>
