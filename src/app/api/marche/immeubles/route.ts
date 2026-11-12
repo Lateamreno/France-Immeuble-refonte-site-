@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       const r = await fetch(urlDvf(annee, c.code), { cache: "no-store", redirect: "follow" });
       if (!r.ok) { echecs.push(c.code); continue; }
       const s = ventesImmeubles(lireCsv(await r.text()));
-      lignes.push({ code_insee: c.code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, maj_le: new Date().toISOString() });
+      lignes.push({ code_insee: c.code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, maj_le: new Date().toISOString() });
     } catch {
       echecs.push(c.code);
     }

@@ -408,6 +408,18 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   titre visuel en paragraphe (`.hero-titre`). Rendu identique au pixel. **En production le 12/11/2026**
   (« Go prod », MAV). Audit des autres pages à valider
   par MAV avant toute modification.
+- **Lot 107** (retours #301 à #312 de MAV sur la page Paris, 12/11/2026). Tableau : filets entre
+  arrondissement, appartements et immeubles ; colonne « Notre prudence » retirée ; prix au m² des
+  immeubles **bas, médian et haut** et les rendements qui vont avec (`prix_m2_min`, `prix_m2_max`,
+  migration 0020) ; surtitre « Prix des immeubles par arrondissement », titre « Quel est le prix des
+  immeubles dans les 20 arrondissements ? », « en pratique environ 15 % de décote » ; calcul et sources
+  repliés sous le tableau, sans « se mettent à jour seuls ». Estimer : « Estimer votre immeuble à
+  Paris », « Des spécialistes de l'immeuble parisien, du bail à la toiture » (marché, locatif, bâti et
+  rénovation énergétique, bon acquéreur ; **ne pas dire qu'on estime seulement au rendement**). Vendre :
+  « Vendre un immeuble à Paris », « 100 % off-market » (pas « d'abord »), meilleure offre de notre base,
+  souvent sans condition de financement, **aucun délai affiché**, l'après-offre comme partie la plus
+  difficile. **DVF : les ventes une par une ne doivent pas être indexées par les moteurs** (conditions
+  de réutilisation) : une base publique d'immeubles vendus passe par des agrégats, le détail en compte.
 
 ### Garde-fous non négociables
 

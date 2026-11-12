@@ -55,7 +55,15 @@ export function lireCsv(texte: string): Record<string, string>[] {
 /** Part minimale de logements, en nombre de lots hors dépendances (MAV, 10/11/2026). */
 export const PART_HABITATION_MIN = 0.65;
 
-export type StatsImmeubles = { nbVentes: number; prixM2Median: number | null; prixMedian: number | null; surfaceMediane: number | null };
+export type StatsImmeubles = {
+  nbVentes: number;
+  prixM2Median: number | null;
+  /** Le moins cher et le plus cher au m² des ventes retenues (MAV, 12/11/2026, retour #303). */
+  prixM2Min: number | null;
+  prixM2Max: number | null;
+  prixMedian: number | null;
+  surfaceMediane: number | null;
+};
 
 const mediane = (xs: number[]) => {
   if (!xs.length) return null;
@@ -99,6 +107,8 @@ export function ventesImmeubles(lignes: Record<string, string>[]): StatsImmeuble
   return {
     nbVentes: n,
     prixM2Median: n >= 3 ? Math.round(mediane(retenus.map((c) => c.prix / c.surface))!) : null,
+    prixM2Min: n >= 3 ? Math.round(Math.min(...retenus.map((c) => c.prix / c.surface))) : null,
+    prixM2Max: n >= 3 ? Math.round(Math.max(...retenus.map((c) => c.prix / c.surface))) : null,
     prixMedian: n >= 3 ? Math.round(mediane(retenus.map((c) => c.prix))!) : null,
     surfaceMediane: n >= 3 ? Math.round(mediane(retenus.map((c) => c.surface))!) : null,
   };
