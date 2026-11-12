@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,6 +26,14 @@ export const metadata: Metadata = {
   description:
     "Retrouvez nos articles sur l'achat et la vente d'immeubles. Pourquoi acheter un immeuble plutôt qu'un appartement, quel immeuble acheter, etc.",
   alternates: { canonical: "/blog/" },
+  openGraph: {
+    type: "website",
+    title: "Blog - France Immeuble",
+    description:
+      "Retrouvez nos articles sur l'achat et la vente d'immeubles. Pourquoi acheter un immeuble plutôt qu'un appartement, quel immeuble acheter, etc.",
+    url: "/blog/",
+    images: imagesPartage("/blog/"),
+  },
 };
 
 export default async function BlogPage() {

@@ -97,7 +97,7 @@ export function faqVendre(c: ChiffresFaq): QR[] {
         <p>
           En bloc, l’immeuble part en une fois à un investisseur. À la découpe, chaque lot est vendu
           à un particulier, souvent plus cher. Nous chiffrons les deux avant de vous conseiller :{" "}
-          {lien("/vendre-a-la-decoupe/", "voir la vente à la découpe")}.
+          {lien("/vendre-un-immeuble-a-la-decoupe/", "voir la vente à la découpe")}.
         </p>
       ),
     },

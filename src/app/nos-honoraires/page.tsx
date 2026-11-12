@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -15,11 +16,14 @@ import { SITE } from "@/lib/site";
  * page, et qu'on y mette aussi les prix de la vente à la découpe »). Les chiffres sont
  * ceux du PDF de 2022 et de la page Vendre à la découpe, sans rien changer.
  */
+const DESCRIPTION =
+  "Honoraires de France Immeuble pour vendre un immeuble de rapport : 3 à 5 % selon le prix, dus à la signature de l’acte. Tarifs de la vente à la découpe.";
+
 export const metadata: Metadata = {
   title: "Barème de nos honoraires",
-  description:
-    "Les honoraires de France Immeuble pour vendre un immeuble de rapport : de 3 à 5 % selon le prix, dus seulement à la signature de l’acte. Et les tarifs de la vente à la découpe.",
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE.url}/nos-honoraires/` },
+  openGraph: { images: imagesPartage("/nos-honoraires/"), type: "website", title: "Barème de nos honoraires | France Immeuble", description: DESCRIPTION, url: "/nos-honoraires/" },
 };
 
 const TRANCHES = [
@@ -139,7 +143,7 @@ export default function NosHonoraires() {
             </p>
           </Reveal>
           <div className="btn-row" style={{ justifyContent: "center", marginTop: "var(--space-m)" }}>
-            <Button href="/vendre-a-la-decoupe/">Voir la vente à la découpe</Button>
+            <Button href="/vendre-un-immeuble-a-la-decoupe/">Voir la vente à la découpe</Button>
           </div>
           <p className="tableau__note bareme-legal">
             France Immeuble SAS au capital de 100 000 €, APE 6831Z. RCS Paris, SIREN 835 369 562,

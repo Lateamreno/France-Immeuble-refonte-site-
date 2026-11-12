@@ -23,7 +23,12 @@ const nextConfig = {
   // Objectif zéro perte : ne jamais servir /vendre-un-immeuble sans slash final.
   trailingSlash: true,
   async redirects() {
-    return REDIRECTIONS_WP.map((r) => ({ source: r.source, destination: r.destination, statusCode: 301 }));
+    return [
+      ...REDIRECTIONS_WP.map((r) => ({ source: r.source, destination: r.destination, statusCode: 301 })),
+      // Adresses du nouveau site renommées pour le référencement (MAV, 12/11/2026 : « l'URL pour
+      // vendre à la découpe il est nul, le mieux c'est vendre un immeuble à la découpe »).
+      { source: "/vendre-a-la-decoupe/", destination: "/vendre-un-immeuble-a-la-decoupe/", statusCode: 301 },
+    ];
   },
   // Avant la bascule, le site répond aussi sur *.vercel.app : ces adresses ne doivent pas
   // entrer dans Google (audit SEO, T7). Le domaine www.france-immeuble.fr n'est pas touché.

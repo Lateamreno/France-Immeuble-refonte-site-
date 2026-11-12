@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
@@ -17,7 +18,7 @@ import { CarteIdf } from "@/components/CarteIdf";
 import { Picto, type NomPicto } from "@/components/Picto";
 
 /**
- * /vendre-a-la-decoupe/ — le meilleur aimant à gros immeubles du site.
+ * /vendre-un-immeuble-a-la-decoupe/ — le meilleur aimant à gros immeubles du site.
  *
  * Un immeuble qui se découpe est par définition un immeuble de taille, en zone
  * tendue, à plusieurs millions : la requête filtre d'elle-même. Le vocabulaire
@@ -28,11 +29,19 @@ import { Picto, type NomPicto } from "@/components/Picto";
  * propriétaire qui vend en bloc vend à quelqu'un qui fera ce travail à sa
  * place et fera sa marge. On lui propose de le faire pour lui.
  */
+const DESCRIPTION =
+  "Nous mettons votre immeuble en copropriété et le vendons lot par lot pour vous : à la découpe, il se vend bien plus cher qu’en bloc. Chiffrage offert.";
+
 export const metadata: Metadata = {
   title: "Vendre un immeuble à la découpe",
-  description:
-    "Vendre en bloc, c’est vendre au prix que permet le rendement. Vendu lot par lot, le même immeuble se paie au prix du marché résidentiel. Mise en copropriété, congés, préemptions, travaux et commercialisation : nous prenons l’opération en charge.",
-  alternates: { canonical: "/vendre-a-la-decoupe/" },
+  description: DESCRIPTION,
+  alternates: { canonical: "/vendre-un-immeuble-a-la-decoupe/" },
+  openGraph: { images: imagesPartage("/vendre-un-immeuble-a-la-decoupe/"),
+    type: "website",
+    title: "Vendre un immeuble à la découpe | France Immeuble",
+    description: DESCRIPTION,
+    url: "/vendre-un-immeuble-a-la-decoupe/",
+  },
 };
 
 /**
@@ -228,12 +237,12 @@ export default function Decoupe() {
         data={[
           filAriane([
             { nom: "Accueil", url: "/" },
-            { nom: "Vendre à la découpe", url: "/vendre-a-la-decoupe/" },
+            { nom: "Vendre un immeuble à la découpe", url: "/vendre-un-immeuble-a-la-decoupe/" },
           ]),
           service(
             "Vente à la découpe d’immeuble",
             "Étude comparative bloc / découpe, mise en copropriété, gestion des congés et préemptions, coordination des travaux et commercialisation lot par lot d’un immeuble de rapport.",
-            "/vendre-a-la-decoupe/",
+            "/vendre-un-immeuble-a-la-decoupe/",
           ),
           // MAV, 09/11/2026 : la FAQ de la Découpe lisible par Google, comme sur les autres pages.
           {
@@ -253,7 +262,8 @@ export default function Decoupe() {
         alt={VISUELS.fenetresHeureBleue.alt}
       >
         <>
-          <Eyebrow>Vente à la découpe</Eyebrow>
+          {/* MAV, 12/11/2026 : le H1 d'origine est « plus percutant » ; le mot-clé passe dans le surtitre. */}
+          <Eyebrow>Vendre un immeuble à la découpe</Eyebrow>
           <h1>
             La marge du marchand de biens,{" "}
             <span className="accent">sans lui vendre votre immeuble</span>

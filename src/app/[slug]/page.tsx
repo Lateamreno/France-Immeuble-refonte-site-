@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -62,7 +63,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       url: a.chemin,
       publishedTime: a.publishedAt,
       modifiedTime: a.updatedAt,
-      images: a.ogImage ? [a.ogImage] : undefined,
+      images: a.ogImage ? [a.ogImage] : imagesPartage("/"),
     },
   };
 }
