@@ -31,7 +31,7 @@ import { SITE, nombre } from "@/lib/site";
  * /estimation-immeuble-paris/, hors index : les deux ne se concurrencent pas.
  */
 const DESCRIPTION =
-  "Vendre un immeuble de rapport à Paris : estimation par des spécialistes, vente 100 % off-market à 1 500 acheteurs, prix des immeubles des 20 arrondissements.";
+  "Vendre un immeuble de rapport à Paris : estimation par des spécialistes, vente 100 % off-market à 1 500 acheteurs, prix des immeubles par arrondissement.";
 
 export const metadata: Metadata = {
   title: { absolute: "Vendre un immeuble à Paris | France Immeuble" },
