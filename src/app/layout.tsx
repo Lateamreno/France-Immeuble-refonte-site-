@@ -29,6 +29,8 @@ export const metadata: Metadata = {
   // qui n'en fournissent pas — jamais à la homepage, dont le title est gelé
   // au caractère près (CLAUDE.md §10).
   title: { default: `${SITE.nom}`, template: `%s | ${SITE.nom}` },
+  // Grande image sur X et les messageries qui lisent ces balises (lot 105).
+  twitter: { card: "summary_large_image" },
 };
 
 /** Pose .js avant le premier rendu — voir §10 de globals.css. */

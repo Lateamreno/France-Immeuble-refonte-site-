@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
     "Estimez gratuitement votre immeuble parisien. Agence spécialisée dans la vente d’immeubles de rapport, 1 500 acheteurs en recherche, honoraires dus seulement à l’acte.",
   alternates: { canonical: `${SITE.url}/estimation-immeuble-paris/` },
   robots: { index: false, follow: true },
+  openGraph: { type: "website", title: "Estimation immeuble Paris | France Immeuble", description: "Estimez gratuitement votre immeuble parisien. Agence spécialisée dans la vente d’immeubles de rapport, 1 500 acheteurs en recherche, honoraires dus seulement à l’acte.", url: "/estimation-immeuble-paris/", images: imagesPartage("/estimation-immeuble-paris/") },
 };
 
 export default async function EstimationImmeubleParis() {

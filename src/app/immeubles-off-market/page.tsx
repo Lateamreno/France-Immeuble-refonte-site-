@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { SectionFaq } from "@/components/SectionFaq";
 import { faqOffMarket } from "@/lib/faq";
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
   description:
     "Nous commercialisons la plupart de nos immeubles sans annonce publique, directement auprès de notre fichier d’acquéreurs. Déposez votre recherche pour y accéder.",
   alternates: { canonical: `${SITE.url}/immeubles-off-market/` },
+  openGraph: { type: "website", title: "Immeubles off-market | France Immeuble", description: "Nous commercialisons la plupart de nos immeubles sans annonce publique, directement auprès de notre fichier d’acquéreurs. Déposez votre recherche pour y accéder.", url: "/immeubles-off-market/", images: imagesPartage("/immeubles-off-market/") },
 };
 
 /** Pourquoi un vendeur choisit de ne pas diffuser. */

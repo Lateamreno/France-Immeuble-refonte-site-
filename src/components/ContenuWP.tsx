@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import "../app/page-wp.css";
 import { notFound } from "next/navigation";
@@ -72,7 +73,7 @@ export function metadonneesWP(chemin: string): Metadata {
       title: p.seoTitle,
       description: p.seoDesc ?? undefined,
       url: p.chemin,
-      images: p.ogImage ? [p.ogImage] : undefined,
+      images: imagesPartage(p.chemin),
     },
   };
 }

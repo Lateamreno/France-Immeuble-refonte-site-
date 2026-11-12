@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { SectionFaq } from "@/components/SectionFaq";
 import { faqAVendre } from "@/lib/faq";
@@ -36,6 +37,7 @@ const metadata: Metadata = {
   description:
     "Les immeubles de rapport que nous commercialisons : surface, lots, loyers, rendement et prix. D’autres mandats partent sans annonce, à notre fichier d’acquéreurs.",
   alternates: { canonical: `${SITE.url}/immeubles-a-vendre/` },
+  openGraph: { type: "website", title: "Immeubles de rapport à vendre | France Immeuble", description: "Les immeubles de rapport que nous commercialisons : surface, lots, loyers, rendement et prix. D’autres mandats partent sans annonce, à notre fichier d’acquéreurs.", url: "/immeubles-a-vendre/", images: imagesPartage("/immeubles-a-vendre/") },
 };
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };

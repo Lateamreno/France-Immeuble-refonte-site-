@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { chiffres } from "@/lib/chiffres";
 import { Chiffre } from "@/components/Chiffre";
@@ -37,6 +38,7 @@ export const metadata: Metadata = {
   description:
     "Achetez un immeuble de rapport en off-market à Paris, en Île-de-France et en région : déposez votre recherche et recevez les dossiers complets avant leur diffusion.",
   alternates: { canonical: "/acheter-un-immeuble/" },
+  openGraph: { type: "website", title: "Acheter un immeuble de rapport | France Immeuble", description: "Achetez un immeuble de rapport en off-market à Paris, en Île-de-France et en région : déposez votre recherche et recevez les dossiers complets avant leur diffusion.", url: "/acheter-un-immeuble/", images: imagesPartage("/acheter-un-immeuble/") },
 };
 
 export default async function Acheter() {

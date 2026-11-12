@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
@@ -29,13 +30,13 @@ import { Picto, type NomPicto } from "@/components/Picto";
  * place et fera sa marge. On lui propose de le faire pour lui.
  */
 const DESCRIPTION =
-  "Vendre un immeuble à la découpe au prix du marché : copropriété, congés, préemptions, travaux et vente lot par lot. Chiffrage bloc et découpe offert.";
+  "Nous mettons votre immeuble en copropriété et le vendons lot par lot pour vous : à la découpe, il se vend bien plus cher qu’en bloc. Chiffrage offert.";
 
 export const metadata: Metadata = {
   title: "Vendre un immeuble à la découpe",
   description: DESCRIPTION,
   alternates: { canonical: "/vendre-un-immeuble-a-la-decoupe/" },
-  openGraph: {
+  openGraph: { images: imagesPartage("/vendre-un-immeuble-a-la-decoupe/"),
     type: "website",
     title: "Vendre un immeuble à la découpe | France Immeuble",
     description: DESCRIPTION,

@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HeroMedia } from "@/components/HeroMedia";
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
   title: { absolute: "Vendre un immeuble à Paris | France Immeuble" },
   description: DESCRIPTION,
   alternates: { canonical: `${SITE.url}/vendre-un-immeuble/paris/` },
-  openGraph: { type: "website", title: "Vendre un immeuble à Paris | France Immeuble", description: DESCRIPTION, url: "/vendre-un-immeuble/paris/" },
+  openGraph: { images: imagesPartage("/vendre-un-immeuble/paris/"), type: "website", title: "Vendre un immeuble à Paris | France Immeuble", description: DESCRIPTION, url: "/vendre-un-immeuble/paris/" },
 };
 
 const fmtPrix = (n: number) => `${n.toLocaleString("fr-FR")}\u00a0€/m²`;

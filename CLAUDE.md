@@ -449,6 +449,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   fil d'Ariane mis à jour. H1 « Vendre un immeuble à la découpe » (la phrase sur la marge du marchand
   ouvre le texte du hero), description ramenée à 149 caractères, balises Open Graph. Mêmes balises et
   descriptions de moins de 155 caractères sur la page Paris et le barème.
+- **Lot 105** (MAV, 12/11/2026). Description de la découpe : « Nous mettons votre immeuble en copropriété et
+  le vendons lot par lot pour vous : à la découpe, il se vend bien plus cher qu'en bloc. Chiffrage offert. »
+  **Images de partage** (« fais quelque chose de beau ») : 13 images 1 200 × 630 dans `public/og/` (photo du
+  site sous voile noir, filet or, logo, surtitre et titre de la page, « 1 500 acheteurs · 4,9/5 sur
+  Google »), branchées par `imagesPartage()` de `src/lib/partage.ts` (pages WordPress, pages neuves, blog ;
+  les articles gardent leur image) ; carte `summary_large_image` pour X. Les anciennes images WordPress de
+  l'accueil, Vendre, Estimer et Contact sont remplacées ; title et meta de l'accueil inchangés.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.

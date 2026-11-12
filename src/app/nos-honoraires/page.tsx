@@ -1,3 +1,4 @@
+import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
 import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   title: "Barème de nos honoraires",
   description: DESCRIPTION,
   alternates: { canonical: `${SITE.url}/nos-honoraires/` },
-  openGraph: { type: "website", title: "Barème de nos honoraires | France Immeuble", description: DESCRIPTION, url: "/nos-honoraires/" },
+  openGraph: { images: imagesPartage("/nos-honoraires/"), type: "website", title: "Barème de nos honoraires | France Immeuble", description: DESCRIPTION, url: "/nos-honoraires/" },
 };
 
 const TRANCHES = [
