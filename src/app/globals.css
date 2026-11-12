@@ -875,7 +875,8 @@ fieldset.field legend,.lot label{
    hero entre 40 et 64 px sur ordinateur, 2,5 à 4 fois le corps de texte (17 px
    ici), et deux à trois lignes au plus. Archivo en largeur 118 occupe environ
    18 % de plus qu'une police standard : on se place dans le bas de la plage. */
-.hero-media h1{
+.hero-media h1,
+.hero-media .hero-titre{
   font-size:clamp(2rem, 1.1rem + 2.4vw, 3.5rem);
   max-width:22ch;margin-bottom:var(--space-m);
 }
@@ -959,9 +960,18 @@ fieldset.field legend,.lot label{
   opacity:1;
 }
 .hero-media .eyebrow{color:var(--color-bronze-clair);}
+/* Surtitre balisé en h1 (page Découpe) : il garde la taille et la police du surtitre,
+   le grand titre visuel est un paragraphe `.hero-titre`. */
+.hero-media h1.eyebrow,
+html[class] .hero-media h1.eyebrow{
+  font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);
+  font-weight:500;letter-spacing:0.15em;line-height:1.65;max-width:none;margin-bottom:var(--space-s);
+}
+.hero-media .hero-titre{max-width:22ch;margin-bottom:var(--space-m);}
 /* Ombre très diffuse : elle ne se voit pas comme une ombre, elle décolle
    simplement les lettres du fond photographique. */
 .hero-media h1,
+.hero-media .hero-titre,
 .hero-media .lead,
 .hero-media .eyebrow,
 .hero-media .hero-proof__val,
@@ -2373,7 +2383,7 @@ fieldset.field legend,.lot label{
      ils ne coûtent rien à la lecture : la respiration autour du bloc, l'échelle
      du titre et l'écart avant les boutons. Les corps de texte ne bougent pas. */
   html.h-760 .hero-media > .container{padding-top:calc(var(--header-h) + var(--space-s));padding-bottom:calc(var(--space-m) + 24px);}
-  html.h-760 .hero-media h1{font-size:1.85rem;}
+  html.h-760 .hero-media :is(h1,.hero-titre){font-size:1.85rem;}
   html.h-760 .hero-media .lead{font-size:1rem;}
   html.h-760 .hero-media .btn-row,
   html.h-760 .hero-media .hero-proof{margin-top:var(--space-s);gap:var(--space-xs);}
