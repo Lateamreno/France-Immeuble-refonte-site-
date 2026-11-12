@@ -461,6 +461,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
+- **Découpe et images de partage en production le 12/11/2026** (« Go prod pour la découpe et les
+  images de partage », MAV) : adresse `/vendre-un-immeuble-a-la-decoupe/` (ancienne en 301), surtitre
+  « Vendre un immeuble à la découpe », H1 « La marge du marchand de biens, sans lui vendre votre
+  immeuble », description « Nous mettons votre immeuble en copropriété… », 13 images `public/og/`
+  (`imagesPartage`), carte `summary_large_image`. Les pages Paris (lots 99 à 103) restent sur la branche.
 
 ### Garde-fous non négociables
 
