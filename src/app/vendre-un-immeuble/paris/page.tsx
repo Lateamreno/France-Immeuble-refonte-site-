@@ -44,6 +44,8 @@ const moisAnnee = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("fr-FR", { month: "long", year: "numeric" }) : null;
 /** « 7 % sous » ou « 5 % au-dessus du » prix au m² des appartements. */
 const ecartTexte = (n: number) => `${Math.abs(Math.round(n))}\u00a0% ${n < 0 ? "sous le" : "au-dessus du"}`;
+/** Décote de prudence que nous retenons pour un immeuble entier face aux appartements (MAV, 12/11/2026). */
+const DECOTE_PRUDENCE = 0.15;
 const signe = (n: number) => `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(Math.round(n))}\u00a0%`;
 const mediane = (xs: number[]) => {
   const t = [...xs].sort((a, b) => a - b);
@@ -114,11 +116,14 @@ export default async function VendreUnImmeubleParis() {
     const prixImm = imm?.prixM2Median ?? null;
     const ecart = prixImm != null && m?.prixM2 ? ((prixImm - m.prixM2) / m.prixM2) * 100 : null;
     const rdtImm = prixImm != null && m?.loyerM2 ? (m.loyerM2 * 12 * 100) / prixImm : null;
-    return { n: i + 1, code, m, imm, prixImm, ecart, rdtImm };
+    // Colonne prudence : le prix des appartements moins notre décote, pour les 20 arrondissements.
+    const rdtPrudence = m?.prixM2 && m?.loyerM2 ? (m.loyerM2 * 12 * 100) / (m.prixM2 * (1 - DECOTE_PRUDENCE)) : null;
+    return { n: i + 1, code, m, imm, prixImm, ecart, rdtImm, rdtPrudence };
   });
   const avecPrix = lignes.filter((l) => l.m?.prixM2 != null);
   const ecartParis = mediane(lignes.flatMap((l) => (l.ecart != null ? [l.ecart] : [])));
   const rdtParis = mediane(lignes.flatMap((l) => (l.rdtImm != null ? [l.rdtImm] : [])));
+  const rdtPrudenceParis = mediane(lignes.flatMap((l) => (l.rdtPrudence != null ? [l.rdtPrudence] : [])));
   const totalImmeubles = lignes.reduce((s, l) => s + (l.imm?.nbVentes ?? 0), 0);
   const anneeImmeubles = lignes.find((l) => l.imm)?.imm?.annee ?? null;
   const finPrix = moisAnnee(avecPrix[0]?.m?.periodeFin ?? null);
@@ -242,12 +247,16 @@ export default async function VendreUnImmeubleParis() {
             <p className="lead">
               Le prix des appartements, celui des immeubles entiers réellement vendus
               {anneeImmeubles ? ` en ${anneeImmeubles}` : ""}, l’écart entre les deux et le rendement
-              qu’on en déduit.
+              qu’on en déduit, puis le rendement avec la décote de 15 % que nous retenons par prudence.
               {ecartParis != null
                 ? ` À Paris, un immeuble entier se vend en médiane ${ecartTexte(ecartParis)} prix au m² des appartements de son arrondissement.`
                 : ""}
             </p>
           </Reveal>
+          <p className="paris-arr__avert">
+            Chiffres DVF non vérifiés : nous ne connaissons ni l’état ni le niveau des loyers des immeubles
+            vendus. Ils donnent une tendance, pas le prix de votre immeuble.
+          </p>
           <div className="paris-arr paris-arr--immeubles">
             <table>
               <thead>
@@ -257,13 +266,15 @@ export default async function VendreUnImmeubleParis() {
                   <th scope="colgroup" colSpan={3} className="paris-arr__groupe">
                     Immeubles entiers vendus{anneeImmeubles ? ` en ${anneeImmeubles}` : ""}
                   </th>
+                  <th scope="colgroup" className="paris-arr__groupe paris-arr__prudence">Notre prudence</th>
                 </tr>
                 <tr>
                   <th scope="col">Prix au m²</th>
                   <th scope="col">Rendement brut</th>
                   <th scope="col">Prix au m²</th>
-                  <th scope="col">Écart</th>
+                  <th scope="col">Écart réel</th>
                   <th scope="col">Rendement brut</th>
+                  <th scope="col" className="paris-arr__prudence">Rendement à −15&nbsp;%</th>
                 </tr>
               </thead>
               <tbody>
@@ -286,8 +297,9 @@ export default async function VendreUnImmeubleParis() {
                         "n.c."
                       )}
                     </td>
-                    <td className="paris-arr__ecart" data-libelle="Écart">{l.ecart != null ? signe(l.ecart) : "–"}</td>
+                    <td className="paris-arr__ecart" data-libelle="Écart réel">{l.ecart != null ? signe(l.ecart) : "–"}</td>
                     <td className="paris-arr__rdt" data-libelle="Immeuble, rendement">{l.rdtImm != null ? `${pc(l.rdtImm)}\u00a0%` : "–"}</td>
+                    <td className="paris-arr__rdt paris-arr__prudence" data-libelle="Rendement à −15 %">{l.rdtPrudence != null ? `${pc(l.rdtPrudence)}\u00a0%` : "n.c."}</td>
                   </tr>
                 ))}
               </tbody>
@@ -296,8 +308,11 @@ export default async function VendreUnImmeubleParis() {
                   <tr>
                     <th scope="row">Paris, en médiane</th>
                     <td colSpan={3}></td>
-                    <td className="paris-arr__ecart" data-libelle="Écart">{signe(ecartParis)}</td>
+                    <td className="paris-arr__ecart" data-libelle="Écart réel">{signe(ecartParis)}</td>
                     <td className="paris-arr__rdt" data-libelle="Immeuble, rendement">{`${pc(rdtParis)}\u00a0%`}</td>
+                    <td className="paris-arr__rdt paris-arr__prudence" data-libelle="Rendement à −15 %">
+                      {rdtPrudenceParis != null ? `${pc(rdtPrudenceParis)}\u00a0%` : "n.c."}
+                    </td>
                   </tr>
                 </tfoot>
               )}
@@ -305,19 +320,20 @@ export default async function VendreUnImmeubleParis() {
           </div>
           <div className="paris-arr__notes">
             <p>
-              <strong>Comment lire ce tableau.</strong> L’écart compare le prix au m² des immeubles entiers
-              vendus à celui des appartements du même arrondissement. Le rendement brut d’un immeuble est le
-              loyer de marché des appartements du secteur rapporté au prix au m² des immeubles : c’est ce
-              que rapporterait un immeuble acheté à ce prix et loué au prix du marché. Les loyers réels d’un
-              immeuble ancien sont souvent plus bas, c’est tout l’objet de l’estimation.
+              <strong>Comment lire ce tableau.</strong> L’écart réel compare le prix au m² des immeubles
+              entiers vendus à celui des appartements du même arrondissement. Le rendement brut d’un immeuble
+              est le loyer de marché des appartements du secteur rapporté au prix au m² des immeubles : c’est
+              ce que rapporterait un immeuble acheté à ce prix et loué au prix du marché. Par prudence, nous
+              retenons une décote de 15 % sur le prix des appartements : c’est la dernière colonne. Les loyers
+              réels d’un immeuble ancien sont souvent plus bas, c’est tout l’objet de l’estimation.
             </p>
             <p>
               Sources : prix des appartements, médiane des ventes d’appartements anciens sur douze mois
               {finPrix ? ` à fin ${finPrix}` : ""} (DVF, base des notaires et de la DGFiP) ; loyers, carte des
               loyers de l’ANIL{millesime ? ` ${millesime}` : ""}, charges comprises (rendement des appartements
               des grands logements aux petits) ; immeubles entiers, ventes de plus de cinq logements en un seul
-              acte et pour un seul prix, repérées dans DVF, prix médian donné à partir de trois ventes, commerces
-              compris dans la surface. Ces chiffres se mettent à jour seuls.
+              acte et pour un seul prix, avec au moins 65 % de logements parmi les lots, repérées dans DVF, prix
+              médian donné à partir de trois ventes, commerces compris dans la surface. Ces chiffres se mettent à jour seuls.
             </p>
           </div>
           <Relance />

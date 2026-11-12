@@ -436,6 +436,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   découpe, avis, FAQ, formulaire ; un bouton d'estimation en fin de chaque section (`Relance`,
   `.porte-action`). Retirés : textes de fond, « Ce qui pèse sur le prix », types d'architecture ; une
   question « diagnostics » rejoint la FAQ.
+- **Lot 103** (MAV, 10 et 12/11/2026). Ventes d'immeubles DVF : **au moins 65 % de logements en nombre
+  de lots** (caves et parkings exclus, `PART_HABITATION_MIN`), table recalculée. Tableau Paris : mention
+  « chiffres DVF non vérifiés : ni l'état ni le niveau des loyers », **écart réel** et colonne **« Notre
+  prudence »** (rendement avec 15 % de décote sur le prix des appartements, `DECOTE_PRUDENCE`), médiane
+  Paris des trois. Marchands de biens : intéressés par les immeubles mal loués ou à gros travaux ; loués au
+  marché, c'est en général un investisseur qui fait la meilleure offre (MAV). Recherches visant Paris : à
+  demander au BO, affichage à proposer à MAV avant.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
