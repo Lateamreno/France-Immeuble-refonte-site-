@@ -443,6 +443,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Paris des trois. Marchands de biens : intéressés par les immeubles mal loués ou à gros travaux ; loués au
   marché, c'est en général un investisseur qui fait la meilleure offre (MAV). Recherches visant Paris : à
   demander au BO, affichage à proposer à MAV avant.
+- **Lot 104** (MAV, 12/11/2026 : « l'URL pour vendre à la découpe il est nul, le mieux c'est vendre un
+  immeuble à la découpe »). Page déplacée à **`/vendre-un-immeuble-a-la-decoupe/`**, l'ancienne adresse
+  redirigée en 301 (`next.config.mjs`), liens du menu, du pied de page, des articles, du sitemap et du
+  fil d'Ariane mis à jour. H1 « Vendre un immeuble à la découpe » (la phrase sur la marge du marchand
+  ouvre le texte du hero), description ramenée à 149 caractères, balises Open Graph. Mêmes balises et
+  descriptions de moins de 155 caractères sur la page Paris et le barème.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
@@ -742,7 +748,7 @@ Vendre ▾                    /vendre-un-immeuble/
     Vendre à Paris          /vendre-un-immeuble/paris/
     Vendre à Neuilly        /vendre-un-immeuble/neuilly-sur-seine/
     Vendre à Boulogne       /vendre-un-immeuble/boulogne-billancourt/
-    Vendre à la découpe     /vendre-a-la-decoupe/
+    Vendre à la découpe     /vendre-un-immeuble-a-la-decoupe/  (ex /vendre-a-la-decoupe/, 301)
 Estimer ▾                   /estimer-un-immeuble/
 Acheter ▾                   /acheter-un-immeuble/
     Déposer ma recherche    /acheter-un-immeuble/deposer-ma-recherche/

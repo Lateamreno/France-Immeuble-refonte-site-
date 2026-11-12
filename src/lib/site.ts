@@ -78,7 +78,7 @@ export const NAV: readonly LienNav[] = [
     lien: true,
     enfants: [
       { href: "/vendre-un-immeuble/", label: "Vendre en bloc" },
-      { href: "/vendre-a-la-decoupe/", label: "Vendre à la découpe", badge: "nouveau" },
+      { href: "/vendre-un-immeuble-a-la-decoupe/", label: "Vendre à la découpe", badge: "nouveau" },
     ],
   },
   { href: "/estimer-un-immeuble/", label: "Estimer" },

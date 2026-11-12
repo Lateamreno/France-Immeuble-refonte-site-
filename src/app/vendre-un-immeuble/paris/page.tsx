@@ -30,11 +30,14 @@ import { SITE, nombre } from "@/lib/site";
  * l'écart avec les appartements et le rendement qu'on en déduit. La page des annonces Google est
  * /estimation-immeuble-paris/, hors index : les deux ne se concurrencent pas.
  */
+const DESCRIPTION =
+  "Vendre un immeuble de rapport à Paris : estimation au rendement, vente off-market à 1 500 acheteurs, prix et rendements des 20 arrondissements.";
+
 export const metadata: Metadata = {
   title: { absolute: "Vendre un immeuble à Paris | France Immeuble" },
-  description:
-    "Vendre un immeuble de rapport à Paris avec une agence spécialisée : estimation au rendement, vente off-market à 1 500 acheteurs, prix et rendements des 20 arrondissements. Estimation gratuite.",
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE.url}/vendre-un-immeuble/paris/` },
+  openGraph: { type: "website", title: "Vendre un immeuble à Paris | France Immeuble", description: DESCRIPTION, url: "/vendre-un-immeuble/paris/" },
 };
 
 const fmtPrix = (n: number) => `${n.toLocaleString("fr-FR")}\u00a0€/m²`;
@@ -463,7 +466,7 @@ export default async function VendreUnImmeubleParis() {
           </ul>
           <div className="btn-row porte-action paris-relance">
             <Button href="#estimer">Estimer mon immeuble</Button>
-            <Button href="/vendre-a-la-decoupe/" variant="outline">La vente à la découpe</Button>
+            <Button href="/vendre-un-immeuble-a-la-decoupe/" variant="outline">La vente à la découpe</Button>
           </div>
         </div>
       </section>
