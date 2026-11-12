@@ -394,6 +394,70 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   immeubles sans qualité architecturale particulière, qui ne se vendraient sans doute plus à ces prix.
   Vérification du vote de l'encadrement des loyers programmée le 21/11/2026. **Lot 98 en production le
   10/11/2026** (« Go prod », MAV).
+- **Lot 99** (MAV, 10/11/2026). **Paris.** Page des annonces Google `/estimation-immeuble-paris/` :
+  formulaire d'estimation dans le premier écran (à droite sur ordinateur, sous le titre au téléphone),
+  trois preuves et la note Google, nos ventes à Paris, avis, FAQ ; **hors index et hors sitemap**,
+  absente des menus. L'événement GTM `form_submit_estimation` porte la page d'origine (`page`).
+  Page pour Google `/vendre-un-immeuble/paris/` : repères (3 à 6 %, prix au m² du 19e au 6e, acheteurs),
+  tableau des 20 arrondissements (prix des notaires du Grand Paris au 2e trimestre 2026, bâti, points
+  à savoir), six types d'immeubles, nos ventes parisiennes, 15 questions de propriétaires avec données
+  FAQPage, formulaire. Contenu relu dans `content/paris.json` (sources gardées), lu par `src/lib/paris.ts` ;
+  la page renvoie une 404 tant que ce fichier est vide.
+- **Lot 100** (retours de MAV, 10/11/2026). Page Paris pour Google : plus de cartes de ventes (« ils font
+  un peu pitié », une boutique parmi elles) ; tableau des 20 arrondissements en toutes lettres (« 11e
+  arrondissement »), sans évolution ni bâti : **prix au m² des appartements** (médiane DVF 12 mois) et
+  **rendement brut des appartements en fourchette** (loyers ANIL des 3 pièces et plus, puis des 1-2 pièces,
+  rapportés au prix), lus chez Plein Bail (`marchesDesCommunes` de `src/lib/marche.ts`), à jour seuls ;
+  **ventes d'immeubles entiers** repérées dans DVF (plus de 5 logements, un acte, un prix ; parts et
+  démembrements écartés ; prix médian au m² dès 3 ventes) : `src/lib/dvf-immeubles.ts`, table publique
+  `marche_immeubles` (migration 0019, RLS lecture seule), recalcul mensuel `/api/marche/immeubles/`
+  (vercel.json), lecture `src/lib/immeubles-dvf-lecture.ts`. Note : chiffres d'appartements, **prévoir
+  environ 15 % de décote** pour un immeuble entier. Sections « Ce qui pèse sur le prix » (loi de 1948,
+  locataires protégés, loyers sous-évalués, DPE, petites surfaces) et « À Paris, la découpe vaut souvent
+  le coup ». Page des annonces : plus de cartes de ventes ; repères (3 à 6 %, immeubles vendus à Paris,
+  délai médian), quatre étapes de la vente, encadré bloc ou découpe.
+- **Lot 101** (MAV, 10/11/2026 : « ça manque peut-être un peu de texte », « laisse les photos des immeubles,
+  jarte le local commercial »). Page Paris : « Nos dernières ventes à Paris » avec photos (immeubles de plus
+  d'un lot seulement) ; trois textes de fond sourcés dans `content/paris.json` (`blocs` : marché depuis la
+  hausse des taux, étapes et obligations, fiscalité) ; **immeubles étudiés par zone** déposés par le BO dans
+  `chiffres` (`immeubles_traites_75`, `immeubles_traites_<code INSEE>`, lus dans `chiffres().traitesPar`),
+  affichés seulement s'ils existent (`docs/PROMPT-BO-IMMEUBLES-ETUDIES.md`). Encadrement des loyers à revoir
+  dans cette page aussi après le vote du 18/11/2026.
+  Même jour : **le menu déroulant de l'ordinateur reprend son panneau à fond sombre** (MAV : « quand on
+  est sur fond clair on voit rien ») ; la version « F » sans fond du lot 95 est retirée.
+- **Lot 102** (MAV, 10/11/2026 : « trop descriptif, je veux qu'on se vende et qu'on dise pourquoi France
+  Immeuble c'est bien. Comment on estime, comment on vend et à qui. Il faut des boutons réguliers. Pour
+  l'instant seule la page des prix est vraiment superbe »). Page Paris refaite : preuves (acheteurs,
+  immeubles étudiés, 4,9/5), tableau des 20 arrondissements enrichi des **immeubles entiers** (prix au m²
+  médian DVF, **écart en % avec les appartements**, **rendement brut déduit** = loyer ANIL des appartements
+  × 12 ÷ prix au m² des immeubles, ligne « Paris, en médiane »), « Comment nous estimons » (rendement,
+  baux un par un, état et DPE, bloc et découpe), « Comment nous vendons » (off-market, envoi ciblé, offres
+  vérifiées, jusqu'à l'acte), « À qui nous vendons » (recherches du BO par profil), dernières ventes,
+  découpe, avis, FAQ, formulaire ; un bouton d'estimation en fin de chaque section (`Relance`,
+  `.porte-action`). Retirés : textes de fond, « Ce qui pèse sur le prix », types d'architecture ; une
+  question « diagnostics » rejoint la FAQ.
+- **Lot 103** (MAV, 10 et 12/11/2026). Ventes d'immeubles DVF : **au moins 65 % de logements en nombre
+  de lots** (caves et parkings exclus, `PART_HABITATION_MIN`), table recalculée. Tableau Paris : mention
+  « chiffres DVF non vérifiés : ni l'état ni le niveau des loyers », **écart réel** et colonne **« Notre
+  prudence »** (rendement avec 15 % de décote sur le prix des appartements, `DECOTE_PRUDENCE`), médiane
+  Paris des trois. Marchands de biens : intéressés par les immeubles mal loués ou à gros travaux ; loués au
+  marché, c'est en général un investisseur qui fait la meilleure offre (MAV). Recherches visant Paris : à
+  demander au BO, affichage à proposer à MAV avant.
+- **Lot 104** (MAV, 12/11/2026 : « l'URL pour vendre à la découpe il est nul, le mieux c'est vendre un
+  immeuble à la découpe »). Page déplacée à **`/vendre-un-immeuble-a-la-decoupe/`**, l'ancienne adresse
+  redirigée en 301 (`next.config.mjs`), liens du menu, du pied de page, des articles, du sitemap et du
+  fil d'Ariane mis à jour. H1 « Vendre un immeuble à la découpe » (la phrase sur la marge du marchand
+  ouvre le texte du hero), description ramenée à 149 caractères, balises Open Graph. Mêmes balises et
+  descriptions de moins de 155 caractères sur la page Paris et le barème.
+- **Lot 105** (MAV, 12/11/2026). Description de la découpe : « Nous mettons votre immeuble en copropriété et
+  le vendons lot par lot pour vous : à la découpe, il se vend bien plus cher qu'en bloc. Chiffrage offert. »
+  **Images de partage** (« fais quelque chose de beau ») : 13 images 1 200 × 630 dans `public/og/` (photo du
+  site sous voile noir, filet or, logo, surtitre et titre de la page, « 1 500 acheteurs · 4,9/5 sur
+  Google »), branchées par `imagesPartage()` de `src/lib/partage.ts` (pages WordPress, pages neuves, blog ;
+  les articles gardent leur image) ; carte `summary_large_image` pour X. Les anciennes images WordPress de
+  l'accueil, Vendre, Estimer et Contact sont remplacées ; title et meta de l'accueil inchangés.
+  Même jour (MAV : « je trouvais le H1 plus percutant ») : la découpe garde son H1 « La marge du marchand
+  de biens, sans lui vendre votre immeuble » ; « Vendre un immeuble à la découpe » passe dans le surtitre.
 - **Menu déroulant** (MAV, 10/11/2026 : « quand on est sur fond clair on voit rien ») : sur ordinateur,
   les sous-menus reprennent leur panneau à fond sombre ; la version « F » sans fond du lot 95 est
   retirée. **En production le 10/11/2026** (« Met en prod le menu déroulant », MAV), seul.
@@ -716,7 +780,7 @@ Vendre ▾                    /vendre-un-immeuble/
     Vendre à Paris          /vendre-un-immeuble/paris/
     Vendre à Neuilly        /vendre-un-immeuble/neuilly-sur-seine/
     Vendre à Boulogne       /vendre-un-immeuble/boulogne-billancourt/
-    Vendre à la découpe     /vendre-a-la-decoupe/
+    Vendre à la découpe     /vendre-un-immeuble-a-la-decoupe/  (ex /vendre-a-la-decoupe/, 301)
 Estimer ▾                   /estimer-un-immeuble/
 Acheter ▾                   /acheter-un-immeuble/
     Déposer ma recherche    /acheter-un-immeuble/deposer-ma-recherche/
