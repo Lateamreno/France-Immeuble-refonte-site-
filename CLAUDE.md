@@ -405,7 +405,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Lot 106** (MAV, 12/11/2026 : « passer le surtitre en H1 en gardant sa taille… si et seulement si ça
   nous aide en référencement »). Découpe : le surtitre « Vendre un immeuble à la découpe » est le H1
   (`<Eyebrow as="h1">`, même taille et même police), « La marge du marchand de biens… » reste le grand
-  titre visuel en paragraphe (`.hero-titre`). Rendu identique au pixel. Audit des autres pages à valider
+  titre visuel en paragraphe (`.hero-titre`). Rendu identique au pixel. **En production le 12/11/2026**
+  (« Go prod », MAV). Audit des autres pages à valider
   par MAV avant toute modification.
 
 ### Garde-fous non négociables
