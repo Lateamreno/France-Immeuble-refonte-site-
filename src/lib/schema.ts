@@ -61,7 +61,7 @@ export function filAriane(items: { nom: string; url: string }[]) {
   };
 }
 
-export function service(nom: string, description: string, url: string) {
+export function service(nom: string, description: string, url: string, ville?: string) {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -69,6 +69,6 @@ export function service(nom: string, description: string, url: string) {
     description,
     url: `${SITE.url}${url}`,
     provider: { "@id": `${SITE.url}/#organisation` },
-    areaServed: { "@type": "Country", name: "France" },
+    areaServed: ville ? { "@type": "City", name: ville } : { "@type": "Country", name: "France" },
   };
 }

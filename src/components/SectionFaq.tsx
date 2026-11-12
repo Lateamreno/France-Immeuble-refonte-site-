@@ -12,20 +12,29 @@ import { Reveal } from "./Reveal";
 export type QR = { question: string; texte: string; reponse?: ReactNode };
 
 /** Espace insécable devant « ? : ; ! % » : pas de point d'interrogation seul en début de ligne. */
-const insecable = (t: string) => t.replace(/ ([?:;!%])/g, "\u00a0$1");
+export const insecable = (t: string) => t.replace(/ ([?:;!%])/g, "\u00a0$1");
 
 export function SectionFaq({
   items,
+  groupes,
   titre,
   surtitre = "Questions fréquentes",
   className = "section--noir-2",
+  children,
 }: {
   items: QR[];
+  /** Les mêmes questions rangées sous des titres (page Paris, lot 108) : un H3 par groupe. */
+  groupes?: { titre: string; items: QR[] }[];
   titre: ReactNode;
   surtitre?: string;
   className?: string;
+  /** Sous la liste : un bouton, par exemple. */
+  children?: ReactNode;
 }) {
   if (!items.length) return null;
+  const liste = (qs: QR[]) => (
+    <Faq items={qs.map((q) => ({ question: insecable(q.question), reponse: q.reponse ?? <p>{insecable(q.texte)}</p> }))} />
+  );
   return (
     <section className={`section ${className} faq-sec`}>
       <JsonLd
@@ -44,8 +53,16 @@ export function SectionFaq({
           <Eyebrow>{surtitre}</Eyebrow>
           <h2>{titre}</h2>
         </Reveal>
-        <Reveal>
-          <Faq items={items.map((q) => ({ question: insecable(q.question), reponse: q.reponse ?? <p>{insecable(q.texte)}</p> }))} />
+        <Reveal className="faq-corps">
+          {groupes
+            ? groupes.map((g) => (
+                <div key={g.titre} className="faq-groupe">
+                  <h3>{g.titre}</h3>
+                  {liste(g.items)}
+                </div>
+              ))
+            : liste(items)}
+          {children}
         </Reveal>
       </div>
     </section>

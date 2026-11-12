@@ -484,6 +484,22 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   souvent sans condition de financement, **aucun délai affiché**, l'après-offre comme partie la plus
   difficile. **DVF : les ventes une par une ne doivent pas être indexées par les moteurs** (conditions
   de réutilisation) : une base publique d'immeubles vendus passe par des agrégats, le détail en compte.
+- **Lot 108** (MAV, 12/11/2026 : « Le tableau c'est trop, gardons un seul ou une façon d'afficher mieux.
+  Repense le texte et la page Paris […] pour maximiser SEO et conversion […]. Quand ils lisent ils doivent
+  se dire France Immeuble c'est vraiment la boîte avec qui travailler »). Page Paris refaite dans l'ordre des
+  questions d'un propriétaire : preuves, estimation, prix par arrondissement, vente 100 % off-market, après
+  l'offre, honoraires et mandat, bloc ou découpe, nos ventes, avis, formulaire, FAQ. **Un seul tableau de
+  quatre colonnes** : prix médian au m² des immeubles vendus en bloc (DVF), du moins cher au plus cher,
+  rendement théorique ; les appartements, l'écart, le nombre de ventes par arrondissement et la ligne
+  « Paris » en sortent ; une ancre par ligne (`#arr-11`). H1 porté par le surtitre du hero (« Vente et
+  estimation d'immeuble de rapport à Paris »), grand titre « Un immeuble parisien ne se vend pas comme un
+  appartement », title « Estimation gratuite et vente d'immeuble en bloc à Paris ». « Après l'offre commence
+  le plus difficile » : préemption de la Ville, droits des locataires, baux et diagnostics, et ce que le
+  vendeur suit dans son espace client. Citations d'avis Google au mot près (`Citation`). FAQ de 30 questions
+  en cinq groupes titrés (`groupe`, `lien` et chiffres vivants entre accolades dans `content/paris.json` ;
+  `groupes` de `SectionFaq`), le formulaire avant la FAQ, bouton d'envoi « Estimer mon immeuble »
+  (`libelleEnvoi`), cartes de ventes sans délai (`sansDelai`), repli d'`immeubles_traites` à 1 170.
+  Conçue par trois plans et trois maquettes jugés, puis relue sous six angles.
 
 ### Garde-fous non négociables
 

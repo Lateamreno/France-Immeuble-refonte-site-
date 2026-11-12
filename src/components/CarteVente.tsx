@@ -46,12 +46,12 @@ export const delaiOffre = (j: number) =>
  * L'écart à l'estimation et le délai avant l'offre suivent sur une ligne quand
  * le BO les a déposés, et sur la fiche dans tous les cas.
  */
-export function CarteVente({ v }: { v: Vente }) {
+export function CarteVente({ v, sansDelai = false }: { v: Vente; /** Page Paris : aucun délai affiché (MAV, 12/11/2026). */ sansDelai?: boolean }) {
   const surface = surfaceVente(v);
   const delai = delaiPublie(v);
   const ecart = ecartPublie(v);
   const suite = [
-    delai != null ? `Offre en ${delaiOffre(delai)}` : null,
+    delai != null && !sansDelai ? `Offre en ${delaiOffre(delai)}` : null,
     AFFICHER_ECART_ESTIMATION && ecart != null
       ? `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
       : null,

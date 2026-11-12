@@ -30,8 +30,9 @@ export type Chiffres = {
 /** Dernières valeurs publiées sur le site, avant le premier dépôt du BO. */
 const REPLI: Chiffres = {
   investisseurs: PREUVES.investisseurs,
-  // Le chiffre que le site affichait jusqu'ici, en attendant le dépôt du BO.
-  immeublesTraites: 365,
+  // 1 170 immeubles traités depuis 2018, validé par MAV le 31/10/2026 (§10). L'ancien repli, 365,
+  // était le « 365 immeubles vendus » de l'ancien site : à ne plus afficher si le BO ne répond pas.
+  immeublesTraites: 1170,
   recherchesPatrimonial: 365,
   recherchesInvestisseur: 1372,
   recherchesMarchand: 359,

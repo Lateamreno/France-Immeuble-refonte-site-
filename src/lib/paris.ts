@@ -15,7 +15,18 @@ export type Arrondissement = {
   attention: string | null;
 };
 export type Architecture = { type: string; periode: string; reperes: string; pourLesAcheteurs: string; travaux: string };
-export type QuestionParis = { question: string; reponse: string; sources: string[] };
+/**
+ * `groupe` : le titre sous lequel la question se range (lot 108). `lien` : le passage de la réponse
+ * qui porte un lien vers une page du site. Les accolades ({annee}, {acheteurs}…) sont des chiffres
+ * vivants, remplis par la page ; une question dont un chiffre manque ne s'affiche pas.
+ */
+export type QuestionParis = {
+  groupe: string;
+  question: string;
+  reponse: string;
+  sources: string[];
+  lien?: { texte: string; href: string };
+};
 
 export const PARIS = contenu as {
   arrondissements: Arrondissement[];

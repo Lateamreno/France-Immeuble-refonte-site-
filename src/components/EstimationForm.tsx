@@ -72,8 +72,11 @@ export function EstimationForm({
   dansLeCompte = false,
   initial,
   refContact,
+  libelleEnvoi,
 }: {
   formulaire: "vendre" | "estimer";
+  /** Libellé du bouton d'envoi quand la page en veut un autre (page Paris : « Estimer mon immeuble »). */
+  libelleEnvoi?: string;
   /** Depuis /mon-compte/ : la proposition de créer un compte n'a plus lieu d'être. */
   dansLeCompte?: boolean;
   /** Suite d'un message de contact (retour #120) : coordonnées et message déjà saisis. */
@@ -320,7 +323,7 @@ export function EstimationForm({
 
           <div className="field-nav">
             <button type="submit" className="btn btn--primary" disabled={envoi}>
-              {envoi ? "Envoi…" : formulaire === "vendre" ? "Vendre mon immeuble" : "Estimer mon immeuble"}
+              {envoi ? "Envoi…" : libelleEnvoi ?? (formulaire === "vendre" ? "Vendre mon immeuble" : "Estimer mon immeuble")}
             </button>
           </div>
         </form>

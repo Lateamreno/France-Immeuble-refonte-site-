@@ -211,6 +211,181 @@
   ],
   "questions": [
     {
+      "groupe": "Estimation et prix d’un immeuble à Paris",
+      "question": "Comment estime-t-on un immeuble de rapport à Paris ?",
+      "reponse": "Le prix au m² des appartements du quartier ne suffit pas : il ne dit rien des baux, des travaux ni des commerces de l’immeuble. Nous regardons d’abord le marché : les ventes d’immeubles de l’arrondissement et les rendements pratiqués. Nous étudions ensuite l’immeuble lui-même. Chaque bail est lu : loi de 1948, locataires protégés, loyers sous le marché, encadrement des loyers, baux commerciaux. Les travaux sont chiffrés : structure, toiture, façades, normes, logements classés F ou G. Nous définissons enfin l’acquéreur qui en donnera le meilleur prix, et nous chiffrons la vente en bloc comme la vente à la découpe. Pour la méthode générale, lisez notre article « Comment estimer un immeuble de rapport ».",
+      "sources": [
+        "Page Paris, section Estimation (retours #307 et #308 de MAV, 12/11/2026)"
+      ],
+      "lien": {
+        "texte": "Comment estimer un immeuble de rapport",
+        "href": "/comment-estimer-un-immeuble-de-rapport/"
+      }
+    },
+    {
+      "groupe": "Estimation et prix d’un immeuble à Paris",
+      "question": "L’estimation d’un immeuble à Paris est-elle gratuite ?",
+      "reponse": "Oui. Elle est gratuite, confidentielle et sans engagement de vente. Elle comprend le chiffrage de la vente en bloc et de la vente à la découpe.",
+      "sources": [
+        "Pages Vendre et Estimer du site"
+      ]
+    },
+    {
+      "groupe": "Estimation et prix d’un immeuble à Paris",
+      "question": "Quel est le prix au m² d’un immeuble de rapport à Paris ?",
+      "reponse": "Il change d’un arrondissement à l’autre, et plus encore d’un immeuble à l’autre, selon ses baux, son état et ses loyers. Le tableau de cette page donne, par arrondissement, le prix médian au m² des immeubles vendus en bloc en {annee}, à partir de {ventesImmeubles} ventes relevées dans DVF, la base publique des ventes immobilières. Entre un immeuble vendu en bloc et le prix des appartements, la décote est en général d’environ 15 %. Elle varie selon l’arrondissement, le type d’immeuble et les loyers réellement pratiqués. Ces chiffres DVF ne sont pas vérifiés : nous ne connaissons ni l’état ni le niveau des loyers des immeubles vendus.",
+      "sources": [
+        "DVF, calcul de src/lib/dvf-immeubles.ts (table marche_immeubles)",
+        "Décote d’environ 15 % : MAV, 10 et 12/11/2026"
+      ]
+    },
+    {
+      "groupe": "Estimation et prix d’un immeuble à Paris",
+      "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
+      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Le rendement ne fait pas le prix à lui seul : l’état du bâti, les baux en place et le profil de l’acquéreur comptent aussi.",
+      "sources": [
+        "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf"
+      ]
+    },
+    {
+      "groupe": "Estimation et prix d’un immeuble à Paris",
+      "question": "Quels documents préparer pour faire estimer un immeuble ?",
+      "reponse": "L’état locatif, les baux, le dernier avis de taxe foncière, les diagnostics, des photos de l’immeuble et les plans si vous les avez. Le formulaire vous guide. Vous pouvez ensuite déposer vos pièces en ligne et remplir l’état locatif lot par lot dans votre espace client : tout est transmis à votre agent au fur et à mesure.",
+      "sources": [
+        "Écran de fin du formulaire d’estimation (ELEMENTS_ATTENDUS) et espace client"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Pourquoi passer par une agence spécialisée pour vendre un immeuble à Paris ?",
+      "reponse": "Parce qu’un immeuble de rapport ne se vend pas comme un appartement. Son prix dépend de ses baux, de ses travaux et du type d’acquéreur visé. Un investisseur achète sur un état locatif : une annonce avec des photos et une surface ne lui suffit pas. France Immeuble ne vend que des immeubles de rapport, depuis 2018. Nos agents ont étudié {immeublesEtudies} immeubles, et notre base compte {acheteurs} acheteurs d’immeubles. Nous restons à vos côtés après l’offre, de la préemption de la Ville aux questions du notaire.",
+      "sources": [
+        "Chiffres déposés par le back-office (table chiffres)",
+        "Page Paris, sections Vendre et Après l’offre"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Qu’est-ce qu’une vente off-market, et pourquoi vendre ainsi un immeuble à Paris ?",
+      "reponse": "Un immeuble off-market est un immeuble à vendre qui n’est pas diffusé en annonce. Il est proposé directement aux acquéreurs dont la recherche correspond. L’immeuble ne s’use pas en vitrine : un immeuble resté longtemps en ligne perd de sa valeur perçue et se négocie plus bas. À Paris, votre immeuble est commercialisé 100 % en off-market, pour préserver sa valeur et son exclusivité.",
+      "sources": [
+        "Page Off-market du site",
+        "Retour #311 de MAV (12/11/2026) : 100 % off-market"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Mes locataires et mes voisins sauront-ils que mon immeuble est à vendre ?",
+      "reponse": "Pas par une annonce. Votre immeuble est présenté aux acheteurs de notre base dont la recherche correspond. Vous pouvez en revanche parler de la vente à vos locataires sans crainte : elle ne met pas fin aux baux, et ils restent chez eux, aux mêmes conditions, avec le nouveau propriétaire.",
+      "sources": [
+        "FAQ de la page Vendre (src/lib/faq.tsx)"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "À qui vendre un immeuble à Paris : investisseur ou marchand de biens ?",
+      "reponse": "Cela dépend de l’immeuble. Sur un immeuble loué au prix du marché, c’est en général un investisseur qui fait la meilleure offre. Les marchands de biens sont compétitifs sur les immeubles mal loués ou à gros travaux. Nous cherchons dans notre base l’acheteur qui fera la meilleure offre pour votre immeuble. Pour aller plus loin, lisez notre guide « Comment vendre un immeuble à Paris ».",
+      "sources": [
+        "MAV, 12/11/2026 (lot 103)"
+      ],
+      "lien": {
+        "texte": "Comment vendre un immeuble à Paris",
+        "href": "/comment-vendre-un-immeuble-a-paris/"
+      }
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Combien coûte la vente d’un immeuble à Paris avec France Immeuble ?",
+      "reponse": "Nos honoraires vont de 3 à 5 % du prix selon la taille de l’immeuble : 5 % jusqu’à 5 M€, 4 % de 5 à 10 M€, 3 % au-delà. Ils ne sont dus qu’à la signature de l’acte définitif chez le notaire : tant que la vente n’est pas signée, vous ne payez rien. L’estimation est gratuite. Le détail est dans notre barème des honoraires.",
+      "sources": [
+        "Barème /nos-honoraires/ et FAQ de la page Vendre"
+      ],
+      "lien": {
+        "texte": "notre barème des honoraires",
+        "href": "/nos-honoraires/"
+      }
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Faut-il signer un mandat exclusif pour vendre un immeuble ?",
+      "reponse": "Pas forcément. Mais pour garder le caractère off-market de la vente, nous préférons que l’immeuble ne soit pas diffusé sur les sites d’annonces. Nous travaillons donc souvent en semi-exclusivité, c’est-à-dire avec une exclusivité temporaire.",
+      "sources": [
+        "FAQ de la page Vendre (src/lib/faq.tsx)"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Combien de temps faut-il pour vendre un immeuble à Paris ?",
+      "reponse": "Le délai dépend surtout du prix demandé, de la qualité du dossier et des droits de préemption. Un dossier complet dès le départ (titres de propriété, baux et état locatif, DPE et audit énergétique, diagnostics, avis de taxe foncière, derniers travaux) évite des semaines de questions. Une fois la promesse signée, la Ville de Paris dispose de deux mois pour exercer son droit de préemption, pendant que le notaire prépare l’acte. Si l’acheteur ne proroge pas les baux pendant six ans, les offres faites aux locataires restent valables quatre mois. De notre côté, l’immeuble est présenté 100 % en off-market, directement aux acheteurs de notre base dont la recherche correspond.",
+      "sources": [
+        "https://www.paris.fr/pages/mutation-immobiliere-3548",
+        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
+      ]
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Vaut-il mieux vendre un immeuble en bloc ou à la découpe ?",
+      "reponse": "En bloc, l’immeuble part en une fois à un seul acquéreur. À la découpe, il est mis en copropriété et les logements sont vendus un par un, souvent plus cher, mais avec plus de temps et des frais de mise en copropriété. Nous chiffrons les deux avant de vous conseiller. Quand la découpe ne crée pas de valeur, nous vous le disons et nous vendons en bloc. Voir la vente à la découpe.",
+      "sources": [
+        "FAQ de la page Vendre et page Découpe"
+      ],
+      "lien": {
+        "texte": "la vente à la découpe",
+        "href": "/vendre-un-immeuble-a-la-decoupe/"
+      }
+    },
+    {
+      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
+      "question": "Quelles sont les règles pour vendre un immeuble à la découpe à Paris ?",
+      "reponse": "Vendre à la découpe, c’est mettre l’immeuble en copropriété puis vendre les logements un par un. À la première vente d’un logement occupé après cette division, le locataire bénéficie d’un droit de préemption (article 10 de la loi du 31 décembre 1975) : l’offre lui est faite en priorité, au prix proposé. Quand un bailleur met en vente plusieurs logements d’un même immeuble, l’accord collectif du 16 mars 2005, rendu obligatoire par décret en 2006, peut imposer en plus une information préalable des locataires et protège les plus fragiles. La découpe peut rapporter davantage qu’une vente en bloc, mais elle demande plus de temps, des frais de mise en copropriété et une organisation lot par lot.",
+      "sources": [
+        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/analyses-juridiques/analyses-juridiques-2006/la-protection-des-locataires-en-cas-de-vente-par-lots-de-plus-de-dix-logements-appartenant-a-un-meme-bailleur-/-accords-collectifs/",
+        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/jurisprudence/jurisprudence-2014/vente-a-la-decoupe-droit-de-preemption-du-locataire/"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
+      "question": "Faut-il vider l’immeuble avant de le vendre ?",
+      "reponse": "En règle générale, non. Un investisseur achète un immeuble occupé pour ses loyers : les baux en place sont le revenu qu’il achète. Donner congé est d’ailleurs encadré : un bail d’habitation vide ne prend fin qu’à son échéance, avec six mois de préavis et pour un motif prévu par la loi (vente, reprise ou motif légitime et sérieux), et les locataires de 65 ans et plus aux revenus modestes sont protégés. En revanche, un logement qui se libère peut valoir plus vendu seul à un occupant qu’intégré au prix d’un immeuble loué : c’est l’intérêt de la vente à la découpe. Nous chiffrons la vente en bloc et la vente à la découpe, lot par lot, à partir de l’état locatif.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
+      "question": "Mes locataires peuvent-ils acheter en priorité si je vends l’immeuble entier ?",
+      "reponse": "Quand un immeuble de plus de cinq logements, d’habitation ou mixte, est vendu en totalité et en une seule fois, chaque locataire bénéficie d’un droit de préemption sur son logement (loi Aurillac). Le vendeur en est dispensé si l’acheteur s’engage dans l’acte à proroger les baux en cours pendant six ans à compter de la vente. C’est la solution courante dans une vente en bloc à un investisseur, car elle évite de découper la vente. Sinon, chaque locataire reçoit une offre au prix de son logement, valable quatre mois. D’autres exceptions existent, par exemple une vente à un parent jusqu’au quatrième degré ou à un organisme HLM.",
+      "sources": [
+        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
+      "question": "Peut-on vendre un immeuble occupé par des locataires âgés ?",
+      "reponse": "Oui. La vente ne met pas fin aux baux et les locataires restent chez eux avec le nouveau propriétaire. En revanche, un bailleur ne peut pas donner congé pour vendre ou reprendre un logement à un locataire de plus de 65 ans dont les ressources sont sous un plafond fixé chaque année, sans lui proposer un relogement adapté à proximité. Cette règle ne s’applique pas si le bailleur a lui-même plus de 65 ans ou des ressources modestes. Un acheteur intègre cette situation dans son prix : le logement est valorisé comme occupé.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
+      "question": "Que vaut un logement loué sous la loi de 1948 dans un immeuble parisien ?",
+      "reponse": "Quelques logements d’immeubles anciens restent soumis à la loi du 1er septembre 1948, pour des baux signés avant 1987. Le loyer y est réglementé et souvent très inférieur au marché, et le locataire bénéficie d’un droit au maintien dans les lieux. Un acheteur valorise donc ce logement sur son loyer actuel, ou comme un logement occupé pour longtemps, ce qui pèse sur le prix de l’immeuble. Le bail peut sortir de ce régime dans certains cas prévus par la loi : c’est à étudier logement par logement, avec l’état locatif.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1349"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
+      "question": "Encadrement des loyers à Paris : qu’est-ce que ça change pour un immeuble loué ?",
+      "reponse": "Pour un bail signé ou renouvelé à Paris depuis le 1er juillet 2019, le loyer hors charges ne peut pas dépasser le loyer de référence majoré, fixé chaque année par arrêté préfectoral selon le quartier, le nombre de pièces, l’époque de construction et la location vide ou meublée. Un complément de loyer est possible pour un logement aux caractéristiques exceptionnelles, mais il est interdit si le logement est classé F ou G. Ce dispositif, expérimenté depuis la loi ELAN, devait s’arrêter le 24 novembre 2026 : le Sénat a voté le 21 octobre 2026 une prolongation de deux ans, que l’Assemblée nationale doit encore adopter. Pour fixer son prix, l’acheteur retient les loyers que la loi permet d’encaisser, et non ceux d’un bail qui dépasse le plafond. Un état locatif conforme rassure et facilite la vente.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1314",
+        "https://www.publicsenat.fr/actualites/societe/encadrement-des-loyers-un-compromis-entre-lassemblee-et-le-senat-qui-permet-dechapper-au-pire-selon-le-senateur-communiste-ian"
+      ]
+    },
+    {
+      "groupe": "Locataires et baux",
       "question": "Peut-on louer un logement en Airbnb à Paris, et qu’est-ce que ça change pour la vente de l’immeuble ?",
       "reponse": "Depuis le 1er janvier 2025, une résidence principale peut être louée en meublé de tourisme 90 jours par an au plus à Paris, avec un numéro d’enregistrement affiché sur chaque annonce. Tout autre logement loué en courte durée, comme ceux d’un immeuble de rapport, exige une autorisation de changement d’usage avec compensation : il faut transformer en logement une surface équivalente qui n’en était pas, un bureau ou un commerce. Sans autorisation, l’amende peut atteindre 100 000 €, avec une astreinte jusqu’à 1 000 € par jour et par m². Depuis le 21 novembre 2024, le changement d’usage exige aussi un DPE classé de A à E, et le PLU interdit les nouveaux meublés de tourisme dans les quartiers où ils sont déjà trop nombreux. Un acheteur ne retient donc un loyer de courte durée que si l’autorisation figure au dossier ; sinon, le lot est estimé comme un logement loué à l’année ou libre.",
       "sources": [
@@ -221,24 +396,7 @@
       ]
     },
     {
-      "question": "Quels logements ne peuvent plus être loués à cause du DPE ?",
-      "reponse": "Depuis le 1er janvier 2025, un logement classé G au DPE n’est plus considéré comme décent : il ne peut plus faire l’objet d’un nouveau bail, d’un renouvellement ou d’une reconduction tacite. Les logements classés F suivront le 1er janvier 2028, puis ceux classés E le 1er janvier 2034. Les loyers des logements F et G sont gelés depuis le 24 août 2022 : pas de révision annuelle et pas de hausse à la relocation ou au renouvellement. Le bail en cours reste valable, mais le locataire peut demander des travaux de mise en conformité.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/actualites/A17975",
-        "https://www.anil.org/parole-expert-logement-renovation-energetique-decence-energetique-logements/",
-        "https://www.ecologie.gouv.fr/politiques-publiques/location-gel-loyers-passoires-energetiques"
-      ]
-    },
-    {
-      "question": "Mon immeuble doit-il avoir un DPE collectif ou un audit énergétique pour être vendu ?",
-      "reponse": "Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Pour les copropriétés, l’obligation s’applique depuis 2024 au-delà de 200 lots, depuis 2025 de 50 à 200 lots et depuis 2026 en dessous. Ce DPE est valable dix ans. Pour la vente d’un immeuble qui n’est pas en copropriété, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37504",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37110",
-        "https://www.ecologie.gouv.fr/politiques-publiques/audit-energetique-reglementaire"
-      ]
-    },
-    {
+      "groupe": "DPE, diagnostics et travaux",
       "question": "Un mauvais DPE fait-il baisser le prix d’un immeuble à Paris ?",
       "reponse": "Oui, quand des logements sont classés F ou G : l’acheteur déduit le coût des travaux et le risque de ne plus pouvoir louer. À Paris, ce sont souvent les chambres de service et les petites surfaces sous les toits, chauffées à l’électricité. Une pièce principale doit offrir au moins 9 m² avec 2,20 m sous plafond, ou 20 m³ : en dessous, une chambre de service ne peut pas être louée comme logement. Deux changements de calcul jouent en faveur de ces lots : des seuils corrigés pour les logements de 40 m² ou moins depuis le 1er juillet 2024, et le coefficient de l’électricité qui passe de 1,9 à 1,7 le 1er janvier 2027. Un DPE fait avant cette date reste valable et pourra être mis à jour gratuitement sur l’Observatoire DPE-Audit de l’ADEME, sans nouvelle visite. Avant de vendre, refaire le point sur les DPE des petits lots peut donc changer la valeur de l’immeuble.",
       "sources": [
@@ -248,14 +406,27 @@
       ]
     },
     {
-      "question": "Encadrement des loyers à Paris : qu’est-ce que ça change pour un immeuble loué ?",
-      "reponse": "Pour un bail signé ou renouvelé à Paris depuis le 1er juillet 2019, le loyer hors charges ne peut pas dépasser le loyer de référence majoré, fixé chaque année par arrêté préfectoral selon le quartier, le nombre de pièces, l’époque de construction et la location vide ou meublée. Un complément de loyer est possible pour un logement aux caractéristiques exceptionnelles, mais il est interdit si le logement est classé F ou G. Ce dispositif, expérimenté depuis la loi ELAN, devait s’arrêter le 24 novembre 2026 : le Sénat a voté le 21 octobre 2026 une prolongation de deux ans, que l’Assemblée nationale doit encore adopter. Pour fixer son prix, l’acheteur retient les loyers que la loi permet d’encaisser, et non ceux d’un bail qui dépasse le plafond. Un état locatif conforme rassure et facilite la vente.",
+      "groupe": "DPE, diagnostics et travaux",
+      "question": "Quels logements ne peuvent plus être loués à cause du DPE ?",
+      "reponse": "Depuis le 1er janvier 2025, un logement classé G au DPE n’est plus considéré comme décent : il ne peut plus faire l’objet d’un nouveau bail, d’un renouvellement ou d’une reconduction tacite. Les logements classés F suivront le 1er janvier 2028, puis ceux classés E le 1er janvier 2034. Les loyers des logements F et G sont gelés depuis le 24 août 2022 : pas de révision annuelle et pas de hausse à la relocation ou au renouvellement. Le bail en cours reste valable, mais le locataire peut demander des travaux de mise en conformité.",
       "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1314",
-        "https://www.publicsenat.fr/actualites/societe/encadrement-des-loyers-un-compromis-entre-lassemblee-et-le-senat-qui-permet-dechapper-au-pire-selon-le-senateur-communiste-ian"
+        "https://www.service-public.gouv.fr/particuliers/actualites/A17975",
+        "https://www.anil.org/parole-expert-logement-renovation-energetique-decence-energetique-logements/",
+        "https://www.ecologie.gouv.fr/politiques-publiques/location-gel-loyers-passoires-energetiques"
       ]
     },
     {
+      "groupe": "DPE, diagnostics et travaux",
+      "question": "Mon immeuble doit-il avoir un DPE collectif ou un audit énergétique pour être vendu ?",
+      "reponse": "Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Pour les copropriétés, l’obligation s’applique depuis 2024 au-delà de 200 lots, depuis 2025 de 50 à 200 lots et depuis 2026 en dessous. Ce DPE est valable dix ans. Pour la vente d’un immeuble qui n’est pas en copropriété, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37504",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F37110",
+        "https://www.ecologie.gouv.fr/politiques-publiques/audit-energetique-reglementaire"
+      ]
+    },
+    {
+      "groupe": "DPE, diagnostics et travaux",
       "question": "Quels diagnostics faut-il pour vendre un immeuble à Paris ?",
       "reponse": "Le vendeur fournit un dossier de diagnostic technique, annexé à la promesse puis à l’acte. Pour un immeuble ancien vendu en bloc, il comprend en général le constat de risque d’exposition au plomb pour les logements construits avant 1949, l’état relatif à l’amiante si le permis de construire date d’avant le 1er juillet 1997, et l’état des installations d’électricité et de gaz de plus de quinze ans. Tout Paris étant une zone de surveillance des termites, un état relatif aux termites s’ajoute, avec l’état des risques ; ces deux documents doivent dater de moins de six mois. Pour l’énergie, la vente en bloc demande un DPE à l’échelle du bâtiment, et un diagnostic à part pour les commerces et bureaux. Les acheteurs demandent souvent aussi le DPE de chaque logement, car c’est lui qui dit s’il peut encore être loué.",
       "sources": [
@@ -268,6 +439,23 @@
       ]
     },
     {
+      "groupe": "DPE, diagnostics et travaux",
+      "question": "Faut-il faire des travaux avant de vendre un immeuble à Paris ?",
+      "reponse": "Avant de décider, il faut les chiffrer : l’acquéreur déduit de son prix les travaux qu’il devra faire. Nous chiffrons ces travaux avec l’estimation, pour que le prix en tienne compte sans brader l’immeuble. La Team Reno, la société de travaux de notre groupe, visite l’immeuble et chiffre la rénovation, lot par lot et pour les parties communes. En secteur protégé, les travaux passent par l’avis des Architectes des Bâtiments de France.",
+      "sources": [
+        "Articles du site (lot 88) : La Team Reno chiffre les travaux"
+      ]
+    },
+    {
+      "groupe": "DPE, diagnostics et travaux",
+      "question": "Le ravalement est-il obligatoire à Paris, et faut-il le faire avant de vendre ?",
+      "reponse": "À Paris, les façades doivent être remises en état au moins une fois tous les dix ans. Le maire peut adresser une injonction au propriétaire, qui a six mois pour engager les travaux ; passé ce délai, il peut les prescrire dans un délai d’un an au plus, puis les faire réaliser aux frais du propriétaire avec l’autorisation du juge. Le refus est passible d’une amende de 3 750 €. Pour la vente, un ravalement récent rassure l’acheteur, alors qu’une injonction en cours se traduit par une décote qui tient compte du devis. Il n’est donc pas toujours utile de faire les travaux avant de vendre : un devis récent suffit souvent à cadrer la négociation.",
+      "sources": [
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F640"
+      ]
+    },
+    {
+      "groupe": "Ville de Paris, urbanisme et impôts",
       "question": "La Ville de Paris peut-elle préempter mon immeuble ?",
       "reponse": "Oui. La vente d’un immeuble entier à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
       "sources": [
@@ -276,50 +464,7 @@
       ]
     },
     {
-      "question": "Peut-on vendre un immeuble occupé par des locataires âgés ?",
-      "reponse": "Oui. La vente ne met pas fin aux baux et les locataires restent chez eux avec le nouveau propriétaire. En revanche, un bailleur ne peut pas donner congé pour vendre ou reprendre un logement à un locataire de plus de 65 ans dont les ressources sont sous un plafond fixé chaque année, sans lui proposer un relogement adapté à proximité. Cette règle ne s’applique pas si le bailleur a lui-même plus de 65 ans ou des ressources modestes. Un acheteur intègre cette situation dans son prix : le logement est valorisé comme occupé.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
-      ]
-    },
-    {
-      "question": "Que vaut un logement loué sous la loi de 1948 dans un immeuble parisien ?",
-      "reponse": "Quelques logements d’immeubles anciens restent soumis à la loi du 1er septembre 1948, pour des baux signés avant 1987. Le loyer y est réglementé et souvent très inférieur au marché, et le locataire bénéficie d’un droit au maintien dans les lieux. Un acheteur valorise donc ce logement sur son loyer actuel, ou comme un logement occupé pour longtemps, ce qui pèse sur le prix de l’immeuble. Le bail peut sortir de ce régime dans certains cas prévus par la loi : c’est à étudier logement par logement, avec l’état locatif.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F1349"
-      ]
-    },
-    {
-      "question": "Mes locataires peuvent-ils acheter en priorité si je vends l’immeuble entier ?",
-      "reponse": "Quand un immeuble de plus de cinq logements, d’habitation ou mixte, est vendu en totalité et en une seule fois, chaque locataire bénéficie d’un droit de préemption sur son logement (loi Aurillac). Le vendeur en est dispensé si l’acheteur s’engage dans l’acte à proroger les baux en cours pendant six ans à compter de la vente. C’est la solution courante dans une vente en bloc à un investisseur, car elle évite de découper la vente. Sinon, chaque locataire reçoit une offre au prix de son logement, valable quatre mois. D’autres exceptions existent, par exemple une vente à un parent jusqu’au quatrième degré ou à un organisme HLM.",
-      "sources": [
-        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
-      ]
-    },
-    {
-      "question": "Quelles sont les règles pour vendre un immeuble à la découpe à Paris ?",
-      "reponse": "Vendre à la découpe, c’est mettre l’immeuble en copropriété puis vendre les logements un par un. À la première vente d’un logement occupé après cette division, le locataire bénéficie d’un droit de préemption (article 10 de la loi du 31 décembre 1975) : l’offre lui est faite en priorité, au prix proposé. Quand un bailleur met en vente plusieurs logements d’un même immeuble, l’accord collectif du 16 mars 2005, rendu obligatoire par décret en 2006, peut imposer en plus une information préalable des locataires et protège les plus fragiles. La découpe peut rapporter davantage qu’une vente en bloc, mais elle demande plus de temps, des frais de mise en copropriété et une organisation lot par lot.",
-      "sources": [
-        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/analyses-juridiques/analyses-juridiques-2006/la-protection-des-locataires-en-cas-de-vente-par-lots-de-plus-de-dix-logements-appartenant-a-un-meme-bailleur-/-accords-collectifs/",
-        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/jurisprudence/jurisprudence-2014/vente-a-la-decoupe-droit-de-preemption-du-locataire/"
-      ]
-    },
-    {
-      "question": "Le ravalement est-il obligatoire à Paris, et faut-il le faire avant de vendre ?",
-      "reponse": "À Paris, les façades doivent être remises en état au moins une fois tous les dix ans. Le maire peut adresser une injonction au propriétaire, qui a six mois pour engager les travaux ; passé ce délai, il peut les prescrire dans un délai d’un an au plus, puis les faire réaliser aux frais du propriétaire avec l’autorisation du juge. Le refus est passible d’une amende de 3 750 €. Pour la vente, un ravalement récent rassure l’acheteur, alors qu’une injonction en cours se traduit par une décote qui tient compte du devis. Il n’est donc pas toujours utile de faire les travaux avant de vendre : un devis récent suffit souvent à cadrer la négociation.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F640"
-      ]
-    },
-    {
-      "question": "Combien coûte la taxe foncière d’un immeuble à Paris ?",
-      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
-      "sources": [
-        "https://www.paris.fr/pages/budget-2023-pourquoi-une-augmentation-de-la-taxe-fonciere-22445",
-        "https://www.paris.fr/pages/taxes-et-impots-2318"
-      ]
-    },
-    {
+      "groupe": "Ville de Paris, urbanisme et impôts",
       "question": "Que change le PLU bioclimatique de Paris pour un immeuble existant ?",
       "reponse": "Le PLU bioclimatique a été adopté par le Conseil de Paris le 20 novembre 2024. Il touche surtout les projets : un immeuble que l’on vend en l’état n’est pas concerné. En revanche, une surélévation, une restructuration lourde ou un changement de destination qui crée des logements au-delà d’une certaine surface doit comporter une part de logements sociaux, plus forte dans les quartiers qui en comptent le moins. Les surélévations sont liées à la création de logements et à la désimperméabilisation des cours, et la réhabilitation devient la règle plutôt que la démolition. Avant de vendre, il est utile de vérifier si la parcelle porte un emplacement réservé pour du logement : cela change ce qu’un acheteur peut faire de l’immeuble.",
       "sources": [
@@ -329,33 +474,21 @@
       ]
     },
     {
-      "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
-      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Un immeuble en bloc se valorise d’abord par son rendement comparé à celui du secteur, et non par le prix au m² d’un appartement.",
+      "groupe": "Ville de Paris, urbanisme et impôts",
+      "question": "Combien coûte la taxe foncière d’un immeuble à Paris ?",
+      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
       "sources": [
-        "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf"
+        "https://www.paris.fr/pages/budget-2023-pourquoi-une-augmentation-de-la-taxe-fonciere-22445",
+        "https://www.paris.fr/pages/taxes-et-impots-2318"
       ]
     },
     {
+      "groupe": "Ville de Paris, urbanisme et impôts",
       "question": "Combien d’impôt sur la plus-value en vendant un immeuble à Paris ?",
       "reponse": "Pour un particulier, une indivision ou une SCI à l’impôt sur le revenu, la plus-value est imposée à 19 %, plus 17,2 % de prélèvements sociaux (la hausse de la CSG de 2026 ne s’applique pas aux plus-values immobilières), avec un abattement qui grandit avec la durée de détention. Elle est exonérée d’impôt sur le revenu après 22 ans et de prélèvements sociaux après 30 ans. Une taxe de 2 à 6 % s’ajoute quand la plus-value imposable dépasse 50 000 €. Pour des héritiers, le prix de départ est la valeur retenue dans la déclaration de succession. Une SCI à l’impôt sur les sociétés suit d’autres règles, sans abattement pour durée de détention. Le notaire calcule l’impôt et le prélève lors de la signature de l’acte.",
       "sources": [
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F10864",
         "https://www.mayerbrown.com/fr/insights/publications/2026/01/budget-social-2026-augmentation-du-taux-de-csg-et-perennisation-du-regime-social-management-package"
-      ]
-    },
-    {
-      "question": "Combien de temps faut-il pour vendre un immeuble à Paris ?",
-      "reponse": "Le délai dépend surtout du prix demandé face au rendement du secteur, de la qualité du dossier et des droits de préemption. Un dossier complet dès le départ (titres de propriété, baux et état locatif, DPE et audit énergétique, diagnostics, avis de taxe foncière, derniers travaux) évite des semaines de questions. Une fois la promesse signée, la Ville de Paris dispose de deux mois pour exercer son droit de préemption, pendant que le notaire prépare l’acte. Si l’acheteur ne proroge pas les baux pendant six ans, les offres faites aux locataires restent valables quatre mois. Nous présentons d’abord l’immeuble en off-market aux 1 500 acheteurs de notre base, ce qui permet de tester un prix avant toute diffusion.",
-      "sources": [
-        "https://www.paris.fr/pages/mutation-immobiliere-3548",
-        "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
-      ]
-    },
-    {
-      "question": "Faut-il vider l’immeuble avant de le vendre ?",
-      "reponse": "En règle générale, non. Un immeuble occupé se vend à un investisseur sur son rendement : les baux en place sont le revenu qu’il achète. Donner congé est d’ailleurs encadré : un bail d’habitation vide ne prend fin qu’à son échéance, avec six mois de préavis et pour un motif prévu par la loi (vente, reprise ou motif légitime et sérieux), et les locataires de 65 ans et plus aux revenus modestes sont protégés. En revanche, un logement qui se libère peut valoir plus vendu seul à un occupant qu’intégré au prix d’un immeuble loué : c’est l’intérêt de la vente à la découpe. Le bon choix se calcule lot par lot, à partir de l’état locatif.",
-      "sources": [
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F929"
       ]
     }
   ]
