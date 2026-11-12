@@ -262,12 +262,13 @@ export default function Decoupe() {
         alt={VISUELS.fenetresHeureBleue.alt}
       >
         <>
-          {/* MAV, 12/11/2026 : le H1 d'origine est « plus percutant » ; le mot-clé passe dans le surtitre. */}
-          <Eyebrow>Vendre un immeuble à la découpe</Eyebrow>
-          <h1>
+          {/* MAV, 12/11/2026 : le surtitre porte la requête et devient le H1, à sa taille de
+              surtitre ; la phrase du marchand reste le grand titre visuel, en paragraphe. */}
+          <Eyebrow as="h1">Vendre un immeuble à la découpe</Eyebrow>
+          <p className="h-display hero-titre">
             La marge du marchand de biens,{" "}
             <span className="accent">sans lui vendre votre immeuble</span>
-          </h1>
+          </p>
           <p className="lead">
             Celui qui rachète votre immeuble en bloc pour le découper fait un métier. Il le met en
             copropriété, négocie les départs, rénove, revend lot par lot, et fait sa marge. Nous
