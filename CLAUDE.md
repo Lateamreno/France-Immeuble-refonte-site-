@@ -593,6 +593,40 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `.grid.grid--ligne-mob` pose `gap:12px` : une règle `row-gap:0` doit être plus précise qu'elle. Non
   faits, en attente de MAV : Découpe « Deux acheteurs » de 760 à 1 090 px (+9 px à 1 024 × 768), rangées
   d'avis (cinq pages), cartes de Nos ventes (+120 px de page).
+- **Lot 111** (MAV, 13/11/2026 au soir, retours #358 à #373 et ses réponses aux points du lot 109).
+  **Fiabilité en étoiles**, d'une à trois, pleines et vides (« C'est moche l'affichage de la fiabilité.
+  Mets-nous soit une note sur 5 soit des étoiles 1 à 3 ») : `NoteFiabilite` vaut 1, 2 ou 3, trois étoiles
+  jusqu'à 0,07 d'incertitude, deux jusqu'à 0,15, une au-delà ou sous cinq ventes. **Décote** : « le plus
+  souvent de 10 à 30 % » (« on peut dire de 10 à 30 % »), plus d'« environ 15 % » sur la page ni dans sa
+  FAQ. **Rendement** : « {X} en général » (« Si on a 3,5 on dit 3,5 à 6,5 en général »), tiré des
+  rendements théoriques du tableau sans le plus bas ni le plus haut, arrondi au demi-point vers l'extérieur
+  (`fourchetteRendement`, `libelleRendement`, repli `RENDEMENT_PARIS_REPLI` de 3,5 à 6,5 %, aussi sur la page
+  des annonces) ; clé vivante `{rendementParis}` dans la FAQ. Les articles disent encore « 3 à 6 % » : à
+  trancher par MAV. **Une année publiée, trois gardées** (« garde peut-être les 3 années pour qu'on puisse
+  publier sur notre site sur une page à part au besoin ou pour faire un dossier presse ») : 2023 et 2024
+  sont en base (98 et 119 ventes à Paris, non auditées vente par vente), la tâche mensuelle les recalcule
+  après l'année publiée (`ANNEES_GARDEES`, `BUDGET_MS`), la page ne publie que la plus récente. **Parts de
+  copropriété : on ne les écarte pas** (« si y a plus de 6 lots à la même adresse c'est éventuellement
+  OK » : c'est déjà la règle, plus de cinq logements). **Plancher de 3 000 € le m² confirmé** (« en dessous
+  c'est donné »). Cartes d'arguments **sans filet vertical** (#367, #369, #371 : « c'est moche »).
+  **Citations** : un grand guillemet or dans la police des titres ouvre la citation, un guillemet or la
+  ferme, même dessin pour les quatre (#368, #373). **Lignes qui glissent en `marches`**, comme les atouts
+  de Vendre et les avis (#370, #372 : « on fait quoi qu'il arrive la même chose que sur le reste du
+  site ») ; la sous-grille d'alignement traverse la case (`.ligne-cartes.paris-ligne > .ligne-case`).
+  **FAQ** (#358 à #366), rédigée puis relue sous trois angles : 33 questions en six groupes ; nouveau
+  groupe « Acheteurs d'immeubles à Paris et offres d'achat » (qui achète, à qui vendre, délai d'une offre
+  sans promesse, offre sans condition de financement qui n'est pas un paiement comptant, indemnité
+  d'immobilisation de 10 % dont souvent 5 % à la signature, délai de vente sans chiffre, core, core plus,
+  value-add) ; mauvais DPE : « la baisse dépasse rarement de beaucoup le montant des travaux », plus rien
+  sur les pièces de moins de 9 m² ; DPE collectif sans les copropriétés ; DPE et surface de chaque logement
+  demandés par les acheteurs ; travaux souvent laissés à l'acquéreur (pas de frais de notaire dessus, prêt,
+  différé, date de son choix), La Team Reno chiffre tout l'immeuble et s'engage sur ses prix ; questions
+  sur le PLU bioclimatique et la taxe foncière retirées. À ne pas remettre dans la FAQ : la préemption dans
+  le délai de vente (#351), une promesse de délai. **En attente de MAV** : « en 24 heures » (maintenant
+  aussi dans la FAQ) ; la formule de La Team Reno ; relecture par un notaire des réponses sur l'offre sans
+  condition et l'indemnité ; le lien de la FAQ vers l'article sur le mauvais DPE ; « 3 à 6 % » des
+  articles. Réponses sur le DPE à revoir avec le rappel du 21/11/2026 (projet de loi sur les logements
+  classés G).
 
 ### Garde-fous non négociables
 
