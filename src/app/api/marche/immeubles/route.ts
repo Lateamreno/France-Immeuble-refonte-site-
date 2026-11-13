@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { configSite } from "@/lib/supabase-site";
-import { COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesImmeubles } from "@/lib/dvf-immeubles";
+import { COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesAppartements, ventesImmeubles } from "@/lib/dvf-immeubles";
 
 /**
  * Recalcul mensuel des ventes d'immeubles entiers repérées dans DVF (lot 100), pour les pages
  * Paris et communes. Tâche planifiée de Vercel (vercel.json), protégée par CRON_SECRET comme
  * /api/lead/relance/. N'écrit que dans la table publique `marche_immeubles` de la base du site.
+ * Lot 110 : elle range aussi, sur la même ligne, les appartements vendus seuls des mêmes fichiers
+ * (nombre de ventes et prix médian au m²), d'où la page tire la décote des immeubles.
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,14 +53,21 @@ export async function GET(req: Request) {
   const lignes: Record<string, unknown>[] = [];
   for (const [code, rows] of fichiers) {
     const s = ventesImmeubles(rows, ailleurs);
-    lignes.push({ code_insee: code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, maj_le: new Date().toISOString() });
+    const a = ventesAppartements(rows, ailleurs);
+    lignes.push({ code_insee: code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, appart_nb_ventes: a.nbVentes, appart_prix_m2_median: a.prixM2Median, maj_le: new Date().toISOString() });
   }
   if (lignes.length) {
-    const r = await fetch(`${cfg.url}/rest/v1/marche_immeubles?on_conflict=code_insee,annee`, {
-      method: "POST",
-      headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json", Prefer: "resolution=merge-duplicates" },
-      body: JSON.stringify(lignes),
-    });
+    const ecrire = (corps: Record<string, unknown>[]) =>
+      fetch(`${cfg.url}/rest/v1/marche_immeubles?on_conflict=code_insee,annee`, {
+        method: "POST",
+        headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json", Prefer: "resolution=merge-duplicates" },
+        body: JSON.stringify(corps),
+      });
+    let r = await ecrire(lignes);
+    // Une base d'avant la migration 0022 refuse les colonnes des appartements : on écrit au moins les immeubles.
+    if (r.status === 400) {
+      r = await ecrire(lignes.map((l) => Object.fromEntries(Object.entries(l).filter(([cle]) => !cle.startsWith("appart_")))));
+    }
     if (!r.ok) return NextResponse.json({ ok: false, erreur: `écriture ${r.status}` }, { status: 502 });
     revalidatePath("/vendre-un-immeuble/paris/");
   }

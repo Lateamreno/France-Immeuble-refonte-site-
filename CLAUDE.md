@@ -544,6 +544,47 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   quand DVF corrigé mesure 27 % en médiane ; (4) le rendement théorique, qui monte jusqu'à 7,6 % (18e)
   face à la note « 3 à 6 % » ; (5) le plancher de 3 000 € (dix immeubles entiers en dessous) et le même
   immeuble vendu deux fois dans l'année (les deux ventes sont écartées). Fichiers de travail hors dépôt.
+- **Lot 110** (MAV, 13/11/2026, retours #297 à #300 et #313 à #357 sur la page Paris ; « une nouvelle façon
+  d'afficher le tableau des prix qui sera plus simple », « inclure la décote en pourcentage par rapport aux
+  ventes d'appartements »). **Tableau à cinq colonnes** : prix médian, **décote** face aux appartements
+  vendus seuls (même fichier DVF, même année : `ventesAppartements`, un seul appartement, un seul prix,
+  3 000 à 30 000 € le m², médiane dès 30 ventes ; colonnes `appart_nb_ventes` et `appart_prix_m2_median`,
+  migration 0022), **note de fiabilité de 1 à 5** à la place de la fourchette (`noteFiabilite` : largeur de
+  la fourchette ÷ prix médian ÷ √ventes ; jusqu'à 0,04 : 5 ; 0,07 : 4 ; 0,10 : 3 ; 0,15 : 2 ; au-delà ou
+  sous cinq ventes : 1), rendement théorique. Plus de légende du prix médian, titre du tableau sur une
+  ligne, source DVF et mois du relevé dans le détail replié (licence ouverte). Décotes de 2025 : de 9 %
+  (8e) à 47 % (18e), 28 % pour Paris. Hero : le grand titre est le H1, « Vendre votre immeuble à Paris au
+  meilleur prix », surtitre « Estimation et vente d'immeubles de rapport », « depuis 2018 » (pas « près de
+  10 ans »). **Acheteurs d'immeubles parisiens** : le site ne peut pas les compter, le BO doit déposer
+  `acheteurs_paris` et `acheteurs_paris_investisseur`, `_marchand`, `_patrimonial`
+  (`docs/PROMPT-BO-ACHETEURS-PARIS.md`) ; d'ici là, le chiffre global avec son vrai libellé. Estimation :
+  « Le marché », « Le locatif », « Le bâti », « La cible » ; on ne tient pas compte de l'avis de l'ABF, on
+  compte une rénovation plus chère en secteur protégé. Vente : « Des acheteurs connus et reconnus », « La
+  meilleure offre pour votre immeuble », trois profils d'acquéreurs à la place des compteurs. **Après
+  l'offre : ni préemption, ni droits des locataires** (« c'est fait par les notaires et tous les acquéreurs
+  prorogent les baux »), **ni espace client** (« parlons pas encore de l'espace client ») : quatre cartes
+  sur le travail documentaire (locatif, diagnostics, technique, pièces complémentaires). Honoraires
+  « TTC ». **Rangées de cartes alignées** (pictos, titres, débuts de texte sur les mêmes lignes) par
+  sous-grille (`CarteArgument`, `.paris-ligne`) : « fais pareil à chaque fois qu'on a ce genre de
+  dispositions ». Découpe : une option, chiffrée seulement si le client le souhaite ; bouton « Voir la vente
+  à la découpe » dans un nouvel onglet (`nouvelOnglet` de `Button`), les deux boutons visibles au téléphone
+  (`porte-action`). Ventes : toutes nos ventes d'immeubles à Paris, ligne qui glisse au-delà de trois ;
+  cartes « Immeuble mixte rue Mouffetard », « Loyer », prix au m² sous le prix (`avecType`,
+  `libelleLoyer`, `prixAuM2` de `CarteVente`, page Paris seulement). FAQ : 14 réponses réécrites, droit
+  des baux relu aux sources (loi Aurillac : c'est l'acquéreur qui s'engage à proroger les baux, rien
+  d'office ; congé pour vendre à l'échéance ; plus d'accord collectif ; découpe chiffrée à la demande).
+  Page des annonces Google mise en accord (sans annonce, « prix réaliste », découpe à la demande,
+  acheteurs « à Paris » seulement avec le chiffre du BO) ; FAQ de Vendre : honoraires « TTC », découpe
+  chiffrée à la demande. **Migration 0023** : la table `chiffres` admet les clés qui portent des
+  chiffres ; `immeubles_traites_75`, demandée au BO au lot 101, était refusée par la base. Relu sous six
+  angles (droit, règles, retours un par un, rendu de 320 à 2 560 px, code, alignement des autres pages) :
+  chaque section tient à 836 px de 1 100 à 2 560 px de large. Hero : « Forts de notre expérience de la
+  vente d'immeubles à Paris depuis 2018 et d'un réseau de N acheteurs… » (pas « nous sommes les
+  meilleurs »). **En attente de MAV** : « comptez plutôt 15 % » face à une décote mesurée de 9 à 47 % ; la
+  règle de la note (écart et nombre de ventes, ou écart seul) ; la colonne du rendement théorique (jusqu'à
+  7,6 %) face à « 3 à 6 % » ; « en 24 heures » dans la carte de la vente ; carte de la rue Mouffetard
+  (loyer affiché 247 544 €, soit 3,9 %, pour 3,4 % brut affiché) ; mêmes cartes de ventes sur les autres
+  pages ; alignement des rangées de cartes des autres pages ; les points du lot 109.
 
 ### Garde-fous non négociables
 

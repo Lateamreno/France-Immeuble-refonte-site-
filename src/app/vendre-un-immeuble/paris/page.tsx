@@ -15,7 +15,8 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, organisation, service } from "@/lib/schema";
 import { marchesDesCommunes } from "@/lib/marche";
-import { immeublesDesCommunes } from "@/lib/immeubles-dvf-lecture";
+import { immeublesDesCommunes, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
+import { PRIX_M2_MAX, PRIX_M2_MIN, VENTES_MIN_APPARTEMENTS } from "@/lib/dvf-immeubles";
 import { chiffres } from "@/lib/chiffres";
 import { ventes as lesVentes } from "@/lib/biens";
 import { CarteVente } from "@/components/CarteVente";
@@ -27,20 +28,34 @@ import { PREUVES, SITE, nombre } from "@/lib/site";
 /**
  * /vendre-un-immeuble/paris/ — vendre et faire estimer un immeuble de rapport à Paris.
  *
- * Refaite au lot 108 (MAV, 12/11/2026 : « Le tableau c'est trop, gardons un seul ou une façon
- * d'afficher mieux. Repense le texte et la page […] pour maximiser SEO et conversion […]. Quand
- * ils lisent ils doivent se dire France Immeuble c'est vraiment la boîte avec qui travailler »).
+ * Refaite au lot 108 (MAV, 12/11/2026 : « Quand ils lisent ils doivent se dire France Immeuble
+ * c'est vraiment la boîte avec qui travailler »), puis reprise au lot 110 (MAV, 13/11/2026,
+ * retours #297 à #300 et #313 à #357, et son message : « une nouvelle façon d'afficher le tableau
+ * des prix qui sera plus simple », « inclure la décote en pourcentage par rapport aux ventes
+ * d'appartements »).
  *
  * La page suit les questions d'un propriétaire parisien, dans l'ordre où il se les pose : suis-je
  * au bon endroit, savent-ils estimer mon immeuble, combien vaut-il dans mon arrondissement,
  * comment et à qui le vendent-ils, que se passe-t-il après l'offre, combien cela coûte, en bloc
  * ou à la découpe, l'ont-ils déjà fait, que faire maintenant. Chaque section répond par un fait
- * du site. Un seul tableau, de quatre colonnes : le prix médian des immeubles vendus en bloc,
- * la fourchette et le rendement théorique. Les appartements, l'écart et le nombre de ventes par
- * arrondissement en sont sortis.
+ * du site.
  *
- * À respecter (retours #301 à #312) : 100 % off-market, aucun délai de vente affiché, ne pas
- * écrire qu'on estime seulement au rendement, chiffres DVF en agrégats seulement.
+ * Lot 110, ce qui a changé :
+ * - hero (#297, #298, #299, #313) : le grand titre est le H1, « au meilleur prix » ; le surtitre dit
+ *   le métier ; le chapeau parle de l'agence depuis 2018 et de son réseau d'acheteurs ;
+ * - acheteurs (#299, #300, #331) : ceux d'immeubles parisiens dès que le BO dépose
+ *   `acheteurs_paris` (src/lib/chiffres.ts), le chiffre global avec son vrai libellé d'ici là ;
+ * - tableau (#321 à #325) : cinq colonnes, le prix médian au m² des immeubles vendus en bloc, la
+ *   décote face aux appartements vendus seuls, une note de fiabilité de 1 à 5 et le rendement
+ *   théorique. La fourchette n'est plus une colonne : la note s'en sert ;
+ * - toutes les rangées « picto, titre, texte » alignées d'une carte à l'autre (#338, #339) ;
+ * - après l'offre (#332 à #336) : quatre cartes, plus rien sur la préemption, les droits des
+ *   locataires ni l'espace client ;
+ * - découpe (#340) : une option, avec un bouton vers sa page dans un nouvel onglet ;
+ * - ventes (#341, #342) : toutes nos ventes d'immeubles à Paris, une ligne qui glisse dès la quatrième.
+ *
+ * À respecter : 100 % off-market, aucun délai de vente affiché, ne pas écrire qu'on estime
+ * seulement au rendement, chiffres DVF en agrégats seulement, aucun lien dans les textes hors FAQ.
  * La page des annonces Google est /estimation-immeuble-paris/, hors index.
  */
 const URL_PAGE = "/vendre-un-immeuble/paris/";
@@ -48,7 +63,8 @@ const TITRE = "Estimation gratuite et vente d’immeuble en bloc à Paris";
 
 export async function generateMetadata(): Promise<Metadata> {
   const ch = await chiffres();
-  const description = `Vendre un immeuble de rapport à Paris : estimation gratuite, vente 100 % off-market auprès de ${nombre(ch.investisseurs)} acheteurs, prix au m² par arrondissement.`;
+  // Le chiffre des acheteurs suit celui de la page : ceux d'immeubles parisiens quand le BO les a déposés.
+  const description = `Vendre un immeuble de rapport à Paris : estimation gratuite, vente 100 % off-market auprès de ${nombre(ch.acheteursParis ?? ch.investisseurs)} acheteurs, prix au m² par arrondissement.`;
   return {
     title: { absolute: TITRE },
     description,
@@ -60,6 +76,10 @@ export async function generateMetadata(): Promise<Metadata> {
 const pc = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 /** « 1er », « 18e ». */
 const rang = (n: number) => `${n}${n === 1 ? "er" : "e"}`;
+/** « −35 % », « +4 % » : un vrai signe moins et une espace insécable avant le signe pour cent. */
+const ecartPct = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${Math.abs(n)} %`;
+/** « 2020 », « 2020 et 2021 », « 2019, 2020 et 2021 ». */
+const enumeration = (mots: (string | number)[]) => mots.join(", ").replace(/, ([^,]*)$/, " et $1");
 
 /**
  * Un bouton d'estimation en fin de section sur ordinateur (« des boutons réguliers »). Au téléphone,
@@ -84,61 +104,102 @@ function Citation({ texte, auteur }: { texte: string; auteur: string }) {
   );
 }
 
-type Carte = { picto: NomPicto; titre: string; texte: string };
+type Carte = { picto: NomPicto; titre: string; texte: string; citation?: { texte: string; auteur: string } };
 
 /**
- * Ce que demande l'estimation d'un immeuble parisien (retours #307 et #308 : « une connaissance
- * approfondie du marché et des compétences solides, en technique ou en locatif »). Le profil de
- * l'acquéreur se décide dès l'estimation ; la section Vendre dit ensuite à qui l'immeuble part.
+ * Une carte d'argument : picto, titre, texte. Toujours trois éléments, dans cet ordre : la rangée
+ * les aligne d'une carte à l'autre (retours #338 et #339, sous-grille dans globals.css). Une
+ * citation partage la case du texte et se cale en bas de la carte.
+ */
+function CarteArgument({ picto, titre, texte, citation }: Carte) {
+  return (
+    <article className="paris-carte">
+      <Picto nom={picto} taille={30} />
+      <h3>{titre}</h3>
+      {citation ? (
+        <div className="paris-carte__corps">
+          <p>{insecable(texte)}</p>
+          <Citation {...citation} />
+        </div>
+      ) : (
+        <p>{insecable(texte)}</p>
+      )}
+    </article>
+  );
+}
+
+/**
+ * La note de fiabilité d'un prix médian (retour #325) : cinq petites barres, pleines jusqu'à la
+ * note, vides ensuite ; « 4 sur 5 » pour les lecteurs d'écran.
+ */
+function Fiabilite({ note }: { note: NoteFiabilite }) {
+  return (
+    <>
+      <span className="paris-fiab" aria-hidden="true">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <i key={i} className={i <= note ? "est-pleine" : undefined} />
+        ))}
+      </span>
+      <span className="sr-only">{note} sur 5</span>
+    </>
+  );
+}
+
+/**
+ * Ce que demande l'estimation d'un immeuble parisien (retours #314 à #320) : quatre titres courts
+ * et parallèles, le marché, le locatif, le bâti, la cible. La cible se définit dès l'estimation ;
+ * la section Vendre dit ensuite à qui l'immeuble part.
  */
 const ESTIMATION: Carte[] = [
   {
     picto: "secteur",
-    titre: "Le marché, rue par rue",
+    titre: "Le marché",
     texte:
-      "Nous suivons les ventes d’immeubles de chaque arrondissement et ce que les acheteurs y paient vraiment. Deux immeubles voisins peuvent valoir des prix très différents.",
+      "Une analyse fine du marché : nous étudions les prix de vente des appartements et des immeubles selon l’emplacement, le standing et le type d’immeuble. Les ventes d’immeubles sont trop rares pour suffire à la comparaison, et deux immeubles voisins peuvent se vendre à des prix très différents.",
   },
   {
     picto: "dossier",
-    titre: "Le locatif, bail par bail",
+    titre: "Le locatif",
     texte:
-      "Loi de 1948, locataires protégés, loyers sous le marché, encadrement des loyers, baux commerciaux : nous lisons chaque bail et chiffrons ce qu’il pèse sur le prix.",
+      "Loi de 1948, locataires protégés, loyers sous le marché, encadrement des loyers, baux commerciaux : nous lisons chaque bail et mesurons son impact sur le prix. La qualité des locataires et de leur activité compte aussi : une enseigne nationale ne se valorise pas comme un commerce de restauration rapide.",
   },
   {
     picto: "technique",
-    titre: "Le bâti et la rénovation énergétique",
+    titre: "Le bâti",
     texte:
-      "Structure, toiture, façades, normes, logements classés F ou G : nous chiffrons les travaux à prévoir. En secteur protégé, nous tenons compte de l’avis des Architectes des Bâtiments de France.",
+      "Structure, toiture, façades, normes, logements classés F ou G : nous chiffrons les travaux à prévoir. Quand l’immeuble est en secteur protégé, la rénovation coûte plus cher : nous en tenons compte dans le prix.",
   },
   {
     picto: "loupeCible",
-    titre: "L’acquéreur visé",
+    titre: "La cible",
     texte:
-      "Investisseur qui garde l’immeuble pour ses loyers, ou marchand de biens qui le rénove pour le revendre : le profil visé change le prix. Nous le définissons dès l’estimation.",
+      "Notre but : trouver l’acquéreur qui paiera le meilleur prix. Selon l’état de l’immeuble, ses possibilités de surélévation et son état locatif, un marchand de biens se démarquera d’un investisseur, ou l’inverse. Nous définissons cette cible dès l’estimation, pour valoriser au mieux votre immeuble.",
   },
 ];
 
 /**
- * Comment et à qui nous vendons (retours #310 à #312) : 100 % off-market, la meilleure offre de
- * notre base, des offres solides, souvent sans condition de financement. Aucun délai.
+ * Comment nous vendons (retours #326 à #330) : 100 % off-market, des acheteurs identifiés, un
+ * dossier fait pour qu'ils fassent une offre, la meilleure offre pour l'immeuble. « En 24 heures »
+ * est un délai d'offre, pas un délai de vente : aucun délai de vente n'est affiché.
  */
-const VENTE: (Carte & { citation?: { texte: string; auteur: string } })[] = [
+const VENTE: Carte[] = [
   {
     picto: "detective",
     titre: "Votre immeuble ne s’use pas en vitrine",
     texte:
-      "Un immeuble resté longtemps en ligne perd de sa valeur perçue et se négocie plus bas. Une annonce attire surtout des particuliers, dont l’achat dépend d’un prêt.",
+      "Un immeuble resté longtemps en ligne perd de sa valeur perçue et se négocie plus bas. De plus, une annonce en ligne attire surtout des particuliers, dont l’achat dépend d’un prêt.",
   },
   {
-    picto: "loupeCible",
-    titre: "Des acheteurs dont nous connaissons la recherche",
+    picto: "equipe",
+    titre: "Des acheteurs connus et reconnus",
     texte:
-      "Nos acheteurs déposent leur recherche : secteur, budget, type d’immeuble, rendement attendu. Nous en rapprochons votre immeuble, et le dossier part à ceux qu’il concerne.",
+      "Votre dossier n’est envoyé qu’à des acheteurs identifiés, dont nous connaissons le sérieux. Leurs offres sont solides, souvent sans condition de financement. Vous évitez les curieux et les acheteurs peu fiables.",
   },
   {
     picto: "dossier",
     titre: "Un dossier fait pour décider",
-    texte: "Un investisseur achète sur un état locatif, des baux et des diagnostics, pas sur des photos et une surface.",
+    texte:
+      "Nos dossiers sont conçus pour donner aux acquéreurs toutes les informations dont ils ont besoin pour faire une offre : état locatif, baux, surfaces, diagnostics.",
     citation: {
       texte: "… leur dossier était de loin le plus détaillé et surtout le plus adapté à la vente d’un immeuble entier.",
       auteur: "Danièle M.",
@@ -146,46 +207,47 @@ const VENTE: (Carte & { citation?: { texte: string; auteur: string } })[] = [
   },
   {
     picto: "poignee",
-    titre: "La meilleure offre de notre base",
+    titre: "La meilleure offre pour votre immeuble",
     texte:
-      "Nous cherchons l’acheteur qui fera la meilleure offre : en général un investisseur si l’immeuble est loué au prix du marché, un marchand de biens s’il est mal loué ou à gros travaux. Leurs offres sont solides, souvent sans condition de financement.",
+      "Nous ciblons en amont les meilleurs acquéreurs. Avec nous, chacun se sait en concurrence avec d’autres acheteurs sérieux, capables de faire une offre au prix en 24 heures. Les offres arrivent souvent avant la visite, ou juste après. D’où l’importance d’un prix bien fixé : les acheteurs peuvent alors l’offrir d’emblée pour s’assurer l’immeuble.",
   },
 ];
 
-/** Les trois obstacles parisiens entre l'offre et l'acte (FAQ parisienne relue : préemption, loi Aurillac, diagnostics). */
-const OBSTACLES: Carte[] = [
-  {
-    picto: "immeubles",
-    titre: "La préemption de la Ville de Paris",
-    texte:
-      "Le notaire déclare la vente à la Ville, qui peut acheter à la place de l’acquéreur. La promesse de vente prévoit ce cas dès le départ.",
-  },
-  {
-    picto: "logement",
-    titre: "Les droits des locataires",
-    texte:
-      "Au-delà de cinq logements, chaque locataire peut acheter le sien en priorité, sauf si l’acquéreur s’engage à prolonger les baux de six ans.",
-  },
+/**
+ * Entre l'offre et l'acte (retours #332 à #335) : le travail documentaire, en quatre parties. La
+ * préemption de la Ville et les droits des locataires n'y sont plus : « c'est fait par les
+ * notaires et tous les acquéreurs prorogent les baux » (MAV). Droit relu : hors copropriété, ni le
+ * mesurage des surfaces ni le DPE de chaque logement ne sont exigés pour la vente.
+ */
+const APRES: Carte[] = [
   {
     picto: "dossier",
-    titre: "Les baux, les diagnostics et le notaire",
+    titre: "Le dossier locatif",
     texte:
-      "Baux, DPE du bâtiment, audit énergétique, plomb, amiante, termites : nous vous disons dès le départ quelles pièces réunir. Un dossier complet évite bien des questions.",
+      "Baux, états des lieux, actes de cautionnement, garanties Visale, dépôts de garantie, impayés, procédures en cours : nous recensons tout, bail par bail. C’est la partie la plus importante du dossier de vente.",
+  },
+  {
+    picto: "loupe",
+    titre: "Les diagnostics",
+    texte:
+      "Plomb, amiante, termites, DPE du bâtiment, audit énergétique s’il est dû… Nous dressons la liste selon l’époque, la composition et l’adresse de l’immeuble, et vérifions leur validité. Hors copropriété, la vente n’exige ni le mesurage des surfaces ni le DPE de chaque logement. Nous les recommandons : à Paris, une erreur de surface coûte cher à l’acquéreur, et le DPE dit si un logement peut encore être loué.",
+  },
+  {
+    picto: "technique",
+    titre: "Le dossier technique",
+    texte:
+      "Nous suivons les sinistres en cours ou passés. Pour les travaux encore couverts par la garantie décennale, nous demandons les factures et l’attestation d’assurance de chaque entreprise : elle est annexée à l’acte de vente.",
+  },
+  {
+    picto: "bulles",
+    // Titre court : dans la rangée alignée, un titre de trois lignes creusait un vide sous les trois autres.
+    titre: "Les pièces complémentaires",
+    texte:
+      "Nous préparons tout en amont, mais le notaire et l’acquéreur demandent toujours des pièces en plus. Les sociétés de gestion agréées par l’AMF, elles-mêmes contrôlées, vont jusqu’à demander les dossiers de location des locataires. Il nous est arrivé d’aller lire un microfilm aux Archives pour prouver l’usage commercial ancien d’un rez-de-chaussée.",
   },
 ];
 
-/** Les étapes de la vente telles que le vendeur les suit dans son espace client (frise du compte). */
-const FRISE = ["Estimation", "Mandat", "Commercialisation", "Visites", "Offres", "Compromis", "Acte"];
-
-/** Ce que le vendeur voit dans son espace client (écrans livrés le 30/10/2026). */
-const COMPTE: { titre: string; texte: string }[] = [
-  { titre: "L’étape en cours", texte: "De l’estimation à l’acte, avec les acquéreurs sollicités, les visites et les offres reçues." },
-  { titre: "Chaque offre avec son document", texte: "Prix, somme qui vous revient (net vendeur), honoraires, écart avec notre estimation." },
-  { titre: "Votre estimation au curseur", texte: "L’effet du prix sur le rendement et sur votre net vendeur." },
-  { titre: "Vos pièces et votre agent", texte: "Dépôt en ligne, messagerie, rendez-vous sur calendrier." },
-];
-
-/** Ce que coûte la vente et ce à quoi le vendeur s'engage : chaque phrase est déjà sur la page Vendre ou sur le barème. */
+/** Ce que coûte la vente et ce à quoi le vendeur s'engage : chaque phrase est déjà sur la page Vendre ou sur le barème (TTC, retour #337). */
 const CONDITIONS: Carte[] = [
   {
     picto: "valide",
@@ -197,13 +259,34 @@ const CONDITIONS: Carte[] = [
     picto: "euro",
     titre: "Des honoraires dus à l’acte",
     texte:
-      "Pour une vente en bloc, nos honoraires ne sont dus qu’à la signature de l’acte définitif chez le notaire. Notre barème est public : 5 % jusqu’à 5 M€, 4 % de 5 à 10 M€, 3 % au-delà.",
+      "Pour une vente en bloc, nos honoraires ne sont dus qu’à la signature de l’acte définitif chez le notaire. Notre barème est public : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà.",
   },
   {
     picto: "poignee",
     titre: "Pas de mandat exclusif imposé",
     texte:
       "Vous n’êtes pas obligé de signer un mandat exclusif. Pour que la vente reste off-market, nous travaillons souvent en semi-exclusivité, c’est-à-dire avec une exclusivité temporaire.",
+  },
+];
+
+/** La découpe est une option (retour #340) : chiffrée si le vendeur le souhaite, pilotée par nous, réversible jusqu'au premier lot vendu. */
+const DECOUPE: Carte[] = [
+  {
+    picto: "calculatrice",
+    titre: "Une option, à votre demande",
+    texte:
+      "Nous chiffrons la vente en bloc, et la découpe si vous le souhaitez. Quand elle ne crée pas de valeur, nous vous le disons.",
+  },
+  {
+    picto: "reglages",
+    titre: "Nous pilotons l’opération",
+    texte:
+      "Mise en copropriété, offres de vente aux locataires en place, départs négociés à l’amiable, baux commerciaux, travaux, vente lot par lot.",
+  },
+  {
+    picto: "immeubles",
+    titre: "Vous gardez le choix",
+    texte: "Tant que le premier lot n’est pas vendu, l’immeuble reste vendable en bloc.",
   },
 ];
 
@@ -219,21 +302,34 @@ export default async function VendreUnImmeubleParis() {
   // Tant que le contenu relu n'est pas déposé dans content/paris.json, la page n'existe pas.
   if (!questions.length) notFound();
 
-  const acheteurs = nombre(ch.investisseurs);
+  // Retours #299 et #300 : les acheteurs d'immeubles parisiens, comptés par le BO (le site ne lit
+  // rien du CRM). Tant que la clé n'est pas déposée, le chiffre global avec son vrai libellé.
+  const acheteursParisiens = ch.acheteursParis != null;
+  const acheteurs = nombre(ch.acheteursParis ?? ch.investisseurs);
   const etudiesParis = ch.traitesPar["75"] ?? null;
 
-  // Nos ventes d'immeubles à Paris : les murs d'une boutique n'y ont pas leur place (MAV, 10/11/2026).
+  // Retour #342 : toutes nos ventes d'immeubles à Paris, de la plus récente à la plus ancienne ;
+  // une nouvelle vente publiée arrive ici seule. Les murs d'une boutique n'y ont pas leur place
+  // (MAV, 10/11/2026). Une vente sans type ni nombre de lots (fichier de repli quand la base ne
+  // répond pas) ne s'affiche pas : on ne saurait pas dire si c'est un immeuble.
   const ventesParis = toutes
-    .filter((v) => v.dept === "75" && (v.lots ?? 2) > 1 && (!v.type || /immeuble/i.test(v.type)))
+    .filter((v) => v.dept === "75" && (v.lots != null || v.type != null) && (v.lots ?? 2) > 1 && (!v.type || /immeuble/i.test(v.type)))
     .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 6);
+    .slice(0, 12);
   // Ventes d'avant 2022, donc d'avant la hausse des taux (MAV, 10/11/2026) : on le dit dès qu'une carte en est.
-  const anneesAvantHausse = [...new Set(ventesParis.map((v) => v.date.slice(0, 4)))].filter((a) => Number(a) < 2022).sort();
+  const avantHausse = ventesParis.filter((v) => v.annee < 2022);
+  const anneesAvantHausse = enumeration([...new Set(avantHausse.map((v) => v.annee))].sort((a, b) => a - b));
+  const noteAvantHausse =
+    avantHausse.length === 0
+      ? null
+      : avantHausse.length === 1
+        ? `La vente de ${anneesAvantHausse} date d’avant la hausse des taux : cet immeuble ne se vendrait sans doute plus à ce prix.`
+        : `Les ventes de ${anneesAvantHausse} datent d’avant la hausse des taux : ces immeubles ne se vendraient sans doute plus à ces prix.`;
 
   // Le tableau : pour chaque arrondissement, le prix médian au m² des immeubles vendus en bloc
-  // (DVF, à partir de trois ventes), la fourchette (sans le quart le moins cher ni le quart le plus
-  // cher, MAV, 13/11/2026), et le rendement théorique : le loyer de marché
-  // du secteur sur un an, rapporté au prix médian.
+  // (DVF, à partir de trois ventes), sa décote face aux appartements vendus seuls la même année,
+  // la note de fiabilité de ce prix et le rendement théorique : le loyer de marché du secteur sur
+  // un an, rapporté au prix médian.
   const annee = immeubles.size ? Math.max(...[...immeubles.values()].map((x) => x.annee)) : null;
   const lignes = codes.map((code, i) => {
     const m = marches.get(code);
@@ -244,9 +340,8 @@ export default async function VendreUnImmeubleParis() {
     return {
       n: i + 1,
       prix,
-      // La fourchette laisse de côté le quart des ventes le moins cher et le quart le plus cher.
-      bas: imm?.prixM2Bas ?? null,
-      haut: imm?.prixM2Haut ?? null,
+      decote: prix != null ? (imm?.decotePct ?? null) : null,
+      fiabilite: prix != null ? (imm?.fiabilite ?? null) : null,
       rdt: prix != null && m?.loyerM2 ? (m.loyerM2 * 12 * 100) / prix : null,
       ventes: imm?.nbVentes ?? 0,
       // Sans ligne pour l'année, on ne sait pas : on ne l'écrit pas « moins de trois ventes ».
@@ -260,11 +355,33 @@ export default async function VendreUnImmeubleParis() {
   const totalImmeubles = lignes.reduce((s, l) => s + l.ventes, 0);
   // Si les loyers de marché ne répondent pas, la colonne du rendement et ses explications s'effacent.
   const avecRdt = lignes.some((l) => l.rdt != null);
+  // De même pour la décote, tant que la base ne porte pas les prix des appartements (migration 0022).
+  const avecDecote = lignes.some((l) => l.decote != null);
+  // D'où à où va la décote : seuls comptent les arrondissements où l'immeuble est moins cher au m²
+  // (un « +4 % » n'est pas une décote), en valeur absolue, sans signe dans une phrase.
+  const decotes = lignes
+    .flatMap((l) => (l.decote != null && l.decote < 0 ? [{ n: l.n, pct: -l.decote }] : []))
+    .sort((a, b) => a.pct - b.pct);
+  const etendueDecote =
+    decotes.length > 1 && decotes[0].pct !== decotes[decotes.length - 1].pct
+      ? { min: decotes[0], max: decotes[decotes.length - 1] }
+      : null;
   const millesime = [...marches.values()].find((m) => m.millesimeLoyers)?.millesimeLoyers ?? null;
+  // La licence de DVF demande la source et la date de mise à jour : le mois du dernier relevé.
+  const dernierReleve = [...immeubles.values()].flatMap((x) => (x.annee === annee && x.majLe ? [x.majLe] : [])).sort().pop();
+  const releveEn = dernierReleve
+    ? new Date(dernierReleve).toLocaleDateString("fr-FR", { month: "long", year: "numeric", timeZone: "Europe/Paris" })
+    : null;
   const tableau = annee != null && chiffrees.length > 0;
+  // Une ligne sans prix s'étend sur toutes les colonnes de chiffres.
+  const colonnesChiffres = 2 + (avecDecote ? 1 : 0) + (avecRdt ? 1 : 0);
 
   const preuves: { picto: NomPicto; valeur: string; libelle: string }[] = [
-    { picto: "reseau", valeur: acheteurs, libelle: "acheteurs d’immeubles dans notre base" },
+    {
+      picto: "reseau",
+      valeur: acheteurs,
+      libelle: acheteursParisiens ? "acheteurs d’immeubles parisiens dans notre base" : "acheteurs d’immeubles dans notre base",
+    },
     etudiesParis
       ? { picto: "immeubles", valeur: nombre(etudiesParis), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }
       : { picto: "immeubles", valeur: nombre(ch.immeublesTraites), libelle: "immeubles étudiés par nos agents depuis 2018" },
@@ -275,20 +392,47 @@ export default async function VendreUnImmeubleParis() {
     },
   ];
 
-  // Les recherches déposées dans notre base, avec leur périmètre (libellés de l'accueil) et Paris en premier.
-  const recherches: { picto: NomPicto; valeur: string; libelle: string }[] = [
-    { picto: "immeubles", valeur: nombre(ch.recherchesPatrimonial), libelle: "recherches d’immeubles de tous types à Paris et dans les Hauts-de-Seine" },
-    { picto: "business", valeur: nombre(ch.recherchesMarchand), libelle: "recherches d’immeubles vides ou à rénover en Île-de-France" },
-    { picto: "financier", valeur: nombre(ch.recherchesInvestisseur), libelle: "recherches d’immeubles loués ou non, partout en France" },
+  // Retour #331 : les trois profils d'acquéreurs, ce que chacun cherche et un chiffre. Le nombre
+  // d'acquéreurs pour Paris quand le BO l'a déposé ; d'ici là, les recherches de notre base avec
+  // leur vrai périmètre (libellés de l'accueil).
+  const profil = (parisiens: number | null, recherches: number, perimetre: string) =>
+    parisiens != null
+      ? { valeur: nombre(parisiens), libelle: "acheteurs pour Paris" }
+      : { valeur: nombre(recherches), libelle: `recherches en cours${perimetre}` };
+  const profils: { picto: NomPicto; nom: string; cherche: string; valeur: string; libelle: string }[] = [
+    {
+      picto: "financier",
+      nom: "Investisseurs",
+      cherche: "ils cherchent du rendement.",
+      ...profil(ch.acheteursParisPar.investisseur, ch.recherchesInvestisseur, ", partout en France"),
+    },
+    {
+      picto: "business",
+      nom: "Marchands de biens",
+      cherche: "ils cherchent une plus-value à la revente.",
+      ...profil(ch.acheteursParisPar.marchand, ch.recherchesMarchand, " en Île-de-France"),
+    },
+    {
+      picto: "immeubles",
+      nom: "Acheteurs patrimoniaux",
+      cherche: "ils cherchent de beaux immeubles et de belles adresses.",
+      ...profil(ch.acheteursParisPar.patrimonial, ch.recherchesPatrimonial, " à Paris et dans les Hauts-de-Seine"),
+    },
   ];
 
   // FAQ : trente questions en cinq groupes. Les accolades des réponses sont des chiffres vivants ;
-  // une question dont un chiffre manque ne s'affiche pas.
+  // une question dont un chiffre manque ne s'affiche pas. `acheteurs` y reste le chiffre global :
+  // la réponse dit « notre base compte … acheteurs d'immeubles ».
   const vivants: Record<string, string | null> = {
     annee: tableau ? String(annee) : null,
     ventesImmeubles: tableau && totalImmeubles ? nombre(totalImmeubles) : null,
+    // Sans les prix des appartements en base, la phrase d'avant le lot 110 : la question reste affichée.
+    phraseDecote:
+      tableau && etendueDecote
+        ? `Par rapport au prix médian des appartements vendus seuls la même année, la décote mesurée va de ${etendueDecote.min.pct} % à ${etendueDecote.max.pct} % selon l’arrondissement. D’après notre expérience, comptez plutôt 15 % pour un immeuble en bon état, loué au prix du marché.`
+        : "Entre un immeuble vendu en bloc et le prix des appartements, la décote est en général d’environ 15 %.",
     immeublesEtudies: nombre(ch.immeublesTraites),
-    acheteurs,
+    acheteurs: nombre(ch.investisseurs),
   };
   const faq = questions.flatMap((q): (QR & { groupe: string })[] => {
     let manque = false;
@@ -308,7 +452,7 @@ export default async function VendreUnImmeubleParis() {
           q.lien && suite.length ? (
             <p>
               {insecable(avant)}
-              <Link href={q.lien.href} className="lien-texte">{q.lien.texte}</Link>
+              <Link href={q.lien.href} className="lien-texte" {...(q.lien.href === "/vendre-un-immeuble-a-la-decoupe/" ? { target: "_blank", rel: "noopener" } : {})}>{q.lien.texte}</Link>
               {insecable(suite.join(q.lien.texte))}
             </p>
           ) : undefined,
@@ -341,16 +485,16 @@ export default async function VendreUnImmeubleParis() {
 
       <HeroMedia className="hero-paris" image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt}>
         <>
-          {/* Comme sur la Découpe (lot 106) : le surtitre porte la requête et devient le H1, à sa
-              taille de surtitre ; la phrase forte reste le grand titre visuel, en paragraphe. */}
-          <Eyebrow as="h1">Vendre et faire estimer un immeuble de rapport à Paris</Eyebrow>
-          <p className="h-display hero-titre">
-            Un <span className="accent">immeuble parisien</span> ne se vend pas comme un appartement
-          </p>
+          {/* Retours #297, #298 et #313 : le grand titre est le H1 et promet le meilleur prix ; le
+              surtitre dit le métier, l'immeuble de rapport, sans répéter « à Paris ». */}
+          <Eyebrow>Estimation et vente d’immeubles de&nbsp;rapport</Eyebrow>
+          <h1 className="hero-titre">
+            Vendre votre immeuble à Paris au <span className="accent">meilleur&nbsp;prix</span>
+          </h1>
           <p className="lead">
-            Notre spécialité&nbsp;: l’immeuble de rapport. Nos agents, basés à Paris, estiment le vôtre
-            gratuitement, puis le vendent sans annonce, 100&nbsp;% en off-market, à celui de nos{" "}
-            {acheteurs} acheteurs qui en donnera le meilleur prix.
+            Forts de notre expérience de la vente d’immeubles à Paris depuis 2018 et d’un réseau de{" "}
+            {acheteurs} acheteurs {acheteursParisiens ? "d’immeubles parisiens" : "d’immeubles"}, nous
+            estimons le vôtre et le vendons au meilleur prix, dans les meilleures conditions.
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>
@@ -380,23 +524,19 @@ export default async function VendreUnImmeubleParis() {
           <Reveal className="section__head tete-2col">
             <Eyebrow>Estimation gratuite</Eyebrow>
             <h2>
-              Estimation de votre immeuble à Paris&nbsp;: des spécialistes,{" "}
-              <span className="accent">du bail à la toiture</span>
+              Estimer votre <span className="accent">immeuble à Paris</span>&nbsp;: faites appel au{" "}
+              <span className="accent">spécialiste</span> des immeubles parisiens
             </h2>
             <p className="lead">
-              Un avis de valeur d’appartement part du prix au&nbsp;m² du quartier. Pour un immeuble, cela ne
-              suffit pas&nbsp;: il faut une connaissance fine du marché et de solides compétences techniques
-              et locatives. C’est le métier de nos agents, qui ont étudié {nombre(ch.immeublesTraites)}{" "}
+              Un immeuble ne s’estime pas comme un appartement. Le prix au&nbsp;m² du quartier ne suffit
+              pas&nbsp;: il faut bien connaître le marché et avoir de solides compétences techniques et
+              locatives. C’est le métier de nos agents, qui ont étudié {nombre(ch.immeublesTraites)}{" "}
               immeubles depuis 2018.
             </p>
           </Reveal>
           <LigneDefilante className="paris-ligne">
             {ESTIMATION.map((x) => (
-              <article key={x.titre} className="paris-carte">
-                <Picto nom={x.picto} taille={30} />
-                <h3>{x.titre}</h3>
-                <p>{insecable(x.texte)}</p>
-              </article>
+              <CarteArgument key={x.titre} {...x} />
             ))}
           </LigneDefilante>
           <Citation
@@ -407,38 +547,35 @@ export default async function VendreUnImmeubleParis() {
         </div>
       </section>
 
-      {/* Combien vaut-il à peu près dans mon arrondissement ? Un seul tableau, quatre colonnes. */}
+      {/* Combien vaut-il à peu près dans mon arrondissement ? Un seul tableau, cinq colonnes. */}
       {tableau && (
         <section className="section section--creme paris-prix-sec" id="prix-par-arrondissement">
           <div className="container paris-prix">
             <Reveal className="section__head paris-prix__tete">
-              <Eyebrow>Prix des immeubles par arrondissement</Eyebrow>
+              <Eyebrow>Notre étude des ventes d’immeubles de rapport</Eyebrow>
               <h2>
-                Quel est le prix au&nbsp;m² d’un <span className="accent">immeuble de rapport à Paris</span>,
-                par arrondissement&nbsp;?
+                Prix au&nbsp;m² des <span className="accent">immeubles à Paris</span>, par arrondissement
               </h2>
+              {/* Retour #322 : nous avons étudié ces ventes nous-mêmes ; les deux prix suivent le tableau. */}
               <p className="lead">
-                Les prix publiés par arrondissement sont ceux des appartements. Voici ceux des immeubles
-                vendus en bloc à Paris en {annee}, d’après DVF, la base publique des ventes immobilières
+                Pour affiner nos estimations et informer nos clients, nous avons étudié nous-mêmes les
+                ventes d’immeubles en bloc enregistrées dans DVF, la base publique des ventes
+                immobilières.
                 {moinsCher && plusCher && moinsCher.n !== plusCher.n ? (
                   <>
-                    &nbsp;: en médiane, de {nombre(moinsCher.prix)}&nbsp;€/m² dans le {rang(moinsCher.n)} à{" "}
-                    {nombre(plusCher.prix)}&nbsp;€/m² dans le {rang(plusCher.n)}
+                    {" "}À Paris en {annee}, le prix médian va de {nombre(moinsCher.prix)}&nbsp;€/m² dans le{" "}
+                    {rang(moinsCher.n)} à {nombre(plusCher.prix)}&nbsp;€/m² dans le {rang(plusCher.n)}.
                   </>
                 ) : null}
-                .
               </p>
             </Reveal>
 
             <div className="paris-prix__tableau">
-              <p className="paris-prix__legende">
-                <strong>Prix médian</strong>&nbsp;: la moitié des immeubles se sont vendus plus cher au&nbsp;m²,
-                l’autre moitié moins cher. <strong>Fourchette</strong>&nbsp;: sans le quart des ventes le moins
-                cher ni le quart le plus cher.
-              </p>
               <table>
+                {/* Retour #324 : un titre d'une ligne ; au téléphone, « par arrondissement » n'est que lu. */}
                 <caption>
-                  Prix au m² des immeubles vendus en bloc à Paris en {annee}, par arrondissement. Source&nbsp;: DVF.
+                  Prix au&nbsp;m² des immeubles à Paris en {annee}
+                  <span className="paris-prix__long">, par arrondissement</span>
                 </caption>
                 <thead>
                   <tr>
@@ -450,12 +587,15 @@ export default async function VendreUnImmeubleParis() {
                       <span className="paris-prix__long">Prix médian au&nbsp;m²</span>{" "}
                       <span className="paris-prix__court" aria-hidden="true">Prix médian</span>
                     </th>
-                    <th scope="col">
-                      <span className="paris-prix__long">Fourchette au&nbsp;m²</span>{" "}
-                      <span className="paris-prix__court" aria-hidden="true">Fourchette</span>
-                    </th>
+                    {avecDecote && (
+                      <th scope="col">
+                        <span className="paris-prix__long">Décote&nbsp;/ appartements</span>{" "}
+                        <span className="paris-prix__court" aria-hidden="true">Décote</span>
+                      </th>
+                    )}
+                    <th scope="col">Fiabilité</th>
                     {/* « Théorique » reste écrit au téléphone aussi : on ne le prend pas pour un rendement réel. */}
-                    {avecRdt && <th scope="col">Rendement théorique</th>}
+                    {avecRdt && <th scope="col">Rendement <br className="paris-prix__rupture" />théorique</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -468,20 +608,12 @@ export default async function VendreUnImmeubleParis() {
                       {l.prix != null ? (
                         <>
                           <td className="paris-prix__med">{nombre(l.prix)}&nbsp;€</td>
-                          <td className="paris-prix__four">
-                            {l.bas != null && l.haut != null ? (
-                              <>
-                                {nombre(l.bas)} à {nombre(l.haut)}
-                                <span className="paris-prix__eur">&nbsp;€</span>
-                              </>
-                            ) : (
-                              "–"
-                            )}
-                          </td>
+                          {avecDecote && <td className="paris-prix__dec">{l.decote != null ? ecartPct(l.decote) : "–"}</td>}
+                          <td className="paris-prix__fiab">{l.fiabilite != null ? <Fiabilite note={l.fiabilite} /> : "–"}</td>
                           {avecRdt && <td className="paris-prix__rdt">{l.rdt != null ? `${pc(l.rdt)} %` : "–"}</td>}
                         </>
                       ) : (
-                        <td colSpan={avecRdt ? 3 : 2}>
+                        <td colSpan={colonnesChiffres}>
                           {l.connu ? `Moins de trois ventes en ${annee}` : `Chiffres de ${annee} non disponibles`}
                         </td>
                       )}
@@ -498,23 +630,68 @@ export default async function VendreUnImmeubleParis() {
                   Paris en {annee}). Sont écartés les échanges, les ventes sur plan, les adjudications, les
                   expropriations et les ventes de terrain à bâtir, les mêmes logements présents dans plusieurs
                   actes la même année, les ventes à cheval sur plusieurs communes et les prix au&nbsp;m²
-                  inférieurs à 3&nbsp;000&nbsp;€ ou supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de
-                  trois ventes, commerces compris dans la surface. Fourchette à partir de cinq ventes.
-                  {avecRdt && (
-                    <>
-                      {" "}Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL
-                      {millesime ? ` ${millesime}` : ""}, charges comprises.
-                    </>
-                  )}
+                  inférieurs à {nombre(PRIX_M2_MIN)}&nbsp;€ ou supérieurs à {nombre(PRIX_M2_MAX)}&nbsp;€. Prix publié à partir de
+                  trois ventes, commerces compris dans la surface.
+                </p>
+                {avecDecote && (
+                  <p>
+                    Décote&nbsp;: le prix médian au&nbsp;m² des immeubles rapporté à celui des appartements
+                    vendus seuls dans le même arrondissement, la même année, d’après DVF. Une vente
+                    d’appartement est retenue quand elle porte sur un seul appartement, avec ou sans
+                    dépendances, à un seul prix, entre {nombre(PRIX_M2_MIN)}&nbsp;€ et {nombre(PRIX_M2_MAX)}&nbsp;€ le&nbsp;m². Prix
+                    médian des appartements publié à partir de {VENTES_MIN_APPARTEMENTS} ventes.
+                  </p>
+                )}
+                <p>
+                  Fiabilité&nbsp;: l’écart entre les prix au&nbsp;m², une fois écartés le quart des ventes le
+                  moins cher et le quart le plus cher, rapporté au prix médian puis divisé par la racine
+                  carrée du nombre de ventes.{" "}
+                  {SEUILS_FIABILITE.map(
+                    ([seuil, note], i) =>
+                      `${i ? "jusqu’à" : "Jusqu’à"} ${seuil.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} : ${note}`,
+                  ).join(" ; ")}
+                  &nbsp;; au-delà, ou avec moins de cinq ventes&nbsp;: 1.
+                </p>
+                {avecRdt && (
+                  <p>
+                    Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL
+                    {millesime ? ` ${millesime}` : ""}, charges comprises.
+                  </p>
+                )}
+                <p>
+                  Source&nbsp;: Demandes de valeurs foncières (DVF), direction générale des Finances
+                  publiques, data.gouv.fr. Ventes de {annee}{releveEn ? `, relevées en ${releveEn}` : ""}.
                 </p>
               </details>
             </div>
 
             <div className="paris-prix__notes">
+              {avecDecote ? (
+                <p>
+                  <strong>Décote.</strong> L’écart entre le prix médian au&nbsp;m² des immeubles vendus en
+                  bloc et celui des appartements vendus seuls, dans le même arrondissement, la même année.
+                  {etendueDecote && (
+                    <>
+                      {" "}En {annee}, elle va de {etendueDecote.min.pct}&nbsp;% dans le{" "}
+                      {rang(etendueDecote.min.n)} à {etendueDecote.max.pct}&nbsp;% dans le{" "}
+                      {rang(etendueDecote.max.n)}.
+                    </>
+                  )}{" "}
+                  D’après notre expérience, comptez plutôt 15&nbsp;% pour un immeuble en bon état, loué au
+                  prix du marché.
+                </p>
+              ) : (
+                /* Sans les prix des appartements en base : la note d'avant le lot 110, sans colonne à expliquer. */
+                <p>
+                  <strong>Environ 15&nbsp;% de décote.</strong> Entre un immeuble vendu en bloc et le prix des
+                  appartements, la décote est en général d’environ 15&nbsp;%. Elle varie selon
+                  l’arrondissement, le type d’immeuble et les loyers réellement pratiqués.
+                </p>
+              )}
               <p>
-                <strong>Environ 15&nbsp;% de décote.</strong> Entre un immeuble vendu en bloc et le prix des
-                appartements, la décote est en général d’environ 15&nbsp;%. Elle varie selon
-                l’arrondissement, le type d’immeuble et les loyers réellement pratiqués.
+                <strong>Fiabilité.</strong> De 1 à 5&nbsp;: la note est haute quand les ventes de
+                l’arrondissement sont nombreuses et leurs prix proches les uns des autres. À 1 ou 2, le
+                prix est à lire avec prudence.
               </p>
               <p>
                 <strong>Un rendement de 3 à 6&nbsp;%.</strong> À Paris, un immeuble de rapport se vend
@@ -550,26 +727,25 @@ export default async function VendreUnImmeubleParis() {
             </h2>
             <p className="lead">
               Votre immeuble est commercialisé uniquement en off-market, auprès de nos {acheteurs}{" "}
-              acheteurs, pour préserver sa valeur et son exclusivité. Vos locataires et vos voisins ne
-              l’apprennent pas par une annonce.
+              acheteurs{acheteursParisiens ? " d’immeubles parisiens" : ""}, pour préserver sa valeur et son
+              exclusivité. Vos locataires et vos voisins ne l’apprennent pas par une annonce.
             </p>
           </Reveal>
           <LigneDefilante className="paris-ligne">
             {VENTE.map((x) => (
-              <article key={x.titre} className="paris-carte">
-                <Picto nom={x.picto} taille={30} />
-                <h3>{x.titre}</h3>
-                <p>{insecable(x.texte)}</p>
-                {x.citation && <Citation {...x.citation} />}
-              </article>
+              <CarteArgument key={x.titre} {...x} />
             ))}
           </LigneDefilante>
-          <ul className="paris-compteurs" aria-label="Les recherches déposées dans notre base">
-            {recherches.map((r) => (
-              <li key={r.libelle}>
-                <Picto nom={r.picto} taille={22} />
-                <span className="paris-compteurs__val">{r.valeur}</span>{" "}
-                <span className="paris-compteurs__lib">{r.libelle}</span>
+          <ul className="paris-profils" aria-label="Les trois profils d’acquéreurs de notre base">
+            {profils.map((p) => (
+              <li key={p.nom}>
+                <Picto nom={p.picto} taille={22} />
+                <p className="paris-profils__qui">
+                  <strong>{p.nom}</strong>&nbsp;: {p.cherche}
+                </p>
+                <p className="paris-profils__combien">
+                  <span className="paris-profils__val">{p.valeur}</span> {p.libelle}
+                </p>
               </li>
             ))}
           </ul>
@@ -577,7 +753,8 @@ export default async function VendreUnImmeubleParis() {
         </div>
       </section>
 
-      {/* Serai-je seul une fois l'offre reçue ? Retour #312 : l'après-offre est la partie la plus difficile. */}
+      {/* Serai-je seul une fois l'offre reçue ? Retours #312 et #333 : l'après-offre est la partie la
+          plus difficile, et c'est un travail documentaire. */}
       <section className="section section--creme paris-apres-sec">
         <div className="container">
           <Reveal className="section__head tete-2col">
@@ -586,41 +763,16 @@ export default async function VendreUnImmeubleParis() {
               Après l’offre commence <span className="accent">le plus difficile</span>
             </h2>
             <p className="lead">
-              C’est là que travailler avec un professionnel prend tout son sens. Préemption de la Ville,
-              droits des locataires, questions du notaire&nbsp;: nous vous accompagnons de bout en bout,
-              jusqu’à l’acte.
+              C’est là que travailler avec un professionnel prend tout son sens. Dossier locatif,
+              diagnostics, pièces techniques, demandes du notaire et de l’acquéreur&nbsp;: nous réunissons
+              tout, et nous vous accompagnons jusqu’à l’acte.
             </p>
           </Reveal>
-          <div className="paris-apres">
-            {/* Trois lignes l'une sous l'autre sur ordinateur, une ligne qui glisse au téléphone. */}
-            <LigneDefilante className="paris-obstacles">
-              {OBSTACLES.map((x) => (
-                <article key={x.titre} className="paris-obstacle">
-                  <Picto nom={x.picto} taille={28} />
-                  <div>
-                    <h3>{x.titre}</h3>
-                    <p>{insecable(x.texte)}</p>
-                  </div>
-                </article>
-              ))}
-            </LigneDefilante>
-            <div className="paris-apres__compte">
-              <h3>Dans votre espace client, vous suivez tout</h3>
-              <ol className="paris-frise" aria-label="Les étapes de la vente">
-                {FRISE.map((e) => (
-                  <li key={e}>{e}</li>
-                ))}
-              </ol>
-              <ul className="paris-apres__ecrans">
-                {COMPTE.map((x) => (
-                  <li key={x.titre}>
-                    <strong>{x.titre}.</strong> {insecable(x.texte)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          {/* L'avis porte sur le suivi de la vente, pas sur l'espace client : il est hors de son encadré. */}
+          <LigneDefilante className="paris-ligne">
+            {APRES.map((x) => (
+              <CarteArgument key={x.titre} {...x} />
+            ))}
+          </LigneDefilante>
           <Citation texte="Excellent suivi auprès de l’ensemble des intervenants…" auteur="Violaine Tureau" />
           <Relance />
         </div>
@@ -637,36 +789,41 @@ export default async function VendreUnImmeubleParis() {
           </Reveal>
           <LigneDefilante className="paris-ligne paris-ligne--3">
             {CONDITIONS.map((x) => (
-              <article key={x.titre} className="paris-carte">
-                <Picto nom={x.picto} taille={30} />
-                <h3>{x.titre}</h3>
-                <p>{insecable(x.texte)}</p>
-              </article>
+              <CarteArgument key={x.titre} {...x} />
             ))}
           </LigneDefilante>
           <Relance />
         </div>
       </section>
 
-      {/* Et si je le vendais par appartements ? */}
+      {/* Et si je le vendais par appartements ? Retour #340 : une option, pas une promesse. */}
       <section className="section section--noir-3 paris-decoupe-sec">
-        <div className="container container--narrow">
-          <Reveal className="section__head">
+        <div className="container">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>En bloc ou à la découpe</Eyebrow>
             <h2>
-              Vendre en bloc ou à la découpe à Paris&nbsp;: <span className="accent">nous chiffrons les deux</span>
+              Vous envisagez la <span className="accent">vente à la découpe</span> pour vendre plus cher&nbsp;?
             </h2>
             <p className="lead">
-              Vendus un par un, les logements d’un immeuble peuvent rapporter davantage. Pas toujours&nbsp;:
-              nous faisons le calcul pour le vôtre.
+              La plupart du temps, la découpe rapporte davantage. Parfois elle ne vaut pas le coup&nbsp;:
+              immeuble déjà rénové, loyers déjà au niveau du marché, logements tous loués. Nous analysons
+              votre immeuble et vous conseillons selon l’écart de prix entre les deux options.
             </p>
           </Reveal>
-          <ul className="paris-decoupe">
-            <li><strong>Nous faisons les deux.</strong> Quand la découpe ne crée pas de valeur, nous vous le disons et nous vendons en bloc.</li>
-            <li><strong>Nous pilotons l’opération.</strong> Mise en copropriété, offres de vente aux locataires en place, départs négociés à l’amiable, baux commerciaux, travaux, vente lot par lot.</li>
-            <li><strong>Vous gardez le choix.</strong> Tant que le premier lot n’est pas vendu, l’immeuble reste vendable en bloc.</li>
-          </ul>
-          <Relance libelle="Chiffrer les deux scénarios" court="Chiffrer les deux" />
+          <LigneDefilante className="paris-ligne paris-ligne--3">
+            {DECOUPE.map((x) => (
+              <CarteArgument key={x.titre} {...x} />
+            ))}
+          </LigneDefilante>
+          {/* Le second bouton ouvre la page de la découpe dans un nouvel onglet : le visiteur ne quitte
+              pas celle-ci. `porte-action` : au téléphone, les deux boutons restent visibles et la
+              pilule fixe s'efface (sans cela, seul le bouton vers la Découpe restait dans la section). */}
+          <div className="btn-row paris-relance porte-action">
+            <Button href="#estimer" court="Chiffrer les deux">Chiffrer les deux options</Button>
+            <Button href="/vendre-un-immeuble-a-la-decoupe/" variant="outline" nouvelOnglet>
+              Voir la vente à la découpe
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -674,29 +831,23 @@ export default async function VendreUnImmeubleParis() {
       {ventesParis.length > 0 && (
         <section className="section section--creme paris-ventes-sec">
           <div className="container">
-            <Reveal className="section__head tete-2col">
+            <Reveal className="section__head">
               <Eyebrow>Exemples de ventes à Paris</Eyebrow>
               <h2>
-                Des immeubles de rapport vendus à Paris, <span className="accent">prix affichés</span>
+                Des <span className="accent">immeubles parisiens</span> vendus par France Immeuble
               </h2>
-              <p className="lead">
-                Nous publions nos ventes&nbsp;: rue, surface, loyer, rendement et prix de vente. Voici des
-                exemples parisiens.
-                {anneesAvantHausse.length > 0
-                  ? ` Ceux de ${anneesAvantHausse.join(", ").replace(/, ([^,]*)$/, " et $1")} datent d’avant la hausse des taux.`
-                  : ""}
-              </p>
             </Reveal>
-            {/* Au téléphone, les cartes passent sur une ligne qui glisse (`ventes-flux`). */}
-            <div className="ventes-flux">
-              <ul className="ventes">
-                {ventesParis.map((v, i) => (
-                  <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
-                    <CarteVente v={v} sansDelai />
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
+            {/* Trois cartes de front sur ordinateur ; à partir de la quatrième vente, la ligne glisse. */}
+            <LigneDefilante
+              className={`paris-ventes-ligne${ventesParis.length > 3 ? " paris-ventes-ligne--glisse" : ""}`}
+            >
+              {ventesParis.map((v) => (
+                <article key={v.id} className="vente">
+                  <CarteVente v={v} sansDelai libelleLoyer="Loyer" avecType prixAuM2 />
+                </article>
+              ))}
+            </LigneDefilante>
+            {noteAvantHausse && <p className="paris-ventes__note">{insecable(noteAvantHausse)}</p>}
             <Citation
               texte="… je recommande sans réserve France Immeuble, qui n’a à mon avis pas beaucoup d’équivalent sur son marché."
               auteur="Romain VZ"
@@ -740,7 +891,7 @@ export default async function VendreUnImmeubleParis() {
         items={faq}
         groupes={groupes}
         surtitre="Les questions des propriétaires parisiens"
-        titre={<>Vendre ou faire estimer un immeuble à Paris&nbsp;: <span className="accent">vos questions</span></>}
+        titre={<>Vendre ou faire estimer un immeuble à Paris&nbsp;: <span className="accent">vos&nbsp;questions</span></>}
         className="section--noir-2 paris-faq-sec"
       >
         <Relance />

@@ -41,8 +41,8 @@ export default async function EstimationImmeubleParis() {
   const anneeImmeubles = [...immeubles.values()][0]?.annee ?? null;
 
   const etapes: { picto: NomPicto; titre: string; texte: string }[] = [
-    { picto: "calculatrice", titre: "Estimation gratuite", texte: "Un agent spécialisé étudie l’immeuble, ses baux et son secteur, et vous donne un prix réaliste au rendement." },
-    { picto: "detective", titre: "Présentation off-market", texte: "Votre immeuble est proposé à nos acheteurs, avant toute annonce. Vos locataires et vos voisins n’en savent rien." },
+    { picto: "calculatrice", titre: "Estimation gratuite", texte: "Un agent spécialisé étudie l’immeuble, ses baux et son secteur, et vous donne un prix réaliste." },
+    { picto: "detective", titre: "Présentation off-market", texte: "Votre immeuble est proposé à nos acheteurs, sans annonce. Vos locataires et vos voisins n’en savent rien." },
     { picto: "poignee", titre: "Offres et négociation", texte: "Nous organisons les visites, recueillons les offres et vérifions la solidité de chaque acheteur." },
     { picto: "dossier", titre: "Signature chez le notaire", texte: "Nous suivons le dossier jusqu’à l’acte. Nos honoraires ne sont dus qu’à ce moment-là." },
   ];
@@ -54,8 +54,15 @@ export default async function EstimationImmeubleParis() {
   ];
 
   const preuves: { picto: NomPicto; titre: string; texte: string }[] = [
-    { picto: "reseau", titre: `${nombre(ch.investisseurs)} acheteurs`, texte: "investisseurs, foncières et family offices en recherche d’immeubles à Paris" },
-    { picto: "detective", titre: "Off-market", texte: "votre immeuble est proposé à nos acheteurs avant toute annonce, en toute discrétion" },
+    // Lot 110 (retour #300) : « à Paris » seulement quand le BO a déposé le nombre d'acheteurs d'immeubles parisiens.
+    {
+      picto: "reseau",
+      titre: `${nombre(ch.acheteursParis ?? ch.investisseurs)} acheteurs`,
+      texte: ch.acheteursParis != null
+        ? "investisseurs, foncières et family offices en recherche d’immeubles à Paris"
+        : "investisseurs, foncières et family offices dans notre base",
+    },
+    { picto: "detective", titre: "Off-market", texte: "votre immeuble est proposé à nos acheteurs sans annonce, en toute discrétion" },
     { picto: "euro", titre: "Payé à l’acte", texte: "nos honoraires ne sont dus qu’à la signature chez le notaire" },
   ];
 
@@ -130,10 +137,10 @@ export default async function EstimationImmeubleParis() {
           <div className="sea-decoupe">
             <h3>En bloc ou à la découpe&nbsp;?</h3>
             <p>
-              Vendu en bloc à un investisseur, un immeuble parisien se négocie en général autour de 15 %
-              sous le prix au m² des appartements. Vendus un par un, les logements libres se vendent au
-              prix du marché. Nous chiffrons les deux et nous prenons en charge la découpe quand elle vaut
-              le coup.
+              Vendu en bloc, un immeuble parisien se négocie sous le prix au m² des appartements&nbsp;:
+              environ 15&nbsp;% pour un immeuble en bon état, loué au prix du marché, davantage s’il est mal
+              loué ou à rénover. Vendus un par un, les logements libres se vendent au prix du marché. Nous
+              chiffrons la vente en bloc, et la découpe si vous le souhaitez.
             </p>
           </div>
           <div className="btn-row porte-action" style={{ marginTop: "var(--space-m)" }}>

@@ -24,6 +24,16 @@ export type Chiffres = {
    * (`immeubles_traites_92012`). Agrégat anonyme (CLAUDE.md §2, décision du 04/11/2026).
    */
   traitesPar: Record<string, number>;
+  /**
+   * Acquéreurs d'immeubles parisiens (lot 110, MAV, 13/11/2026, retours #299, #300 et #331) :
+   * acquéreurs distincts dont au moins une recherche active couvre Paris (Paris, un arrondissement,
+   * le département 75 ou toute l'Île-de-France), déposés par le BO sous `acheteurs_paris`, puis par
+   * profil sous `acheteurs_paris_investisseur`, `_marchand` et `_patrimonial`. Le site ne peut pas
+   * les compter lui-même (CLAUDE.md §2) : `null` tant que le BO n'a pas déposé la clé, sans chiffre
+   * de repli. Demande au BO : `docs/PROMPT-BO-ACHETEURS-PARIS.md`.
+   */
+  acheteursParis: number | null;
+  acheteursParisPar: { investisseur: number | null; marchand: number | null; patrimonial: number | null };
   majLe: string | null;
 };
 
@@ -38,6 +48,8 @@ const REPLI: Chiffres = {
   recherchesMarchand: 359,
   recherchesPromoteur: null,
   traitesPar: {},
+  acheteursParis: null,
+  acheteursParisPar: { investisseur: null, marchand: null, patrimonial: null },
   majLe: null,
 };
 
@@ -54,6 +66,11 @@ export async function chiffres(): Promise<Chiffres> {
     if (lignes.length === 0) return REPLI;
     const v = new Map(lignes.map((l) => [l.cle, Number(l.valeur)]));
     const n = (cle: string, defaut: number) => (Number.isFinite(v.get(cle)) ? (v.get(cle) as number) : defaut);
+    // Une clé absente, vide ou à zéro ne s'affiche pas : aucun chiffre inventé à sa place.
+    const depose = (cle: string) => {
+      const x = v.get(cle);
+      return x != null && Number.isFinite(x) && x > 0 ? x : null;
+    };
     return {
       investisseurs: n("investisseurs", REPLI.investisseurs),
       immeublesTraites: n("immeubles_traites", REPLI.immeublesTraites),
@@ -66,6 +83,12 @@ export async function chiffres(): Promise<Chiffres> {
           .filter(([cle, x]) => /^immeubles_traites_\w+$/.test(cle) && Number.isFinite(x) && x > 0)
           .map(([cle, x]) => [cle.slice("immeubles_traites_".length), x]),
       ),
+      acheteursParis: depose("acheteurs_paris"),
+      acheteursParisPar: {
+        investisseur: depose("acheteurs_paris_investisseur"),
+        marchand: depose("acheteurs_paris_marchand"),
+        patrimonial: depose("acheteurs_paris_patrimonial"),
+      },
       majLe: lignes.reduce((m, l) => (l.maj_le > m ? l.maj_le : m), ""),
     };
   } catch {

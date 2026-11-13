@@ -28,6 +28,9 @@
  * étages) donnent deux lignes identiques. Les lots 100 à 108 les comptaient pour un seul logement :
  * la surface était sous-estimée et le prix au m² gonflé (13 rue Clapeyron, 8e : 613 m² au lieu de
  * 1 265 m²). Voir `locauxDe`.
+ *
+ * Lot 110 (MAV, 13/11/2026) : les appartements vendus seuls du même fichier, pour la décote des
+ * immeubles vendus en bloc. Voir `ventesAppartements`.
  */
 
 export const COMMUNES_SUIVIES: { code: string; nom: string }[] = [
@@ -91,6 +94,22 @@ const mediane = (xs: number[]) => {
 type Ligne = Record<string, string>;
 const estLogement = (r: Ligne) => r.type_local === "Appartement" || r.type_local === "Maison";
 
+/** Bornes du prix au m² : en dehors, la valeur est tenue pour aberrante (immeubles et appartements). */
+export const PRIX_M2_MIN = 3_000;
+export const PRIX_M2_MAX = 30_000;
+const dansLesBornes = (pm2: number) => pm2 >= PRIX_M2_MIN && pm2 <= PRIX_M2_MAX;
+
+/** Les lignes des mutations de nature « Vente », rangées par mutation. */
+function ventesParMutation(lignes: Ligne[]): Map<string, Ligne[]> {
+  const parMutation = new Map<string, Ligne[]>();
+  for (const l of lignes) {
+    if (l.nature_mutation !== "Vente") continue;
+    const g = parMutation.get(l.id_mutation);
+    if (g) g.push(l); else parMutation.set(l.id_mutation, [l]);
+  }
+  return parMutation;
+}
+
 /**
  * Les locaux d'une mutation, hors dépendances, avec le nombre de fois où chacun compte.
  * Une parcelle à plusieurs natures de culture répète chaque local une fois par nature : ces lignes
@@ -143,12 +162,7 @@ export const quantile = (tries: number[], p: number) => {
  *   commune : leur prix couvre des locaux qu'on ne voit pas ici.
  */
 export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): StatsImmeubles {
-  const parMutation = new Map<string, Ligne[]>();
-  for (const l of lignes) {
-    if (l.nature_mutation !== "Vente") continue;
-    const g = parMutation.get(l.id_mutation);
-    if (g) g.push(l); else parMutation.set(l.id_mutation, [l]);
-  }
+  const parMutation = ventesParMutation(lignes);
   type Candidate = { serie: string; date: string; parcelles: Set<string>; prix: number; surface: number };
   const candidats: Candidate[] = [];
   // Toute vente de plus de cinq logements compte pour repérer une série vendue plusieurs fois,
@@ -191,7 +205,7 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     } else ventes.push({ ...c, parcelles: new Set(c.parcelles) });
   }
   const pm2 = ventes
-    .filter((c) => c.prix / c.surface >= 3_000 && c.prix / c.surface <= 30_000)
+    .filter((c) => dansLesBornes(c.prix / c.surface))
     .map((c) => ({ ...c, pm2: c.prix / c.surface }))
     .sort((a, b) => a.pm2 - b.pm2);
   const n = pm2.length;
@@ -209,6 +223,45 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     prixMedian: n >= 3 ? Math.round(mediane(pm2.map((c) => c.prix))!) : null,
     surfaceMediane: n >= 3 ? Math.round(mediane(pm2.map((c) => c.surface))!) : null,
   };
+}
+
+/** Sous ce nombre de ventes, le prix médian des appartements ne se publie pas : pas de décote. */
+export const VENTES_MIN_APPARTEMENTS = 30;
+
+export type StatsAppartements = { nbVentes: number; prixM2Median: number | null };
+
+/**
+ * Les appartements vendus seuls, pour mesurer la décote d'un immeuble vendu en bloc (lot 110, MAV,
+ * 13/11/2026 : « inclure la décote en pourcentage par rapport aux ventes d'appartements »). Même
+ * fichier DVF et même année que les immeubles, pour comparer ce qui se compare. Règles :
+ *  - une mutation de nature « Vente », comme pour les immeubles ;
+ *  - exactement un logement, et c'est un appartement. Il est compté par `locauxDe` : deux lignes
+ *    identiques sans numéro de lot sont deux appartements, la vente n'est pas retenue (lot 109,
+ *    pas de dédoublonnage par surface et nombre de pièces) ;
+ *  - ses dépendances (cave, parking) sont admises, aucun autre local : ni maison, ni local
+ *    commercial ;
+ *  - un seul prix, et une surface ;
+ *  - prix au m² dans les mêmes bornes que les immeubles ;
+ *  - une vente dont des lignes sont dans une autre commune suivie est écartée, comme pour les
+ *    immeubles.
+ * Le prix médian au m², arrondi à l'euro, n'est publié qu'à partir de trente ventes.
+ *
+ * @param ailleurs le même ensemble que pour `ventesImmeubles`.
+ */
+export function ventesAppartements(lignes: Ligne[], ailleurs?: ReadonlySet<string>): StatsAppartements {
+  const pm2: number[] = [];
+  for (const [id, rows] of ventesParMutation(lignes)) {
+    const locaux = locauxDe(rows);
+    if (locaux.length !== 1 || locaux[0].fois !== 1 || locaux[0].r.type_local !== "Appartement") continue;
+    if (new Set(rows.map((r) => r.valeur_fonciere)).size !== 1) continue;
+    const prix = Number(rows[0].valeur_fonciere);
+    const surface = Number(locaux[0].r.surface_reelle_bati);
+    if (!(prix > 0) || !(surface > 0)) continue;
+    if (ailleurs?.has(id)) continue;
+    if (dansLesBornes(prix / surface)) pm2.push(prix / surface);
+  }
+  const n = pm2.length;
+  return { nbVentes: n, prixM2Median: n >= VENTES_MIN_APPARTEMENTS ? Math.round(mediane(pm2)!) : null };
 }
 
 /**

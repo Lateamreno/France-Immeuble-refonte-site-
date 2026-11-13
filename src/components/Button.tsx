@@ -17,6 +17,7 @@ export function Button({
   icone = false,
   wide = false,
   court,
+  nouvelOnglet = false,
   children,
 }: {
   href: string;
@@ -25,6 +26,11 @@ export function Button({
   wide?: boolean;
   /** Libellé court pour le téléphone : un bouton tient sur une ligne (MAV, 04/11/2026). */
   court?: ReactNode;
+  /**
+   * Ouvre le lien dans un nouvel onglet : le visiteur garde la page d'où il vient
+   * (retour #340, MAV, 13/11/2026 : « il faut que cela ouvre une nouvelle page »).
+   */
+  nouvelOnglet?: boolean;
   children: ReactNode;
 }) {
   const classes = ["btn", `btn--${variant}`, wide ? "btn--wide" : ""]
@@ -39,17 +45,20 @@ export function Button({
   const contenu = court ? (
     <><span className="btn__long">{children}</span><span className="btn__court">{court}</span></>
   ) : <>{children}</>;
+  const onglet = nouvelOnglet ? { target: "_blank", rel: "noopener" } : {};
+  // Les lecteurs d'écran annoncent le changement de fenêtre (même convention que la fiche d'une annonce).
+  const suite = nouvelOnglet ? <span className="sr-only"> (nouvel onglet)</span> : null;
 
   if (externe) {
     return (
-      <a className={classes} href={href}>
-        {contenu}
+      <a className={classes} href={href} {...onglet}>
+        {contenu}{suite}
       </a>
     );
   }
   return (
-    <Link className={classes} href={href}>
-      {contenu}
+    <Link className={classes} href={href} {...onglet}>
+      {contenu}{suite}
     </Link>
   );
 }

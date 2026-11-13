@@ -45,20 +45,44 @@ export const delaiOffre = (j: number) =>
  * surface, le loyer potentiel, le rendement et le prix. Aucune date de vente.
  * L'écart à l'estimation et le délai avant l'offre suivent sur une ligne quand
  * le BO les a déposés, et sur la fiche dans tous les cas.
+ *
+ * Les options `libelleLoyer`, `avecType` et `prixAuM2` ne servent qu'à la page
+ * Paris (lot 110) : sans elles, la carte reste celle des autres pages.
  */
-export function CarteVente({ v, sansDelai = false }: { v: Vente; /** Page Paris : aucun délai affiché (MAV, 12/11/2026). */ sansDelai?: boolean }) {
+export function CarteVente({
+  v,
+  sansDelai = false,
+  libelleLoyer = "Loyer potentiel",
+  avecType = false,
+  prixAuM2 = false,
+}: {
+  v: Vente;
+  /** Page Paris : aucun délai affiché (MAV, 12/11/2026). */
+  sansDelai?: boolean;
+  /** Page Paris (retour #341, MAV, 13/11/2026) : « Loyer » ; le chiffre reste le loyer potentiel. */
+  libelleLoyer?: string;
+  /** Page Paris (#341) : le type devant la rue, « Immeuble mixte rue Mouffetard » ; l'un des deux seul si l'autre manque. */
+  avecType?: boolean;
+  /** Page Paris (#341) : sous le prix, le prix au m² (prix ÷ surface exacte) à la place du délai et de l'écart à l'estimation. */
+  prixAuM2?: boolean;
+}) {
   const surface = surfaceVente(v);
   const delai = delaiPublie(v);
   const ecart = ecartPublie(v);
-  const suite = [
-    delai != null && !sansDelai ? `Offre en ${delaiOffre(delai)}` : null,
-    // « 0 % vs estimation » se lisait comme une erreur : l'offre est arrivée au prix estimé, on le dit.
-    AFFICHER_ECART_ESTIMATION && ecart != null
-      ? Math.abs(ecart) < 0.05
-        ? "Meilleure offre au prix estimé"
-        : `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
-      : null,
-  ].filter(Boolean);
+  const lieu = avecType ? [v.type ?? "Immeuble de rapport", v.rue].filter(Boolean).join(" ") : v.rue;
+  const suite = (
+    prixAuM2
+      ? [v.surface ? `${prix(v.prix / v.surface).replace(/ /g, "\u00a0")}/m²` : null]
+      : [
+          delai != null && !sansDelai ? `Offre en ${delaiOffre(delai)}` : null,
+          // « 0 % vs estimation » se lisait comme une erreur : l'offre est arrivée au prix estimé, on le dit.
+          AFFICHER_ECART_ESTIMATION && ecart != null
+            ? Math.abs(ecart) < 0.05
+              ? "Meilleure offre au prix estimé"
+              : `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
+            : null,
+        ]
+  ).filter(Boolean);
 
   return (
     <Link href={`/immeubles-vendus/${v.slug}/`} className="vente__lien">
@@ -85,11 +109,11 @@ export function CarteVente({ v, sansDelai = false }: { v: Vente; /** Page Paris 
         <span className="vente__ville">
           {v.ville} <span className="vente__dept">({v.dept})</span>
         </span>
-        {v.rue && <span className="vente__rue">{v.rue}</span>}
+        {lieu && <span className="vente__rue">{lieu}</span>}
         {/* Une ligne chacun : réunis, « €/an » partait seul à la ligne. */}
         {surface && <span className="vente__faits">{surface}</span>}
         {v.loyerPotentiel != null && (
-          <span className="vente__faits">Loyer potentiel {prix(v.loyerPotentiel)}/an</span>
+          <span className="vente__faits">{`${libelleLoyer} `}{prix(v.loyerPotentiel)}/an</span>
         )}
         <span className="vente__pied">
           <span className="vente__prix">{prix(v.prix)}</span>

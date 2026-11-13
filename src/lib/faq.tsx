@@ -66,7 +66,7 @@ export function faqVendre(c: ChiffresFaq): QR[] {
       ? `Sur nos ventes publiées, la première offre arrive en ${c.delaiMedian} jours en médiane, mais cela varie beaucoup : ${c.delaiPC} jours en moyenne à Paris et en petite couronne, ${c.delaiAilleurs} jours en banlieue et en région${c.plusRapide ? `, et ${c.plusRapide.jours} jours pour la plus rapide, à ${c.plusRapide.ville}` : ""}. Il faut ensuite compter le compromis puis l’acte chez le notaire.`
       : "La première offre arrive en général dans les premières semaines de commercialisation. Il faut ensuite compter le compromis puis l’acte chez le notaire.";
   const cout =
-    "Nos honoraires vont de 3 à 5 % du prix selon la taille de l’immeuble : 5 % jusqu’à 5 M€, 4 % de 5 à 10 M€, 3 % au-delà. Ils ne sont dus qu’à la signature de l’acte définitif chez le notaire : tant que la vente n’est pas signée, vous ne payez rien.";
+    "Nos honoraires vont de 3 à 5 % TTC du prix selon la taille de l’immeuble : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà. Ils ne sont dus qu’à la signature de l’acte définitif chez le notaire : tant que la vente n’est pas signée, vous ne payez rien.";
   return [
     {
       question: "Combien coûte la vente de mon immeuble ?",
@@ -92,11 +92,11 @@ export function faqVendre(c: ChiffresFaq): QR[] {
     {
       question: "Vendre en bloc ou à la découpe ?",
       texte:
-        "En bloc, l’immeuble part en une fois à un investisseur. À la découpe, chaque lot est vendu à un particulier, souvent plus cher. Nous chiffrons les deux avant de vous conseiller.",
+        "En bloc, l’immeuble part en une fois à un investisseur. À la découpe, chaque lot est vendu à un particulier, souvent plus cher. Nous chiffrons la vente en bloc et, si vous le souhaitez, la découpe, avant de vous conseiller.",
       reponse: (
         <p>
           En bloc, l’immeuble part en une fois à un investisseur. À la découpe, chaque lot est vendu
-          à un particulier, souvent plus cher. Nous chiffrons les deux avant de vous conseiller :{" "}
+          à un particulier, souvent plus cher. Nous chiffrons la vente en bloc et, si vous le souhaitez, la découpe, avant de vous conseiller :{" "}
           {lien("/vendre-un-immeuble-a-la-decoupe/", "voir la vente à la découpe")}.
         </p>
       ),

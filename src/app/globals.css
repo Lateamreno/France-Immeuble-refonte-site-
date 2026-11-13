@@ -1193,7 +1193,9 @@ html[class] .hero-media h1.eyebrow{
 
 /* ==========================================================================
    Page Paris (/vendre-un-immeuble/paris/), refaite au lot 108 (MAV, 12/11/2026 :
-   « le tableau c'est trop », « repense le texte et la page »). Les repères
+   « le tableau c'est trop », « repense le texte et la page »), reprise au lot 110
+   (MAV, 13/11/2026, retours #297 à #342 : tableau à cinq colonnes, rangées de
+   cartes alignées, profils d'acquéreurs, ventes en ligne qui glisse). Les repères
    servent aussi à la page des annonces (/estimation-immeuble-paris/).
    ========================================================================== */
 .paris-reperes{list-style:none;margin:0 0 var(--space-xl);padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
@@ -1202,22 +1204,41 @@ html[class] .hero-media h1.eyebrow{
 .paris-reperes__lib{color:color-mix(in srgb,var(--color-creme) 82%,transparent);font-size:.92rem;line-height:1.4;}
 .paris-reperes--seul{margin-bottom:0;}
 .section.paris-reperes-sec{padding-block:var(--space-l);min-height:0;}
-/* Le titre de la section est un H2 pour Google, à la taille d'un surtitre pour l'œil (comme le H1 du hero, lot 106). */
+/* Le titre de la section est un H2 pour Google, à la taille d'un surtitre pour l'œil (comme le H1 du hero de la Découpe, lot 106). */
 .paris-reperes-sec h2.eyebrow{font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.15em;line-height:1.65;max-width:none;}
 .paris-relance{margin-top:var(--space-l);}
 
 /* Les cartes d'arguments : quatre de front sur ordinateur, une ligne qui glisse en dessous. */
-.ligne-cartes.paris-ligne{--g:clamp(16px,2vw,28px);gap:var(--g);grid-auto-columns:84%;padding-block:4px 6px;}
+.ligne-cartes.paris-ligne{--g:clamp(16px,2vw,22px);gap:10px var(--g);grid-auto-columns:84%;padding-block:4px 6px;}
 @media (min-width:760px){ .ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - var(--g)) / 2);} }
 @media (min-width:1100px){
   .ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - 3 * var(--g)) / 4);}
   .ligne-cartes.paris-ligne--3{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}
 }
 @media (min-width:1200px){ .ligne-cartes.paris-ligne{margin-inline:0;} }
-.paris-carte{height:100%;border-left:1px solid var(--color-bronze);padding:4px 0 4px var(--space-s);display:flex;flex-direction:column;gap:10px;}
-.paris-carte h3{font-size:1.15rem;margin:0;}
+.paris-carte{min-width:0;height:100%;border-left:1px solid var(--color-bronze);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:10px;}
+.paris-carte h3{font-size:1.15rem;margin:0;text-wrap:balance;}
 .paris-carte p{margin:0;font-size:.96rem;color:color-mix(in srgb, var(--color-creme) 82%, var(--color-noir));line-height:1.55;}
-.paris-carte svg{color:var(--color-bronze);}
+.paris-carte svg{flex:none;color:var(--color-bronze);}
+/* Le texte et sa citation partagent une case : la citation se cale en bas de la carte. */
+.paris-carte__corps{display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;}
+/* Sur fond crème (après l'offre) : texte et picto dérivés des tokens. */
+.section--creme .paris-carte p{color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
+.section--creme .paris-carte svg{color:var(--color-bronze-profond);}
+/* Quatre cartes de front : le texte se resserre d'un cran, la section tient sur un écran. */
+@media (min-width:1100px){ .paris-ligne:not(.paris-ligne--3) .paris-carte p{font-size:.92rem;line-height:1.5;} }
+/* Retours #338 et #339 (MAV, 13/11/2026 : « Aligne les titres, les pictos et les débuts de texte.
+   Fais pareil à chaque fois qu'on a ce genre de dispositions ») : la rangée fixe trois lignes
+   (picto, titre, texte) et chaque carte les reprend en sous-grille. D'une carte à l'autre, tout
+   commence à la même hauteur, quel que soit le nombre de lignes des titres. Vaut sur ordinateur
+   comme dans la ligne qui glisse au téléphone. Sans sous-grille (navigateur ancien), la carte
+   reste une colonne, comme avant. */
+@supports (grid-template-rows:subgrid){
+  .ligne-cartes.paris-ligne{grid-template-rows:repeat(3,auto);}
+  .paris-ligne > .paris-carte{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;height:auto;}
+  .paris-ligne > .paris-carte > *{align-self:start;}
+  .paris-ligne > .paris-carte > .paris-carte__corps{align-self:stretch;}
+}
 
 /* Une phrase d'un avis Google, au mot près. */
 .paris-citation{margin:var(--space-m) 0 0;padding-left:16px;border-left:2px solid var(--color-bronze);max-width:64ch;}
@@ -1227,16 +1248,17 @@ html[class] .hero-media h1.eyebrow{
 .section--creme .paris-citation figcaption{color:var(--color-bronze-profond);}
 .paris-carte .paris-citation{margin-top:2px;padding-left:12px;border-left-width:1px;}
 .paris-carte .paris-citation blockquote{font-size:.92rem;}
+.paris-carte__corps > .paris-citation{margin-top:auto;}
+@media (min-width:1100px){ .paris-carte .paris-citation blockquote{font-size:.88rem;} }
 
-/* Le prix des immeubles par arrondissement : un seul tableau, quatre colonnes, un chiffre
-   dominant par ligne (le prix médian). */
+/* Le prix des immeubles par arrondissement : un seul tableau, un chiffre dominant par ligne (le
+   prix médian). Lot 110 : cinq colonnes, la décote face aux appartements et une note de fiabilité
+   à la place de la fourchette. */
 .paris-prix{--texte-2:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));--filet:color-mix(in srgb,var(--color-noir) 13%,transparent);--filet-fort:color-mix(in srgb,var(--color-noir) 34%,transparent);}
 .paris-prix .paris-prix__tete{margin-bottom:0;max-width:none;}
 .paris-prix .paris-prix__tete h2{max-width:none;}
 .paris-prix .paris-prix__tete .lead{max-width:60ch;}
 .paris-prix__tableau{margin-top:var(--space-m);}
-.paris-prix__legende{margin:0 0 var(--space-xs);max-width:60ch;font-size:.84rem;line-height:1.5;color:var(--texte-2);}
-.paris-prix__legende strong{font-weight:600;color:var(--color-noir);}
 .paris-prix table{--bord:8px;width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;line-height:1.25;color:var(--color-noir);}
 .paris-prix caption{caption-side:top;padding-bottom:10px;text-align:left;font-family:var(--font-mono-site);font-size:.66rem;font-weight:500;letter-spacing:.1em;line-height:1.5;text-transform:uppercase;color:var(--texte-2);}
 .paris-prix th,.paris-prix td{padding:9px 0 9px 12px;border-bottom:1px solid var(--filet);text-align:right;vertical-align:baseline;white-space:nowrap;font-weight:400;}
@@ -1247,8 +1269,15 @@ html[class] .hero-media h1.eyebrow{
 .paris-prix tbody th{font-size:.95rem;font-weight:500;}
 /* JetBrains Mono donne à l'espace des milliers la largeur d'un chiffre : on la resserre. */
 .paris-prix td.paris-prix__med{font-family:var(--font-mono-site);font-size:1.04rem;font-weight:700;word-spacing:-.32em;}
-.paris-prix__four{font-family:var(--font-mono-site);font-size:.8rem;color:var(--texte-2);word-spacing:-.32em;}
+.paris-prix__dec{font-family:var(--font-mono-site);font-size:.88rem;word-spacing:-.32em;}
 .paris-prix__rdt{font-family:var(--font-mono-site);font-size:.88rem;color:var(--texte-2);word-spacing:-.32em;}
+/* La note de fiabilité (retour #325) : cinq petites barres posées sur la ligne de base, pleines
+   jusqu'à la note, vides ensuite. Bronze profond sur crème : 5,07:1. Le texte « 4 sur 5 » est lu
+   par les lecteurs d'écran (`.sr-only`). */
+.paris-prix__fiab{font-size:.8rem;color:var(--texte-2);}
+.paris-fiab{display:inline-flex;gap:3px;}
+.paris-fiab i{width:5px;height:11px;border:1px solid var(--color-bronze-profond);border-radius:1.5px;}
+.paris-fiab i.est-pleine{background:var(--color-bronze-profond);}
 .paris-prix tr.paris-prix__peu th{color:var(--texte-2);}
 .paris-prix tr.paris-prix__peu td{text-align:left;white-space:normal;font-size:.84rem;color:var(--texte-2);}
 /* Une ancre par arrondissement (#arr-11) : la ligne visée se détache, sans script. */
@@ -1256,10 +1285,12 @@ html[class] .hero-media h1.eyebrow{
 .paris-prix tbody tr:target :is(th,td){background:color-mix(in srgb,var(--color-bronze-clair) 55%,var(--color-creme));}
 .paris-prix tbody tr:target th{box-shadow:inset 3px 0 0 var(--color-bronze-profond);}
 .paris-prix__court{display:none;}
+.paris-prix__rupture{display:none;}
 .paris-prix__calcul{margin-top:6px;font-size:.86rem;line-height:1.55;color:var(--texte-2);}
 .paris-prix__calcul summary{cursor:pointer;padding-block:10px;font-weight:600;color:var(--color-noir);}
 .paris-prix__calcul summary:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:3px;}
 .paris-prix__calcul p{margin:0;max-width:70ch;}
+.paris-prix__calcul p + p{margin-top:8px;}
 .paris-prix__notes{margin-top:var(--space-m);display:grid;gap:var(--space-xs);max-width:60ch;font-size:.95rem;line-height:1.55;color:color-mix(in srgb,var(--color-noir) 74%,var(--color-creme));}
 .paris-prix__notes p{margin:0;}
 .paris-prix__notes strong{color:var(--color-noir);font-weight:600;}
@@ -1268,137 +1299,141 @@ html[class] .hero-media h1.eyebrow{
 @media (max-width:599px){
   .paris-prix__long{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
   .paris-prix__court{display:inline;}
+  .paris-prix__rupture{display:inline;}
   .paris-prix table{--bord:6px;}
   .paris-prix th,.paris-prix td{padding-left:8px;}
+  .paris-prix caption{font-size:.625rem;letter-spacing:.06em;}
   .paris-prix thead th{font-size:.625rem;letter-spacing:.05em;}
   .paris-prix tbody th{font-size:.92rem;font-weight:600;}
   .paris-prix td.paris-prix__med{font-size:.95rem;}
-  .paris-prix__four{font-size:.75rem;}
-  .paris-prix__rdt{font-size:.8rem;}
+  .paris-prix__dec,.paris-prix__rdt{font-size:.8rem;}
+  .paris-fiab{gap:2px;}
+  .paris-fiab i{width:4px;height:10px;}
   .paris-prix-sec h2{font-size:min(var(--fs-h2), 7.4vw);}
 }
+/* 320 px : cinq colonnes sans défilement de côté. En-têtes de 9 px, marges des cellules resserrées. */
 @media (max-width:359px){
-  .paris-prix__eur{display:none;}
   .paris-prix table{--bord:4px;}
   .paris-prix th,.paris-prix td{padding-left:5px;}
+  .paris-prix caption{font-size:.6rem;letter-spacing:.05em;}
+  .paris-prix thead th{font-size:.5625rem;letter-spacing:.03em;}
 }
-/* Ordinateur : le texte à gauche, le tableau entier à droite, sur un écran. */
+/* Ordinateur : le texte à gauche, le tableau entier à droite, sur un écran. Deux colonnes égales
+   depuis le lot 110 : le tableau a une colonne de plus, les trois notes se resserrent. Entre
+   1 100 et 1 160 px, la colonne du tableau ne descend pas sous la largeur de ses cinq colonnes. */
 @media (min-width:1100px){
-  .paris-prix{display:grid;grid-template-columns:minmax(0,11fr) minmax(0,10fr);grid-template-rows:auto auto auto 1fr;column-gap:var(--space-l);align-items:start;}
+  .paris-prix{display:grid;grid-template-columns:minmax(0,1fr) minmax(min-content,1fr);grid-template-rows:auto auto auto 1fr;column-gap:var(--space-l);align-items:start;}
   .paris-prix .paris-prix__tete{grid-column:1;grid-row:1;}
   .section.paris-prix-sec{padding-block:clamp(32px, calc(4.5 * var(--u-svh)), 48px);}
-  .paris-prix-sec h2{font-size:clamp(1.8rem, 1.1rem + 1.1vw, 2.15rem);}
+  .paris-prix-sec h2{font-size:clamp(1.7rem, 1.05rem + .9vw, 1.9rem);}
+  .paris-prix .paris-prix__tete .eyebrow{margin-bottom:var(--space-xs);}
+  .paris-prix .paris-prix__tete .lead{margin-top:18px;font-size:1.05rem;}
   .paris-prix__tableau{grid-column:2;grid-row:1 / span 4;margin-top:0;}
-  .paris-prix__notes{grid-column:1;grid-row:2;margin-top:var(--space-s);}
-  .paris-prix__mention{grid-column:1;grid-row:3;margin-top:var(--space-s);}
-  .paris-prix > .paris-relance{grid-column:1;grid-row:4;margin-top:var(--space-m);}
+  .paris-prix__notes{grid-column:1;grid-row:2;margin-top:16px;gap:10px;font-size:.88rem;line-height:1.5;}
+  .paris-prix__mention{grid-column:1;grid-row:3;margin-top:16px;padding-block:6px;font-size:.88rem;}
+  .paris-prix > .paris-relance{grid-column:1;grid-row:4;margin-top:var(--space-s);}
   .paris-prix th,.paris-prix td{padding-block:3.5px;}
-  .paris-prix__notes{font-size:.9rem;}
-  .paris-prix__mention{font-size:.88rem;}
   .paris-prix thead th{padding-block:7px;}
-  .paris-prix .paris-prix__tete .lead{font-size:1.12rem;}
-  /* Lot 109 : la légende explique aussi la fourchette (trois lignes) ; les marges autour du tableau
-     se resserrent pour que la section tienne toujours sur un écran. */
-  .paris-prix__legende{margin-bottom:6px;}
   .paris-prix caption{padding-bottom:6px;}
   .paris-prix__calcul{margin-top:2px;}
   .paris-prix__calcul summary{padding-block:5px;}
 }
 
-/* Vendre : les recherches déposées dans notre base, sous les cartes. */
-.paris-compteurs{list-style:none;margin:var(--space-m) 0 0;padding:var(--space-s) 0 0;border-top:1px solid var(--color-ligne);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-m);}
-.paris-compteurs li{display:flex;align-items:baseline;gap:12px;}
-.paris-compteurs li svg{flex:none;color:var(--color-bronze);}
-.paris-compteurs__val{flex:none;font-family:var(--font-mono-site);font-size:1.5rem;color:var(--color-bronze);word-spacing:-.32em;}
-.paris-compteurs__lib{font-size:.9rem;line-height:1.4;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
+/* Vendre : les trois profils d'acquéreurs sous les cartes (retour #331), ce que chacun cherche
+   et un chiffre de notre base. */
+.paris-profils{list-style:none;margin:var(--space-m) 0 0;padding:var(--space-s) 0 0;border-top:1px solid var(--color-ligne);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-s) 28px;}
+.paris-profils li{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:2px;align-content:start;}
+.paris-profils li svg{grid-row:1 / span 2;margin-top:1px;color:var(--color-bronze);}
+.paris-profils p{grid-column:2;margin:0;max-width:none;}
+.paris-profils__qui{font-size:.94rem;line-height:1.45;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
+.paris-profils__qui strong{font-weight:600;color:var(--color-creme);}
+.paris-profils__combien{font-size:.82rem;line-height:1.5;color:color-mix(in srgb,var(--color-creme) 72%,transparent);}
+.paris-profils__val{margin-right:2px;font-family:var(--font-mono-site);font-size:1.05rem;line-height:1;color:var(--color-bronze);word-spacing:-.32em;}
+/* Les chiffres des trois profils sur la même ligne, même quand un libellé tient sur une ligne et les autres sur deux (#338). */
+@supports (grid-template-rows:subgrid){ @media (min-width:760px){ .paris-profils{grid-template-rows:auto auto;row-gap:2px;} .paris-profils li{grid-row:1 / span 2;grid-template-rows:subgrid;} } }
 @media (max-width:759px){
-  .paris-compteurs{grid-template-columns:1fr;gap:8px;margin-top:var(--space-s);padding-top:var(--space-xs);}
-  .paris-compteurs__val{font-size:1.15rem;min-width:4.6ch;}
-  .paris-compteurs__lib{font-size:.84rem;}
+  .paris-profils{grid-template-columns:1fr;gap:10px;margin-top:var(--space-s);padding-top:var(--space-xs);}
+  .paris-profils__qui{font-size:.9rem;}
 }
 
-/* Après l'offre : les obstacles à gauche, ce que le vendeur suit dans son espace client à droite. */
-.paris-apres{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-l);align-items:start;}
-.ligne-cartes.paris-obstacles{grid-auto-columns:84%;gap:14px;padding-block:4px 6px;}
-@media (min-width:900px){
-  .ligne-cartes.paris-obstacles.paris-obstacles{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);gap:var(--space-s);overflow:visible;margin-inline:0;padding:0;cursor:auto;}
-}
-.paris-obstacle{display:flex;gap:16px;align-items:flex-start;}
-.paris-obstacle svg{flex:none;margin-top:2px;color:var(--color-bronze-profond);}
-.paris-obstacle h3{font-size:1.15rem;margin:0 0 6px;}
-.paris-obstacle p{margin:0;line-height:1.55;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
-.paris-apres__compte{padding:var(--space-s);border:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);border-left:2px solid var(--color-bronze);border-radius:var(--radius-card);background:color-mix(in srgb,var(--color-noir) 4%,transparent);}
-.paris-apres__compte h3{font-size:1.15rem;margin:0 0 var(--space-xs);}
-/* La frise de la vente, telle que le vendeur la voit dans son compte. */
-.paris-frise{list-style:none;margin:0 0 var(--space-s);padding:0;display:flex;flex-wrap:wrap;align-items:center;row-gap:6px;font-family:var(--font-mono-site);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-noir);}
-.paris-frise li{display:inline-flex;align-items:center;}
-.paris-frise li:not(:last-child)::after{content:"";width:12px;height:1px;margin-inline:7px;background:var(--color-bronze-profond);}
-.paris-apres__ecrans{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.95rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 74%,var(--color-creme));}
-.paris-apres__ecrans strong{color:var(--color-noir);font-weight:600;}
-@media (max-width:899px){
-  .paris-apres{grid-template-columns:minmax(0,1fr);gap:var(--space-s);}
-  .paris-obstacle{padding:14px 14px 14px 0;}
-  .paris-obstacle h3{font-size:1.05rem;margin-bottom:4px;}
-  .paris-obstacle p,.paris-apres__ecrans{font-size:.92rem;}
-  .paris-apres__compte{padding:18px 16px;}
-}
 /* Une section, un écran : titres moins hauts et marges resserrées sur les sections longues. */
-:is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-conditions-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-m);}
+:is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-conditions-sec,.paris-decoupe-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-m);}
 :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-conditions-sec,.paris-ventes-sec,.paris-decoupe-sec) .paris-relance{margin-top:var(--space-m);}
 :is(.paris-estimation-sec,.paris-ventes-sec) .paris-citation{margin-top:var(--space-s);}
 @media (min-width:900px){
   :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-conditions-sec,.paris-ventes-sec,.paris-decoupe-sec) h2{font-size:clamp(1.8rem, 1.1rem + 1.5vw, 2.5rem);}
   .paris-conditions-sec .section__head,.paris-conditions-sec .section__head h2{max-width:none;}
-  .paris-decoupe-sec .section__head h2{max-width:none;}
-  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-ventes-sec) .tete-2col > .lead{font-size:1.1rem;}
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec) .tete-2col > .lead{font-size:1.1rem;}
 }
 
-/* En bloc ou à la découpe : trois lignes, sur fond sombre. */
-.paris-decoupe{list-style:none;margin:0;padding:0;display:grid;gap:12px;}
-.paris-decoupe li{padding:14px 18px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-creme) 5%,transparent);color:color-mix(in srgb,var(--color-creme) 82%,var(--color-noir));line-height:1.5;}
-.paris-decoupe strong{color:var(--color-creme);font-weight:600;}
-
-/* Nos ventes à Paris. */
+/* Nos ventes à Paris (retours #341 et #342) : trois cartes de front, une ligne qui glisse dès la
+   quatrième vente. Les 6 px autour de la ligne laissent voir le contour de la carte au clavier. */
+.paris-ventes-sec .section__head,.paris-ventes-sec .section__head h2{max-width:none;}
+.ligne-cartes.paris-ventes-ligne{--g:var(--space-s);gap:var(--g);grid-auto-columns:84%;padding-block:6px 8px;}
+@media (min-width:701px){ .ligne-cartes.paris-ventes-ligne{margin-inline:-6px;padding-inline:6px;scroll-padding-inline:6px;} }
+@media (min-width:760px){ .ligne-cartes.paris-ventes-ligne{grid-auto-columns:calc((100% - var(--g)) / 2);} }
+@media (min-width:960px){ .ligne-cartes.paris-ventes-ligne{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);} }
+@media (min-width:1200px){ .ligne-cartes.paris-ventes-ligne{overflow-x:auto;} }
+@media (min-width:1200px) and (hover:hover) and (pointer:fine){ .ligne-cartes.paris-ventes-ligne--glisse{cursor:grab;} }
+/* Les flèches sortent des cartes (elles recouvraient le début du titre de la première), et tirer une
+   carte fait glisser la ligne au lieu de déplacer son lien ou sa photo. */
+@media (min-width:1100px){
+  .ligne:has(> .paris-ventes-ligne) > .ligne__fleche--avant{left:-48px;}
+  .ligne:has(> .paris-ventes-ligne) > .ligne__fleche--apres{right:-48px;}
+}
+.paris-ventes-ligne :is(a,img){-webkit-user-drag:none;}
+.paris-ventes-ligne .vente{min-width:0;}
+.paris-ventes-sec .vente__visuel{aspect-ratio:2/1;}
+.paris-ventes__note{margin:var(--space-xs) 0 0;max-width:none;font-size:.88rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
 .paris-ventes-sec .paris-citation{margin-inline:auto;}
 @media (min-width:900px){
-  .paris-ventes-sec .vente__visuel{aspect-ratio:2/1;}
   .section.paris-ventes-sec{padding-block:clamp(24px, calc(3.5 * var(--u-svh)), 36px);}
   .paris-ventes-sec .section__head{margin-bottom:var(--space-s);}
   .paris-ventes-sec .paris-citation{margin-top:var(--space-xs);}
   .paris-ventes-sec .paris-relance{margin-top:var(--space-s);}
-  /* Après l'offre : la citation est sortie de l'encadré, la section garde sa hauteur d'un écran. */
+  /* Après l'offre : quatre cartes et la citation, la section garde sa hauteur d'un écran. */
   .section.paris-apres-sec{padding-block:clamp(28px, calc(4 * var(--u-svh)), 44px);}
   .paris-apres-sec .paris-citation{margin-top:var(--space-s);}
   .paris-apres-sec .paris-relance{margin-top:var(--space-s);}
+}
+/* Ordinateur : le titre des ventes tient sur une ligne ; estimation et vente, dont les cartes
+   portent plus de texte depuis le lot 110, resserrent leurs marges pour tenir sur un écran. */
+@media (min-width:1100px){
+  .paris-ventes-sec h2{font-size:clamp(1.8rem, 1.1rem + 1.2vw, 2rem);}
+  /* Au-delà de 1 480 px de large, ces deux titres gagnaient une ligne et la section dépassait l'écran. */
+  :is(.paris-estimation-sec,.paris-apres-sec) h2{font-size:clamp(1.8rem, 1.1rem + 1.5vw, 2.45rem);}
+  .section.paris-estimation-sec{padding-block:clamp(28px, calc(4 * var(--u-svh)), 44px);}
+  .paris-estimation-sec .section__head{margin-bottom:var(--space-s);}
+  .paris-estimation-sec .paris-citation{margin-top:var(--space-xs);}
+  .paris-estimation-sec .paris-relance{margin-top:var(--space-s);}
 }
 /* Téléphone : titres et chapeaux un peu plus petits sur les sections longues, pour se rapprocher d'un écran. */
 @media (max-width:759px){
   :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec,.paris-ventes-sec) h2{font-size:clamp(1.5rem, 6.6vw, 1.72rem);}
   :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec,.paris-ventes-sec) .section__head .lead{font-size:15.5px;line-height:1.5;}
-  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-s);}
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-s);}
   .paris-apres-sec .paris-citation{display:none;}
-}
-@media (min-width:760px) and (max-width:959px){
-  .paris-ventes-sec .ventes{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:46%;gap:var(--space-s);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);}
-  .paris-ventes-sec .ventes::-webkit-scrollbar{display:none;}
-  .paris-ventes-sec .vente{scroll-snap-align:start;}
 }
 
 /* Vendre : le chapeau et le surtitre sont posés sur la photo fondue, ils doivent s'y lire. */
 .paris-vente-sec .section__head .lead{color:color-mix(in srgb,var(--color-creme) 86%,var(--color-noir));}
 @media (max-width:899px){ .paris-vente-sec .section__head .eyebrow{color:var(--color-bronze-clair);} }
 @media (min-width:1100px){
+  .section.paris-vente-sec{padding-block:clamp(24px, calc(3.5 * var(--u-svh)), 36px);}
+  /* Titre un cran plus petit : trois lignes à la hauteur du chapeau, la section tient sur un écran
+     avec ses cartes, ses trois profils et son bouton. */
+  .paris-vente-sec h2{font-size:clamp(1.8rem, 1.1rem + 1.2vw, 2.25rem);}
   .paris-vente-sec .section__head{margin-bottom:var(--space-s);}
-  .paris-vente-sec .paris-compteurs{margin-top:var(--space-s);padding-top:var(--space-xs);}
+  .paris-vente-sec .paris-profils{margin-top:var(--space-s);padding-top:var(--space-xs);}
   .paris-vente-sec .paris-relance{margin-top:var(--space-s);}
 }
 /* Entre 760 et 1 099 px, deux cartes de front : les flèches passent sous les cartes, comme au
    téléphone, au lieu de couvrir le texte de la deuxième. */
 @media (min-width:760px) and (max-width:1099px){
-  .ligne:has(> :is(.paris-ligne,.paris-obstacles)):has(> .ligne__fleche:not([hidden])){padding-bottom:54px;}
-  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche{top:auto;bottom:0;transform:none;}
-  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche--avant{left:calc(50% - 48px);}
-  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche--apres{right:calc(50% - 48px);}
+  .ligne:has(> :is(.paris-ligne,.paris-ventes-ligne)):has(> .ligne__fleche:not([hidden])){padding-bottom:54px;}
+  .ligne:has(> :is(.paris-ligne,.paris-ventes-ligne)) > .ligne__fleche{top:auto;bottom:0;transform:none;}
+  .ligne:has(> :is(.paris-ligne,.paris-ventes-ligne)) > .ligne__fleche--avant{left:calc(50% - 48px);}
+  .ligne:has(> :is(.paris-ligne,.paris-ventes-ligne)) > .ligne__fleche--apres{right:calc(50% - 48px);}
 }
 /* Formulaire : le titre garde trois ou quatre lignes dans sa colonne étroite. */
 .section.sec-formulaire.paris-form-sec h2{font-size:clamp(26px,7.4vw,30px);}
@@ -1420,6 +1455,27 @@ html[class] .hero-media h1.eyebrow{
   .paris-reperes li svg{align-self:center;flex:none;}
   .paris-reperes__val{flex:none;font-size:1.35rem;}
 }
+/* De 1 100 à 1 199 px de large, les sections Prix, Vente et Après l'offre dépassaient l'écran
+   (900 px de haut) : textes et marges un peu plus petits sur cette plage seulement. */
+@media (min-width:1100px) and (max-width:1199px){
+  .paris-prix{column-gap:var(--space-m);}
+  .paris-prix .paris-prix__tete .lead{font-size:1rem;margin-top:14px;}
+  .paris-prix__notes{font-size:.84rem;margin-top:14px;gap:8px;}
+  .paris-prix__mention{font-size:.84rem;margin-top:14px;}
+  :is(.paris-vente-sec,.paris-apres-sec) .paris-carte h3{font-size:1.02rem;}
+  :is(.paris-vente-sec,.paris-apres-sec) .paris-carte p{font-size:.86rem;}
+  .paris-vente-sec .paris-carte .paris-citation blockquote{font-size:.84rem;}
+  .paris-vente-sec .paris-profils{column-gap:20px;}
+  .paris-vente-sec .paris-profils__qui{font-size:.88rem;}
+  .paris-vente-sec .paris-profils__combien{font-size:.78rem;}
+  :is(.paris-vente-sec,.paris-apres-sec) .tete-2col > .lead{font-size:1rem;}
+  :is(.paris-vente-sec,.paris-apres-sec) .ligne-cartes.paris-ligne{--g:14px;}
+  :is(.paris-vente-sec,.paris-apres-sec) .paris-carte{padding-left:14px;}
+  .paris-apres-sec .paris-carte p{font-size:.84rem;}
+  .section.paris-apres-sec{padding-block:24px;}
+  .paris-apres-sec .section__head{margin-bottom:var(--space-s);}
+}
+
 
 /* Lot 97 (MAV, 10/11/2026) : l'article en landing. Le texte garde sa colonne de
    lecture ; le formulaire se colle à droite sur ordinateur, passe en fin d'article
