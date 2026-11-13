@@ -1298,7 +1298,7 @@ html[class] .hero-media h1.eyebrow{
 /* Vendre : les recherches déposées dans notre base, sous les cartes. */
 .paris-compteurs{list-style:none;margin:var(--space-m) 0 0;padding:var(--space-s) 0 0;border-top:1px solid var(--color-ligne);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-m);}
 .paris-compteurs li{display:flex;align-items:baseline;gap:12px;}
-.paris-compteurs li svg{flex:none;align-self:center;color:var(--color-bronze);}
+.paris-compteurs li svg{flex:none;color:var(--color-bronze);}
 .paris-compteurs__val{flex:none;font-family:var(--font-mono-site);font-size:1.5rem;color:var(--color-bronze);word-spacing:-.32em;}
 .paris-compteurs__lib{font-size:.9rem;line-height:1.4;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
 @media (max-width:759px){

@@ -12,15 +12,16 @@ import { Reveal } from "./Reveal";
 export type QR = { question: string; texte: string; reponse?: ReactNode };
 
 /**
- * Espace insécable devant « ? : ; ! % € », dans les guillemets, dans les milliers et devant M€, m², m³ :
+ * Espace insécable devant « ? : ; ! % € », dans les guillemets, dans les milliers (un groupe de plus
+ * de trois chiffres, une année par exemple, n'est pas un millier) et devant M€, m², m³ :
  * aucun signe ni aucune unité seul en début de ligne, aucun nombre coupé en deux.
  */
 export const insecable = (t: string) =>
   t
     .replace(/ ([?:;!%€»])/g, "\u00a0$1")
     .replace(/« /g, "«\u00a0")
-    .replace(/(\d) (?=\d{3}(?!\d))/g, "$1\u00a0")
-    .replace(/(\d) (?=(?:M€|m²|m³)(?![\wÀ-ÿ]))/g, "$1\u00a0");
+    .replace(/(\d+) (?=\d{3}(?!\d))/g, (m, a: string) => (a.length > 3 ? m : `${a}\u00a0`))
+    .replace(/ (?=(?:M€|m²|m³)(?![\wÀ-ÿ]))/g, "\u00a0");
 
 export function SectionFaq({
   items,

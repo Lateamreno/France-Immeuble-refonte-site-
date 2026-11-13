@@ -247,6 +247,8 @@ export default async function VendreUnImmeubleParis() {
       haut: imm?.prixM2Max ?? null,
       rdt: prix != null && m?.loyerM2 ? (m.loyerM2 * 12 * 100) / prix : null,
       ventes: imm?.nbVentes ?? 0,
+      // Sans ligne pour l'année, on ne sait pas : on ne l'écrit pas « moins de trois ventes ».
+      connu: imm != null,
     };
   });
   const chiffrees = lignes.flatMap((l) => (l.prix != null ? [{ n: l.n, prix: l.prix }] : []));
@@ -476,7 +478,9 @@ export default async function VendreUnImmeubleParis() {
                           {avecRdt && <td className="paris-prix__rdt">{l.rdt != null ? `${pc(l.rdt)} %` : "–"}</td>}
                         </>
                       ) : (
-                        <td colSpan={avecRdt ? 3 : 2}>Moins de trois ventes en {annee}</td>
+                        <td colSpan={avecRdt ? 3 : 2}>
+                          {l.connu ? `Moins de trois ventes en ${annee}` : `Chiffres de ${annee} non disponibles`}
+                        </td>
                       )}
                     </tr>
                   ))}
