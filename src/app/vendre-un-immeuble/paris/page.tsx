@@ -440,7 +440,7 @@ export default async function VendreUnImmeubleParis() {
     },
   ];
 
-  // FAQ : trente questions en cinq groupes. Les accolades des réponses sont des chiffres vivants ;
+  // FAQ en groupes titrés (33 questions en six groupes au lot 111). Les accolades des réponses sont des chiffres vivants ;
   // une question dont un chiffre manque ne s'affiche pas. `acheteurs` y reste le chiffre global :
   // la réponse dit « notre base compte … acheteurs d'immeubles ».
   const vivants: Record<string, string | null> = {

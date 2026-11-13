@@ -238,16 +238,18 @@
       "reponse": "Il change d’un arrondissement à l’autre, et plus encore d’un immeuble à l’autre, selon ses baux, son état, son standing et ses loyers. Le tableau de cette page donne, par arrondissement, le prix médian au m² des immeubles vendus en bloc en {annee}, d’après DVF, la base publique des ventes immobilières. Nous y avons relevé {ventesImmeubles} ventes d’immeubles à Paris ; un prix n’est publié qu’à partir de trois ventes dans l’arrondissement. {phraseDecote} Ces chiffres DVF ne sont pas vérifiés : nous ne connaissons ni l’état ni le niveau des loyers des immeubles vendus.",
       "sources": [
         "DVF, calcul de src/lib/dvf-immeubles.ts (table marche_immeubles) : prix médian, nombre de ventes et décote par rapport aux appartements (phrase vivante phraseDecote fournie par la page)",
-        "Environ 15 % pour un immeuble en bon état, loué au prix du marché : MAV, 10 et 12/11/2026, à lui faire confirmer",
+        "Décote de 10 à 30 % d’après notre expérience, pour la phrase vivante phraseDecote : MAV, 13/11/2026 (remplace le repère des 10 et 12/11/2026)",
         "MAV, retours #345 et #346 du 13/11/2026"
       ]
     },
     {
       "groupe": "Estimation et prix d’un immeuble à Paris",
       "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
-      "reponse": "D’après notre expérience, un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de 3 à 6 % selon les arrondissements. Le rendement monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Le rendement ne fait pas le prix à lui seul : l’état du bâti et les baux en place comptent aussi.",
+      "reponse": "Un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de {rendementParis} en général, selon les arrondissements. Le rendement, c’est le loyer d’une année rapporté au prix de vente. Il monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Le rendement ne fait pas le prix à lui seul : l’état du bâti et les baux en place comptent aussi.",
       "sources": [
-        "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf"
+        "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf",
+        "MAV, 13/11/2026 : fourchette vivante rendementParis fournie par la page, suivie de « en général »",
+        "Fourchette calculée par fourchetteRendement (src/lib/immeubles-dvf-lecture.ts) à partir des rendements du tableau : ce n’est plus un repère d’expérience, la réponse ne le dit donc plus"
       ]
     },
     {
@@ -290,19 +292,6 @@
     },
     {
       "groupe": "Vendre un immeuble à Paris avec France Immeuble",
-      "question": "À qui vendre un immeuble à Paris : investisseur ou marchand de biens ?",
-      "reponse": "Cela dépend de l’immeuble : ce sont son état, ses baux et ses loyers qui désignent le bon acquéreur. Sur un immeuble loué au prix du marché, c’est en général un investisseur qui fait la meilleure offre : investisseur privé, foncière, family office ou institutionnel. Les marchands de biens sont compétitifs sur les immeubles mal loués ou à gros travaux. Les acheteurs patrimoniaux recherchent les beaux immeubles et les belles adresses. Nous cherchons dans notre base l’acheteur qui fera la meilleure offre pour votre immeuble. Pour aller plus loin, lisez notre guide « Comment vendre un immeuble à Paris ».",
-      "sources": [
-        "MAV, 12/11/2026 (lot 103)",
-        "MAV, retours #331 et #350 du 13/11/2026"
-      ],
-      "lien": {
-        "texte": "Comment vendre un immeuble à Paris",
-        "href": "/comment-vendre-un-immeuble-a-paris/"
-      }
-    },
-    {
-      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
       "question": "Combien coûte la vente d’un immeuble à Paris avec France Immeuble ?",
       "reponse": "Nos honoraires vont de 3 à 5 % TTC du prix selon la taille de l’immeuble : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà. Ils ne sont dus qu’à la signature de l’acte définitif chez le notaire : tant que la vente n’est pas signée, vous ne payez rien. L’estimation est gratuite. Le détail est dans notre barème des honoraires.",
       "sources": [
@@ -320,15 +309,6 @@
       "reponse": "Pas forcément. Mais pour garder le caractère off-market de la vente, nous préférons que l’immeuble ne soit pas diffusé sur les sites d’annonces. Nous travaillons donc souvent en semi-exclusivité, c’est-à-dire avec une exclusivité temporaire.",
       "sources": [
         "FAQ de la page Vendre (src/lib/faq.tsx)"
-      ]
-    },
-    {
-      "groupe": "Vendre un immeuble à Paris avec France Immeuble",
-      "question": "Combien de temps faut-il pour vendre un immeuble à Paris ?",
-      "reponse": "Le délai dépend surtout de deux choses : le prix demandé et la qualité du dossier. Un immeuble présenté au bon prix attire les offres, alors qu’un prix trop haut risque de le laisser sans acheteur. Un dossier complet dès le départ (titres de propriété, baux et état locatif, DPE et audit énergétique, diagnostics, avis de taxe foncière, derniers travaux) évite bien des questions des acheteurs et du notaire. L’acheteur compte aussi : nos acquéreurs font souvent leur offre sans condition de financement, ce qui évite d’attendre l’accord d’une banque. De notre côté, l’immeuble est présenté 100 % en off-market, directement aux acheteurs de notre base dont la recherche correspond.",
-      "sources": [
-        "MAV, retours #351 et #352 du 13/11/2026",
-        "Page Paris, section Vendre (lot 107 : offres souvent sans condition de financement, aucun délai affiché)"
       ]
     },
     {
@@ -357,6 +337,88 @@
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F929",
         "https://www.notaires.fr/fr/article/les-differents-droits-de-preemption-du-locataire",
         "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/jurisprudence/jurisprudence-2014/vente-a-la-decoupe-droit-de-preemption-du-locataire/"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "Qui achète des immeubles de rapport à Paris ?",
+      "reponse": "Les acheteurs d’immeubles de rapport à Paris forment trois grandes familles : les investisseurs, les marchands de biens et les acheteurs patrimoniaux. Les investisseurs cherchent du rendement : particuliers, foncières, family offices et institutionnels. Une foncière est une société qui détient et loue des immeubles. Un family office gère le patrimoine d’une famille. Les institutionnels sont par exemple des assureurs et des sociétés de gestion. Les marchands de biens achètent pour revendre : ils cherchent une plus-value. Les acheteurs patrimoniaux cherchent de beaux immeubles et de belles adresses. Notre base compte {acheteurs} acheteurs d’immeubles. Votre immeuble n’est présenté qu’à ceux dont la recherche correspond, des acheteurs identifiés dont nous connaissons le sérieux.",
+      "sources": [
+        "MAV, retour #366 du 13/11/2026 (marchands, investisseurs, institutionnels, particuliers, foncières, family offices)",
+        "Page Paris, section Vendre : les trois profils d’acquéreurs (retour #331) et la carte « Des acheteurs connus et reconnus »",
+        "Chiffres déposés par le back-office (table chiffres)"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "À qui vendre un immeuble à Paris : investisseur ou marchand de biens ?",
+      "reponse": "Il n’y a pas de meilleur acheteur dans l’absolu : ce sont l’état de l’immeuble, ses baux et ses loyers qui désignent le bon acquéreur. Sur un immeuble loué au prix du marché, c’est en général un investisseur qui fait la meilleure offre : investisseur privé, foncière, family office ou institutionnel. Les marchands de biens sont compétitifs sur les immeubles mal loués ou à gros travaux, là où il y a une plus-value à créer. Un bel immeuble à une belle adresse intéresse d’abord les acheteurs patrimoniaux. La meilleure offre n’est pas seulement la plus haute : le sérieux de l’acquéreur et les conditions de son offre comptent aussi, car elle doit aller jusqu’à l’acte. Nous définissons l’acquéreur à viser dès l’estimation, puis cherchons dans notre base celui qui paiera le meilleur prix. Pour aller plus loin, lisez notre guide « Comment vendre un immeuble à Paris ».",
+      "sources": [
+        "MAV, 12/11/2026 (lot 103)",
+        "MAV, retours #331 et #350 du 13/11/2026",
+        "MAV, retours #363 et #366 du 13/11/2026",
+        "Page Paris, carte « La cible » de la section Estimation (cible définie dès l’estimation)"
+      ],
+      "lien": {
+        "texte": "Comment vendre un immeuble à Paris",
+        "href": "/comment-vendre-un-immeuble-a-paris/"
+      }
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "En combien de temps reçoit-on une offre pour un immeuble à Paris ?",
+      "reponse": "Souvent très vite, quand le prix est bien fixé. Votre immeuble est présenté directement aux acheteurs de notre base dont la recherche correspond. Chacun se sait en concurrence avec d’autres acheteurs sérieux, capables de faire une offre au prix en 24 heures. Les offres arrivent souvent avant la visite, ou juste après : offrir le prix d’emblée est pour eux le moyen de s’assurer l’immeuble. À l’inverse, un prix trop haut peut laisser l’immeuble sans offre, et un immeuble qui reste longtemps à vendre se négocie plus bas. Tout se joue donc à l’estimation. Nous ne vous promettons pas de délai : chaque immeuble est différent, et l’offre n’est qu’une étape avant la promesse et l’acte.",
+      "sources": [
+        "MAV, retour #366 du 13/11/2026 (« En combien de temps on obtient une offre ? »)",
+        "Page Paris, cartes « La meilleure offre pour votre immeuble » et « Votre immeuble ne s’use pas en vitrine » (retours #326 à #330 : « en 24 heures » est un délai d’offre, aucun délai de vente n’est affiché)"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "Peut-on recevoir une offre sans condition suspensive de financement ?",
+      "reponse": "Oui, c’est même souvent le cas avec nos acquéreurs. La condition suspensive de financement, ou de prêt, est la clause qui fait tomber la promesse si la banque de l’acheteur refuse son prêt : il récupère alors les sommes versées. La loi l’impose quand un acquéreur non professionnel emprunte pour acheter un immeuble d’habitation ou mixte. Avec un professionnel, comme un marchand de biens, elle se négocie. Une offre sans cette condition est plus solide pour vous. Mais elle ne veut pas dire que l’acheteur paie comptant : il a souvent recours à un prêt malgré tout. Si ce prêt lui est refusé, il doit trouver les fonds autrement, ou il risque de perdre l’indemnité d’immobilisation prévue par la promesse. Il faut donc vérifier son sérieux avant d’accepter. C’est pourquoi votre dossier n’est envoyé qu’à des acheteurs identifiés, dont nous connaissons le sérieux.",
+      "sources": [
+        "MAV, retours #363 et #366 du 13/11/2026",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F188",
+        "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006069565/LEGISCTA000032222275/ (articles L313-40 à L313-42 du code de la consommation, lus le 13/11/2026)",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F2965",
+        "Page Paris, carte « Des acheteurs connus et reconnus »",
+        "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006069565/LEGISCTA000032225973/ (articles L313-1 et L313-2 du code de la consommation, lus le 13/11/2026 : champ du crédit immobilier, immeubles d’habitation ou mixtes ; exclusion des prêts qui financent une activité professionnelle, dont celle des personnes qui procurent des immeubles à titre habituel)",
+        "Réserve gardée hors du texte : un acquéreur non professionnel ne se passe valablement de la condition que s’il écrit de sa main dans la promesse qu’il n’emprunte pas ; s’il demande quand même un prêt, la promesse est réputée conclue sous condition suspensive (article L313-42). D’où « il risque de perdre » et non « il perd »"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "Indemnité d’immobilisation : à quoi sert-elle et quel est son montant ?",
+      "reponse": "L’indemnité d’immobilisation est la somme que le vendeur garde si l’acquéreur renonce à acheter sans raison prévue par la loi ou par la promesse de vente : elle vous protège contre un changement d’avis. Elle est en général de 10 % du prix. D’après notre expérience, l’acquéreur en verse souvent la moitié, soit 5 % du prix, à la signature de la promesse. Dans une promesse unilatérale de vente, vous vous engagez à vendre à un prix fixé, et l’acquéreur dispose d’un délai pour confirmer son achat : l’indemnité est la contrepartie de cette exclusivité. La somme est versée au notaire, qui la conserve. Si la vente se fait, elle est déduite du prix. Si une condition suspensive prévue par la promesse ne se réalise pas, elle est rendue à l’acquéreur. Une réserve : l’acquéreur non professionnel d’un immeuble d’habitation dispose d’abord de dix jours pour se rétracter et récupérer la somme versée.",
+      "sources": [
+        "MAV, retour #366 du 13/11/2026 (10 % du prix, dont 5 % versés au début)",
+        "https://www.service-public.gouv.fr/particuliers/vosdroits/F2965",
+        "https://paris.notaires.fr/fr/actualites/achat-vente-quest-ce-quune-promesse-de-vente-un-compromis-de-vente",
+        "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074096/LEGISCTA000006176357/ (articles L271-1 et L271-2 du code de la construction et de l’habitation, lus le 13/11/2026 : dix jours de rétractation pour l’acquéreur non professionnel d’un immeuble à usage d’habitation, sommes restituées sous vingt et un jours)",
+        "https://www.anil.org/jurisprudences-droit-retractation-acquereur-non-professionnel/ (la rétractation ne joue pas pour un immeuble à usage mixte)",
+        "Le versement de la moitié à la signature est notre constat (MAV), pas un usage établi par une source officielle : service-public écrit « entre 5 % et 10 % », les Notaires de Paris « en général de 10 % ». Le sort de la moitié non versée dépend de la rédaction de la promesse : il n’est pas écrit"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "Combien de temps faut-il pour vendre un immeuble à Paris ?",
+      "reponse": "Il n’y a pas de délai type : tout dépend du prix demandé, du dossier et de l’acheteur. Au bon prix, l’immeuble attire les offres ; trop cher, il risque de rester sans acheteur. Un dossier complet dès le départ (titres de propriété, baux et état locatif, DPE et audit énergétique, diagnostics, avis de taxe foncière, derniers travaux) évite bien des questions des acheteurs et du notaire. L’acheteur compte aussi : nos acquéreurs font souvent leur offre sans condition de financement. Encore faut-il qu’ils aient les moyens d’aller jusqu’à l’acte : votre dossier n’est envoyé qu’à des acheteurs dont nous connaissons le sérieux. De notre côté, l’immeuble est présenté 100 % en off-market, directement aux acheteurs de notre base dont la recherche correspond.",
+      "sources": [
+        "MAV, retours #351 et #352 du 13/11/2026 (ni droit de préemption ni prorogation des baux dans cette réponse)",
+        "Page Paris, section Vendre (lot 107 : offres souvent sans condition de financement, aucun délai affiché)",
+        "MAV, retour #366 du 13/11/2026 : une offre sans condition de financement ne veut pas dire que l’acheteur paie comptant ; « ce qui évite d’attendre l’accord d’une banque » est donc retiré"
+      ]
+    },
+    {
+      "groupe": "Acheteurs d’immeubles à Paris et offres d’achat",
+      "question": "Immeuble core, core plus ou value-add : que veulent dire ces mots d’investisseurs ?",
+      "reponse": "Ces mots viennent des fonds d’investissement. Ils classent les immeubles, et les acheteurs qui les visent, selon le risque accepté. Core : un immeuble très bien situé, en bon état et entièrement loué au prix du marché. L’acheteur accepte un rendement plus faible en échange de revenus sûrs. Core plus : un immeuble proche du core, avec un peu de valeur à créer, par exemple quelques travaux ou des logements à relouer. Value-add : un immeuble à travaux, mal loué ou en partie vide, que l’acheteur compte rénover et relouer pour en augmenter la valeur. Il prend plus de risque et vise un gain plus élevé. Savoir où se situe votre immeuble dit à quels acheteurs le présenter : c’est pourquoi nous définissons l’acquéreur à viser dès l’estimation.",
+      "sources": [
+        "MAV, retour #366 du 13/11/2026 (« Différents types d’investissement. Core et core + parler du value add »)",
+        "https://www.centraledesscpi.com/article/quelles-sont-les-strategies-des-fonds-immobiliers-scpi",
+        "Page Paris, carte « La cible » de la section Estimation",
+        "INREV, Fund Style Classification Report : https://www.inrev.org/system/files/2016-12/INREV_Fund_Style_Classification_Report.pdf (classification professionnelle, pas un texte officiel)"
       ]
     },
     {
@@ -415,14 +477,20 @@
     {
       "groupe": "DPE, diagnostics et travaux",
       "question": "Un mauvais DPE fait-il baisser le prix d’un immeuble à Paris ?",
-      "reponse": "Oui, quand des logements sont classés F ou G : l’acheteur déduit le coût des travaux et le risque de ne plus pouvoir louer. À Paris, ce ne sont pas seulement les chambres de service et les petites surfaces sous les toits : tout logement ancien et mal isolé peut être concerné, à tous les étages. Une chambre de service doit en outre offrir au moins 9 m² avec 2,20 m sous plafond, ou 20 m³, pour être louée comme logement. Deux changements de calcul améliorent certaines étiquettes. Les seuils ont été corrigés pour les logements de 40 m² ou moins depuis le 1er juillet 2024. Pour les logements chauffés à l’électricité, le coefficient passe de 1,9 à 1,7 le 1er janvier 2027. Un DPE fait avant cette date reste valable et pourra être mis à jour gratuitement sur l’Observatoire DPE-Audit de l’ADEME, sans nouvelle visite. Avant de vendre, refaire le point sur le DPE de chaque logement peut donc changer la valeur de l’immeuble.",
+      "reponse": "Oui, mais la baisse dépasse rarement de beaucoup le montant des travaux à réaliser. Quand des logements sont classés F ou G, l’acheteur chiffre la rénovation qui permettra de continuer à les louer et la déduit de son prix. À Paris, tout logement ancien et mal isolé peut être concerné, à tous les étages, et pas seulement les chambres de service. Deux changements de calcul améliorent certaines étiquettes. Les seuils ont été corrigés pour les logements de 40 m² ou moins depuis le 1er juillet 2024. Pour les logements chauffés à l’électricité, le coefficient de conversion passe de 1,9 à 1,7 le 1er janvier 2027 ; un DPE fait avant reste valable et pourra être mis à jour gratuitement sur le site de l’ADEME, sans nouvelle visite. Refaire le point sur le DPE de chaque logement avant de vendre peut changer la valeur de l’immeuble. Lisez notre article « Vendre un immeuble avec un mauvais DPE ».",
       "sources": [
-        "MAV, retour #357 du 13/11/2026",
+        "MAV, retours #357, #358 et #359 du 13/11/2026",
         "https://www.insee.fr/fr/statistiques/6458354",
         "https://www.ecologie.gouv.fr/presse/dpe-audits-energetiques-publication-larrete-abaissant-facteur-conversion-lelectricite-17-1er",
         "https://www.ecologie.gouv.fr/actualites/dpe-etiquettes-plus-equitables-logements-petite-surface",
-        "https://www.service-public.gouv.fr/particuliers/vosdroits/F2042"
-      ]
+        "Article du site /vendre-un-immeuble-avec-un-mauvais-dpe/ (content/articles.json, mis à jour au lot 97)",
+        "À recontrôler quand la page du ministère répond de nouveau (erreur 503 le 13/11/2026) : seuils corrigés pour les logements de 40 m² ou moins au 1er juillet 2024",
+        "À revérifier après la séance publique de l’Assemblée nationale du 16/11/2026 sur le projet de loi visant la relance et la décentralisation du logement (n° 3058), qui prévoit de rouvrir sous conditions la location de logements classés G : https://www.assemblee-nationale.fr/dyn/17/dossiers/PJL_relance_decentralisation_logement_2"
+      ],
+      "lien": {
+        "texte": "Vendre un immeuble avec un mauvais DPE",
+        "href": "/vendre-un-immeuble-avec-un-mauvais-dpe/"
+      }
     },
     {
       "groupe": "DPE, diagnostics et travaux",
@@ -431,14 +499,16 @@
       "sources": [
         "https://www.service-public.gouv.fr/particuliers/actualites/A17975",
         "https://www.anil.org/parole-expert-logement-renovation-energetique-decence-energetique-logements/",
-        "https://www.ecologie.gouv.fr/politiques-publiques/location-gel-loyers-passoires-energetiques"
+        "https://www.ecologie.gouv.fr/politiques-publiques/location-gel-loyers-passoires-energetiques",
+        "À revérifier après la séance publique de l’Assemblée nationale du 16/11/2026 sur le projet de loi visant la relance et la décentralisation du logement (n° 3058), qui prévoit de rouvrir sous conditions la location de logements classés G : https://www.assemblee-nationale.fr/dyn/17/dossiers/PJL_relance_decentralisation_logement_2"
       ]
     },
     {
       "groupe": "DPE, diagnostics et travaux",
       "question": "Mon immeuble doit-il avoir un DPE collectif ou un audit énergétique pour être vendu ?",
-      "reponse": "Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Pour les copropriétés, l’obligation s’applique depuis 2024 au-delà de 200 lots, depuis 2025 de 50 à 200 lots et depuis 2026 en dessous. Ce DPE est valable dix ans. Pour la vente d’un immeuble qui n’est pas en copropriété, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
+      "reponse": "Oui dans la plupart des cas : il lui faut un DPE collectif, et un audit énergétique en plus s’il est classé E, F ou G. Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Ce DPE est valable dix ans. Pour la vente d’un tel immeuble, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
       "sources": [
+        "MAV, retour #360 du 13/11/2026",
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F37504",
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F37110",
         "https://www.ecologie.gouv.fr/politiques-publiques/audit-energetique-reglementaire"
@@ -447,23 +517,33 @@
     {
       "groupe": "DPE, diagnostics et travaux",
       "question": "Quels diagnostics faut-il pour vendre un immeuble à Paris ?",
-      "reponse": "Le vendeur fournit un dossier de diagnostic technique, annexé à la promesse puis à l’acte. Pour un immeuble ancien vendu en bloc, il comprend en général le constat de risque d’exposition au plomb pour les logements construits avant 1949, l’état relatif à l’amiante si le permis de construire date d’avant le 1er juillet 1997, et l’état des installations d’électricité et de gaz de plus de quinze ans. Tout Paris étant une zone de surveillance des termites, un état relatif aux termites s’ajoute, avec l’état des risques ; ces deux documents doivent dater de moins de six mois. Pour l’énergie, la vente en bloc demande un DPE à l’échelle du bâtiment, et un diagnostic à part pour les commerces et bureaux. Les acheteurs demandent souvent aussi le DPE de chaque logement, car c’est lui qui dit s’il peut encore être loué.",
+      "reponse": "Le vendeur fournit un dossier de diagnostic technique, annexé à la promesse puis à l’acte. Pour un immeuble ancien, il comprend en général le constat de risque d’exposition au plomb pour les logements construits avant 1949, l’état relatif à l’amiante si le permis date d’avant le 1er juillet 1997, et l’état des installations d’électricité et de gaz de plus de quinze ans. À Paris s’ajoutent l’état relatif aux termites et l’état des risques, tous deux de moins de six mois, et le contrôle du raccordement à l’égout. Pour l’énergie, la vente en bloc demande un DPE du bâtiment, et un diagnostic à part pour les commerces et bureaux. Hors copropriété, la vente n’exige ni le DPE ni la surface Carrez de chaque logement. Nous vous les recommandons : les acheteurs les demandent pour évaluer le prix et le risque de perte de loyers, un logement classé G ne pouvant plus faire l’objet d’un nouveau bail.",
       "sources": [
+        "MAV, retour #361 du 13/11/2026",
         "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006176358",
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F10798",
         "https://www.paris.fr/pages/lutte-contre-les-termites-8103",
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F12239",
         "https://www.assemblee-nationale.fr/dyn/16/questions/QANR5L16QE8231",
-        "https://www.assemblee-nationale.fr/dyn/17/questions/QANR5L17QE4945"
+        "https://www.assemblee-nationale.fr/dyn/17/questions/QANR5L17QE4945",
+        "https://www.service-public.gouv.fr/particuliers/actualites/A17975",
+        "https://www.anil.org/documentation-experte/analyses-juridiques-jurisprudence/analyses-juridiques/2006/obligations-relatives-a-la-qualite-et-a-la-contenance-du-logement/loi-carrez",
+        "https://cdn.paris.fr/paris/2025/01/02/formulairecontrolesecteurseparatif2025-OjTc.pdf (contrôle du raccordement au réseau public d’assainissement à Paris ; article L271-4, I, 8° du code de la construction et de l’habitation, lu le 13/11/2026)",
+        "Page Paris, carte « Les diagnostics » : « Nous les recommandons »",
+        "À revérifier après la séance publique de l’Assemblée nationale du 16/11/2026 sur le projet de loi visant la relance et la décentralisation du logement (n° 3058), qui prévoit de rouvrir sous conditions la location de logements classés G : https://www.assemblee-nationale.fr/dyn/17/dossiers/PJL_relance_decentralisation_logement_2"
       ]
     },
     {
       "groupe": "DPE, diagnostics et travaux",
       "question": "Faut-il faire des travaux avant de vendre un immeuble à Paris ?",
-      "reponse": "Avant de décider, il faut les chiffrer : l’acquéreur déduit de son prix les travaux qu’il devra faire. Nous chiffrons ces travaux avec l’estimation, pour que le prix en tienne compte sans brader l’immeuble. La Team Reno, la société de travaux de notre groupe, visite l’immeuble et chiffre la rénovation, lot par lot et pour les parties communes. En secteur protégé, la rénovation coûte plus cher : nous en tenons compte.",
+      "reponse": "Pas forcément : il est souvent plus avantageux de les laisser à l’acquéreur, et vous n’avez pas à les financer. Lui ne paie pas de frais de notaire sur des travaux faits après l’achat, alors qu’il en paierait sur un prix qui les inclut. Il peut les intégrer à son prêt et demander un différé de remboursement. Il peut aussi les repousser à la date de son choix, ce qui améliore sa rentabilité. Encore faut-il les chiffrer au juste prix : pour mieux négocier, les acheteurs annoncent souvent des travaux plus chers qu’ils ne le sont. La Team Reno, la société de travaux de notre groupe, visite l’immeuble et chiffre la rénovation, logements et parties communes. Elle s’engage sur ses prix et pratique des prix maîtrisés : la négociation repose alors sur le coût réel des travaux, et le prix de votre immeuble en souffre moins. En secteur protégé, la rénovation coûte plus cher : nous en tenons compte.",
       "sources": [
+        "MAV, retours #362 et #363 du 13/11/2026",
+        "MAV, retour #319 du 13/11/2026",
         "Articles du site (lot 88) : La Team Reno chiffre les travaux",
-        "MAV, retour #319 du 13/11/2026"
+        "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006310209 (article 683 du code général des impôts : les droits sont liquidés sur le prix exprimé dans l’acte, lu le 13/11/2026)",
+        "https://www.notaires.fr/fr/droits-de-mutation-frais-d%E2%80%99acte-de-vente-ou-%C2%AB-frais-de-notaire-%C2%BB",
+        "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000024188977 (article 1115 du code général des impôts : un marchand de biens qui s’engage à revendre paie des droits réduits, l’économie est donc surtout celle d’un investisseur ; la phrase reste exacte pour tout acquéreur)"
       ]
     },
     {
@@ -475,7 +555,7 @@
       ]
     },
     {
-      "groupe": "Ville de Paris, urbanisme et impôts",
+      "groupe": "Préemption de la Ville et impôt sur la plus-value",
       "question": "La Ville de Paris peut-elle préempter mon immeuble ?",
       "reponse": "Oui. La vente d’un immeuble en bloc à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
       "sources": [
@@ -484,26 +564,7 @@
       ]
     },
     {
-      "groupe": "Ville de Paris, urbanisme et impôts",
-      "question": "Que change le PLU bioclimatique de Paris pour un immeuble existant ?",
-      "reponse": "Le PLU bioclimatique a été adopté par le Conseil de Paris le 20 novembre 2024. Il touche surtout les projets : un immeuble que l’on vend en l’état n’est pas concerné. En revanche, une surélévation, une restructuration lourde ou un changement de destination qui crée des logements au-delà d’une certaine surface doit comporter une part de logements sociaux, plus forte dans les quartiers qui en comptent le moins. Les surélévations sont liées à la création de logements et à la désimperméabilisation des cours, et la réhabilitation devient la règle plutôt que la démolition. Avant de vendre, il est utile de vérifier si la parcelle porte un emplacement réservé pour du logement : cela change ce qu’un acheteur peut faire de l’immeuble.",
-      "sources": [
-        "https://www.paris.fr/pages/plan-local-d-urbanisme-bioclimatique-vers-un-paris-plus-vert-et-plus-solidaire-23805",
-        "https://www.paris.fr/pages/le-plan-local-d-urbanisme-plu-2329",
-        "https://www.cheuvreux.fr/actualites/plu-bioclimatique-de-la-ville-de-parie-principales-mesures-en-matiere-de-logement-dans-le-reglement-du-plub/"
-      ]
-    },
-    {
-      "groupe": "Ville de Paris, urbanisme et impôts",
-      "question": "Combien coûte la taxe foncière d’un immeuble à Paris ?",
-      "reponse": "La Ville de Paris a porté le taux communal de la taxe foncière sur les propriétés bâties de 13,50 % à 20,50 % en 2023. Ce taux s’applique à la moitié de la valeur locative cadastrale de chaque local, une base que l’État revalorise chaque année. S’y ajoutent des taxes annexes, dont la taxe d’enlèvement des ordures ménagères, récupérable sur les locataires. Cette hausse a réduit le rendement net des immeubles loués. Le montant exact figure sur l’avis de taxe foncière, à joindre au dossier de vente.",
-      "sources": [
-        "https://www.paris.fr/pages/budget-2023-pourquoi-une-augmentation-de-la-taxe-fonciere-22445",
-        "https://www.paris.fr/pages/taxes-et-impots-2318"
-      ]
-    },
-    {
-      "groupe": "Ville de Paris, urbanisme et impôts",
+      "groupe": "Préemption de la Ville et impôt sur la plus-value",
       "question": "Combien d’impôt sur la plus-value en vendant un immeuble à Paris ?",
       "reponse": "Pour un particulier, une indivision ou une SCI à l’impôt sur le revenu, la plus-value est imposée à 19 %, plus 17,2 % de prélèvements sociaux (la hausse de la CSG de 2026 ne s’applique pas aux plus-values immobilières), avec un abattement qui grandit avec la durée de détention. Elle est exonérée d’impôt sur le revenu après 22 ans et de prélèvements sociaux après 30 ans. Une taxe de 2 à 6 % s’ajoute quand la plus-value imposable dépasse 50 000 €. Pour des héritiers, le prix de départ est la valeur retenue dans la déclaration de succession. Une SCI à l’impôt sur les sociétés suit d’autres règles, sans abattement pour durée de détention. Le notaire calcule l’impôt et le prélève lors de la signature de l’acte.",
       "sources": [

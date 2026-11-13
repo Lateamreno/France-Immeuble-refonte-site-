@@ -1465,7 +1465,7 @@ html[class] .hero-media h1.eyebrow{
   html.h-600 .hero-media.hero-paris .lead{font-size:.94rem;line-height:1.5;}
 }
 
-/* FAQ en groupes titrés (trente questions, cinq groupes). */
+/* FAQ en groupes titrés (33 questions en six groupes au lot 111). */
 .faq-groupe + .faq-groupe{margin-top:var(--space-m);}
 .faq-groupe h3{font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.15em;line-height:1.5;text-transform:uppercase;color:var(--color-bronze);margin:0 0 var(--space-xs);}
 @media (min-width:900px){ .paris-faq-sec > .container > .section__head{position:sticky;top:calc(var(--header-h) + var(--space-m));} }
