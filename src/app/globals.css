@@ -1216,7 +1216,18 @@ html[class] .hero-media h1.eyebrow{
   .ligne-cartes.paris-ligne--3{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}
 }
 @media (min-width:1200px){ .ligne-cartes.paris-ligne{margin-inline:0;} }
-.paris-carte{min-width:0;height:100%;border-left:1px solid var(--color-bronze);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:10px;}
+/* Retours #370 et #372 (MAV, 13/11/2026 : « On fait les défilements horizontaux de d'habitude ») :
+   ces lignes sont des lignes `marches`, comme les atouts de Vendre ou les avis. Au téléphone, une
+   carte au premier plan et ses voisines dans les marges, les deux flèches sous les cartes. Le
+   nombre de cartes de front reste celui de la page : deux sur tablette, quatre (ou trois) dès 1 100 px. */
+@media (min-width:760px){ .ligne--marches > .ligne-cartes.ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - var(--g)) / 2);} }
+@media (min-width:1100px){
+  .ligne--marches > .ligne-cartes.ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - 3 * var(--g)) / 4);}
+  .ligne--marches > .ligne-cartes.ligne-cartes.paris-ligne--3{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}
+}
+/* Retours #367, #369 et #371 (MAV, 13/11/2026 : « Mets pas les séparateurs verticaux c'est moche ») :
+   plus de filet à gauche des cartes, le picto or ouvre chaque carte. */
+.paris-carte{min-width:0;height:100%;padding:4px 0;display:flex;flex-direction:column;gap:10px;}
 .paris-carte h3{font-size:1.15rem;margin:0;text-wrap:balance;}
 .paris-carte p{margin:0;font-size:.96rem;color:color-mix(in srgb, var(--color-creme) 82%, var(--color-noir));line-height:1.55;}
 .paris-carte svg{flex:none;color:var(--color-bronze);}
@@ -1235,18 +1246,28 @@ html[class] .hero-media h1.eyebrow{
    reste une colonne, comme avant. */
 @supports (grid-template-rows:subgrid){
   .ligne-cartes.paris-ligne{grid-template-rows:repeat(3,auto);}
-  .paris-ligne > .paris-carte{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;height:auto;}
-  .paris-ligne > .paris-carte > *{align-self:start;}
-  .paris-ligne > .paris-carte > .paris-carte__corps{align-self:stretch;}
+  /* Lot 111 : la ligne glisse comme sur le reste du site (`marches`), chaque carte est dans une
+     case. La case reprend les trois lignes de la rangée et les passe à sa carte. */
+  .ligne-cartes.paris-ligne > .ligne-case{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;}
+  .paris-ligne .paris-carte{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;height:auto;}
+  .paris-ligne .paris-carte > *{align-self:start;}
+  .paris-ligne .paris-carte > .paris-carte__corps{align-self:stretch;}
 }
 
 /* Une phrase d'un avis Google, au mot près. */
-.paris-citation{margin:var(--space-m) 0 0;padding-left:16px;border-left:2px solid var(--color-bronze);max-width:64ch;}
-.paris-citation blockquote{font-size:1.05rem;line-height:1.5;color:var(--color-creme);}
-.paris-citation figcaption{margin-top:6px;font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze);}
+.paris-citation{margin:var(--space-m) 0 0;max-width:64ch;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:start;}
+/* Retours #368 et #373 (MAV, 13/11/2026 : « On comprend pas que c'est une citation, mets peut-être
+   les guillemets en gros, stylisés et or pour que ça se sépare du texte d'au-dessus ») : un grand
+   guillemet or, dans la police des titres, ouvre la citation ; un guillemet or la ferme. Plus de
+   filet vertical. Sur crème, l'or des boutons reste lisible à cette taille. */
+.paris-citation__ouvre{grid-row:1 / span 2;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:3.1rem;line-height:.62;color:var(--color-bronze);}
+.paris-citation__ferme{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);color:var(--color-bronze);}
+.paris-citation blockquote{margin:0;font-size:1.05rem;line-height:1.5;color:var(--color-creme);}
+.paris-citation figcaption{grid-column:2;margin-top:6px;font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze);}
 .section--creme .paris-citation blockquote{color:var(--color-noir);}
 .section--creme .paris-citation figcaption{color:var(--color-bronze-profond);}
-.paris-carte .paris-citation{margin-top:2px;padding-left:12px;border-left-width:1px;}
+.paris-carte .paris-citation{margin-top:2px;column-gap:8px;}
+.paris-carte .paris-citation__ouvre{font-size:2.2rem;}
 .paris-carte .paris-citation blockquote{font-size:.92rem;}
 .paris-carte__corps > .paris-citation{margin-top:auto;}
 @media (min-width:1100px){ .paris-carte .paris-citation blockquote{font-size:.88rem;} }
@@ -1271,13 +1292,13 @@ html[class] .hero-media h1.eyebrow{
 .paris-prix td.paris-prix__med{font-family:var(--font-mono-site);font-size:1.04rem;font-weight:700;word-spacing:-.32em;}
 .paris-prix__dec{font-family:var(--font-mono-site);font-size:.88rem;word-spacing:-.32em;}
 .paris-prix__rdt{font-family:var(--font-mono-site);font-size:.88rem;color:var(--texte-2);word-spacing:-.32em;}
-/* La note de fiabilité (retour #325) : cinq petites barres posées sur la ligne de base, pleines
-   jusqu'à la note, vides ensuite. Bronze profond sur crème : 5,07:1. Le texte « 4 sur 5 » est lu
-   par les lecteurs d'écran (`.sr-only`). */
+/* La note de fiabilité (retour #325, puis MAV, 13/11/2026 : « des étoiles 1 à 3 donc étoiles vides
+   et étoiles pleines ») : trois étoiles, pleines jusqu'à la note, au trait ensuite. Bronze profond
+   sur crème : 5,07:1. Le texte « 2 étoiles sur 3 » est lu par les lecteurs d'écran (`.sr-only`). */
 .paris-prix__fiab{font-size:.8rem;color:var(--texte-2);}
-.paris-fiab{display:inline-flex;gap:3px;}
-.paris-fiab i{width:5px;height:11px;border:1px solid var(--color-bronze-profond);border-radius:1.5px;}
-.paris-fiab i.est-pleine{background:var(--color-bronze-profond);}
+.paris-fiab{display:inline-flex;gap:2px;vertical-align:-2px;}
+.paris-fiab svg{flex:none;fill:none;stroke:var(--color-bronze-profond);stroke-width:1.5;stroke-linejoin:round;}
+.paris-fiab svg.est-pleine{fill:var(--color-bronze-profond);}
 .paris-prix tr.paris-prix__peu th{color:var(--texte-2);}
 .paris-prix tr.paris-prix__peu td{text-align:left;white-space:normal;font-size:.84rem;color:var(--texte-2);}
 /* Une ancre par arrondissement (#arr-11) : la ligne visée se détache, sans script. */
@@ -1307,8 +1328,8 @@ html[class] .hero-media h1.eyebrow{
   .paris-prix tbody th{font-size:.92rem;font-weight:600;}
   .paris-prix td.paris-prix__med{font-size:.95rem;}
   .paris-prix__dec,.paris-prix__rdt{font-size:.8rem;}
-  .paris-fiab{gap:2px;}
-  .paris-fiab i{width:4px;height:10px;}
+  .paris-fiab{gap:1px;}
+  .paris-fiab svg{width:13px;height:13px;}
   .paris-prix-sec h2{font-size:min(var(--fs-h2), 7.4vw);}
 }
 /* 320 px : cinq colonnes sans défilement de côté. En-têtes de 9 px, marges des cellules resserrées. */
@@ -1470,7 +1491,6 @@ html[class] .hero-media h1.eyebrow{
   .paris-vente-sec .paris-profils__combien{font-size:.78rem;}
   :is(.paris-vente-sec,.paris-apres-sec) .tete-2col > .lead{font-size:1rem;}
   :is(.paris-vente-sec,.paris-apres-sec) .ligne-cartes.paris-ligne{--g:14px;}
-  :is(.paris-vente-sec,.paris-apres-sec) .paris-carte{padding-left:14px;}
   .paris-apres-sec .paris-carte p{font-size:.84rem;}
   .section.paris-apres-sec{padding-block:24px;}
   .paris-apres-sec .section__head{margin-bottom:var(--space-s);}

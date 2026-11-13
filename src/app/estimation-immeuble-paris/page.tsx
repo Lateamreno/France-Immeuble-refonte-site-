@@ -10,7 +10,7 @@ import { Avis } from "@/components/Avis";
 import { SectionFaq } from "@/components/SectionFaq";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { ventes as lesVentes } from "@/lib/biens";
-import { immeublesDesCommunes } from "@/lib/immeubles-dvf-lecture";
+import { immeublesDesCommunes, libelleRendement, RENDEMENT_PARIS_REPLI } from "@/lib/immeubles-dvf-lecture";
 import { chiffres } from "@/lib/chiffres";
 import { chiffresFaq, faqVendre } from "@/lib/faq";
 import { VISUELS } from "@/lib/visuels";
@@ -47,7 +47,8 @@ export default async function EstimationImmeubleParis() {
     { picto: "dossier", titre: "Signature chez le notaire", texte: "Nous suivons le dossier jusqu’à l’acte. Nos honoraires ne sont dus qu’à ce moment-là." },
   ];
   const reperes: { valeur: string; libelle: string }[] = [
-    { valeur: "3 à 6\u00a0%", libelle: "de rendement pour un immeuble parisien, selon l’arrondissement" },
+    // MAV, 13/11/2026 : « 3,5 à 6,5 en général », la fourchette de la page Paris.
+    { valeur: libelleRendement(RENDEMENT_PARIS_REPLI), libelle: "de rendement en général pour un immeuble parisien, selon l’arrondissement" },
     ...(totalImmeubles && anneeImmeubles ? [{ valeur: nombre(totalImmeubles), libelle: `immeubles entiers vendus à Paris en ${anneeImmeubles} (DVF)` }] : []),
     ...(ch.traitesPar["75"] ? [{ valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }] : []),
     ...(c.delaiMedian ? [{ valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre, en médiane sur nos ventes" }] : []),

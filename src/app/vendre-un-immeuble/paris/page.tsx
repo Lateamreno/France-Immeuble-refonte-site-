@@ -15,7 +15,7 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, organisation, service } from "@/lib/schema";
 import { marchesDesCommunes } from "@/lib/marche";
-import { immeublesDesCommunes, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
+import { fourchetteRendement, immeublesDesCommunes, libelleRendement, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
 import { PRIX_M2_MAX, PRIX_M2_MIN, VENTES_MIN_APPARTEMENTS } from "@/lib/dvf-immeubles";
 import { chiffres } from "@/lib/chiffres";
 import { ventes as lesVentes } from "@/lib/biens";
@@ -53,6 +53,11 @@ import { PREUVES, SITE, nombre } from "@/lib/site";
  *   locataires ni l'espace client ;
  * - découpe (#340) : une option, avec un bouton vers sa page dans un nouvel onglet ;
  * - ventes (#341, #342) : toutes nos ventes d'immeubles à Paris, une ligne qui glisse dès la quatrième.
+ *
+ * Lot 111 (MAV, 13/11/2026, retours #358 à #373 et son message) : fiabilité en étoiles, une à
+ * trois ; décote « de 10 à 30 % » ; rendement « en général » tiré du tableau ; cartes sans filet
+ * vertical ; citations ouvertes par un grand guillemet or ; lignes qui glissent comme sur le reste
+ * du site (`marches`) ; FAQ : un groupe sur les acquéreurs et les offres, deux questions retirées.
  *
  * À respecter : 100 % off-market, aucun délai de vente affiché, ne pas écrire qu'on estime
  * seulement au rendement, chiffres DVF en agrégats seulement, aucun lien dans les textes hors FAQ.
@@ -94,11 +99,20 @@ function Relance({ libelle = "Estimer mon immeuble", court }: { libelle?: string
   );
 }
 
-/** Une phrase d'un avis Google, reprise au mot près de `AVIS` (src/lib/accueil.ts) ; « … » marque la coupe. */
+/**
+ * Une phrase d'un avis Google, reprise au mot près de `AVIS` (src/lib/accueil.ts) ; « … » marque la
+ * coupe. Retours #368 et #373 (« on comprend pas que c'est une citation, mets peut-être les
+ * guillemets en gros, stylisés et or ») : un grand guillemet or ouvre la citation et la détache du
+ * texte qui précède, un guillemet or la ferme. Même dessin partout, y compris dans une carte.
+ */
 function Citation({ texte, auteur }: { texte: string; auteur: string }) {
   return (
     <figure className="paris-citation">
-      <blockquote>«&nbsp;{texte}&nbsp;»</blockquote>
+      <span className="paris-citation__ouvre" aria-hidden="true">«</span>
+      <blockquote>
+        {texte}
+        <span className="paris-citation__ferme" aria-hidden="true">&nbsp;»</span>
+      </blockquote>
       <figcaption>{auteur}, avis Google</figcaption>
     </figure>
   );
@@ -129,18 +143,22 @@ function CarteArgument({ picto, titre, texte, citation }: Carte) {
 }
 
 /**
- * La note de fiabilité d'un prix médian (retour #325) : cinq petites barres, pleines jusqu'à la
- * note, vides ensuite ; « 4 sur 5 » pour les lecteurs d'écran.
+ * La note de fiabilité d'un prix médian (retour #325, puis MAV, 13/11/2026 : « C'est moche
+ * l'affichage de la fiabilité. Mets-nous soit une note sur 5 soit des étoiles 1 à 3 donc étoiles
+ * vides et étoiles pleines ») : trois étoiles, pleines jusqu'à la note, vides ensuite ; « 2 étoiles
+ * sur 3 » pour les lecteurs d'écran.
  */
 function Fiabilite({ note }: { note: NoteFiabilite }) {
   return (
     <>
       <span className="paris-fiab" aria-hidden="true">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <i key={i} className={i <= note ? "est-pleine" : undefined} />
+        {[1, 2, 3].map((i) => (
+          <svg key={i} viewBox="0 0 24 24" width="15" height="15" className={i <= note ? "est-pleine" : undefined}>
+            <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z" />
+          </svg>
         ))}
       </span>
-      <span className="sr-only">{note} sur 5</span>
+      <span className="sr-only">{note} {note > 1 ? "étoiles" : "étoile"} sur 3</span>
     </>
   );
 }
@@ -366,6 +384,8 @@ export default async function VendreUnImmeubleParis() {
     decotes.length > 1 && decotes[0].pct !== decotes[decotes.length - 1].pct
       ? { min: decotes[0], max: decotes[decotes.length - 1] }
       : null;
+  // La fourchette de rendement « en général » (MAV, 13/11/2026), tirée des rendements du tableau.
+  const rendementParis = libelleRendement(fourchetteRendement(lignes.flatMap((l) => (l.rdt != null ? [l.rdt] : []))));
   const millesime = [...marches.values()].find((m) => m.millesimeLoyers)?.millesimeLoyers ?? null;
   // La licence de DVF demande la source et la date de mise à jour : le mois du dernier relevé.
   const dernierReleve = [...immeubles.values()].flatMap((x) => (x.annee === annee && x.majLe ? [x.majLe] : [])).sort().pop();
@@ -429,8 +449,9 @@ export default async function VendreUnImmeubleParis() {
     // Sans les prix des appartements en base, la phrase d'avant le lot 110 : la question reste affichée.
     phraseDecote:
       tableau && etendueDecote
-        ? `Par rapport au prix médian des appartements vendus seuls la même année, la décote mesurée va de ${etendueDecote.min.pct} % à ${etendueDecote.max.pct} % selon l’arrondissement. D’après notre expérience, comptez plutôt 15 % pour un immeuble en bon état, loué au prix du marché.`
-        : "Entre un immeuble vendu en bloc et le prix des appartements, la décote est en général d’environ 15 %.",
+        ? `Par rapport au prix médian des appartements vendus seuls la même année, la décote mesurée va de ${etendueDecote.min.pct} % à ${etendueDecote.max.pct} % selon l’arrondissement. D’après notre expérience, elle est le plus souvent de 10 à 30 %, selon l’état de l’immeuble et le niveau de ses loyers.`
+        : "Entre un immeuble vendu en bloc et le prix des appartements, la décote est le plus souvent de 10 à 30 %, selon l’état de l’immeuble et le niveau de ses loyers.",
+    rendementParis,
     immeublesEtudies: nombre(ch.immeublesTraites),
     acheteurs: nombre(ch.investisseurs),
   };
@@ -534,7 +555,7 @@ export default async function VendreUnImmeubleParis() {
               immeubles depuis 2018.
             </p>
           </Reveal>
-          <LigneDefilante className="paris-ligne">
+          <LigneDefilante marches className="paris-ligne">
             {ESTIMATION.map((x) => (
               <CarteArgument key={x.titre} {...x} />
             ))}
@@ -648,9 +669,9 @@ export default async function VendreUnImmeubleParis() {
                   carrée du nombre de ventes.{" "}
                   {SEUILS_FIABILITE.map(
                     ([seuil, note], i) =>
-                      `${i ? "jusqu’à" : "Jusqu’à"} ${seuil.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} : ${note}`,
+                      `${i ? "jusqu’à" : "Jusqu’à"} ${seuil.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} : ${note === 3 ? "trois étoiles" : "deux étoiles"}`,
                   ).join(" ; ")}
-                  &nbsp;; au-delà, ou avec moins de cinq ventes&nbsp;: 1.
+                  &nbsp;; au-delà, ou avec moins de cinq ventes&nbsp;: une étoile.
                 </p>
                 {avecRdt && (
                   <p>
@@ -677,25 +698,25 @@ export default async function VendreUnImmeubleParis() {
                       {rang(etendueDecote.max.n)}.
                     </>
                   )}{" "}
-                  D’après notre expérience, comptez plutôt 15&nbsp;% pour un immeuble en bon état, loué au
-                  prix du marché.
+                  D’après notre expérience, elle est le plus souvent de 10 à 30&nbsp;%, selon l’état de
+                  l’immeuble et le niveau de ses loyers.
                 </p>
               ) : (
                 /* Sans les prix des appartements en base : la note d'avant le lot 110, sans colonne à expliquer. */
                 <p>
-                  <strong>Environ 15&nbsp;% de décote.</strong> Entre un immeuble vendu en bloc et le prix des
-                  appartements, la décote est en général d’environ 15&nbsp;%. Elle varie selon
-                  l’arrondissement, le type d’immeuble et les loyers réellement pratiqués.
+                  <strong>De 10 à 30&nbsp;% de décote.</strong> Entre un immeuble vendu en bloc et le prix des
+                  appartements, la décote est le plus souvent de 10 à 30&nbsp;%. Elle varie selon
+                  l’arrondissement, l’état de l’immeuble et les loyers réellement pratiqués.
                 </p>
               )}
               <p>
-                <strong>Fiabilité.</strong> De 1 à 5&nbsp;: la note est haute quand les ventes de
-                l’arrondissement sont nombreuses et leurs prix proches les uns des autres. À 1 ou 2, le
-                prix est à lire avec prudence.
+                <strong>Fiabilité.</strong> D’une à trois étoiles&nbsp;: la note est haute quand les ventes
+                de l’arrondissement sont nombreuses et leurs prix proches les uns des autres. Avec une
+                seule étoile, le prix est à lire avec prudence.
               </p>
               <p>
-                <strong>Un rendement de 3 à 6&nbsp;%.</strong> À Paris, un immeuble de rapport se vend
-                aujourd’hui sur un rendement de 3 à 6&nbsp;% selon les arrondissements.
+                <strong>Un rendement de {rendementParis} en général.</strong> C’est le rendement sur
+                lequel un immeuble de rapport se vend aujourd’hui à Paris, selon les arrondissements.
                 {avecRdt && (
                   <>
                     {" "}Celui du tableau est théorique&nbsp;: le loyer de marché des appartements du secteur sur
@@ -731,7 +752,7 @@ export default async function VendreUnImmeubleParis() {
               exclusivité. Vos locataires et vos voisins ne l’apprennent pas par une annonce.
             </p>
           </Reveal>
-          <LigneDefilante className="paris-ligne">
+          <LigneDefilante marches className="paris-ligne">
             {VENTE.map((x) => (
               <CarteArgument key={x.titre} {...x} />
             ))}
@@ -768,7 +789,7 @@ export default async function VendreUnImmeubleParis() {
               tout, et nous vous accompagnons jusqu’à l’acte.
             </p>
           </Reveal>
-          <LigneDefilante className="paris-ligne">
+          <LigneDefilante marches className="paris-ligne">
             {APRES.map((x) => (
               <CarteArgument key={x.titre} {...x} />
             ))}
@@ -787,7 +808,7 @@ export default async function VendreUnImmeubleParis() {
               Honoraires&nbsp;: <span className="accent">rien à payer</span> tant que la vente n’est pas signée
             </h2>
           </Reveal>
-          <LigneDefilante className="paris-ligne paris-ligne--3">
+          <LigneDefilante marches className="paris-ligne paris-ligne--3">
             {CONDITIONS.map((x) => (
               <CarteArgument key={x.titre} {...x} />
             ))}
@@ -810,7 +831,7 @@ export default async function VendreUnImmeubleParis() {
               votre immeuble et vous conseillons selon l’écart de prix entre les deux options.
             </p>
           </Reveal>
-          <LigneDefilante className="paris-ligne paris-ligne--3">
+          <LigneDefilante marches className="paris-ligne paris-ligne--3">
             {DECOUPE.map((x) => (
               <CarteArgument key={x.titre} {...x} />
             ))}
@@ -839,6 +860,7 @@ export default async function VendreUnImmeubleParis() {
             </Reveal>
             {/* Trois cartes de front sur ordinateur ; à partir de la quatrième vente, la ligne glisse. */}
             <LigneDefilante
+              marches
               className={`paris-ventes-ligne${ventesParis.length > 3 ? " paris-ventes-ligne--glisse" : ""}`}
             >
               {ventesParis.map((v) => (

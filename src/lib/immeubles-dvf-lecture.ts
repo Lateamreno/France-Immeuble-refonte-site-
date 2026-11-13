@@ -1,8 +1,8 @@
 import { VENTES_MIN_FOURCHETTE } from "./dvf-immeubles";
 import { configSitePublique, type ConfigSite } from "./supabase-site";
 
-/** Note de fiabilité du prix médian d'une commune, de 1 (fragile) à 5 (solide). */
-export type NoteFiabilite = 1 | 2 | 3 | 4 | 5;
+/** Note de fiabilité du prix médian d'une commune : une étoile (fragile), deux ou trois (solide). */
+export type NoteFiabilite = 1 | 2 | 3;
 
 /** Les ventes d'immeubles entiers de DVF, telles que la tâche mensuelle les a rangées (lot 100). */
 export type ImmeublesCommune = {
@@ -34,8 +34,8 @@ export function decotePct(prixM2Immeubles: number | null, prixM2Appartements: nu
   return Math.round((prixM2Immeubles / prixM2Appartements - 1) * 100) || 0; // jamais « −0 »
 }
 
-/** Incertitude maximale de chaque note, de la meilleure à la moins bonne. Au-delà : 1. */
-export const SEUILS_FIABILITE: readonly (readonly [number, NoteFiabilite])[] = [[0.04, 5], [0.07, 4], [0.10, 3], [0.15, 2]];
+/** Incertitude maximale de chaque note, de la meilleure à la moins bonne. Au-delà : une étoile. */
+export const SEUILS_FIABILITE: readonly (readonly [number, NoteFiabilite])[] = [[0.07, 3], [0.15, 2]];
 
 /**
  * La note de fiabilité du prix médian (lot 110, MAV, 13/11/2026, retour #325 : « on note fiable
@@ -44,14 +44,41 @@ export const SEUILS_FIABILITE: readonly (readonly [number, NoteFiabilite])[] = [
  *  - largeur = (prix haut − prix bas) ÷ prix médian, sur la fourchette sans le quart des ventes le
  *    moins cher ni le quart le plus cher (lot 109) ;
  *  - incertitude = largeur ÷ √(nombre de ventes) ;
- *  - jusqu'à 0,04 : 5 ; jusqu'à 0,07 : 4 ; jusqu'à 0,10 : 3 ; jusqu'à 0,15 : 2 ; au-delà : 1 ;
- *  - moins de cinq ventes (pas de fourchette) : 1 ; pas de prix médian : pas de note.
+ *  - jusqu'à 0,07 : trois étoiles ; jusqu'à 0,15 : deux ; au-delà : une ;
+ *  - moins de cinq ventes (pas de fourchette) : une étoile ; pas de prix médian : pas de note.
+ * Lot 111 (MAV, 13/11/2026 : « C'est moche l'affichage de la fiabilité. Mets-nous soit une note
+ * sur 5 soit des étoiles 1 à 3 ») : trois niveaux au lieu de cinq, mêmes seuils que les anciennes
+ * notes 4 et 2.
  */
 export function noteFiabilite(s: Pick<ImmeublesCommune, "nbVentes" | "prixM2Median" | "prixM2Bas" | "prixM2Haut">): NoteFiabilite | null {
   if (s.prixM2Median == null || !(s.prixM2Median > 0)) return null;
   if (s.nbVentes < VENTES_MIN_FOURCHETTE || s.prixM2Bas == null || s.prixM2Haut == null) return 1;
   const incertitude = (s.prixM2Haut - s.prixM2Bas) / s.prixM2Median / Math.sqrt(s.nbVentes);
   return SEUILS_FIABILITE.find(([seuil]) => incertitude <= seuil)?.[1] ?? 1;
+}
+
+/** La fourchette de rendement écrite sans le tableau (ou sans les loyers de marché). */
+export const RENDEMENT_PARIS_REPLI = { bas: 3.5, haut: 6.5 } as const;
+
+/**
+ * La fourchette de rendement « en général » d'un immeuble de rapport à Paris, tirée des rendements
+ * théoriques du tableau (lot 111, MAV, 13/11/2026 : « Si on a 3,5 on dit 3,5 à 6,5 en général »).
+ * On écarte l'arrondissement le plus bas et le plus haut, puis on arrondit au demi-point vers
+ * l'extérieur : 3,9 donne 3,5 ; 6,1 donne 6,5. Avec moins de cinq arrondissements chiffrés, la
+ * fourchette de repli.
+ */
+export function fourchetteRendement(rendements: number[]): { bas: number; haut: number } {
+  const tries = rendements.filter((r) => Number.isFinite(r) && r > 0).sort((a, b) => a - b);
+  if (tries.length < 5) return RENDEMENT_PARIS_REPLI;
+  const bas = Math.floor(tries[1] * 2) / 2;
+  const haut = Math.ceil(tries[tries.length - 2] * 2) / 2;
+  return haut > bas ? { bas, haut } : RENDEMENT_PARIS_REPLI;
+}
+
+/** « 3,5 à 6,5 % », espace insécable avant le signe : un chiffre après la virgule seulement quand il en faut un. */
+export function libelleRendement({ bas, haut }: { bas: number; haut: number }): string {
+  const f = (n: number) => n.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
+  return `${f(bas)} à ${f(haut)}\u00a0%`;
 }
 
 const COLONNES = "code_insee,annee,nb_ventes,prix_m2_median,prix_m2_bas,prix_m2_haut,maj_le";
