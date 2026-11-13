@@ -55,7 +55,12 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
     )];
     // Les flèches des lignes qui glissent sont des boutons, elles aussi : la pilule s'efface
     // quand l'une d'elles passe dans sa bande, en bas de l'écran, et revient après.
-    const fleches = Array.from(document.querySelectorAll<HTMLElement>("main .ligne__fleche"));
+    // Lot 111 : de même devant une citation posée sous une rangée de cartes (page Paris) ; son nom
+    // d'auteur se retrouvait sous la pilule quand la section s'arrêtait calée en haut de l'écran.
+    const fleches = [
+      ...Array.from(document.querySelectorAll<HTMLElement>("main .ligne__fleche")),
+      ...Array.from(document.querySelectorAll<HTMLElement>("main .paris-citation")).filter((c) => !c.closest(".paris-carte")),
+    ];
     const sousPilule = new Map<Element, boolean>();
     const calcul = () => {
       const heroVisible = hero ? etats.get(hero) ?? true : false;

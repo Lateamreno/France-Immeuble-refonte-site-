@@ -613,6 +613,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   ferme, même dessin pour les quatre (#368, #373). **Lignes qui glissent en `marches`**, comme les atouts
   de Vendre et les avis (#370, #372 : « on fait quoi qu'il arrive la même chose que sur le reste du
   site ») ; la sous-grille d'alignement traverse la case (`.ligne-cartes.paris-ligne > .ligne-case`).
+  Au téléphone, chaque carte d'argument reçoit le cadre discret des cartes d'avis : sans lui, la voisine
+  qui dépasse dans la marge était un bout de texte coupé. La pilule fixe s'efface aussi devant une
+  citation posée sous une rangée (`BoutonFixeMobile`). Relu par trois relecteurs (code, rendu de 320 à
+  2 560 px, fidélité aux retours) : une seule formule de rendement pour la page Paris et la page des
+  annonces (`rendementsTheoriques`), tâche mensuelle bornée dans le temps, « de 10 à 30 % » aussi sur la
+  page des annonces. Les trois preuves sous le hero gardent leur filet or (non visées par les retours).
   **FAQ** (#358 à #366), rédigée puis relue sous trois angles : 33 questions en six groupes ; nouveau
   groupe « Acheteurs d'immeubles à Paris et offres d'achat » (qui achète, à qui vendre, délai d'une offre
   sans promesse, offre sans condition de financement qui n'est pas un paiement comptant, indemnité

@@ -50,7 +50,7 @@ export default async function EstimationImmeubleParis() {
   ];
   const reperes: { valeur: string; libelle: string }[] = [
     // MAV, 13/11/2026 : « 3,5 à 6,5 en général », la fourchette de la page Paris.
-    { valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement en général pour un immeuble parisien, selon l’arrondissement" },
+    { valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement en général, selon l’arrondissement" },
     ...(totalImmeubles && anneeImmeubles ? [{ valeur: nombre(totalImmeubles), libelle: `immeubles entiers vendus à Paris en ${anneeImmeubles} (DVF)` }] : []),
     ...(ch.traitesPar["75"] ? [{ valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }] : []),
     ...(c.delaiMedian ? [{ valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre, en médiane sur nos ventes" }] : []),
