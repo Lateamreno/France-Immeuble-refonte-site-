@@ -584,7 +584,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   règle de la note (écart et nombre de ventes, ou écart seul) ; la colonne du rendement théorique (jusqu'à
   7,6 %) face à « 3 à 6 % » ; « en 24 heures » dans la carte de la vente ; carte de la rue Mouffetard
   (loyer affiché 247 544 €, soit 3,9 %, pour 3,4 % brut affiché) ; mêmes cartes de ventes sur les autres
-  pages ; alignement des rangées de cartes des autres pages ; les points du lot 109.
+  pages ; les points du lot 109.
+  **Même alignement sur les autres pages** (13/11/2026, inventaire de 119 rangées sur 8 pages) : atouts
+  et méthode de Vendre (lignes réservées au titre), cartes numérotées d'Acheter, verres de l'Off-market
+  et offres de l'accueil (sous-grille), libellés du réseau de l'accueil de 720 à 979 px. Écart de 0 px de
+  320 à 1 920 px, hauteurs de section inchangées (sauf à 320 px de large). Une carte `.card--filigrane`
+  est un conteneur de requête : pour en faire une sous-grille, lever `container-type`. Au téléphone,
+  `.grid.grid--ligne-mob` pose `gap:12px` : une règle `row-gap:0` doit être plus précise qu'elle. Non
+  faits, en attente de MAV : Découpe « Deux acheteurs » de 760 à 1 090 px (+9 px à 1 024 × 768), rangées
+  d'avis (cinq pages), cartes de Nos ventes (+120 px de page).
 
 ### Garde-fous non négociables
 

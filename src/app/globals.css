@@ -1858,6 +1858,18 @@ html[class] .hero-media h1.eyebrow{
    même endroit que les cartes médaillon. Le titre s'arrête avant le dessin. */
 .card--filigrane{container-type:inline-size;}
 .card--filigrane :is(h2,h3){padding-right:clamp(0px, 22cqi, 96px);}
+/* Lot 110 : cartes numérotées d'Acheter alignées par sous-grille (numéro,
+   titre, texte). Une carte « conteneur » ne peut pas être une sous-grille :
+   on lève container-type ici et le retrait du titre passe en pourcentage. */
+@supports (grid-template-rows:subgrid){
+  .grid--3:has(> .card--filigrane > .card__num){row-gap:0;}
+  .grid--3 > .card--filigrane:has(> .card__num){container-type:normal;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:span 3;}
+  .grid--3 > .card--filigrane:has(> .card__num) > *{align-self:start;}
+  .grid--3 > .card--filigrane:has(> .card__num) > :is(h2,h3){padding-right:clamp(0px,22%,96px);}
+  @media (min-width:760px) and (max-width:1199px){
+    .grid--3 > .card--filigrane:has(> .card__num):nth-child(n+3){margin-top:var(--space-m);}
+  }
+}
 
 /* Méthode (Vendre) : les illustrations de l'ancien site, une par étape. Ce
    sont des rendus sombres sur fond transparent : posés sur noir-2, ils
@@ -2239,6 +2251,10 @@ html[class] .hero-media h1.eyebrow{
   font-size:clamp(21px,1.8vw,25px);line-height:1.08;color:var(--color-bronze-clair-2);
   margin:0;max-width:15ch;hyphens:manual;
 }
+/* Lot 110 (MAV : « Aligne les titres, les pictos et les débuts de texte. Fais
+   pareil à chaque fois qu'on a ce genre de dispositions ») : trois lignes
+   réservées au titre, les filets et les textes partent de la même hauteur. */
+.atout h3{min-height:calc(3 * 1.08em);}
 .atout__filet{display:block;width:44px;height:2px;background:var(--color-bronze);margin:18px 0 16px;}
 .atout p{margin:0;font-size:15.5px;line-height:1.55;color:var(--color-creme);max-width:32ch;}
 
@@ -2556,6 +2572,14 @@ html[class] .hero-media h1.eyebrow{
 /* Les mots forts des offres en or (MAV, 22/10/2026). */
 .card--offre strong{color:var(--color-bronze);font-weight:600;}
 .card--offre > .btn-row{margin-top:auto !important;padding-top:var(--space-m);}
+/* Lot 110 : picto, surtitre, titre, texte et bouton sur les mêmes lignes. */
+@supports (grid-template-rows:subgrid){
+  /* .grid en plus : au téléphone, la ligne qui glisse pose gap:12px plus bas dans la feuille. */
+  .offres-sec .grid.grid--2{grid-template-rows:repeat(5,auto);row-gap:0;}
+  .offres-sec .grid--2 > .card--offre{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;}
+  .offres-sec .grid--2 > .card--offre > *{align-self:start;}
+  .offres-sec .grid--2 > .card--offre > .btn-row{align-self:end;}
+}
 .card--offmarket{
   background:linear-gradient(145deg,var(--color-noir-3),var(--color-noir));
   border-color:var(--color-bronze-profond);
@@ -5121,6 +5145,12 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .om-verre__picto{color:var(--color-bronze);}
 .om-verre h3{margin:0;font-size:19px;line-height:1.2;color:var(--color-creme);}
 .om-verre p{margin:0;font-size:14.5px;line-height:1.55;color:color-mix(in srgb,var(--color-creme) 74%,var(--color-noir));}
+/* Lot 110 : pictos, titres et textes des trois verres sur les mêmes lignes. */
+@supports (grid-template-rows:subgrid){
+  .om-principe__verres{grid-template-rows:repeat(3,auto);row-gap:12px;}
+  .om-principe__verres > .om-verre{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / -1;}
+  .om-principe__verres > .om-verre > *{align-self:start;}
+}
 @media (max-width:759px){
   .om-principe{min-height:0;align-items:flex-start;}
   .om-principe__photo{inset:0 0 auto 0;width:100%;height:440px;object-position:58% 35%;}
@@ -5314,6 +5344,11 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
 .methode-sec--marbre .steps--frise .step{text-align:center;align-items:center;}
 .methode-sec--marbre .steps--frise .step__visuel{margin-inline:auto;}
 .methode-sec--marbre .steps--frise .step p{margin-inline:auto;max-width:30ch;}
+/* Lot 110 : deux lignes réservées au titre, les textes partent de la même hauteur. */
+@media (min-width:900px){ .methode-sec--marbre .steps--frise .step h3{min-height:calc(2 * 1.04em);} }
+/* Lot 110, accueil : de 720 à 979 px un libellé de chiffre passe sur deux lignes ;
+   deux lignes réservées aux trois, les textes partent de la même hauteur. */
+@media (min-width:720px) and (max-width:979px){ .reseau-grille .stat-label{min-height:calc(2 * 1.65em);} }
 /* #134 : les étapes de la Découpe. Un picto par étape, plus de frise (ni filet
    ni point), et des textes alignés d'une carte à l'autre : chaque carte reprend
    les rangées de la grille, un titre long ne décale plus le texte voisin. */
