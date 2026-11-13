@@ -533,6 +533,17 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   deux côtés). Calcul contrôlé par deux
   recalculs indépendants et une tentative de réfutation. Le détail vente par vente n'est montré qu'à MAV
   (rapport privé) : rien sur le site (conditions de réutilisation de DVF, lot 107).
+  **Audit des 147 ventes de 2025** (trois auditeurs, un vérificateur) : 106 immeubles entiers sans lots,
+  15 copropriétés vendues entières, 20 parts de copropriété, 1 vente de deux immeubles, 5 incertaines ;
+  21 ventes ne mesurent pas un immeuble entier, preuve dans les lignes de DVF.
+  **En attente de MAV, rien n'est appliqué** : (1) écarter les parts de copropriété par la règle « un autre
+  lot bâti de la même parcelle, absent de la vente, vendu par un autre acte la même année » (13 ventes,
+  aucun immeuble entier touché ; Paris 6 987 → 7 031 €, le 5e 10 036 → 8 065 €) ; (2) passer de 2025 seul
+  à trois années cumulées (364 ventes, vingt arrondissements publiés ; il faudrait d'abord auditer 2023 et
+  2024) ; (3) « environ 15 % de décote »,
+  quand DVF corrigé mesure 27 % en médiane ; (4) le rendement théorique, qui monte jusqu'à 7,6 % (18e)
+  face à la note « 3 à 6 % » ; (5) le plancher de 3 000 € (dix immeubles entiers en dessous) et le même
+  immeuble vendu deux fois dans l'année (les deux ventes sont écartées). Fichiers de travail hors dépôt.
 
 ### Garde-fous non négociables
 

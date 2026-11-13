@@ -493,13 +493,13 @@ export default async function VendreUnImmeubleParis() {
               <details className="paris-prix__calcul">
                 <summary>Le détail du calcul et nos sources</summary>
                 <p>
-                  Ventes retenues dans DVF&nbsp;: plus de cinq logements, un seul acte et un seul prix, au moins
-                  65&nbsp;% de logements parmi les lots, caves et parkings non comptés ({nombre(totalImmeubles)}{" "}
-                  ventes à Paris en {annee}). Sont écartés les échanges, les ventes sur plan, les adjudications
-                  et les expropriations, les immeubles vendus plusieurs fois dans l’année (ventes de parts,
-                  démembrements), les ventes à cheval sur plusieurs communes et les prix au&nbsp;m² inférieurs à
-                  3&nbsp;000&nbsp;€ ou supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de trois ventes,
-                  commerces compris dans la surface. Fourchette à partir de cinq ventes.
+                  Ventes retenues dans DVF&nbsp;: plus de cinq logements, un seul prix, au moins 65&nbsp;% de
+                  logements parmi les lots, caves et parkings non comptés ({nombre(totalImmeubles)} ventes à
+                  Paris en {annee}). Sont écartés les échanges, les ventes sur plan, les adjudications, les
+                  expropriations et les ventes de terrain à bâtir, les mêmes logements présents dans plusieurs
+                  actes la même année, les ventes à cheval sur plusieurs communes et les prix au&nbsp;m²
+                  inférieurs à 3&nbsp;000&nbsp;€ ou supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de
+                  trois ventes, commerces compris dans la surface. Fourchette à partir de cinq ventes.
                   {avecRdt && (
                     <>
                       {" "}Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL
