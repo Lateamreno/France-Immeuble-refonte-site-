@@ -1215,7 +1215,7 @@ html[class] .hero-media h1.eyebrow{
 
 /* Une phrase d'un avis Google, au mot près. */
 .paris-citation{margin:var(--space-m) 0 0;padding-left:16px;border-left:2px solid var(--color-bronze);max-width:64ch;}
-.paris-citation blockquote{font-size:1.05rem;line-height:1.5;font-style:italic;color:var(--color-creme);}
+.paris-citation blockquote{font-size:1.05rem;line-height:1.5;color:var(--color-creme);}
 .paris-citation figcaption{margin-top:6px;font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze);}
 .section--creme .paris-citation blockquote{color:var(--color-noir);}
 .section--creme .paris-citation figcaption{color:var(--color-bronze-profond);}
@@ -1246,13 +1246,14 @@ html[class] .hero-media h1.eyebrow{
 .paris-prix tr.paris-prix__peu th{color:var(--texte-2);}
 .paris-prix tr.paris-prix__peu td{text-align:left;white-space:normal;font-size:.84rem;color:var(--texte-2);}
 /* Une ancre par arrondissement (#arr-11) : la ligne visée se détache, sans script. */
-.paris-prix tbody tr{scroll-margin-top:calc(var(--header-h) + 24px);}
+.paris-prix tbody tr{scroll-margin-top:24px;}
 .paris-prix tbody tr:target :is(th,td){background:color-mix(in srgb,var(--color-bronze-clair) 55%,var(--color-creme));}
+.paris-prix tbody tr:target th{box-shadow:inset 3px 0 0 var(--color-bronze-profond);}
 .paris-prix__court{display:none;}
-.paris-prix__calcul{margin-top:var(--space-xs);font-size:.86rem;line-height:1.55;color:var(--texte-2);}
-.paris-prix__calcul summary{cursor:pointer;font-weight:600;color:var(--color-noir);}
+.paris-prix__calcul{margin-top:6px;font-size:.86rem;line-height:1.55;color:var(--texte-2);}
+.paris-prix__calcul summary{cursor:pointer;padding-block:10px;font-weight:600;color:var(--color-noir);}
 .paris-prix__calcul summary:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:3px;}
-.paris-prix__calcul p{margin:8px 0 0;max-width:70ch;}
+.paris-prix__calcul p{margin:0;max-width:70ch;}
 .paris-prix__notes{margin-top:var(--space-m);display:grid;gap:var(--space-xs);max-width:60ch;font-size:.95rem;line-height:1.55;color:color-mix(in srgb,var(--color-noir) 74%,var(--color-creme));}
 .paris-prix__notes p{margin:0;}
 .paris-prix__notes strong{color:var(--color-noir);font-weight:600;}
@@ -1274,11 +1275,10 @@ html[class] .hero-media h1.eyebrow{
   .paris-prix__eur{display:none;}
   .paris-prix table{--bord:4px;}
   .paris-prix th,.paris-prix td{padding-left:5px;}
-  .paris-prix__four{font-size:.72rem;}
 }
 /* Ordinateur : le texte à gauche, le tableau entier à droite, sur un écran. */
 @media (min-width:1100px){
-  .paris-prix{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-rows:auto auto auto 1fr;column-gap:var(--space-l);align-items:start;}
+  .paris-prix{display:grid;grid-template-columns:minmax(0,11fr) minmax(0,10fr);grid-template-rows:auto auto auto 1fr;column-gap:var(--space-l);align-items:start;}
   .paris-prix .paris-prix__tete{grid-column:1;grid-row:1;}
   .section.paris-prix-sec{padding-block:clamp(32px, calc(4.5 * var(--u-svh)), 48px);}
   .paris-prix-sec h2{font-size:clamp(1.8rem, 1.1rem + 1.1vw, 2.15rem);}
@@ -1298,6 +1298,7 @@ html[class] .hero-media h1.eyebrow{
 /* Vendre : les recherches déposées dans notre base, sous les cartes. */
 .paris-compteurs{list-style:none;margin:var(--space-m) 0 0;padding:var(--space-s) 0 0;border-top:1px solid var(--color-ligne);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-m);}
 .paris-compteurs li{display:flex;align-items:baseline;gap:12px;}
+.paris-compteurs li svg{flex:none;align-self:center;color:var(--color-bronze);}
 .paris-compteurs__val{flex:none;font-family:var(--font-mono-site);font-size:1.5rem;color:var(--color-bronze);word-spacing:-.32em;}
 .paris-compteurs__lib{font-size:.9rem;line-height:1.4;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
 @media (max-width:759px){
@@ -1321,18 +1322,15 @@ html[class] .hero-media h1.eyebrow{
 /* La frise de la vente, telle que le vendeur la voit dans son compte. */
 .paris-frise{list-style:none;margin:0 0 var(--space-s);padding:0;display:flex;flex-wrap:wrap;align-items:center;row-gap:6px;font-family:var(--font-mono-site);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-noir);}
 .paris-frise li{display:inline-flex;align-items:center;}
-.paris-frise li + li::before{content:"";width:12px;height:1px;margin-inline:7px;background:var(--color-bronze-profond);}
+.paris-frise li:not(:last-child)::after{content:"";width:12px;height:1px;margin-inline:7px;background:var(--color-bronze-profond);}
 .paris-apres__ecrans{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.95rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 74%,var(--color-creme));}
 .paris-apres__ecrans strong{color:var(--color-noir);font-weight:600;}
-.paris-apres__compte .paris-citation{margin-top:var(--space-s);}
-.paris-apres__compte .paris-citation blockquote{font-size:.98rem;}
 @media (max-width:899px){
   .paris-apres{grid-template-columns:minmax(0,1fr);gap:var(--space-s);}
   .paris-obstacle{padding:14px 14px 14px 0;}
   .paris-obstacle h3{font-size:1.05rem;margin-bottom:4px;}
   .paris-obstacle p,.paris-apres__ecrans{font-size:.92rem;}
   .paris-apres__compte{padding:18px 16px;}
-  .paris-apres__compte .paris-citation{display:none;}
 }
 /* Une section, un écran : titres moins hauts et marges resserrées sur les sections longues. */
 :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-conditions-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-m);}
@@ -1349,19 +1347,65 @@ html[class] .hero-media h1.eyebrow{
 .paris-decoupe{list-style:none;margin:0;padding:0;display:grid;gap:12px;}
 .paris-decoupe li{padding:14px 18px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-creme) 5%,transparent);color:color-mix(in srgb,var(--color-creme) 82%,var(--color-noir));line-height:1.5;}
 .paris-decoupe strong{color:var(--color-creme);font-weight:600;}
-.paris-decoupe-sec .btn-row{justify-content:center;}
 
 /* Nos ventes à Paris. */
 .paris-ventes-sec .paris-citation{margin-inline:auto;}
-@media (min-width:900px){ .paris-ventes-sec .vente__visuel{aspect-ratio:16/9;} }
+@media (min-width:900px){
+  .paris-ventes-sec .vente__visuel{aspect-ratio:2/1;}
+  .section.paris-ventes-sec{padding-block:clamp(24px, calc(3.5 * var(--u-svh)), 36px);}
+  .paris-ventes-sec .section__head{margin-bottom:var(--space-s);}
+  .paris-ventes-sec .paris-citation{margin-top:var(--space-xs);}
+  .paris-ventes-sec .paris-relance{margin-top:var(--space-s);}
+  /* Après l'offre : la citation est sortie de l'encadré, la section garde sa hauteur d'un écran. */
+  .section.paris-apres-sec{padding-block:clamp(28px, calc(4 * var(--u-svh)), 44px);}
+  .paris-apres-sec .paris-citation{margin-top:var(--space-s);}
+  .paris-apres-sec .paris-relance{margin-top:var(--space-s);}
+}
+/* Téléphone : titres et chapeaux un peu plus petits sur les sections longues, pour se rapprocher d'un écran. */
+@media (max-width:759px){
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec,.paris-ventes-sec) h2{font-size:clamp(1.5rem, 6.6vw, 1.72rem);}
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-decoupe-sec,.paris-ventes-sec) .section__head .lead{font-size:15.5px;line-height:1.5;}
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec,.paris-ventes-sec) .section__head{margin-bottom:var(--space-s);}
+  .paris-apres-sec .paris-citation{display:none;}
+}
+@media (min-width:760px) and (max-width:959px){
+  .paris-ventes-sec .ventes{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:46%;gap:var(--space-s);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);}
+  .paris-ventes-sec .ventes::-webkit-scrollbar{display:none;}
+  .paris-ventes-sec .vente{scroll-snap-align:start;}
+}
+
+/* Vendre : le chapeau et le surtitre sont posés sur la photo fondue, ils doivent s'y lire. */
+.paris-vente-sec .section__head .lead{color:color-mix(in srgb,var(--color-creme) 86%,var(--color-noir));}
+@media (max-width:899px){ .paris-vente-sec .section__head .eyebrow{color:var(--color-bronze-clair);} }
+@media (min-width:1100px){
+  .paris-vente-sec .section__head{margin-bottom:var(--space-s);}
+  .paris-vente-sec .paris-compteurs{margin-top:var(--space-s);padding-top:var(--space-xs);}
+  .paris-vente-sec .paris-relance{margin-top:var(--space-s);}
+}
+/* Entre 760 et 1 099 px, deux cartes de front : les flèches passent sous les cartes, comme au
+   téléphone, au lieu de couvrir le texte de la deuxième. */
+@media (min-width:760px) and (max-width:1099px){
+  .ligne:has(> :is(.paris-ligne,.paris-obstacles)):has(> .ligne__fleche:not([hidden])){padding-bottom:54px;}
+  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche{top:auto;bottom:0;transform:none;}
+  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche--avant{left:calc(50% - 48px);}
+  .ligne:has(> :is(.paris-ligne,.paris-obstacles)) > .ligne__fleche--apres{right:calc(50% - 48px);}
+}
+/* Formulaire : le titre garde trois ou quatre lignes dans sa colonne étroite. */
+.section.sec-formulaire.paris-form-sec h2{font-size:clamp(26px,7.4vw,30px);}
+@media (min-width:900px){ .section.sec-formulaire.paris-form-sec h2{font-size:clamp(1.8rem, 1.1rem + 1.5vw, 2.5rem);} }
+/* Hero sur un petit téléphone (320 × 568) : le bouton reste entier sans défiler. */
+@media (max-width:400px){
+  html.h-600 .hero-media.hero-paris .hero-titre{font-size:1.6rem;margin-bottom:var(--space-s);}
+  html.h-600 .hero-media.hero-paris .lead{font-size:.94rem;line-height:1.5;}
+}
 
 /* FAQ en groupes titrés (trente questions, cinq groupes). */
 .faq-groupe + .faq-groupe{margin-top:var(--space-m);}
 .faq-groupe h3{font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.15em;line-height:1.5;text-transform:uppercase;color:var(--color-bronze);margin:0 0 var(--space-xs);}
-.faq-corps > .paris-relance{justify-content:center;}
+@media (min-width:900px){ .paris-faq-sec > .container > .section__head{position:sticky;top:calc(var(--header-h) + var(--space-m));} }
 
 @media (max-width:760px){
-  .paris-reperes{grid-template-columns:1fr;gap:10px;margin-bottom:var(--space-l);}
+  .paris-reperes{grid-template-columns:1fr;gap:10px;}
   .paris-reperes li{flex-direction:row;align-items:baseline;gap:12px;padding:10px 14px;}
   .paris-reperes li svg{align-self:center;flex:none;}
   .paris-reperes__val{flex:none;font-size:1.35rem;}

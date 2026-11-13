@@ -488,18 +488,28 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Repense le texte et la page Paris […] pour maximiser SEO et conversion […]. Quand ils lisent ils doivent
   se dire France Immeuble c'est vraiment la boîte avec qui travailler »). Page Paris refaite dans l'ordre des
   questions d'un propriétaire : preuves, estimation, prix par arrondissement, vente 100 % off-market, après
-  l'offre, honoraires et mandat, bloc ou découpe, nos ventes, avis, formulaire, FAQ. **Un seul tableau de
-  quatre colonnes** : prix médian au m² des immeubles vendus en bloc (DVF), du moins cher au plus cher,
-  rendement théorique ; les appartements, l'écart, le nombre de ventes par arrondissement et la ligne
-  « Paris » en sortent ; une ancre par ligne (`#arr-11`). H1 porté par le surtitre du hero (« Vente et
-  estimation d'immeuble de rapport à Paris »), grand titre « Un immeuble parisien ne se vend pas comme un
-  appartement », title « Estimation gratuite et vente d'immeuble en bloc à Paris ». « Après l'offre commence
-  le plus difficile » : préemption de la Ville, droits des locataires, baux et diagnostics, et ce que le
-  vendeur suit dans son espace client. Citations d'avis Google au mot près (`Citation`). FAQ de 30 questions
-  en cinq groupes titrés (`groupe`, `lien` et chiffres vivants entre accolades dans `content/paris.json` ;
-  `groupes` de `SectionFaq`), le formulaire avant la FAQ, bouton d'envoi « Estimer mon immeuble »
-  (`libelleEnvoi`), cartes de ventes sans délai (`sansDelai`), repli d'`immeubles_traites` à 1 170.
-  Conçue par trois plans et trois maquettes jugés, puis relue sous six angles.
+  l'offre, honoraires et mandat, bloc ou découpe, exemples de ventes, avis, formulaire, FAQ. **Un seul
+  tableau de quatre colonnes** : prix médian au m² des immeubles vendus en bloc (DVF), du moins cher au plus
+  cher, rendement théorique (loyer de marché des appartements, charges comprises, sur le prix médian) ; les
+  appartements, l'écart, le nombre de ventes par arrondissement et la ligne « Paris » en sortent ; une ancre
+  par ligne (`#arr-11`) ; une ligne d'une autre année que la plus récente ne se publie pas. H1 porté par le
+  surtitre du hero (« Vendre et faire estimer un immeuble de rapport à Paris »), grand titre « Un immeuble
+  parisien ne se vend pas comme un appartement », title « Estimation gratuite et vente d'immeuble en bloc à
+  Paris ». « Notre spécialité : l'immeuble de rapport » et non « nous ne vendons que » (une vente de murs
+  commerciaux est publiée). « Après l'offre commence le plus difficile » : préemption de la Ville, droits
+  des locataires, baux et diagnostics, et ce que le vendeur suit dans son espace client. Citations d'avis
+  Google au mot près (`Citation`), la ligne d'avis s'ouvre sur trois autres vendeurs (`dabord` d'`Avis`).
+  FAQ de 30 questions en cinq groupes titrés (`groupe`, `lien` et chiffres vivants entre accolades dans
+  `content/paris.json` ; `groupes` de `SectionFaq`, une seule réponse ouverte grâce à `nom` de `Faq`), le
+  formulaire avant la FAQ, titre « Une estimation confidentielle, sans engagement de vente », bouton
+  d'envoi « Estimer mon immeuble » (`libelleEnvoi`). **`Relance` ne porte plus `.porte-action`** : au
+  téléphone la pilule fixe remplace les boutons de fin de section (avec `.porte-action` partout elle ne
+  s'affichait plus). Sur cette page, le bouton « Estimer mon immeuble » de la barre de menu (ordinateur)
+  mène à son propre formulaire. Composants partagés : `insecable` protège aussi €, guillemets, milliers,
+  M€, m² ; cartes de ventes sans délai (`sansDelai`), « Meilleure offre au prix estimé » quand l'écart
+  est nul ; repli d'`immeubles_traites` à 1 170 ; **`derniereAnneeDvf` ne prend qu'une année entière**
+  (avant juin, l'année passée n'a que son premier semestre dans DVF). Conçue par trois plans et trois
+  maquettes jugés, relue sous six angles (vérité, règles, référencement, rendu, code, lecteur).
 
 ### Garde-fous non négociables
 

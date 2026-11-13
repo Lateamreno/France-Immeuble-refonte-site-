@@ -4,6 +4,7 @@ import { Eyebrow } from "./Eyebrow";
 import { LigneDefilante } from "./LigneDefilante";
 import { Reveal } from "./Reveal";
 import { TeteMedia, type ImageTete } from "./TeteMedia";
+import { insecable } from "./SectionFaq";
 
 /**
  * Le « G » de Google, dessiné d'un seul trait en `currentColor` : pas de
@@ -44,6 +45,7 @@ export function Avis({
   intro,
   fond = "creme",
   photo,
+  dabord,
   children,
 }: {
   titre?: string;
@@ -53,8 +55,13 @@ export function Avis({
   fond?: "creme" | "noir-2" | "noir-3";
   /** Photo à côté du titre, fondue dans le fond sombre (accueil, 22/10/2026). */
   photo?: ImageTete;
+  /** Noms des avis à montrer en premier (page Paris : ceux que la page n'a pas déjà cités). */
+  dabord?: string[];
   children?: React.ReactNode;
 }) {
+  const liste = dabord?.length
+    ? [...dabord.flatMap((n) => AVIS.filter((a) => a.nom === n)), ...AVIS.filter((a) => !dabord.includes(a.nom))]
+    : AVIS;
   const tete = (
     <>
       <Eyebrow>Ils nous font confiance</Eyebrow>
@@ -103,7 +110,7 @@ export function Avis({
         )}
 
         <LigneDefilante className="avis-ligne" marches>
-          {AVIS.map((a) => (
+          {liste.map((a) => (
             <article key={a.nom} className="avis__item">
               <header className="avis__tete">
                 <span className="avis__mono" aria-hidden="true">{initiales(a.nom)}</span>
@@ -118,7 +125,7 @@ export function Avis({
                   <LogoGoogle taille={16} />
                 </span>
               </header>
-              <p>{a.texte}</p>
+              <p>{insecable(a.texte)}</p>
               <a className="avis__suite" href={PREUVES.avisGoogle} target="_blank" rel="noopener">
                 Lire sur Google
               </a>

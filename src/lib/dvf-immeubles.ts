@@ -114,10 +114,17 @@ export function ventesImmeubles(lignes: Record<string, string>[]): StatsImmeuble
   };
 }
 
-/** Dernière année civile publiée par DVF (essai de l'année passée, puis de la précédente). */
+/**
+ * Dernière année civile ENTIÈRE publiée par DVF. DVF paraît deux fois par an : au printemps avec
+ * l'année passée complète, à l'automne avec le premier semestre de l'année en cours. Avant juin,
+ * le fichier de l'année passée existe donc déjà mais ne porte que six mois : on ne le prend pas
+ * (le tableau de la page Paris écrirait « en 2026 » sur un semestre de ventes).
+ */
 export async function derniereAnneeDvf(): Promise<number | null> {
-  const an = new Date().getFullYear();
-  for (const a of [an - 1, an - 2]) {
+  const maintenant = new Date();
+  const an = maintenant.getFullYear();
+  const essais = maintenant.getMonth() >= 5 ? [an - 1, an - 2] : [an - 2, an - 3];
+  for (const a of essais) {
     try {
       const r = await fetch(urlDvf(a, "75101"), { method: "HEAD", redirect: "follow", cache: "no-store" });
       if (r.ok) return a;

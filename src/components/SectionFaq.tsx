@@ -11,8 +11,16 @@ import { Reveal } from "./Reveal";
  */
 export type QR = { question: string; texte: string; reponse?: ReactNode };
 
-/** Espace insécable devant « ? : ; ! % » : pas de point d'interrogation seul en début de ligne. */
-export const insecable = (t: string) => t.replace(/ ([?:;!%])/g, "\u00a0$1");
+/**
+ * Espace insécable devant « ? : ; ! % € », dans les guillemets, dans les milliers et devant M€, m², m³ :
+ * aucun signe ni aucune unité seul en début de ligne, aucun nombre coupé en deux.
+ */
+export const insecable = (t: string) =>
+  t
+    .replace(/ ([?:;!%€»])/g, "\u00a0$1")
+    .replace(/« /g, "«\u00a0")
+    .replace(/(\d) (?=\d{3}(?!\d))/g, "$1\u00a0")
+    .replace(/(\d) (?=(?:M€|m²|m³)(?![\wÀ-ÿ]))/g, "$1\u00a0");
 
 export function SectionFaq({
   items,
@@ -33,7 +41,10 @@ export function SectionFaq({
 }) {
   if (!items.length) return null;
   const liste = (qs: QR[]) => (
-    <Faq items={qs.map((q) => ({ question: insecable(q.question), reponse: q.reponse ?? <p>{insecable(q.texte)}</p> }))} />
+    <Faq
+      nom={groupes ? "faq" : undefined}
+      items={qs.map((q) => ({ question: insecable(q.question), reponse: q.reponse ?? <p>{insecable(q.texte)}</p> }))}
+    />
   );
   return (
     <section className={`section ${className} faq-sec`}>
@@ -53,7 +64,7 @@ export function SectionFaq({
           <Eyebrow>{surtitre}</Eyebrow>
           <h2>{titre}</h2>
         </Reveal>
-        <Reveal className="faq-corps">
+        <Reveal>
           {groupes
             ? groupes.map((g) => (
                 <div key={g.titre} className="faq-groupe">

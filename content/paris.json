@@ -233,7 +233,7 @@
     {
       "groupe": "Estimation et prix d’un immeuble à Paris",
       "question": "Quel est le prix au m² d’un immeuble de rapport à Paris ?",
-      "reponse": "Il change d’un arrondissement à l’autre, et plus encore d’un immeuble à l’autre, selon ses baux, son état et ses loyers. Le tableau de cette page donne, par arrondissement, le prix médian au m² des immeubles vendus en bloc en {annee}, à partir de {ventesImmeubles} ventes relevées dans DVF, la base publique des ventes immobilières. Entre un immeuble vendu en bloc et le prix des appartements, la décote est en général d’environ 15 %. Elle varie selon l’arrondissement, le type d’immeuble et les loyers réellement pratiqués. Ces chiffres DVF ne sont pas vérifiés : nous ne connaissons ni l’état ni le niveau des loyers des immeubles vendus.",
+      "reponse": "Il change d’un arrondissement à l’autre, et plus encore d’un immeuble à l’autre, selon ses baux, son état et ses loyers. Le tableau de cette page donne, par arrondissement, le prix médian au m² des immeubles vendus en bloc en {annee}, d’après DVF, la base publique des ventes immobilières. Nous y avons relevé {ventesImmeubles} ventes d’immeubles à Paris ; un prix n’est publié qu’à partir de trois ventes dans l’arrondissement. Entre un immeuble vendu en bloc et le prix des appartements, la décote est en général d’environ 15 %. Elle varie selon l’arrondissement, le type d’immeuble et les loyers réellement pratiqués. Ces chiffres DVF ne sont pas vérifiés : nous ne connaissons ni l’état ni le niveau des loyers des immeubles vendus.",
       "sources": [
         "DVF, calcul de src/lib/dvf-immeubles.ts (table marche_immeubles)",
         "Décote d’environ 15 % : MAV, 10 et 12/11/2026"
@@ -258,7 +258,7 @@
     {
       "groupe": "Vendre un immeuble à Paris avec France Immeuble",
       "question": "Pourquoi passer par une agence spécialisée pour vendre un immeuble à Paris ?",
-      "reponse": "Parce qu’un immeuble de rapport ne se vend pas comme un appartement. Son prix dépend de ses baux, de ses travaux et du type d’acquéreur visé. Un investisseur achète sur un état locatif : une annonce avec des photos et une surface ne lui suffit pas. France Immeuble ne vend que des immeubles de rapport, depuis 2018. Nos agents ont étudié {immeublesEtudies} immeubles, et notre base compte {acheteurs} acheteurs d’immeubles. Nous restons à vos côtés après l’offre, de la préemption de la Ville aux questions du notaire.",
+      "reponse": "Parce qu’un immeuble de rapport ne se vend pas comme un appartement. Son prix dépend de ses baux, de ses travaux et du type d’acquéreur visé. Un investisseur achète sur un état locatif : une annonce avec des photos et une surface ne lui suffit pas. France Immeuble est spécialisée dans la vente d’immeubles de rapport depuis 2018. Nos agents ont étudié {immeublesEtudies} immeubles, et notre base compte {acheteurs} acheteurs d’immeubles. Nous restons à vos côtés après l’offre, de la préemption de la Ville aux questions du notaire.",
       "sources": [
         "Chiffres déposés par le back-office (table chiffres)",
         "Page Paris, sections Vendre et Après l’offre"
@@ -353,7 +353,7 @@
     },
     {
       "groupe": "Locataires et baux",
-      "question": "Mes locataires peuvent-ils acheter en priorité si je vends l’immeuble entier ?",
+      "question": "Mes locataires peuvent-ils acheter en priorité si je vends l’immeuble en bloc ?",
       "reponse": "Quand un immeuble de plus de cinq logements, d’habitation ou mixte, est vendu en totalité et en une seule fois, chaque locataire bénéficie d’un droit de préemption sur son logement (loi Aurillac). Le vendeur en est dispensé si l’acheteur s’engage dans l’acte à proroger les baux en cours pendant six ans à compter de la vente. C’est la solution courante dans une vente en bloc à un investisseur, car elle évite de découper la vente. Sinon, chaque locataire reçoit une offre au prix de son logement, valable quatre mois. D’autres exceptions existent, par exemple une vente à un parent jusqu’au quatrième degré ou à un organisme HLM.",
       "sources": [
         "https://paris.notaires.fr/fr/actualites/location-priorite-du-locataire-lors-de-la-vente-totale-dun-immeuble"
@@ -457,7 +457,7 @@
     {
       "groupe": "Ville de Paris, urbanisme et impôts",
       "question": "La Ville de Paris peut-elle préempter mon immeuble ?",
-      "reponse": "Oui. La vente d’un immeuble entier à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
+      "reponse": "Oui. La vente d’un immeuble en bloc à Paris est soumise au droit de préemption urbain : le notaire dépose une déclaration d’intention d’aliéner (DIA) qui indique le prix et les conditions de la vente. La Ville dispose de deux mois pour répondre, et son silence vaut renonciation. Elle peut, une seule fois, demander des documents ou visiter l’immeuble, ce qui suspend le délai. Elle peut acheter au prix de la DIA ou proposer un prix plus bas, notamment pour créer du logement social ; en cas de désaccord, le juge de l’expropriation fixe le prix et le vendeur peut renoncer à vendre. La promesse de vente prévoit cette condition, et le calendrier de la vente intègre ces deux mois.",
       "sources": [
         "https://www.paris.fr/pages/mutation-immobiliere-3548",
         "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074075/LEGISCTA000006158572/"

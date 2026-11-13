@@ -131,7 +131,12 @@ export function Header() {
           <a className="header-tel" href={SITE.telHref}>
             {SITE.tel.replace(/ /g, " ")}
           </a>
-          <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
+          {/* Sur la page Paris, le bouton reste sur la page et mène à son propre formulaire : la demande
+              est comptée là où elle naît. Le menu du téléphone garde le lien vers Estimer (il ne se
+              ferme qu'au changement de page). */}
+          <Button href={pathname === "/vendre-un-immeuble/paris/" ? "#estimer" : "/estimer-un-immeuble/#estimer"}>
+            Estimer mon immeuble
+          </Button>
           <Link
             className="header-compte"
             href="/mon-compte/"

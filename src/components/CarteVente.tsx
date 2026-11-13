@@ -5,7 +5,7 @@ import { prix, AFFICHER_ECART_ESTIMATION, type Vente } from "@/lib/biens";
 
 /** « 4,1 % », « +3 % » — formats français. */
 const pct = (n: number, signe = false) =>
-  `${signe && n > 0 ? "+" : ""}${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
+  `${signe && n > 0 ? "+" : ""}${n.toLocaleString("fr-FR", { maximumFractionDigits: 1 })}\u00a0%`;
 
 /**
  * « 538 m² » : la surface exacte, choisie par MAV le 21/10/2026. À défaut, la
@@ -52,8 +52,11 @@ export function CarteVente({ v, sansDelai = false }: { v: Vente; /** Page Paris 
   const ecart = ecartPublie(v);
   const suite = [
     delai != null && !sansDelai ? `Offre en ${delaiOffre(delai)}` : null,
+    // « 0 % vs estimation » se lisait comme une erreur : l'offre est arrivée au prix estimé, on le dit.
     AFFICHER_ECART_ESTIMATION && ecart != null
-      ? `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
+      ? Math.abs(ecart) < 0.05
+        ? "Meilleure offre au prix estimé"
+        : `Meilleure offre ${pct(ecart, true)}\u00a0vs\u00a0estimation`
       : null,
   ].filter(Boolean);
 
