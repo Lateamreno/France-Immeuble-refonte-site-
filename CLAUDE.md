@@ -508,8 +508,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   mène à son propre formulaire. Composants partagés : `insecable` protège aussi €, guillemets, milliers,
   M€, m² ; cartes de ventes sans délai (`sansDelai`), « Meilleure offre au prix estimé » quand l'écart
   est nul ; repli d'`immeubles_traites` à 1 170 ; **`derniereAnneeDvf` ne prend qu'une année entière**
-  (avant juin, l'année passée n'a que son premier semestre dans DVF). Conçue par trois plans et trois
-  maquettes jugés, relue sous six angles (vérité, règles, référencement, rendu, code, lecteur).
+  (avant juin, l'année passée n'a que son premier semestre dans DVF). **Pilule fixe du téléphone**
+  (`BoutonFixeMobile`, tout le site) : elle s'efface aussi quand une flèche de ligne qui glisse passe
+  dans sa bande, et le pied de page reçoit 106 px de marge basse pour que ses derniers liens restent
+  touchables sous elle. Barre de menu resserrée de 981 à 1 109 px (son bouton tenait sur deux lignes).
+  `AncreStable` garde la marge d'une ligne de tableau visée. Conçue par trois plans et trois maquettes
+  jugés, relue sous six angles (vérité, règles, référencement, rendu, code, lecteur), puis contrôlée
+  (corrections, régressions sur 13 autres pages, rendu aux huit largeurs).
 
 ### Garde-fous non négociables
 

@@ -21,7 +21,10 @@ export function AncreStable() {
     const caler = () => {
       const el = cible();
       if (fini || !el) return;
-      const ecart = el.getBoundingClientRect().top - parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || "0");
+      // Une ligne de tableau visée garde sa marge (page Paris, #arr-11) : sans elle, la ligne arrive
+      // collée sous la barre de menu. Les autres cibles ne bougent pas.
+      const marge = el instanceof HTMLTableRowElement ? parseFloat(getComputedStyle(el).scrollMarginTop || "0") : 0;
+      const ecart = el.getBoundingClientRect().top - parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || "0") - marge;
       if (Math.abs(ecart) > 4) window.scrollTo({ top: window.scrollY + ecart, behavior: "instant" as ScrollBehavior });
     };
     const arreter = () => { fini = true; };

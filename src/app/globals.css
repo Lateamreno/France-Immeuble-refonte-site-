@@ -422,6 +422,12 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .nav-toggle[aria-expanded="true"] span{background:transparent;color:var(--color-bronze-clair);}
 .nav-toggle[aria-expanded="true"] span::before{transform:rotate(45deg);}
 .nav-toggle[aria-expanded="true"] span::after{transform:translateY(-1.5px) rotate(-45deg);}
+/* De 981 à 1 109 px, la barre se resserre pour que son bouton reste sur une ligne. */
+@media (min-width:981px) and (max-width:1109px){
+  .header-cta .btn{white-space:nowrap;padding-inline:14px;}
+  .nav{gap:14px;}
+  .site-header__inner{gap:12px;}
+}
 @media (max-width:980px){
   .nav-toggle{display:inline-flex;}
   .header-cta .btn,.header-tel{display:none;}
@@ -4896,6 +4902,9 @@ main > .page-fond{margin-top:calc(-1 * var(--header-h));}
   .bouton-fixe-mob .btn{margin:0;min-width:min(280px,100%);
     box-shadow:0 12px 32px color-mix(in srgb, var(--color-noir) 45%, transparent),0 0 0 1px color-mix(in srgb, var(--color-bronze-profond) 60%, transparent);}
   body:has(.bouton-fixe-mob.est-visible) .rv-fab{bottom:calc(96px + env(safe-area-inset-bottom));}
+  /* La pilule reste sur le pied de page : sa dernière ligne (mentions légales) doit pouvoir
+     remonter au-dessus d'elle, sinon ses liens ne se touchent plus. */
+  body:has(.bouton-fixe-mob) .site-footer{padding-bottom:calc(106px + env(safe-area-inset-bottom,0px));}
   /* Les boutons de section qui mènent au même endroit que la pilule. */
   main .btn.double-fixe{display:none;}
   main .btn-row:has(> .btn.double-fixe):not(:has(> :not(.double-fixe))){display:none;}

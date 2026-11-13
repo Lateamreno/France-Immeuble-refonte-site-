@@ -718,7 +718,7 @@ export default async function VendreUnImmeubleParis() {
             <Eyebrow bare>Première étape</Eyebrow>
             {/* Au téléphone, le site cache le chapeau de cette section : ce qui rassure est dans le titre. */}
             <h2>
-              Une estimation confidentielle, <span className="accent">sans engagement de vente</span>
+              Une estimation confidentielle, <span className="accent">sans engagement de&nbsp;vente</span>
             </h2>
             <p className="lead">
               Quelques questions sur votre immeuble parisien suffisent pour lancer son estimation. Elle

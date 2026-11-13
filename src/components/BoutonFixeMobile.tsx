@@ -19,6 +19,7 @@ import { ouvrirEstimation } from "./ModaleEstimation";
  *   MAV, 04/11/2026 : « garder le bouton affiché jusqu'à la fin du pied de page ») ;
  * - aux rangées de boutons qui portent l'action elles-mêmes (`.porte-action`,
  *   les deux boutons collés de « Vendez votre immeuble » sur l'accueil) ;
+ * - aux flèches des lignes qui glissent, quand elles passent dans sa bande (lot 108) ;
  * - à toute section qui porte ses propres boutons : la pilule s'efface dès
  *   qu'on arrive dans la section et revient quand on en sort (MAV, 05/11/2026 :
  *   « sinon des boutons peuvent se superposer », puis « dès qu'on arrive sur
@@ -52,12 +53,17 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
         .map((b) => b.closest<HTMLElement>("main > section, main section"))
         .filter((x): x is HTMLElement => !!x),
     )];
+    // Les flèches des lignes qui glissent sont des boutons, elles aussi : la pilule s'efface
+    // quand l'une d'elles passe dans sa bande, en bas de l'écran, et revient après.
+    const fleches = Array.from(document.querySelectorAll<HTMLElement>("main .ligne__fleche"));
+    const sousPilule = new Map<Element, boolean>();
     const calcul = () => {
       const heroVisible = hero ? etats.get(hero) ?? true : false;
       const finVisible = fin.some((x) => etats.get(x));
       const sectionPorte = porteurs.some((b) => etats.get(b));
       const sectionABoutons = sections.some((x) => dansSection.get(x));
-      setVisible(!heroVisible && !finVisible && !sectionPorte && !sectionABoutons);
+      const flecheDessous = fleches.some((f) => sousPilule.get(f));
+      setVisible(!heroVisible && !finVisible && !sectionPorte && !sectionABoutons && !flecheDessous);
     };
     const obs = new IntersectionObserver((entrees) => {
       for (const e of entrees) etats.set(e.target, e.isIntersecting);
@@ -74,7 +80,13 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
       calcul();
     }, { rootMargin: "0px 0px -35% 0px", threshold: 0 });
     sections.forEach((x) => obsSections.observe(x));
-    return () => { obs.disconnect(); obsSections.disconnect(); doubles.forEach((b) => b.classList.remove("double-fixe")); };
+    // La bande de la pilule : les 104 px du bas de l'écran (28 px de marge, 60 de bouton, un peu d'air).
+    const obsFleches = new IntersectionObserver((entrees) => {
+      for (const e of entrees) sousPilule.set(e.target, e.isIntersecting);
+      calcul();
+    }, { rootMargin: `-${Math.max(0, window.innerHeight - 104)}px 0px 0px 0px`, threshold: 0 });
+    fleches.forEach((f) => obsFleches.observe(f));
+    return () => { obs.disconnect(); obsSections.disconnect(); obsFleches.disconnect(); doubles.forEach((b) => b.classList.remove("double-fixe")); };
   }, [cible, href, modale]);
   return (
     <div className={`bouton-fixe-mob${visible ? " est-visible" : ""}`} aria-hidden={!visible}>
