@@ -20,8 +20,8 @@
  *  - prix au m² (sur la surface bâtie hors dépendances, commerces compris) entre 3 000 et
  *    30 000 € pour écarter les valeurs aberrantes.
  * La médiane du prix au m² n'est publiée qu'à partir de trois ventes. La fourchette laisse de côté
- * le quart des ventes le moins cher et le quart le plus cher (MAV, 13/11/2026), à partir de
- * quatre ventes.
+ * le quart des ventes le moins cher et le quart le plus cher (MAV, 13/11/2026) : elle va du premier
+ * au troisième quartile, à partir de cinq ventes (à quatre, elle ne tiendrait qu'à deux ventes).
  *
  * Lot 109 (13/11/2026) : DVF ne diffuse pas l'identifiant du local. Dans un immeuble sans numéros
  * de lot, deux appartements de même surface et de même nombre de pièces (le même plan à deux
@@ -124,6 +124,19 @@ export function locauxDe(rows: Ligne[]): { cle: string; r: Ligne; fois: number }
 
 /** Part des ventes laissée de côté de chaque côté de la fourchette (MAV, 13/11/2026). */
 export const PART_ECARTEE = 0.25;
+/** Sous ce nombre de ventes, la fourchette ne s'affiche pas : le prix médian reste seul. */
+export const VENTES_MIN_FOURCHETTE = 5;
+
+/**
+ * Quantile d'une liste triée, par interpolation entre deux ventes voisines (la fonction QUARTILE des
+ * tableurs). Une borne « partie entière de n/4 » donnait une fourchette en dents de scie : trop
+ * étroite quand le nombre de ventes est un multiple de quatre.
+ */
+export const quantile = (tries: number[], p: number) => {
+  const h = (tries.length - 1) * p;
+  const i = Math.floor(h);
+  return tries[i] + (h - i) * ((tries[i + 1] ?? tries[i]) - tries[i]);
+};
 
 /**
  * @param ailleurs identifiants des mutations qui ont aussi des lignes dans le fichier d'une autre
@@ -182,13 +195,15 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     .map((c) => ({ ...c, pm2: c.prix / c.surface }))
     .sort((a, b) => a.pm2 - b.pm2);
   const n = pm2.length;
-  // La fourchette : on laisse de côté autant de ventes en bas qu'en haut. La médiane n'en bouge pas.
-  const k = Math.floor(n * PART_ECARTEE);
+  // La fourchette : du premier au troisième quartile. On laisse de côté autant de ventes en bas
+  // qu'en haut, la médiane n'en bouge pas.
+  const valeurs = pm2.map((c) => c.pm2);
+  const fourchette = n >= VENTES_MIN_FOURCHETTE;
   return {
     nbVentes: n,
-    prixM2Median: n >= 3 ? Math.round(mediane(pm2.map((c) => c.pm2))!) : null,
-    prixM2Bas: k >= 1 ? Math.round(pm2[k].pm2) : null,
-    prixM2Haut: k >= 1 ? Math.round(pm2[n - 1 - k].pm2) : null,
+    prixM2Median: n >= 3 ? Math.round(mediane(valeurs)!) : null,
+    prixM2Bas: fourchette ? Math.round(quantile(valeurs, PART_ECARTEE)) : null,
+    prixM2Haut: fourchette ? Math.round(quantile(valeurs, 1 - PART_ECARTEE)) : null,
     prixM2Min: n >= 3 ? Math.round(pm2[0].pm2) : null,
     prixM2Max: n >= 3 ? Math.round(pm2[n - 1].pm2) : null,
     prixMedian: n >= 3 ? Math.round(mediane(pm2.map((c) => c.prix))!) : null,

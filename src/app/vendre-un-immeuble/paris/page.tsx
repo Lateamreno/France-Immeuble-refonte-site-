@@ -499,7 +499,7 @@ export default async function VendreUnImmeubleParis() {
                   et les expropriations, les immeubles vendus plusieurs fois dans l’année (ventes de parts,
                   démembrements), les ventes à cheval sur plusieurs communes et les prix au&nbsp;m² inférieurs à
                   3&nbsp;000&nbsp;€ ou supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de trois ventes,
-                  commerces compris dans la surface. Fourchette à partir de quatre ventes.
+                  commerces compris dans la surface. Fourchette à partir de cinq ventes.
                   {avecRdt && (
                     <>
                       {" "}Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL

@@ -35,6 +35,9 @@ export async function GET(req: Request) {
       echecs.push(c.code);
     }
   }
+  // Un fichier manquant fausserait le repérage des ventes à cheval sur plusieurs communes : on
+  // n'écrit rien ce mois-là, la table garde ses chiffres.
+  if (echecs.length) return NextResponse.json({ ok: false, erreur: "fichiers DVF manquants", echecs }, { status: 502 });
   const premiere = new Map<string, string>();
   const ailleurs = new Set<string>();
   for (const [code, rows] of fichiers) {

@@ -527,9 +527,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (échanges, VEFA, adjudications, expropriations et terrains à bâtir exclus, déjà le cas), vente à cheval
   sur plusieurs communes suivies écartée, mêmes logements vendus plusieurs fois dans l'année écartés
   (comparés sans numéro de lot), deux actes du même jour sur une même parcelle comptés pour une vente.
-  **Fourchette du tableau** : sans le quart des ventes le moins cher ni le quart le plus cher
-  (`PART_ECARTEE`, colonnes `prix_m2_bas` et `prix_m2_haut`, migration 0021), à partir de quatre ventes ;
-  la médiane n'en bouge pas (on retire autant de ventes des deux côtés). Calcul contrôlé par deux
+  **Fourchette du tableau** : sans le quart des ventes le moins cher ni le quart le plus cher, soit du
+  premier au troisième quartile (`PART_ECARTEE`, `quantile`, colonnes `prix_m2_bas` et `prix_m2_haut`,
+  migration 0021), à partir de cinq ventes ; la médiane n'en bouge pas (on retire autant de ventes des
+  deux côtés). Calcul contrôlé par deux
   recalculs indépendants et une tentative de réfutation. Le détail vente par vente n'est montré qu'à MAV
   (rapport privé) : rien sur le site (conditions de réutilisation de DVF, lot 107).
 
