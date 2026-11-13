@@ -68,11 +68,25 @@ export const RENDEMENT_PARIS_REPLI = { bas: 3.5, haut: 6.5 } as const;
  * fourchette de repli.
  */
 export function fourchetteRendement(rendements: number[]): { bas: number; haut: number } {
-  const tries = rendements.filter((r) => Number.isFinite(r) && r > 0).sort((a, b) => a - b);
+  // En dixièmes de point, comme le tableau les affiche : 6,04 s'y lit « 6,0 % » et donne 6, pas 6,5.
+  const tries = rendements.filter((r) => Number.isFinite(r) && r > 0).map((r) => Math.round(r * 10)).sort((a, b) => a - b);
   if (tries.length < 5) return RENDEMENT_PARIS_REPLI;
-  const bas = Math.floor(tries[1] * 2) / 2;
-  const haut = Math.ceil(tries[tries.length - 2] * 2) / 2;
+  const bas = (Math.floor(tries[1] / 5) * 5) / 10;
+  const haut = (Math.ceil(tries[tries.length - 2] / 5) * 5) / 10;
   return haut > bas ? { bas, haut } : RENDEMENT_PARIS_REPLI;
+}
+
+/**
+ * Les rendements théoriques du tableau de la page Paris : le loyer de marché des appartements sur
+ * un an, rapporté au prix médian au m² des immeubles, pour les communes chiffrées de l'année la
+ * plus récente. Une seule formule pour la page Paris et la page des annonces.
+ */
+export function rendementsTheoriques(immeubles: ReadonlyMap<string, ImmeublesCommune>, loyers: ReadonlyMap<string, { loyerM2: number | null }>): number[] {
+  const annee = Math.max(...[...immeubles.values()].map((x) => x.annee));
+  return [...immeubles].flatMap(([code, x]) => {
+    const loyer = loyers.get(code)?.loyerM2;
+    return x.annee === annee && x.prixM2Median != null && loyer ? [(loyer * 12 * 100) / x.prixM2Median] : [];
+  });
 }
 
 /** « 3,5 à 6,5 % », espace insécable avant le signe : un chiffre après la virgule seulement quand il en faut un. */

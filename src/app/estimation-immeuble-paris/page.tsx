@@ -10,7 +10,8 @@ import { Avis } from "@/components/Avis";
 import { SectionFaq } from "@/components/SectionFaq";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { ventes as lesVentes } from "@/lib/biens";
-import { immeublesDesCommunes, libelleRendement, RENDEMENT_PARIS_REPLI } from "@/lib/immeubles-dvf-lecture";
+import { fourchetteRendement, immeublesDesCommunes, libelleRendement, rendementsTheoriques } from "@/lib/immeubles-dvf-lecture";
+import { marchesDesCommunes } from "@/lib/marche";
 import { chiffres } from "@/lib/chiffres";
 import { chiffresFaq, faqVendre } from "@/lib/faq";
 import { VISUELS } from "@/lib/visuels";
@@ -34,11 +35,12 @@ export const metadata: Metadata = {
 
 export default async function EstimationImmeubleParis() {
   const codes = Array.from({ length: 20 }, (_, i) => `751${String(i + 1).padStart(2, "0")}`);
-  const [toutes, ch, immeubles] = await Promise.all([lesVentes(), chiffres(), immeublesDesCommunes(codes)]);
+  const [toutes, ch, immeubles, marches] = await Promise.all([lesVentes(), chiffres(), immeublesDesCommunes(codes), marchesDesCommunes(codes)]);
   const c = chiffresFaq(toutes);
   const faq = faqVendre(c);
-  const totalImmeubles = [...immeubles.values()].reduce((s, x) => s + x.nbVentes, 0);
-  const anneeImmeubles = [...immeubles.values()][0]?.annee ?? null;
+  // Comme la page Paris : l'année la plus récente, et seulement les lignes de cette année.
+  const anneeImmeubles = immeubles.size ? Math.max(...[...immeubles.values()].map((x) => x.annee)) : null;
+  const totalImmeubles = [...immeubles.values()].reduce((s, x) => s + (x.annee === anneeImmeubles ? x.nbVentes : 0), 0);
 
   const etapes: { picto: NomPicto; titre: string; texte: string }[] = [
     { picto: "calculatrice", titre: "Estimation gratuite", texte: "Un agent spécialisé étudie l’immeuble, ses baux et son secteur, et vous donne un prix réaliste." },
@@ -48,7 +50,7 @@ export default async function EstimationImmeubleParis() {
   ];
   const reperes: { valeur: string; libelle: string }[] = [
     // MAV, 13/11/2026 : « 3,5 à 6,5 en général », la fourchette de la page Paris.
-    { valeur: libelleRendement(RENDEMENT_PARIS_REPLI), libelle: "de rendement en général pour un immeuble parisien, selon l’arrondissement" },
+    { valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement en général pour un immeuble parisien, selon l’arrondissement" },
     ...(totalImmeubles && anneeImmeubles ? [{ valeur: nombre(totalImmeubles), libelle: `immeubles entiers vendus à Paris en ${anneeImmeubles} (DVF)` }] : []),
     ...(ch.traitesPar["75"] ? [{ valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }] : []),
     ...(c.delaiMedian ? [{ valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre, en médiane sur nos ventes" }] : []),
@@ -138,9 +140,9 @@ export default async function EstimationImmeubleParis() {
           <div className="sea-decoupe">
             <h3>En bloc ou à la découpe&nbsp;?</h3>
             <p>
-              Vendu en bloc, un immeuble parisien se négocie sous le prix au m² des appartements&nbsp;:
-              environ 15&nbsp;% pour un immeuble en bon état, loué au prix du marché, davantage s’il est mal
-              loué ou à rénover. Vendus un par un, les logements libres se vendent au prix du marché. Nous
+              Vendu en bloc, un immeuble parisien se négocie sous le prix au m² des appartements&nbsp;: le
+              plus souvent de 10 à 30&nbsp;%, selon l’état de l’immeuble et le niveau de ses loyers. Vendus
+              un par un, les logements libres se vendent au prix du marché. Nous
               chiffrons la vente en bloc, et la découpe si vous le souhaitez.
             </p>
           </div>

@@ -15,7 +15,7 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, organisation, service } from "@/lib/schema";
 import { marchesDesCommunes } from "@/lib/marche";
-import { fourchetteRendement, immeublesDesCommunes, libelleRendement, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
+import { fourchetteRendement, immeublesDesCommunes, libelleRendement, rendementsTheoriques, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
 import { PRIX_M2_MAX, PRIX_M2_MIN, VENTES_MIN_APPARTEMENTS } from "@/lib/dvf-immeubles";
 import { chiffres } from "@/lib/chiffres";
 import { ventes as lesVentes } from "@/lib/biens";
@@ -46,7 +46,8 @@ import { PREUVES, SITE, nombre } from "@/lib/site";
  * - acheteurs (#299, #300, #331) : ceux d'immeubles parisiens dès que le BO dépose
  *   `acheteurs_paris` (src/lib/chiffres.ts), le chiffre global avec son vrai libellé d'ici là ;
  * - tableau (#321 à #325) : cinq colonnes, le prix médian au m² des immeubles vendus en bloc, la
- *   décote face aux appartements vendus seuls, une note de fiabilité de 1 à 5 et le rendement
+ *   décote face aux appartements vendus seuls, une note de fiabilité (d'une à trois étoiles depuis
+ *   le lot 111) et le rendement
  *   théorique. La fourchette n'est plus une colonne : la note s'en sert ;
  * - toutes les rangées « picto, titre, texte » alignées d'une carte à l'autre (#338, #339) ;
  * - après l'offre (#332 à #336) : quatre cartes, plus rien sur la préemption, les droits des
@@ -385,7 +386,7 @@ export default async function VendreUnImmeubleParis() {
       ? { min: decotes[0], max: decotes[decotes.length - 1] }
       : null;
   // La fourchette de rendement « en général » (MAV, 13/11/2026), tirée des rendements du tableau.
-  const rendementParis = libelleRendement(fourchetteRendement(lignes.flatMap((l) => (l.rdt != null ? [l.rdt] : []))));
+  const rendementParis = libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches)));
   const millesime = [...marches.values()].find((m) => m.millesimeLoyers)?.millesimeLoyers ?? null;
   // La licence de DVF demande la source et la date de mise à jour : le mois du dernier relevé.
   const dernierReleve = [...immeubles.values()].flatMap((x) => (x.annee === annee && x.majLe ? [x.majLe] : [])).sort().pop();
@@ -715,12 +716,18 @@ export default async function VendreUnImmeubleParis() {
                 seule étoile, le prix est à lire avec prudence.
               </p>
               <p>
-                <strong>Un rendement de {rendementParis} en général.</strong> C’est le rendement sur
-                lequel un immeuble de rapport se vend aujourd’hui à Paris, selon les arrondissements.
-                {avecRdt && (
+                <strong>Un rendement de {rendementParis} en général.</strong>{" "}
+                {avecRdt ? (
                   <>
-                    {" "}Celui du tableau est théorique&nbsp;: le loyer de marché des appartements du secteur sur
-                    un an, charges comprises, rapporté au prix médian.
+                    C’est l’ordre de grandeur du tableau, sans l’arrondissement le plus bas ni le plus
+                    haut. Ce rendement est théorique&nbsp;: le loyer de marché des appartements du secteur
+                    sur un an, charges comprises, rapporté au prix médian.
+                  </>
+                ) : (
+                  /* Sans les loyers de marché : la fourchette de repli, un repère d'expérience. */
+                  <>
+                    D’après notre expérience, c’est l’ordre de grandeur du rendement d’un immeuble de
+                    rapport à Paris, selon les arrondissements.
                   </>
                 )}
               </p>

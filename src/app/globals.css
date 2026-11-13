@@ -1209,13 +1209,7 @@ html[class] .hero-media h1.eyebrow{
 .paris-relance{margin-top:var(--space-l);}
 
 /* Les cartes d'arguments : quatre de front sur ordinateur, une ligne qui glisse en dessous. */
-.ligne-cartes.paris-ligne{--g:clamp(16px,2vw,22px);gap:10px var(--g);grid-auto-columns:84%;padding-block:4px 6px;}
-@media (min-width:760px){ .ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - var(--g)) / 2);} }
-@media (min-width:1100px){
-  .ligne-cartes.paris-ligne{grid-auto-columns:calc((100% - 3 * var(--g)) / 4);}
-  .ligne-cartes.paris-ligne--3{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}
-}
-@media (min-width:1200px){ .ligne-cartes.paris-ligne{margin-inline:0;} }
+.ligne-cartes.paris-ligne{--g:clamp(16px,2vw,22px);gap:10px var(--g);padding-block:4px 6px;}
 /* Retours #370 et #372 (MAV, 13/11/2026 : « On fait les défilements horizontaux de d'habitude ») :
    ces lignes sont des lignes `marches`, comme les atouts de Vendre ou les avis. Au téléphone, une
    carte au premier plan et ses voisines dans les marges, les deux flèches sous les cartes. Le
@@ -1236,6 +1230,14 @@ html[class] .hero-media h1.eyebrow{
 /* Sur fond crème (après l'offre) : texte et picto dérivés des tokens. */
 .section--creme .paris-carte p{color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
 .section--creme .paris-carte svg{color:var(--color-bronze-profond);}
+/* Au téléphone, la ligne glisse comme sur le reste du site : la carte voisine dépasse dans la marge.
+   Sans cadre, ce qui dépassait était un bout de texte coupé. Chaque carte reçoit donc le cadre
+   discret des cartes d'avis (tokens seulement) ; sur ordinateur, rien ne change. */
+@media (max-width:759px){
+  .ligne--marches .paris-ligne .paris-carte{padding:18px 22px 20px;border:1px solid var(--color-ligne);border-radius:var(--radius-card);background:color-mix(in srgb, var(--color-creme) 3%, transparent);}
+  .section--creme .ligne--marches .paris-ligne .paris-carte{border-color:color-mix(in srgb, var(--color-noir) 14%, transparent);background:color-mix(in srgb, var(--color-noir) 3%, transparent);}
+  .ligne--marches > .ligne-cartes.paris-ligne,.ligne--marches > .ligne-cartes.paris-ventes-ligne{column-gap:14px;}
+}
 /* Quatre cartes de front : le texte se resserre d'un cran, la section tient sur un écran. */
 @media (min-width:1100px){ .paris-ligne:not(.paris-ligne--3) .paris-carte p{font-size:.92rem;line-height:1.5;} }
 /* Retours #338 et #339 (MAV, 13/11/2026 : « Aligne les titres, les pictos et les débuts de texte.
@@ -1388,13 +1390,12 @@ html[class] .hero-media h1.eyebrow{
 }
 
 /* Nos ventes à Paris (retours #341 et #342) : trois cartes de front, une ligne qui glisse dès la
-   quatrième vente. Les 6 px autour de la ligne laissent voir le contour de la carte au clavier. */
+   quatrième vente. Depuis le lot 111 c'est une ligne `marches`, comme les autres : ses marges vont
+   jusqu'aux bords de l'écran, le contour d'une carte au clavier y tient. */
 .paris-ventes-sec .section__head,.paris-ventes-sec .section__head h2{max-width:none;}
-.ligne-cartes.paris-ventes-ligne{--g:var(--space-s);gap:var(--g);grid-auto-columns:84%;padding-block:6px 8px;}
-@media (min-width:701px){ .ligne-cartes.paris-ventes-ligne{margin-inline:-6px;padding-inline:6px;scroll-padding-inline:6px;} }
-@media (min-width:760px){ .ligne-cartes.paris-ventes-ligne{grid-auto-columns:calc((100% - var(--g)) / 2);} }
-@media (min-width:960px){ .ligne-cartes.paris-ventes-ligne{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);} }
-@media (min-width:1200px){ .ligne-cartes.paris-ventes-ligne{overflow-x:auto;} }
+.ligne-cartes.paris-ventes-ligne{--g:var(--space-s);gap:var(--g);padding-block:6px 8px;}
+/* Trois cartes de front dès 960 px, comme avant le lot 111 (les lignes `marches` n'y passent qu'à 980 px). */
+@media (min-width:960px){ .ligne--marches > .ligne-cartes.ligne-cartes.paris-ventes-ligne{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);} }
 @media (min-width:1200px) and (hover:hover) and (pointer:fine){ .ligne-cartes.paris-ventes-ligne--glisse{cursor:grab;} }
 /* Les flèches sortent des cartes (elles recouvraient le début du titre de la première), et tirer une
    carte fait glisser la ligne au lieu de déplacer son lien ou sa photo. */

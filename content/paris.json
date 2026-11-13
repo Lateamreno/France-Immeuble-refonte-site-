@@ -245,7 +245,7 @@
     {
       "groupe": "Estimation et prix d’un immeuble à Paris",
       "question": "Quel est le rendement d’un immeuble de rapport à Paris aujourd’hui ?",
-      "reponse": "Un immeuble de rapport à Paris se vend aujourd’hui sur un rendement de {rendementParis} en général, selon les arrondissements. Le rendement, c’est le loyer d’une année rapporté au prix de vente. Il monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Le rendement ne fait pas le prix à lui seul : l’état du bâti et les baux en place comptent aussi.",
+      "reponse": "En général, de {rendementParis} selon les arrondissements. C’est un ordre de grandeur : le rendement, c’est le loyer d’une année rapporté au prix de vente, et celui de votre immeuble dépend de ses loyers réels et de son état. Il monte quand les prix baissent : au 2e trimestre 2026, le prix au m² des appartements anciens était de 4 à 20 % sous son plus haut des dernières années selon les arrondissements (Notaires du Grand Paris). Deux causes se combinent : la hausse des taux d’emprunt depuis 2022, qui pousse les acheteurs à exiger plus de rendement, et l’encadrement des loyers, qui limite la hausse des revenus. Le rendement ne fait pas le prix à lui seul : l’état du bâti et les baux en place comptent aussi.",
       "sources": [
         "https://paris.notaires.fr/sites/default/files/HistoriquedesprixaumappartementsanciensParispararrdt_4.pdf",
         "MAV, 13/11/2026 : fourchette vivante rendementParis fournie par la page, suivie de « en général »",
@@ -506,7 +506,7 @@
     {
       "groupe": "DPE, diagnostics et travaux",
       "question": "Mon immeuble doit-il avoir un DPE collectif ou un audit énergétique pour être vendu ?",
-      "reponse": "Oui dans la plupart des cas : il lui faut un DPE collectif, et un audit énergétique en plus s’il est classé E, F ou G. Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Ce DPE est valable dix ans. Pour la vente d’un tel immeuble, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
+      "reponse": "Oui, dans la plupart des cas : il lui faut un DPE collectif, et un audit énergétique en plus s’il est classé E, F ou G. Un immeuble d’habitation collective qui appartient à un seul propriétaire (personne, indivision ou SCI) doit disposer d’un DPE collectif depuis le 1er janvier 2024, si son permis de construire a été déposé avant 2013. Ce DPE est valable dix ans. Pour la vente d’un tel immeuble, un audit énergétique doit en plus être remis à l’acheteur dès la première visite quand le bâtiment est classé F ou G (depuis le 1er avril 2023) ou E (depuis le 1er janvier 2025). L’audit propose des scénarios de travaux chiffrés, que l’acheteur intègre à son offre.",
       "sources": [
         "MAV, retour #360 du 13/11/2026",
         "https://www.service-public.gouv.fr/particuliers/vosdroits/F37504",
