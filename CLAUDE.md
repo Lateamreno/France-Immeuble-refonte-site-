@@ -570,7 +570,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   à la découpe » dans un nouvel onglet (`nouvelOnglet` de `Button`), les deux boutons visibles au téléphone
   (`porte-action`). Ventes : toutes nos ventes d'immeubles à Paris, ligne qui glisse au-delà de trois ;
   cartes « Immeuble mixte rue Mouffetard », « Loyer », prix au m² sous le prix (`avecType`,
-  `libelleLoyer`, `prixAuM2` de `CarteVente`, page Paris seulement). FAQ : 14 réponses réécrites, droit
+  `libelleLoyer`, `prixAuM2` de `CarteVente`, page Paris seulement). FAQ : 15 réponses réécrites, droit
   des baux relu aux sources (loi Aurillac : c'est l'acquéreur qui s'engage à proroger les baux, rien
   d'office ; congé pour vendre à l'échéance ; plus d'accord collectif ; découpe chiffrée à la demande).
   Page des annonces Google mise en accord (sans annonce, « prix réaliste », découpe à la demande,
