@@ -515,6 +515,23 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `AncreStable` garde la marge d'une ligne de tableau visée. Conçue par trois plans et trois maquettes
   jugés, relue sous six angles (vérité, règles, référencement, rendu, code, lecteur), puis contrôlée
   (corrections, régressions sur 13 autres pages, rendu aux huit largeurs).
+- **Lot 109** (MAV, 13/11/2026 : « le détail de chaque immeuble analysé pour les prix », « exclure les 25 %
+  les plus chers et les 25 % les moins chers », « exclure les échanges, la VEFA etc »). **Erreur corrigée
+  dans le calcul DVF** (`src/lib/dvf-immeubles.ts`) : DVF ne diffuse pas l'identifiant du local, et deux
+  appartements de même surface et de même nombre de pièces d'un immeuble sans numéros de lot donnent deux
+  lignes identiques. Les lots 100 à 108 les comptaient pour un seul : surface sous-estimée, prix au m²
+  gonflé (13 rue Clapeyron, 8e : 613 m² au lieu de 1 265 m²). `locauxDe` compte désormais les lignes
+  identiques (sauf un même lot numéroté répété ; les répétitions par nature de culture ne s'additionnent
+  pas). Paris 2025 : 147 ventes et 6 987 € le m² en médiane, au lieu de 129 ventes et 8 866 €. **Ne jamais
+  revenir à un dédoublonnage par surface et nombre de pièces.** Autres règles : nature « Vente » seule
+  (échanges, VEFA, adjudications, expropriations et terrains à bâtir exclus, déjà le cas), vente à cheval
+  sur plusieurs communes suivies écartée, mêmes logements vendus plusieurs fois dans l'année écartés
+  (comparés sans numéro de lot), deux actes du même jour sur une même parcelle comptés pour une vente.
+  **Fourchette du tableau** : sans le quart des ventes le moins cher ni le quart le plus cher
+  (`PART_ECARTEE`, colonnes `prix_m2_bas` et `prix_m2_haut`, migration 0021), à partir de quatre ventes ;
+  la médiane n'en bouge pas (on retire autant de ventes des deux côtés). Calcul contrôlé par deux
+  recalculs indépendants et une tentative de réfutation. Le détail vente par vente n'est montré qu'à MAV
+  (rapport privé) : rien sur le site (conditions de réutilisation de DVF, lot 107).
 
 ### Garde-fous non négociables
 

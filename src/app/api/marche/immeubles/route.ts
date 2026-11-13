@@ -22,17 +22,33 @@ export async function GET(req: Request) {
   const annee = await derniereAnneeDvf();
   if (!annee) return NextResponse.json({ ok: false, erreur: "DVF injoignable" }, { status: 502 });
 
-  const lignes: Record<string, unknown>[] = [];
+  // Premier passage : lire tous les fichiers, et repérer les ventes à cheval sur plusieurs communes
+  // suivies (leur prix couvre des locaux d'une autre commune : on ne les compte nulle part).
+  const fichiers = new Map<string, Record<string, string>[]>();
   const echecs: string[] = [];
   for (const c of COMMUNES_SUIVIES) {
     try {
       const r = await fetch(urlDvf(annee, c.code), { cache: "no-store", redirect: "follow" });
       if (!r.ok) { echecs.push(c.code); continue; }
-      const s = ventesImmeubles(lireCsv(await r.text()));
-      lignes.push({ code_insee: c.code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, maj_le: new Date().toISOString() });
+      fichiers.set(c.code, lireCsv(await r.text()));
     } catch {
       echecs.push(c.code);
     }
+  }
+  const premiere = new Map<string, string>();
+  const ailleurs = new Set<string>();
+  for (const [code, rows] of fichiers) {
+    for (const l of rows) {
+      const vu = premiere.get(l.id_mutation);
+      if (vu === undefined) premiere.set(l.id_mutation, code);
+      else if (vu !== code) ailleurs.add(l.id_mutation);
+    }
+  }
+
+  const lignes: Record<string, unknown>[] = [];
+  for (const [code, rows] of fichiers) {
+    const s = ventesImmeubles(rows, ailleurs);
+    lignes.push({ code_insee: code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, maj_le: new Date().toISOString() });
   }
   if (lignes.length) {
     const r = await fetch(`${cfg.url}/rest/v1/marche_immeubles?on_conflict=code_insee,annee`, {

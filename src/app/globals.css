@@ -1297,8 +1297,12 @@ html[class] .hero-media h1.eyebrow{
   .paris-prix__mention{font-size:.88rem;}
   .paris-prix thead th{padding-block:7px;}
   .paris-prix .paris-prix__tete .lead{font-size:1.12rem;}
-  .paris-prix__legende{margin-bottom:8px;}
-  .paris-prix caption{padding-bottom:8px;}
+  /* Lot 109 : la légende explique aussi la fourchette (trois lignes) ; les marges autour du tableau
+     se resserrent pour que la section tienne toujours sur un écran. */
+  .paris-prix__legende{margin-bottom:6px;}
+  .paris-prix caption{padding-bottom:6px;}
+  .paris-prix__calcul{margin-top:2px;}
+  .paris-prix__calcul summary{padding-block:5px;}
 }
 
 /* Vendre : les recherches déposées dans notre base, sous les cartes. */

@@ -231,7 +231,8 @@ export default async function VendreUnImmeubleParis() {
   const anneesAvantHausse = [...new Set(ventesParis.map((v) => v.date.slice(0, 4)))].filter((a) => Number(a) < 2022).sort();
 
   // Le tableau : pour chaque arrondissement, le prix médian au m² des immeubles vendus en bloc
-  // (DVF, à partir de trois ventes), la fourchette, et le rendement théorique : le loyer de marché
+  // (DVF, à partir de trois ventes), la fourchette (sans le quart le moins cher ni le quart le plus
+  // cher, MAV, 13/11/2026), et le rendement théorique : le loyer de marché
   // du secteur sur un an, rapporté au prix médian.
   const annee = immeubles.size ? Math.max(...[...immeubles.values()].map((x) => x.annee)) : null;
   const lignes = codes.map((code, i) => {
@@ -243,8 +244,9 @@ export default async function VendreUnImmeubleParis() {
     return {
       n: i + 1,
       prix,
-      bas: imm?.prixM2Min ?? null,
-      haut: imm?.prixM2Max ?? null,
+      // La fourchette laisse de côté le quart des ventes le moins cher et le quart le plus cher.
+      bas: imm?.prixM2Bas ?? null,
+      haut: imm?.prixM2Haut ?? null,
       rdt: prix != null && m?.loyerM2 ? (m.loyerM2 * 12 * 100) / prix : null,
       ventes: imm?.nbVentes ?? 0,
       // Sans ligne pour l'année, on ne sait pas : on ne l'écrit pas « moins de trois ventes ».
@@ -431,7 +433,8 @@ export default async function VendreUnImmeubleParis() {
             <div className="paris-prix__tableau">
               <p className="paris-prix__legende">
                 <strong>Prix médian</strong>&nbsp;: la moitié des immeubles se sont vendus plus cher au&nbsp;m²,
-                l’autre moitié moins cher. C’est une tendance, pas le prix de votre immeuble.
+                l’autre moitié moins cher. <strong>Fourchette</strong>&nbsp;: sans le quart des ventes le moins
+                cher ni le quart le plus cher.
               </p>
               <table>
                 <caption>
@@ -448,7 +451,7 @@ export default async function VendreUnImmeubleParis() {
                       <span className="paris-prix__court" aria-hidden="true">Prix médian</span>
                     </th>
                     <th scope="col">
-                      <span className="paris-prix__long">Du moins cher au&nbsp;plus&nbsp;cher</span>{" "}
+                      <span className="paris-prix__long">Fourchette au&nbsp;m²</span>{" "}
                       <span className="paris-prix__court" aria-hidden="true">Fourchette</span>
                     </th>
                     {/* « Théorique » reste écrit au téléphone aussi : on ne le prend pas pour un rendement réel. */}
@@ -492,10 +495,11 @@ export default async function VendreUnImmeubleParis() {
                 <p>
                   Ventes retenues dans DVF&nbsp;: plus de cinq logements, un seul acte et un seul prix, au moins
                   65&nbsp;% de logements parmi les lots, caves et parkings non comptés ({nombre(totalImmeubles)}{" "}
-                  ventes à Paris en {annee}). Sont écartés les immeubles vendus plusieurs fois dans l’année
-                  (ventes de parts, démembrements) et les prix au&nbsp;m² inférieurs à 3&nbsp;000&nbsp;€ ou
-                  supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de trois ventes, commerces compris dans
-                  la surface.
+                  ventes à Paris en {annee}). Sont écartés les échanges, les ventes sur plan, les adjudications
+                  et les expropriations, les immeubles vendus plusieurs fois dans l’année (ventes de parts,
+                  démembrements), les ventes à cheval sur plusieurs communes et les prix au&nbsp;m² inférieurs à
+                  3&nbsp;000&nbsp;€ ou supérieurs à 30&nbsp;000&nbsp;€. Prix publié à partir de trois ventes,
+                  commerces compris dans la surface. Fourchette à partir de quatre ventes.
                   {avecRdt && (
                     <>
                       {" "}Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL

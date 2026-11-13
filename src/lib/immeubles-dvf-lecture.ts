@@ -5,8 +5,9 @@ export type ImmeublesCommune = {
   annee: number;
   nbVentes: number;
   prixM2Median: number | null;
-  prixM2Min: number | null;
-  prixM2Max: number | null;
+  /** La fourchette : sans le quart des ventes le moins cher ni le quart le plus cher (lot 109). */
+  prixM2Bas: number | null;
+  prixM2Haut: number | null;
 };
 
 const num = (v: number | string | null) => (v != null ? Number(v) : null);
@@ -17,14 +18,14 @@ export async function immeublesDesCommunes(codes: string[]): Promise<Map<string,
   if (!cfg) return out;
   try {
     const r = await fetch(
-      `${cfg.url}/rest/v1/marche_immeubles?select=code_insee,annee,nb_ventes,prix_m2_median,prix_m2_min,prix_m2_max&code_insee=in.(${codes.join(",")})&order=annee.desc`,
+      `${cfg.url}/rest/v1/marche_immeubles?select=code_insee,annee,nb_ventes,prix_m2_median,prix_m2_bas,prix_m2_haut&code_insee=in.(${codes.join(",")})&order=annee.desc`,
       { headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` }, next: { revalidate: 86400, tags: ["marche"] } },
     );
     if (!r.ok) return out;
-    const lignes = (await r.json()) as { code_insee: string; annee: number; nb_ventes: number; prix_m2_median: number | string | null; prix_m2_min: number | string | null; prix_m2_max: number | string | null }[];
+    const lignes = (await r.json()) as { code_insee: string; annee: number; nb_ventes: number; prix_m2_median: number | string | null; prix_m2_bas: number | string | null; prix_m2_haut: number | string | null }[];
     for (const l of lignes) {
       if (out.has(l.code_insee)) continue; // la plus récente d'abord
-      out.set(l.code_insee, { annee: l.annee, nbVentes: l.nb_ventes, prixM2Median: num(l.prix_m2_median), prixM2Min: num(l.prix_m2_min), prixM2Max: num(l.prix_m2_max) });
+      out.set(l.code_insee, { annee: l.annee, nbVentes: l.nb_ventes, prixM2Median: num(l.prix_m2_median), prixM2Bas: num(l.prix_m2_bas), prixM2Haut: num(l.prix_m2_haut) });
     }
   } catch { /* la page s'affiche sans ces chiffres */ }
   return out;
