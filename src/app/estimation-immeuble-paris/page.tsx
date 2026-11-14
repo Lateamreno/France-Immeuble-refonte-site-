@@ -48,12 +48,14 @@ export default async function EstimationImmeubleParis() {
     { picto: "poignee", titre: "Offres et négociation", texte: "Nous organisons les visites, recueillons les offres et vérifions la solidité de chaque acheteur." },
     { picto: "dossier", titre: "Signature chez le notaire", texte: "Nous suivons le dossier jusqu’à l’acte. Nos honoraires ne sont dus qu’à ce moment-là." },
   ];
-  const reperes: { valeur: string; libelle: string }[] = [
+  // Lot 113 (MAV, 14/11/2026 : « fait le même style que le reste du site ») : les repères sont des
+  // cartes à chiffre, comme les trois chiffres de la page Paris (picto en filigrane, plus de filet or).
+  const reperes: { picto: NomPicto; valeur: string; libelle: string; texte: string }[] = [
     // MAV, 13/11/2026 : « 3,5 à 6,5 en général », la fourchette de la page Paris.
-    { valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement en général, selon l’arrondissement" },
-    ...(totalImmeubles && anneeImmeubles ? [{ valeur: nombre(totalImmeubles), libelle: `immeubles entiers vendus à Paris en ${anneeImmeubles} (DVF)` }] : []),
-    ...(ch.traitesPar["75"] ? [{ valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }] : []),
-    ...(c.delaiMedian ? [{ valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre, en médiane sur nos ventes" }] : []),
+    { picto: "stats", valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement", texte: "en général, selon l’arrondissement" },
+    ...(totalImmeubles && anneeImmeubles ? [{ picto: "immeubles" as NomPicto, valeur: nombre(totalImmeubles), libelle: "immeubles vendus en bloc", texte: `à Paris en ${anneeImmeubles}, d’après DVF` }] : []),
+    ...(ch.traitesPar["75"] ? [{ picto: "dossier" as NomPicto, valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles étudiés", texte: "à Paris par nos agents depuis 2018" }] : []),
+    ...(c.delaiMedian ? [{ picto: "agenda" as NomPicto, valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre", texte: "en médiane, sur nos ventes" }] : []),
   ];
 
   const preuves: { picto: NomPicto; titre: string; texte: string }[] = [
@@ -109,11 +111,15 @@ export default async function EstimationImmeubleParis() {
 
       <section className="section section--noir-2 sea-reperes-sec">
         <div className="container">
-          <ul className="paris-reperes paris-reperes--seul">
+          <ul className={`grid ${reperes.length > 3 ? "grid--4" : "grid--3"} paris-preuves`}>
             {reperes.map((r) => (
-              <li key={r.libelle}>
-                <span className="paris-reperes__val">{r.valeur}</span>
-                <span className="paris-reperes__lib">{r.libelle}</span>
+              <li key={r.libelle} className="card card--filigrane">
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={r.picto} taille={96} />
+                </span>
+                <span className="stat-number">{r.valeur}</span>{" "}
+                <span className="stat-label">{r.libelle}</span>{" "}
+                <p>{r.texte}</p>
               </li>
             ))}
           </ul>

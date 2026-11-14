@@ -26,6 +26,7 @@ import { chiffres as lesChiffres } from "@/lib/chiffres";
 import { chiffresFaq } from "@/lib/faq";
 import { nombre } from "@/lib/site";
 import { cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
+import { SLUG_BAROMETRE, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -102,13 +103,26 @@ export default async function ArticlePage({ params }: Params) {
   const suite = [...tous.slice(i + 1), ...tous.slice(0, i)].slice(0, 3);
 
   const acheteur = cibleArticle(a.slug) === "acheteur";
-  const [avant, apres] = couperTexte(ctaVersFormulaire(imagesDifferees(a.contenuHtml)));
-  const [ventesPubliees, ch] = await Promise.all([lesVentes(), lesChiffres()]);
+  // Le baromètre des prix à Paris (lot 113) : ses tableaux viennent de la base, toutes années comprises.
+  const [ventesPubliees, ch, historique] = await Promise.all([
+    lesVentes(),
+    lesChiffres(),
+    a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
+  ]);
+  const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
+  const [avant, apres] = couperTexte(ctaVersFormulaire(imagesDifferees(html)));
   const c = chiffresFaq(ventesPubliees);
   const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
   /** Trois repères tirés de nos ventes publiées et du BO, en tête de l'article. */
+  const reperesDvf = historique ? reperesBarometre(historique) : [];
   const reperes: { picto: NomPicto; valeur: string; libelle: string }[] = (
-    acheteur
+    reperesDvf.length === 3
+      ? [
+          { picto: "immeubles" as NomPicto, ...reperesDvf[0] },
+          { picto: "stats" as NomPicto, ...reperesDvf[1] },
+          { picto: "logement" as NomPicto, ...reperesDvf[2] },
+        ]
+      : acheteur
       ? [
           { picto: "reseau" as NomPicto, valeur: nombre(ch.investisseurs), libelle: "acheteurs déjà inscrits" },
           c.rdtMin && c.rdtMax

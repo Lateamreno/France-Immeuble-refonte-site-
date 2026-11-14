@@ -239,8 +239,13 @@
       "sources": [
         "DVF, calcul de src/lib/dvf-immeubles.ts (table marche_immeubles) : prix médian, nombre de ventes et décote par rapport aux appartements (phrase vivante phraseDecote fournie par la page)",
         "Décote de 10 à 30 % d’après notre expérience, pour la phrase vivante phraseDecote : MAV, 13/11/2026 (remplace le repère des 10 et 12/11/2026)",
-        "MAV, retours #345 et #346 du 13/11/2026"
-      ]
+        "MAV, retours #345 et #346 du 13/11/2026",
+        "Lot 113 (MAV, 14/11/2026) : lien vers le baromètre, qui montre toutes les années en base"
+      ],
+      "lien": {
+        "texte": "Prix des immeubles de rapport à Paris, année par année",
+        "href": "/prix-immeuble-de-rapport-paris/"
+      }
     },
     {
       "groupe": "Estimation et prix d’un immeuble à Paris",

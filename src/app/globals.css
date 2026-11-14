@@ -1130,6 +1130,30 @@ html[class] .hero-media h1.eyebrow{
 }
 .prose th{ font-weight:600; color:var(--color-noir); }
 
+/* Baromètre des prix des immeubles à Paris (lot 113) : les tableaux d'évolution, sur le crème de
+   l'article. Le tableau défile seul s'il dépasse (une colonne de plus chaque année), jamais la page.
+   Chiffres alignés à droite, en chiffres de même largeur ; au téléphone, en-têtes courts. */
+.prose .barometre{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.prose .barometre table{display:table;width:100%;max-width:none;overflow:visible;border-collapse:collapse;font-size:.95rem;font-variant-numeric:tabular-nums;}
+.prose .barometre caption{caption-side:top;text-align:left;padding:0 0 10px;font-family:var(--font-mono-site);font-size:.72rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze-profond);}
+.prose .barometre thead th{font-family:var(--font-mono-site);font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));border-bottom:1px solid color-mix(in srgb,var(--color-noir) 30%,transparent);}
+.prose .barometre th,.prose .barometre td{padding:.55em .7em;text-align:right;vertical-align:top;}
+.prose .barometre th:first-child{text-align:left;padding-left:0;}
+.prose .barometre tbody th{font-weight:600;white-space:nowrap;}
+.prose .barometre td strong{font-weight:700;color:var(--color-noir);}
+.barometre__sous{display:block;margin-top:2px;font-size:.76rem;line-height:1.3;color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));white-space:nowrap;}
+.barometre__vide,.barometre__prudence{color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));}
+.prose .barometre .barometre__total th,.prose .barometre .barometre__total td{font-weight:700;border-top:1px solid color-mix(in srgb,var(--color-noir) 30%,transparent);}
+.barometre__court{display:none;}
+.prose .barometre__note{margin-top:.6em;font-size:.85rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+@media (max-width:599px){
+  .barometre__long{display:none;}
+  .barometre__court{display:inline;}
+  .prose .barometre table{font-size:.86rem;}
+  .prose .barometre th,.prose .barometre td{padding:.5em .4em;}
+  .prose .barometre thead th{letter-spacing:.04em;}
+}
+
 /* Note de datation en pied d'article. Discrete : elle informe, elle ne
    s'excuse pas. */
 .article__date-note{
@@ -1162,12 +1186,19 @@ html[class] .hero-media h1.eyebrow{
 .sea-note__val{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:1.4rem;color:var(--color-bronze);}
 .sea-note [aria-hidden]{color:var(--color-bronze);letter-spacing:2px;}
 .section.sea-reperes-sec{padding-block:var(--space-l);min-height:0;}
+/* Lot 113 : les repères de la page des annonces portent des valeurs plus longues que les trois chiffres
+   de la page Paris (« 3,5 à 6,5 % », « 55 jours ») : un chiffre plus petit, sur une ligne, dans sa carte. */
+.sea-reperes-sec .paris-preuves{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));}
+.sea-reperes-sec .paris-preuves .card--filigrane .stat-number{font-size:clamp(1.7rem, 2.4vw, 2.2rem);padding-right:0;}
+/* Lot 113 (MAV, 14/11/2026 : « fait le même style que le reste du site ») : les étapes sont des cartes
+   du site sur crème, comme les cartes d'arguments de la page Paris (filet noir discret, coins arrondis,
+   plus de filet or à gauche). Pictos, titres et débuts de texte alignés d'une carte à l'autre (sous-grille). */
 .sea-etapes{list-style:none;margin:var(--space-m) 0 0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr));}
-.sea-etapes li{display:flex;flex-direction:column;gap:10px;padding:22px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb,var(--color-noir) 5%,transparent);}
+.sea-etapes li{display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:10px;padding:22px 22px 24px;border:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);border-radius:var(--radius-card);background:transparent;}
 .sea-etapes li svg{color:var(--color-bronze-profond);}
 .sea-etapes h3{font-size:1.2rem;margin:0;color:var(--color-noir);}
 .sea-etapes p{margin:0;font-size:.95rem;line-height:1.55;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
-.sea-decoupe{margin-top:var(--space-l);padding:22px 24px;border-radius:var(--radius-card);background:var(--color-noir);color:var(--color-creme);border-left:2px solid var(--color-bronze);}
+.sea-decoupe{margin-top:var(--space-l);padding:22px 24px;border-radius:var(--radius-card);background:var(--color-noir);color:var(--color-creme);}
 .sea-decoupe h3{font-size:1.35rem;margin:0 0 8px;}
 .sea-decoupe p{margin:0;color:color-mix(in srgb,var(--color-creme) 84%,transparent);line-height:1.55;}
 @media (max-width:980px){.sea-etapes{grid-template-columns:repeat(2,minmax(0,1fr));}}
@@ -1198,15 +1229,10 @@ html[class] .hero-media h1.eyebrow{
    cartes alignées, profils d'acquéreurs, ventes en ligne qui glisse). Les repères
    servent aussi à la page des annonces (/estimation-immeuble-paris/).
    ========================================================================== */
-.paris-reperes{list-style:none;margin:0 0 var(--space-xl);padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
-.paris-reperes li{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-left:2px solid var(--color-bronze);color:var(--color-bronze);}
-.paris-reperes__val{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.05;letter-spacing:-.015em;}
-.paris-reperes__lib{color:color-mix(in srgb,var(--color-creme) 82%,transparent);font-size:.92rem;line-height:1.4;}
-.paris-reperes--seul{margin-bottom:0;}
 /* Lot 112 (MAV, 14/11/2026 : « enlève les séparateurs or sur les 3 chiffres », « copie le style du
    reste du site ») : les trois chiffres de la page Paris sont des cartes à chiffre du site
    (`.card.card--filigrane`, comme le réseau d'acheteurs de l'accueil) : chiffre et libellé en or,
-   picto en filigrane dans le coin, plus de filet. `.paris-reperes` ne sert plus qu'à la page des annonces. */
+   picto en filigrane dans le coin, plus de filet. Les repères de la page des annonces aussi (lot 113). */
 .paris-preuves{list-style:none;margin:0;padding:0;}
 .paris-preuves .card{padding:22px 26px 24px;}
 .paris-preuves .stat-number,.paris-preuves .stat-label{color:var(--color-bronze);}
@@ -1220,6 +1246,7 @@ html[class] .hero-media h1.eyebrow{
   .paris-preuves .stat-number{font-size:clamp(1.9rem, 9vw, 2.3rem);}
   .paris-preuves .card--filigrane .stat-label{margin-top:6px;}
   .paris-preuves .card--filigrane .card__fond{top:14px;right:16px;width:52px;height:52px;}
+  .paris-preuves.grid--4{grid-template-columns:1fr;}
 }
 .section.paris-reperes-sec{padding-block:var(--space-l);min-height:0;}
 /* Le titre de la section est un H2 pour Google, à la taille d'un surtitre pour l'œil (comme le H1 du hero de la Découpe, lot 106). */
@@ -1501,12 +1528,6 @@ html[class] .hero-media h1.eyebrow{
 .faq-groupe h3{font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.15em;line-height:1.5;text-transform:uppercase;color:var(--color-bronze);margin:0 0 var(--space-xs);}
 @media (min-width:900px){ .paris-faq-sec > .container > .section__head{position:sticky;top:calc(var(--header-h) + var(--space-m));} }
 
-@media (max-width:760px){
-  .paris-reperes{grid-template-columns:1fr;gap:10px;}
-  .paris-reperes li{flex-direction:row;align-items:baseline;gap:12px;padding:10px 14px;}
-  .paris-reperes li svg{align-self:center;flex:none;}
-  .paris-reperes__val{flex:none;font-size:1.35rem;}
-}
 /* De 1 100 à 1 199 px de large, les sections Prix, Vente et Après l'offre dépassaient l'écran
    (900 px de haut) : textes et marges un peu plus petits sur cette plage seulement. */
 @media (min-width:1100px) and (max-width:1199px){

@@ -45,6 +45,9 @@ export const COMMUNES_SUIVIES: { code: string; nom: string }[] = [
   { code: "94067", nom: "Saint-Mandé" },
 ];
 
+/** Code INSEE de la commune de Paris : la ligne « tout Paris » de la table, ventes des vingt arrondissements réunies (lot 113). */
+export const CODE_PARIS = "75056";
+
 export const urlDvf = (annee: number, code: string) =>
   `https://files.data.gouv.fr/geo-dvf/latest/csv/${annee}/communes/${code.slice(0, 2)}/${code}.csv`;
 

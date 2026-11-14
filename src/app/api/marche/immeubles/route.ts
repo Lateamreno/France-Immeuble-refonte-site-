@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { configSite } from "@/lib/supabase-site";
-import { COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesAppartements, ventesImmeubles } from "@/lib/dvf-immeubles";
+import { CODE_PARIS, COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesAppartements, ventesImmeubles } from "@/lib/dvf-immeubles";
 
 /**
  * Recalcul mensuel des ventes d'immeubles entiers repérées dans DVF (lot 100), pour les pages
@@ -12,7 +12,14 @@ import { COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesAppartements
  * Lot 111 (MAV, 13/11/2026 : « garde peut-être les 3 années pour qu'on puisse publier sur notre site
  * sur une page à part au besoin ou pour faire un dossier presse ») : la tâche range aussi les deux
  * années d'avant. La page Paris ne publie que la plus récente ; les deux autres attendent en base.
+ * Lot 113 (MAV, 14/11/2026 : « on continuera sur plusieurs années sans effacer les précédentes ») :
+ * la tâche n'efface JAMAIS une année. Elle écrit par-dessus (même commune, même année) les trois
+ * dernières ; les années plus anciennes restent en base telles qu'elles ont été calculées, et
+ * l'article baromètre (/prix-immeuble-de-rapport-paris/) les montre toutes.
  */
+/** L'article baromètre, qui montre toutes les années en base (lot 113). */
+const CHEMIN_BAROMETRE = "/prix-immeuble-de-rapport-paris/";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -60,6 +67,17 @@ async function calculer(annee: number, echeance: number): Promise<Calcul> {
     const a = ventesAppartements(rows, ailleurs);
     lignes.push({ code_insee: code, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, appart_nb_ventes: a.nbVentes, appart_prix_m2_median: a.prixM2Median, maj_le: new Date().toISOString() });
   }
+  // Lot 113 (MAV, 14/11/2026 : « on continuera sur plusieurs années […] et on fera des tableaux
+  // d'évolution ») : une ligne pour tout Paris, sous le code INSEE de la commune (75056), calculée sur
+  // les ventes des vingt arrondissements réunies. Une médiane de Paris ne se déduit pas des médianes
+  // des arrondissements : il faut repartir des ventes. Mêmes règles, mêmes ventes (la somme des
+  // ventes par arrondissement égale le total).
+  const paris = [...fichiers].filter(([code]) => code.startsWith("751")).flatMap(([, rows]) => rows);
+  if (paris.length) {
+    const s = ventesImmeubles(paris, ailleurs);
+    const a = ventesAppartements(paris, ailleurs);
+    lignes.push({ code_insee: CODE_PARIS, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, appart_nb_ventes: a.nbVentes, appart_prix_m2_median: a.prixM2Median, maj_le: new Date().toISOString() });
+  }
   return { lignes };
 }
 
@@ -97,6 +115,7 @@ export async function GET(req: Request) {
     const r = await ecrire(derniere.lignes);
     if (!r.ok) return NextResponse.json({ ok: false, erreur: `écriture ${r.status}` }, { status: 502 });
     revalidatePath("/vendre-un-immeuble/paris/");
+    revalidatePath(CHEMIN_BAROMETRE);
   }
 
   // Puis les années d'avant, gardées en base sans être publiées. Un fichier manquant, une écriture
@@ -121,5 +140,7 @@ export async function GET(req: Request) {
     }
     duree = Math.max(duree, Date.now() - debut);
   }
+  // Les années d'avant ne se voient que dans l'article baromètre : on le régénère si l'une a changé.
+  if (gardees.length) revalidatePath(CHEMIN_BAROMETRE);
   return NextResponse.json({ ok: true, annee, communes: derniere.lignes.length, gardees, passees });
 }
