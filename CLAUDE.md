@@ -633,6 +633,25 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   condition et l'indemnité ; le lien de la FAQ vers l'article sur le mauvais DPE ; « 3 à 6 % » des
   articles. Réponses sur le DPE à revoir avec le rappel du 21/11/2026 (projet de loi sur les logements
   classés G).
+- **Lot 112** (MAV, 14/11/2026 : « les mêmes titres sur PC que sur téléphone pour les prix au m², que ça
+  tienne sur une ligne », « enlève les séparateurs or sur les 3 chiffres », « copie le style du reste du
+  site pour les 3 chiffres et pour ceux où t'as enlevé les séparateurs verticaux »). Page Paris. Tableau :
+  titres courts sur ordinateur aussi (« Prix médian », « Décote », « Fiabilité », « Rendement théorique »),
+  sur une ligne dès 600 px ; le libellé long reste pour les lecteurs d'écran ; la première colonne garde
+  « Arrondissement » sur ordinateur. **Les trois chiffres sous le hero sont des cartes du site**
+  (`.card.card--filigrane`, picto en filigrane, `.stat-number` et `.stat-label` or, une ligne de texte),
+  sans filet or (`.paris-preuves`). **Cartes d'arguments** (`.paris-carte`) : cadre des cartes du site à
+  toutes les largeurs (filet `--color-ligne`, rayon `--radius-card`, fond `--color-noir-3` adouci, bord
+  bronze au survol ; sur crème, filet noir à 14 %). Pour que chaque section tienne encore sur un écran de
+  1 100 à 2 560 px : cartes à quatre resserrées (12 px entre elles, marges internes de 16 et 14 px),
+  section « Après l'offre » resserrée ; de 1 100 à 1 199 px, texte des cartes à .86rem et citation sous
+  « Après l'offre » masquée. La page des annonces garde ses repères à filet or (`.paris-reperes`) : non
+  visée, à trancher. **Les trois années** (2023 à 2025 en base) : avis donné à MAV, un article baromètre à
+  part plutôt que des onglets d'années sur la page Paris (par arrondissement et par an, trop peu de ventes
+  pour comparer) ; rien n'est écrit sans son accord, et 2023 et 2024 restent à auditer vente par vente.
+- **Pages Paris en production le 14/11/2026** (« Tout est top tu peux passer en prod », MAV) : lots 99 à
+  112, soit `/vendre-un-immeuble/paris/` (dans le sitemap), `/estimation-immeuble-paris/` (hors index, hors
+  sitemap), la table `marche_immeubles` et sa tâche mensuelle `/api/marche/immeubles/`.
 
 ### Garde-fous non négociables
 
