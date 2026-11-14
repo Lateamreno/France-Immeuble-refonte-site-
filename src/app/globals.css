@@ -1203,6 +1203,24 @@ html[class] .hero-media h1.eyebrow{
 .paris-reperes__val{font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.05;letter-spacing:-.015em;}
 .paris-reperes__lib{color:color-mix(in srgb,var(--color-creme) 82%,transparent);font-size:.92rem;line-height:1.4;}
 .paris-reperes--seul{margin-bottom:0;}
+/* Lot 112 (MAV, 14/11/2026 : « enlève les séparateurs or sur les 3 chiffres », « copie le style du
+   reste du site ») : les trois chiffres de la page Paris sont des cartes à chiffre du site
+   (`.card.card--filigrane`, comme le réseau d'acheteurs de l'accueil) : chiffre et libellé en or,
+   picto en filigrane dans le coin, plus de filet. `.paris-reperes` ne sert plus qu'à la page des annonces. */
+.paris-preuves{list-style:none;margin:0;padding:0;}
+.paris-preuves .card{padding:22px 26px 24px;}
+.paris-preuves .stat-number,.paris-preuves .stat-label{color:var(--color-bronze);}
+/* Le libellé passe sous le picto : il prend toute la largeur de la carte. */
+.paris-preuves .card--filigrane .stat-label{display:block;margin-top:8px;padding-right:0;line-height:1.5;}
+.paris-preuves .card p{margin:4px 0 0;font-size:.92rem;line-height:1.45;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
+/* Au téléphone, les trois cartes l'une sous l'autre, resserrées : la bande reste courte. */
+@media (max-width:719px){
+  .paris-preuves{gap:10px;}
+  .paris-preuves .card{padding:14px 18px 16px;}
+  .paris-preuves .stat-number{font-size:clamp(1.9rem, 9vw, 2.3rem);}
+  .paris-preuves .card--filigrane .stat-label{margin-top:6px;}
+  .paris-preuves .card--filigrane .card__fond{top:14px;right:16px;width:52px;height:52px;}
+}
 .section.paris-reperes-sec{padding-block:var(--space-l);min-height:0;}
 /* Le titre de la section est un H2 pour Google, à la taille d'un surtitre pour l'œil (comme le H1 du hero de la Découpe, lot 106). */
 .paris-reperes-sec h2.eyebrow{font-family:var(--font-mono-site);font-variation-settings:normal;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.15em;line-height:1.65;max-width:none;}
@@ -1220,22 +1238,32 @@ html[class] .hero-media h1.eyebrow{
   .ligne--marches > .ligne-cartes.ligne-cartes.paris-ligne--3{grid-auto-columns:calc((100% - 2 * var(--g)) / 3);}
 }
 /* Retours #367, #369 et #371 (MAV, 13/11/2026 : « Mets pas les séparateurs verticaux c'est moche ») :
-   plus de filet à gauche des cartes, le picto or ouvre chaque carte. */
-.paris-carte{min-width:0;height:100%;padding:4px 0;display:flex;flex-direction:column;gap:10px;}
+   plus de filet à gauche des cartes, le picto or ouvre chaque carte.
+   Lot 112 (MAV, 14/11/2026 : « copie le style du reste du site […] pour ceux où t'as enlevé les
+   séparateurs verticaux ») : la carte d'argument prend le dessin des cartes du site (`.card` : cadre
+   d'un pixel, coins arrondis, fond un ton au-dessus de la section), sur ordinateur comme au
+   téléphone. Fond translucide : la photo fondue d'une section reste visible derrière. Marges
+   intérieures plus serrées que `.card` : quatre cartes de front doivent tenir sur un écran. */
+.paris-carte{min-width:0;height:100%;padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;
+  border:1px solid var(--color-ligne);border-radius:var(--radius-card);
+  background:color-mix(in srgb,var(--color-noir-3) 72%,transparent);}
+.paris-ligne--3 .paris-carte{padding:22px 24px 24px;}
+/* Sur une section déjà en noir-3, le fond de la carte descend d'un ton pour rester visible. */
+.section--noir-3 .paris-carte{background:color-mix(in srgb,var(--color-noir) 55%,transparent);}
+@media (hover:hover) and (pointer:fine){ .paris-carte{transition:border-color var(--dur) var(--ease);} .paris-carte:hover{border-color:var(--color-bronze-profond);} }
 .paris-carte h3{font-size:1.15rem;margin:0;text-wrap:balance;}
 .paris-carte p{margin:0;font-size:.96rem;color:color-mix(in srgb, var(--color-creme) 82%, var(--color-noir));line-height:1.55;}
 .paris-carte svg{flex:none;color:var(--color-bronze);}
 /* Le texte et sa citation partagent une case : la citation se cale en bas de la carte. */
 .paris-carte__corps{display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;}
-/* Sur fond crème (après l'offre) : texte et picto dérivés des tokens. */
+/* Sur fond crème (après l'offre) : cadre des cartes du site sur crème, texte et picto dérivés des tokens. */
+.section--creme .paris-carte{background:transparent;border-color:color-mix(in srgb,var(--color-noir) 14%,transparent);}
 .section--creme .paris-carte p{color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
 .section--creme .paris-carte svg{color:var(--color-bronze-profond);}
-/* Au téléphone, la ligne glisse comme sur le reste du site : la carte voisine dépasse dans la marge.
-   Sans cadre, ce qui dépassait était un bout de texte coupé. Chaque carte reçoit donc le cadre
-   discret des cartes d'avis (tokens seulement) ; sur ordinateur, rien ne change. */
+/* Au téléphone, la ligne glisse comme sur le reste du site : la carte voisine dépasse dans la marge,
+   et son cadre s'y lit comme un bord de carte. */
 @media (max-width:759px){
-  .ligne--marches .paris-ligne .paris-carte{padding:18px 22px 20px;border:1px solid var(--color-ligne);border-radius:var(--radius-card);background:color-mix(in srgb, var(--color-creme) 3%, transparent);}
-  .section--creme .ligne--marches .paris-ligne .paris-carte{border-color:color-mix(in srgb, var(--color-noir) 14%, transparent);background:color-mix(in srgb, var(--color-noir) 3%, transparent);}
+  .ligne--marches .paris-ligne .paris-carte{padding:18px 22px 20px;}
   .ligne--marches > .ligne-cartes.paris-ligne,.ligne--marches > .ligne-cartes.paris-ventes-ligne{column-gap:14px;}
 }
 /* Quatre cartes de front : le texte se resserre d'un cran, la section tient sur un écran. */
@@ -1309,6 +1337,8 @@ html[class] .hero-media h1.eyebrow{
 .paris-prix tbody tr:target th{box-shadow:inset 3px 0 0 var(--color-bronze-profond);}
 .paris-prix__court{display:none;}
 .paris-prix__rupture{display:none;}
+/* MAV, 14/11/2026 : les titres courts du téléphone sur ordinateur aussi, chacun sur une ligne. */
+@media (min-width:600px){ .paris-prix thead th{white-space:nowrap;} }
 .paris-prix__calcul{margin-top:6px;font-size:.86rem;line-height:1.55;color:var(--texte-2);}
 .paris-prix__calcul summary{cursor:pointer;padding-block:10px;font-weight:600;color:var(--color-noir);}
 .paris-prix__calcul summary:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:3px;}
@@ -1495,6 +1525,30 @@ html[class] .hero-media h1.eyebrow{
   .paris-apres-sec .paris-carte p{font-size:.84rem;}
   .section.paris-apres-sec{padding-block:24px;}
   .paris-apres-sec .section__head{margin-bottom:var(--space-s);}
+}
+
+
+/* Lot 112 : les cartes d'arguments ont un cadre. Quatre de front sur ordinateur : l'écart entre
+   cartes et les marges intérieures se resserrent pour que le texte garde presque sa largeur, et
+   les marges des sections Vente et Après l'offre rendent les quelques pixels qui manquaient pour
+   tenir sur un écran. */
+@media (min-width:1100px){
+  .ligne--marches > .ligne-cartes.ligne-cartes.paris-ligne:not(.paris-ligne--3){--g:12px;}
+  .paris-ligne:not(.paris-ligne--3) .paris-carte{padding:16px 14px;}
+  .section.paris-apres-sec{padding-block:clamp(22px, calc(3.4 * var(--u-svh)), 32px);}
+  .paris-apres-sec .section__head{margin-bottom:var(--space-s);}
+  .paris-apres-sec .paris-citation{margin-top:14px;}
+  .paris-vente-sec .paris-profils{margin-top:16px;}
+  .paris-vente-sec .paris-relance{margin-top:18px;}
+}
+/* De 1 100 à 1 199 px : texte des cartes un cran plus petit (la règle d'avant, moins précise que
+   celle des quatre cartes de front, ne s'appliquait pas), en-têtes du tableau resserrés pour qu'il
+   garde sa largeur, et la citation sous « Après l'offre » s'efface, comme au téléphone. */
+@media (min-width:1100px) and (max-width:1199px){
+  .paris-prix thead th{letter-spacing:.03em;}
+  .paris-prix th,.paris-prix td{padding-left:8px;}
+  :is(.paris-estimation-sec,.paris-vente-sec,.paris-apres-sec) .paris-ligne .paris-carte p{font-size:.86rem;}
+  .paris-apres-sec > .container > .paris-citation{display:none;}
 }
 
 

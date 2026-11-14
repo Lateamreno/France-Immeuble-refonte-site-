@@ -397,19 +397,24 @@ export default async function VendreUnImmeubleParis() {
   // Une ligne sans prix s'étend sur toutes les colonnes de chiffres.
   const colonnesChiffres = 2 + (avecDecote ? 1 : 0) + (avecRdt ? 1 : 0);
 
-  const preuves: { picto: NomPicto; valeur: string; libelle: string }[] = [
+  // Lot 112 (MAV, 14/11/2026 : « enlève les séparateurs or sur les 3 chiffres », « copie le style du
+  // reste du site ») : les trois chiffres sont des cartes à chiffre, comme le réseau d'acheteurs de
+  // l'accueil. Le libellé court est sous le chiffre, la précision dessous. Mêmes mots qu'avant.
+  const preuves: { picto: NomPicto; valeur: string; libelle: string; texte: string }[] = [
     {
       picto: "reseau",
       valeur: acheteurs,
-      libelle: acheteursParisiens ? "acheteurs d’immeubles parisiens dans notre base" : "acheteurs d’immeubles dans notre base",
+      libelle: acheteursParisiens ? "acheteurs d’immeubles parisiens" : "acheteurs d’immeubles",
+      texte: "dans notre base",
     },
     etudiesParis
-      ? { picto: "immeubles", valeur: nombre(etudiesParis), libelle: "immeubles parisiens étudiés par nos agents depuis 2018" }
-      : { picto: "immeubles", valeur: nombre(ch.immeublesTraites), libelle: "immeubles étudiés par nos agents depuis 2018" },
+      ? { picto: "immeubles", valeur: nombre(etudiesParis), libelle: "immeubles parisiens étudiés", texte: "par nos agents depuis 2018" }
+      : { picto: "immeubles", valeur: nombre(ch.immeublesTraites), libelle: "immeubles étudiés", texte: "par nos agents depuis 2018" },
     {
       picto: "best",
       valeur: `${PREUVES.noteGoogle}/5`,
-      libelle: `note moyenne sur Google, sur ${PREUVES.nbAvis} avis de vendeurs et d’acquéreurs`,
+      libelle: "note moyenne sur Google",
+      texte: `sur ${PREUVES.nbAvis} avis de vendeurs et d’acquéreurs`,
     },
   ];
 
@@ -528,12 +533,15 @@ export default async function VendreUnImmeubleParis() {
       <section className="section section--noir-2 paris-reperes-sec">
         <div className="container">
           <h2 className="eyebrow">Une agence parisienne spécialisée dans la vente d’immeubles de rapport</h2>
-          <ul className="paris-reperes paris-reperes--seul">
+          <ul className="grid grid--3 paris-preuves">
             {preuves.map((r) => (
-              <li key={r.libelle}>
-                <Picto nom={r.picto} taille={30} />
-                <span className="paris-reperes__val">{r.valeur}</span>{" "}
-                <span className="paris-reperes__lib">{r.libelle}</span>
+              <li key={r.libelle} className="card card--filigrane">
+                <span className="card__fond" aria-hidden="true">
+                  <Picto nom={r.picto} taille={96} />
+                </span>
+                <span className="stat-number">{r.valeur}</span>{" "}
+                <span className="stat-label">{r.libelle}</span>{" "}
+                <p>{insecable(r.texte)}</p>
               </li>
             ))}
           </ul>
@@ -605,14 +613,16 @@ export default async function VendreUnImmeubleParis() {
                       <span className="paris-prix__long">Arrondissement</span>{" "}
                       <span className="paris-prix__court" aria-hidden="true">Arr.</span>
                     </th>
+                    {/* MAV, 14/11/2026 : « les mêmes titres sur PC que sur téléphone […] que ça tienne sur
+                        une ligne ». Le libellé court s'affiche partout ; le long n'est plus que lu. */}
                     <th scope="col" className="paris-prix__tete-med">
-                      <span className="paris-prix__long">Prix médian au&nbsp;m²</span>{" "}
-                      <span className="paris-prix__court" aria-hidden="true">Prix médian</span>
+                      <span className="sr-only">Prix médian au&nbsp;m²</span>
+                      <span aria-hidden="true">Prix médian</span>
                     </th>
                     {avecDecote && (
                       <th scope="col">
-                        <span className="paris-prix__long">Décote&nbsp;/ appartements</span>{" "}
-                        <span className="paris-prix__court" aria-hidden="true">Décote</span>
+                        <span className="sr-only">Décote face aux appartements</span>
+                        <span aria-hidden="true">Décote</span>
                       </th>
                     )}
                     <th scope="col">Fiabilité</th>
