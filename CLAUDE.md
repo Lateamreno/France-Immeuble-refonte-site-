@@ -670,8 +670,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   taux, FAQ Paris (question du prix au m²), plan du site. **Page des annonces au style du site** :
   repères en cartes `.card--filigrane` (chiffre plus petit, cartes qui passent à la ligne sous 300 px),
   étapes en cartes sur crème alignées par sous-grille, encadré « bloc ou découpe » sans filet or ;
-  `.paris-reperes` supprimé. **« Vendre à Paris »** dans le pied de page (colonne Vendre), le menu Vendre
-  (prévu au §6) et le plan du site : la page n'était liée de nulle part. **Décisions de MAV** : « en 24
+  `.paris-reperes` supprimé. **« Vendre à Paris »** dans le pied de page (colonne Vendre) et le plan du site :
+  la page n'était liée de nulle part. Pas dans le menu (MAV, 14/11/2026 : « je le veux dans le pied de page »). **Décisions de MAV** : « en 24
   heures » gardé (carte de la vente et FAQ Paris) ; « La Team Reno chiffre tout l'immeuble et s'engage
   sur ses prix » gardé ; réponses sur l'offre sans condition et l'indemnité d'immobilisation validées ;
   **« 3,5 à 6,5 % » partout pour Paris**, articles compris (« Comment vendre un immeuble à Paris »,

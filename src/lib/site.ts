@@ -78,8 +78,6 @@ export const NAV: readonly LienNav[] = [
     lien: true,
     enfants: [
       { href: "/vendre-un-immeuble/", label: "Vendre en bloc" },
-      // Lot 113 (MAV, 14/11/2026) : la page Paris, prévue sous Vendre au §6, entre au menu.
-      { href: "/vendre-un-immeuble/paris/", label: "Vendre à Paris" },
       { href: "/vendre-un-immeuble-a-la-decoupe/", label: "Vendre à la découpe", badge: "nouveau" },
     ],
   },
