@@ -126,7 +126,7 @@ function tableauParis(annees: AnneeMarche[]): string {
     `<div class="barometre"><table>` +
     `<caption>Immeubles de rapport vendus en bloc à Paris, d’après DVF</caption>` +
     `<thead><tr><th scope="col">Année</th>` +
-    `<th scope="col">${tete("Immeubles vendus", "Ventes")}</th>` +
+    `<th scope="col">${tete("Ventes d’immeubles", "Ventes")}</th>` +
     `<th scope="col">${tete("Prix médian au m²", "Immeubles")}</th>` +
     `<th scope="col">${tete("Appartements au m²", "Appart.")}</th>` +
     `<th scope="col">Décote</th></tr></thead>` +

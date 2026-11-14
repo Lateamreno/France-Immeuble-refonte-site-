@@ -676,6 +676,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   sur ses prix » gardé ; réponses sur l'offre sans condition et l'indemnité d'immobilisation validées ;
   **« 3,5 à 6,5 % » partout pour Paris**, articles compris (« Comment vendre un immeuble à Paris »,
   « Immeuble d'habitation ou immeuble de bureaux »).
+  **Audit vente par vente de 2023 et 2024** (même méthode que 2025, deux auditeurs par année et un
+  vérificateur, fichiers `v4-*` hors dépôt) : 2023, 98 ventes, aucune erreur de calcul ; 2024, 119
+  ventes, deux erreurs (un portefeuille de huit adresses en un prix, une vente en deux actes non
+  réunie), médiane 7 791 → 7 817 € une fois corrigée. Les trois années se comparent pour tout Paris
+  (baisse de 2023 à 2025 réelle, aussi sur les seuls immeubles entiers : 8 375, 7 867, 7 067 €) ;
+  2023-2024 est stable (−2 %, dans la marge d'erreur) ; par arrondissement, aucune comparaison d'une
+  année à l'autre n'est fiable (0 à 22 ventes). **En attente de MAV, rien n'est appliqué** : quatre
+  corrections du calcul détectables par programme (portefeuille mixte, vente en deux actes élargie,
+  acte sans prix, garder le dernier acte d'un même immeuble vendu deux fois), à appliquer aux trois
+  années à la fois ; effet sur la médiane de Paris inférieur à 1,5 %.
 
 ### Garde-fous non négociables
 
