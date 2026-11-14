@@ -111,7 +111,7 @@ export default async function EstimationImmeubleParis() {
 
       <section className="section section--noir-2 sea-reperes-sec">
         <div className="container">
-          <ul className={`grid ${reperes.length > 3 ? "grid--4" : "grid--3"} paris-preuves`}>
+          <ul className="grid paris-preuves" style={{ ["--n" as string]: reperes.length }}>
             {reperes.map((r) => (
               <li key={r.libelle} className="card card--filigrane">
                 <span className="card__fond" aria-hidden="true">

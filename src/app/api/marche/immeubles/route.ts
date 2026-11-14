@@ -70,8 +70,9 @@ async function calculer(annee: number, echeance: number): Promise<Calcul> {
   // Lot 113 (MAV, 14/11/2026 : « on continuera sur plusieurs années […] et on fera des tableaux
   // d'évolution ») : une ligne pour tout Paris, sous le code INSEE de la commune (75056), calculée sur
   // les ventes des vingt arrondissements réunies. Une médiane de Paris ne se déduit pas des médianes
-  // des arrondissements : il faut repartir des ventes. Mêmes règles, mêmes ventes (la somme des
-  // ventes par arrondissement égale le total).
+  // des arrondissements : il faut repartir des ventes. Mêmes règles ; en pratique la somme des ventes
+  // par arrondissement égale le total (98, 119 et 147 de 2023 à 2025), sauf cas rare d'une série
+  // revendue à cheval sur deux arrondissements.
   const paris = [...fichiers].filter(([code]) => code.startsWith("751")).flatMap(([, rows]) => rows);
   if (paris.length) {
     const s = ventesImmeubles(paris, ailleurs);

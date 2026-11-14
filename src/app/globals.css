@@ -1147,7 +1147,8 @@ html[class] .hero-media h1.eyebrow{
 .barometre__court{display:none;}
 .prose .barometre__note{margin-top:.6em;font-size:.85rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
 @media (max-width:599px){
-  .barometre__long{display:none;}
+  /* Le libellé long reste lu par les lecteurs d'écran (le court porte aria-hidden). */
+  .barometre__long{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
   .barometre__court{display:inline;}
   .prose .barometre table{font-size:.86rem;}
   .prose .barometre th,.prose .barometre td{padding:.5em .4em;}
@@ -1193,7 +1194,13 @@ html[class] .hero-media h1.eyebrow{
 .section.sea-reperes-sec{padding-block:var(--space-l);min-height:0;}
 /* Lot 113 : les repères de la page des annonces portent des valeurs plus longues que les trois chiffres
    de la page Paris (« 3,5 à 6,5 % », « 55 jours ») : un chiffre plus petit, sur une ligne, dans sa carte. */
-.sea-reperes-sec .paris-preuves{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));}
+/* Trois ou quatre cartes de front sur ordinateur, deux par rangée sur tablette (une carte seule prend
+   toute la rangée), une colonne au téléphone. */
+@media (min-width:980px){ .sea-reperes-sec .paris-preuves{grid-template-columns:repeat(var(--n,3),minmax(0,1fr));} }
+@media (min-width:720px) and (max-width:979px){
+  .sea-reperes-sec .paris-preuves{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sea-reperes-sec .paris-preuves > li:last-child:nth-child(odd){grid-column:1 / -1;}
+}
 .sea-reperes-sec .paris-preuves .card--filigrane .stat-number{font-size:clamp(1.7rem, 2.4vw, 2.2rem);padding-right:0;}
 /* Lot 113 (MAV, 14/11/2026 : « fait le même style que le reste du site ») : les étapes sont des cartes
    du site sur crème, comme les cartes d'arguments de la page Paris (filet noir discret, coins arrondis,
@@ -1251,7 +1258,6 @@ html[class] .hero-media h1.eyebrow{
   .paris-preuves .stat-number{font-size:clamp(1.9rem, 9vw, 2.3rem);}
   .paris-preuves .card--filigrane .stat-label{margin-top:6px;}
   .paris-preuves .card--filigrane .card__fond{top:14px;right:16px;width:52px;height:52px;}
-  .paris-preuves.grid--4{grid-template-columns:1fr;}
 }
 .section.paris-reperes-sec{padding-block:var(--space-l);min-height:0;}
 /* Le titre de la section est un H2 pour Google, à la taille d'un surtitre pour l'œil (comme le H1 du hero de la Découpe, lot 106). */

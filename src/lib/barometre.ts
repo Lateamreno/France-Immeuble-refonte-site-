@@ -137,8 +137,10 @@ function tableauParis(annees: AnneeMarche[]): string {
 
 function tableauArrondissements(h: Historique, annees: number[]): string {
   const cellule = (a: AnneeMarche | undefined) => {
-    if (!a || a.nbVentes < VENTES_MIN_PRIX || !a.prixM2Median) {
-      return `<td class="barometre__vide">–<span class="barometre__sous">${ventes(a?.nbVentes ?? 0)}</span></td>`;
+    // Pas de ligne en base pour cette année : on ne sait pas, on ne dit pas « aucune vente ».
+    if (!a) return `<td class="barometre__vide">–</td>`;
+    if (a.nbVentes < VENTES_MIN_PRIX || !a.prixM2Median) {
+      return `<td class="barometre__vide">–<span class="barometre__sous">${ventes(a.nbVentes)}</span></td>`;
     }
     const prudence = a.nbVentes < VENTES_PRUDENCE;
     return (
@@ -180,7 +182,7 @@ function resume(paris: AnneeMarche[]): string {
   phrases.push(`Le nombre de ventes d’immeubles est passé de ${nombre(premiere.nbVentes)} à ${nombre(derniere.nbVentes)}.`);
   if (premiere.prixMedian && derniere.prixMedian && premiere.surfaceMediane && derniere.surfaceMediane) {
     phrases.push(
-      `Une vente type portait sur ${nombre(Math.round(derniere.surfaceMediane))}${NBSP}m² et ${millions(derniere.prixMedian)} en ${derniere.annee}, contre ${nombre(Math.round(premiere.surfaceMediane))}${NBSP}m² et ${millions(premiere.prixMedian)} en ${premiere.annee} (médianes).`,
+      `La surface médiane des ventes était de ${nombre(Math.round(derniere.surfaceMediane))}${NBSP}m² et leur prix médian de ${millions(derniere.prixMedian)} en ${derniere.annee}, contre ${nombre(Math.round(premiere.surfaceMediane))}${NBSP}m² et ${millions(premiere.prixMedian)} en ${premiere.annee}.`,
     );
   }
   const maj = derniere.majLe ? new Date(derniere.majLe) : null;
