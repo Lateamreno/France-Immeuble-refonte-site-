@@ -652,6 +652,30 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Pages Paris en production le 14/11/2026** (« Tout est top tu peux passer en prod », MAV) : lots 99 à
   112, soit `/vendre-un-immeuble/paris/` (dans le sitemap), `/estimation-immeuble-paris/` (hors index, hors
   sitemap), la table `marche_immeubles` et sa tâche mensuelle `/api/marche/immeubles/`.
+- **Lot 113** (MAV, 14/11/2026 : « Go article 3 années et on continuera sur plusieurs années sans
+  effacer les précédentes et on fera des tableaux d'évolution. Annonce google fait le même style que le
+  reste du site. 24 h ok, la Team Reno j'aimais bien ta phrase, ok notaire, ok pour 3,5 6,5. La page
+  Paris est dans le pied de page pour la retrouver ? »). **Baromètre** `/prix-immeuble-de-rapport-paris/` :
+  un article du blog (`content/articles.json`, à la racine, dans le sitemap et le blog), dont trois
+  emplacements (`data-barometre="paris"`, `"resume"`, `"arrondissements"`) sont remplis par
+  `src/lib/barometre.ts` avec **toutes les années** de `marche_immeubles` : tout Paris par année (ventes,
+  prix médian des immeubles et des appartements, décote, variation sur un an) et les vingt arrondissements
+  par année (prix dès trois ventes, « * » de trois à quatre). Chaque nouvelle année ajoute une ligne et une
+  colonne d'elle-même. **La tâche mensuelle n'efface jamais une année** (écriture par-dessus des trois
+  dernières seulement) et écrit une ligne **tout Paris** sous le code `75056` (`CODE_PARIS`), calculée sur
+  les ventes des vingt arrondissements réunies (une médiane de Paris ne se déduit pas des médianes des
+  arrondissements) ; elle régénère l'article. Trois chiffres DVF en tête de l'article à la place des
+  repères habituels. Le texte d'analyse est daté (2023 à 2025) et à relire à chaque nouvelle année.
+  Liens vers le baromètre : article « Comment vendre un immeuble à Paris », article sur la hausse des
+  taux, FAQ Paris (question du prix au m²), plan du site. **Page des annonces au style du site** :
+  repères en cartes `.card--filigrane` (chiffre plus petit, cartes qui passent à la ligne sous 300 px),
+  étapes en cartes sur crème alignées par sous-grille, encadré « bloc ou découpe » sans filet or ;
+  `.paris-reperes` supprimé. **« Vendre à Paris »** dans le pied de page (colonne Vendre), le menu Vendre
+  (prévu au §6) et le plan du site : la page n'était liée de nulle part. **Décisions de MAV** : « en 24
+  heures » gardé (carte de la vente et FAQ Paris) ; « La Team Reno chiffre tout l'immeuble et s'engage
+  sur ses prix » gardé ; réponses sur l'offre sans condition et l'indemnité d'immobilisation validées ;
+  **« 3,5 à 6,5 % » partout pour Paris**, articles compris (« Comment vendre un immeuble à Paris »,
+  « Immeuble d'habitation ou immeuble de bureaux »).
 
 ### Garde-fous non négociables
 

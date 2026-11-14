@@ -1153,6 +1153,11 @@ html[class] .hero-media h1.eyebrow{
   .prose .barometre th,.prose .barometre td{padding:.5em .4em;}
   .prose .barometre thead th{letter-spacing:.04em;}
 }
+@media (max-width:359px){
+  .prose .barometre table{font-size:.78rem;}
+  .prose .barometre th,.prose .barometre td{padding:.45em .25em;}
+  .barometre__sous{font-size:.7rem;white-space:normal;}
+}
 
 /* Note de datation en pied d'article. Discrete : elle informe, elle ne
    s'excuse pas. */
