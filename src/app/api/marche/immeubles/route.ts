@@ -72,7 +72,7 @@ async function calculer(annee: number, echeance: number): Promise<Calcul> {
   // d'évolution ») : une ligne pour tout Paris, sous le code INSEE de la commune (75056), calculée sur
   // les ventes des vingt arrondissements réunies. Une médiane de Paris ne se déduit pas des médianes
   // des arrondissements : il faut repartir des ventes. Mêmes règles ; en pratique la somme des ventes
-  // par arrondissement égale le total (98, 119 et 147 de 2023 à 2025), sauf cas rare d'une série
+  // par arrondissement égale le total (101, 121 et 150 de 2023 à 2025 au lot 114), sauf cas rare d'une série
   // revendue à cheval sur deux arrondissements.
   const paris = [...fichiers].filter(([code]) => code.startsWith("751")).flatMap(([, rows]) => rows);
   if (paris.length) {

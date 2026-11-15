@@ -1153,6 +1153,7 @@ html[class] .hero-media h1.eyebrow{
   .prose .barometre table{font-size:.86rem;}
   .prose .barometre th,.prose .barometre td{padding:.5em .4em;}
   .prose .barometre thead th{letter-spacing:.04em;}
+  .barometre__sous{white-space:normal;}
 }
 @media (max-width:359px){
   .prose .barometre table{font-size:.78rem;}

@@ -213,7 +213,7 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
   // fois sans numéros de lot sont la même série.
   // Lot 114 (MAV, 15/11/2026 : « pas compter un acte sans prix comme une deuxième vente ») : un acte
   // sans aucun prix ne compte pas dans les séries.
-  const series = new Map<string, { n: number; dates: Set<string>; sansLots: boolean }>();
+  const series = new Map<string, { n: number; dates: Set<string>; prix: Map<string, number>; sansLots: boolean }>();
   for (const [id, rows] of parMutation) {
     const locaux = locauxDe(rows);
     const nbLocaux = locaux.reduce((s, o) => s + o.fois, 0);
@@ -228,8 +228,10 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     const serie = [...parPlan].map(([plan, fois]) => `${plan}x${fois}`).sort().join(";");
     const sansLots = sansNumerosDeLot(locaux);
     if (rows.some((r) => Number(r.valeur_fonciere) > 0)) {
-      const s = series.get(serie) ?? { n: 0, dates: new Set<string>(), sansLots: true };
+      const s = series.get(serie) ?? { n: 0, dates: new Set<string>(), prix: new Map<string, number>(), sansLots: true };
       s.n++; s.dates.add(rows[0].date_mutation); s.sansLots &&= sansLots;
+      const p = prixUnique(rows);
+      if (p != null) s.prix.set(rows[0].date_mutation, p);
       series.set(serie, s);
     }
     const prix = prixUnique(rows);
@@ -244,12 +246,16 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
   // Une série vendue plusieurs fois est écartée, sauf (lot 114, MAV, 15/11/2026 : « pour l'immeuble
   // en double tu prends le dernier », « garder le deuxième acte ») un immeuble sans numéros de lot
   // vendu deux fois à deux dates différentes : on garde le dernier acte. Les reprises du même jour
-  // et les parts d'indivision (plus de deux actes) restent écartées.
+  // et les parts d'indivision (plus de deux actes) restent écartées. Garde-fou de la relecture : le
+  // dernier acte doit valoir au moins 80 % du premier, sinon c'est peut-être une part et les deux
+  // restent écartés (aucun effet de 2023 à 2025).
   const gardee = (c: Candidate) => {
     const s = series.get(c.serie);
     if (!s || s.n === 1) return true;
     if (s.n !== 2 || s.dates.size !== 2 || !s.sansLots || !c.sansLots) return false;
-    return c.date === [...s.dates].sort().at(-1);
+    const [premiere, derniere] = [...s.dates].sort();
+    const p1 = s.prix.get(premiere), p2 = s.prix.get(derniere);
+    return c.date === derniere && p1 != null && p2 != null && p2 >= 0.8 * p1;
   };
   // Deux actes du même jour sur une même parcelle : une seule vente.
   const ventes: Candidate[] = [];
@@ -267,10 +273,14 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
   // Lot 114 (MAV, 15/11/2026 : « oui pour deux actes ») : une vente payée en deux actes le même jour,
   // dont l'un porte cinq logements ou moins. On réunit une vente retenue d'un seul acte et un autre
   // acte du même jour, sur la même parcelle, à lots différents, quand aucun des deux prix n'est rond
-  // et que leur somme l'est (multiple de 10 000 €).
+  // et que leur somme l'est (multiple de 10 000 €). Garde-fous de la relecture (aucun effet de 2023 à
+  // 2025) : l'acte ajouté porte cinq logements ou moins (un acte plus gros a ses propres règles) ;
+  // l'un des deux prix n'est pas un compte rond de milliers (sinon la somme ronde peut être un
+  // hasard) ; un seul acte possible, sinon on ne réunit rien.
   const pris = new Set(ventes.flatMap((v) => v.ids));
   for (const v of ventes) {
     if (v.ids.length !== 1 || estRond(v.prix)) continue;
+    const possibles: { id: string; prix: number; surface: number }[] = [];
     for (const [id, rows] of parMutation) {
       if (pris.has(id) || ailleurs?.has(id) || rows[0].date_mutation !== v.date) continue;
       if (!rows.some((r) => v.parcelles.has(r.id_parcelle))) continue;
@@ -278,12 +288,16 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
       if ([...lots].some((l) => v.lots.has(l))) continue;
       const prix = prixUnique(rows);
       if (prix == null || estRond(prix) || !estRond(v.prix + prix)) continue;
-      const surface = locauxDe(rows).reduce((s, o) => s + o.fois * (Number(o.r.surface_reelle_bati) || 0), 0);
-      v.ids.push(id); pris.add(id);
-      v.prix += prix;
-      v.surface += surface;
-      break;
+      if (prix % 1_000 === 0 && v.prix % 1_000 === 0) continue;
+      const locaux = locauxDe(rows);
+      if (locaux.reduce((s, o) => s + (estLogement(o.r) ? o.fois : 0), 0) > 5) continue;
+      possibles.push({ id, prix, surface: locaux.reduce((s, o) => s + o.fois * (Number(o.r.surface_reelle_bati) || 0), 0) });
     }
+    if (possibles.length !== 1) continue;
+    const [a] = possibles;
+    v.ids.push(a.id); pris.add(a.id);
+    v.prix += a.prix;
+    v.surface += a.surface;
   }
   const pm2 = ventes
     .filter((c) => dansLesBornes(c.prix / c.surface))

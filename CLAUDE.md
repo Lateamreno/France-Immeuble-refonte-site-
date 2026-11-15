@@ -709,7 +709,20 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   emplacement `data-barometre="rendements"`), phrase du rendement de Paris dans le résumé (4,3 % en
   2023, 5,5 % en 2025), section « Le rendement théorique, année par année ». **FAQ Paris** : tous les
   liens s'ouvrent dans un nouvel onglet ; le lien vers le baromètre s'affiche enfin (son titre manquait
-  dans la réponse). « Vendre à Paris » reste dans le pied de page ; le menu est à trancher par MAV.
+  dans la réponse). **« Vendre à Paris » au menu Vendre** et dans le pied de page (MAV, 15/11/2026 :
+  « oui », après l'avis donné). **Six tableaux au baromètre** (MAV, 15/11/2026 : « il manque les
+  rendements […], l'évolution vs les années précédentes, la décote vs le prix des apparts de l'époque.
+  Faudra […] mettre plusieurs tableaux qui expliquent différentes choses ») : tout Paris, prix des
+  immeubles et des appartements avec leur évolution sur un an et la décote (`paris`) ; tout Paris,
+  loyer de l'année, prix et rendement avec leur évolution (`paris-rendement`) ; par arrondissement, prix
+  (`arrondissements`), évolution d'une année à l'autre et sur toute la période (`evolutions`), décote
+  face aux appartements de la même année (`decotes`), rendement avec les loyers de l'année
+  (`rendements`), chacun sous son intertitre (H2 ou H3). Garde-fous de la relecture, sans effet de 2023
+  à 2025 : l'acte ajouté à une vente en deux actes porte cinq logements ou moins, un seul candidat, un
+  prix au moins qui n'est pas un compte rond de milliers ; le dernier acte d'un immeuble vendu deux fois
+  n'est gardé que s'il vaut au moins 80 % du premier. Recalcul indépendant en Python : 504 valeurs
+  identiques. Cas discutable gardé par la règle de MAV : le 2e en 2024 (deux actes à 13 jours, 1,3 puis
+  1,7 M€).
 
 ### Garde-fous non négociables
 
