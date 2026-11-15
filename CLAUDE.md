@@ -809,7 +809,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   sans « l'occupation réelle des dernières années » ; **l'off-market se vend plus vite, pas moins vite**
   (« on attend pas le client, on envoie à tous les investisseurs potentiellement intéressés ») : réponse en
   bref et phrase de l'article corrigées. Aucun profil public (LinkedIn, Pages Jaunes…) trouvé avec certitude :
-  `sameAs` n'a que la fiche Google. Sur la branche, en attente.
+  `sameAs` n'a que la fiche Google. Fin de l'article off-market (MAV, 15/11/2026 : « c'est plus facile de vendre en
+  off market que attendre que l'acquéreur arrive ») : « Ils se vendent aussi plus facilement qu'avec une
+  annonce… ». **Lots 123 et 124 en production le 15/11/2026** (« Go prod », MAV).
 
 ### Garde-fous non négociables
 
