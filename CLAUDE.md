@@ -792,6 +792,19 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   faussent le prix écartées (échanges, enchères), vérification une à une, médiane, appartements et loyers
   de la même année. Plus de liste des règles de calcul dans l'article ; le détail replié de la page Paris
   ne change pas. Sur la branche, en attente.
+- **Lot 124** (MAV, 15/11/2026 : « comment on optimise le geo claude et chatgpt », puis « Fais tout mais montre
+  moi ce qui modifie visuellement et textuellement le site avant de produire »). **Réponse en bref** en tête de
+  chaque article (`enBref` de `content/articles.json`, bloc `.article-bref` à filet bronze sous les repères) :
+  deux ou trois phrases tirées du seul texte de l'article ; celle du baromètre est calculée
+  (`enBrefBarometre`). **Données structurées** : l'accueil, qui n'en avait aucune, décrit l'agence
+  (`organisation()` enrichie : description, logo, e-mail, fiche Google en `sameAs`) et le site (`siteWeb()`) ;
+  l'auteur des articles renvoie à la même agence (`@id`). **Baromètre en jeu de données** : `Dataset`
+  (`datasetBarometre`) et fichier `/donnees/prix-immeubles-paris.csv` (agrégats seulement, « ; » et virgule
+  décimale), lien en fin de méthode. **`/llms.txt`** (résumé du site pour les assistants). **IndexNow** : clé
+  publique `public/4786be7e6c8d4f720cf80414e4de03fb.txt`, `node scripts/indexnow.mjs` après chaque mise en
+  production (Bing, dont se sert ChatGPT). Page Paris : le détail replié du calcul raccourci comme la méthode
+  du baromètre (lot 123). Restent à MAV : Bing Webmaster Tools, avis Google, citations dans la presse.
+  Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
