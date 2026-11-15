@@ -740,7 +740,18 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (`data-barometre="courbe"`, `courbeParis` de `src/lib/barometre.ts`) : prix médian au m² des immeubles
   vendus en bloc (trait bronze profond) et des appartements vendus seuls (tirets), un point par année,
   valeurs de la première et de la dernière année, une seule échelle ; SVG calculé au serveur, 560 px au
-  plus. Valeurs des tableaux jamais coupées (« −21 / % » au téléphone). Sur la branche, en attente.
+  plus. Valeurs des tableaux jamais coupées (« −21 / % » au téléphone).
+  **Lots 116 et 117 en production le 15/11/2026** (« Go prod », MAV).
+- **Lot 118** (MAV, 15/11/2026 : « deuxième courbe ok, enlève sur un an, rajoute la colonne fiabilité (et
+  au survol le nombre de ventes […]) sinon propose comment faire pour montrer la fiabilité de chaque
+  année »). Baromètre : **courbe du rendement théorique** de Paris sous « Loyers et rendement »
+  (`courbeRendement`, `data-barometre="courbe-rendement"`, même fonction `courbe` que les prix) ; tableau
+  des prix par arrondissement : le prix, puis l'évolution (« −12 % », sans « sur un an ») et **trois
+  étoiles de fiabilité par année** (`noteFiabilite`, mêmes seuils et même dessin que la page Paris ;
+  `prix_m2_bas` et `prix_m2_haut` lus par `historiqueParis`), le **nombre de ventes au survol ou au
+  toucher** des étoiles (`.barometre__fiab`, `data-ventes`) ; l'astérisque des prix de trois ou quatre
+  ventes disparaît de ce tableau (une étoile le dit). Une seule colonne de fiabilité ne convient pas :
+  chaque année a la sienne. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

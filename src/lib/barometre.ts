@@ -1,5 +1,5 @@
 import { CODE_PARIS } from "./dvf-immeubles";
-import { decotePct } from "./immeubles-dvf-lecture";
+import { decotePct, noteFiabilite } from "./immeubles-dvf-lecture";
 import { nombre } from "./site";
 import { configSitePublique } from "./supabase-site";
 
@@ -31,6 +31,9 @@ export type AnneeMarche = {
   prixMedian: number | null;
   surfaceMediane: number | null;
   appartPrixM2Median: number | null;
+  /** Premier et troisième quartiles du prix au m² (dès cinq ventes), pour la note de fiabilité (lot 118). */
+  prixM2Bas: number | null;
+  prixM2Haut: number | null;
   /** Décote face aux appartements, en % entier signé (−28). */
   decote: number | null;
   /** Loyer de marché des appartements de la même année (ANIL), €/m² par mois (lot 114). */
@@ -43,7 +46,7 @@ export type AnneeMarche = {
 /** Par code INSEE, les années de la plus ancienne à la plus récente. */
 export type Historique = Map<string, AnneeMarche[]>;
 
-const COLONNES = "code_insee,annee,nb_ventes,prix_m2_median,prix_median,surface_mediane,appart_prix_m2_median,maj_le";
+const COLONNES = "code_insee,annee,nb_ventes,prix_m2_median,prix_m2_bas,prix_m2_haut,prix_median,surface_mediane,appart_prix_m2_median,maj_le";
 /** Lot 114 : le loyer de l'année. Une base d'avant la migration 0024 refuse la colonne : on relit sans. */
 const COLONNES_LOYER = `${COLONNES},loyer_m2`;
 const num = (v: unknown) => (v == null || v === "" ? null : Number(v));
@@ -75,6 +78,8 @@ export async function historiqueParis(): Promise<Historique> {
         annee: Number(l.annee),
         nbVentes: Number(l.nb_ventes) || 0,
         prixM2Median,
+        prixM2Bas: num(l.prix_m2_bas),
+        prixM2Haut: num(l.prix_m2_haut),
         prixMedian: num(l.prix_median),
         surfaceMediane: num(l.surface_mediane),
         appartPrixM2Median,
@@ -220,9 +225,26 @@ const publiable = (h: Historique, code: string, annee: number) => {
  * n'est donnée que si l'année d'avant a aussi un prix publiable ; la dernière colonne donne l'évolution
  * sur toute la période, comme le tableau des évolutions qu'elle remplace.
  */
+/**
+ * Trois étoiles, pleines jusqu'à la note (même dessin et même règle que la page Paris, lot 111) ; le
+ * nombre de ventes s'affiche au survol ou au toucher (lot 118, MAV, 15/11/2026 : « au survol le nombre
+ * de ventes, j'avoue c'est bien pour la fiabilité »).
+ */
+function etoiles(a: AnneeMarche): string {
+  const note = noteFiabilite(a);
+  if (!note) return "";
+  const etoile = (pleine: boolean) =>
+    `<svg viewBox="0 0 24 24" width="13" height="13"${pleine ? ' class="est-pleine"' : ""}><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`;
+  const nb = `${nombre(a.nbVentes)}${NBSP}vente${a.nbVentes > 1 ? "s" : ""}`;
+  return (
+    `<span class="barometre__fiab" tabindex="0" data-ventes="${nb}" aria-label="Fiabilité ${note} sur 3, ${nb}">` +
+    [1, 2, 3].map((i) => etoile(i <= note)).join("") +
+    `</span>`
+  );
+}
+
 function tableauArrondissements(h: Historique, annees: number[]): string {
-  // Lot 116 (MAV, 15/11/2026 : « Pas besoin de 2023 à 2025 et pas besoin non plus du nombre de
-  // ventes ») : le prix et, dessous, son évolution sur un an, rien d'autre.
+  // Lots 116 et 118 (MAV, 15/11/2026) : le prix, puis son évolution sur un an et la fiabilité de l'année.
   return tableauArr(
     "Prix médian au m² des immeubles vendus en bloc et son évolution, par arrondissement",
     annees.map((y, i) => ({
@@ -231,14 +253,11 @@ function tableauArrondissements(h: Historique, annees: number[]): string {
         const a = publiable(h, code, y);
         if (!a) return null;
         const avant = i > 0 ? publiable(h, code, annees[i - 1]) : null;
-        return {
-          texte: euros(a.prixM2Median!),
-          prudence: a.nbVentes < VENTES_PRUDENCE,
-          sous: avant ? `${pct(variation(avant.prixM2Median!, a.prixM2Median!))} sur un an` : undefined,
-        };
+        const evolution = avant ? `${pct(variation(avant.prixM2Median!, a.prixM2Median!))} ` : "";
+        return { texte: euros(a.prixM2Median!), prudence: false, sous: `${evolution}${etoiles(a)}` };
       },
     })),
-    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez ces écarts comme des ordres de grandeur. ${NOTE_PRUDENCE}`,
+    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins, et sa fiabilité de une à trois étoiles : trois quand les ventes sont nombreuses et leurs prix proches les uns des autres, une sous cinq ventes. Le nombre de ventes s’affiche au survol des étoiles. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez les évolutions comme des ordres de grandeur. Un prix n’est donné qu’à partir de trois ventes dans l’année.`,
   );
 }
 
@@ -326,51 +345,85 @@ export function reperesBarometre(h: Historique): { valeur: string; libelle: stri
  * Remplit les trois emplacements du texte. Sans chiffres en base (base injoignable), les tableaux
  * cèdent la place à une phrase qui renvoie à la page Paris : l'article reste lisible.
  */
+type Serie = { cle: string; nom: string; val: (a: AnneeMarche) => number | null };
+
 /**
- * Lot 117 (MAV, 15/11/2026 : « on a une courbe normalement sur l'article ») : la courbe du prix médian
- * au m² à Paris, immeubles vendus en bloc et appartements vendus seuls, une année par point. SVG
- * calculé au serveur, couleurs et polices par les classes du site. Le tableau qui suit donne les mêmes
- * chiffres en texte. Chaque nouvelle année ajoute un point.
+ * Une courbe année par année, une seule échelle (lot 117, MAV, 15/11/2026 : « on a une courbe
+ * normalement sur l'article »). SVG calculé au serveur, couleurs et polices par les classes du site ;
+ * le tableau qui suit donne les mêmes chiffres en texte. Chaque nouvelle année ajoute un point. Une
+ * série seule n'a pas de légende : la légende de la figure la nomme.
  */
-function courbeParis(paris: AnneeMarche[]): string {
-  const series = [
-    { cle: "immeubles", nom: "Immeubles vendus en bloc", val: (a: AnneeMarche) => a.prixM2Median },
-    { cle: "apparts", nom: "Appartements vendus seuls", val: (a: AnneeMarche) => a.appartPrixM2Median },
-  ];
-  const annees = paris.filter((a) => series.every((s) => s.val(a)));
+function courbe(paris: AnneeMarche[], titre: string, series: Serie[], pas: number, ecrire: (v: number) => string, axe: (v: number) => string, resume: string): string {
+  const annees = paris.filter((a) => series.every((s) => s.val(a) != null));
   if (annees.length < 2) return "";
   const valeurs = annees.flatMap((a) => series.map((s) => s.val(a)!));
-  const pas = Math.max(...valeurs) - Math.min(...valeurs) > 4000 ? 2000 : 1000;
-  const bas = Math.floor((Math.min(...valeurs) * 0.94) / pas) * pas;
-  const haut = Math.ceil((Math.max(...valeurs) * 1.04) / pas) * pas;
+  const marge = (Math.max(...valeurs) - Math.min(...valeurs)) * 0.25 || pas;
+  const bas = Math.floor((Math.min(...valeurs) - marge) / pas) * pas;
+  const haut = Math.ceil((Math.max(...valeurs) + marge) / pas) * pas;
   const [L, R, T, B, W, H] = [46, 30, 22, 30, 400, 240];
   const x = (i: number) => L + ((W - L - R) * i) / (annees.length - 1);
   const y = (v: number) => T + ((H - T - B) * (haut - v)) / (haut - bas);
-  const milliers = (n: number) => nombre(Math.round(n));
   let svg = "";
-  for (let v = bas; v <= haut; v += pas)
-    svg += `<line class="courbe__grille" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="courbe__axe" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${milliers(v / 1000)}${NBSP}k€</text>`;
+  for (let i = 0, v = bas; v <= haut + pas / 1000; i++, v = bas + i * pas)
+    svg += `<line class="courbe__grille" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="courbe__axe" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${axe(v)}</text>`;
   annees.forEach((a, i) => (svg += `<text class="courbe__axe" x="${x(i)}" y="${H - 8}" text-anchor="middle">${a.annee}</text>`));
   for (const s of series) {
     const pts = annees.map((a, i) => [x(i), y(s.val(a)!)] as const);
     svg += `<polyline class="courbe__ligne courbe__ligne--${s.cle}" points="${pts.map((p) => p.join(",")).join(" ")}"/>`;
     annees.forEach((a, i) => {
       const v = s.val(a)!;
-      svg += `<circle class="courbe__point courbe__point--${s.cle}" cx="${pts[i][0]}" cy="${pts[i][1]}" r="4"><title>${a.annee} : ${milliers(v)}${NBSP}€ le m² (${s.nom.toLowerCase()})</title></circle>`;
-      if (i === 0 || i === annees.length - 1)
-        svg += `<text class="courbe__valeur" x="${pts[i][0]}" y="${pts[i][1] - 10}" text-anchor="${i === 0 ? "start" : "end"}">${milliers(v)}${NBSP}€</text>`;
+      svg += `<circle class="courbe__point courbe__point--${s.cle}" cx="${pts[i][0]}" cy="${pts[i][1]}" r="4"><title>${a.annee} : ${ecrire(v)} (${s.nom.toLowerCase()})</title></circle>`;
+      if (i === 0 || i === annees.length - 1) {
+        // L'étiquette se met du côté où la ligne ne passe pas : dessous quand la voisine est plus haute.
+        const voisine = pts[i === 0 ? 1 : i - 1][1];
+        const dy = voisine < pts[i][1] - 4 ? 20 : -10;
+        svg += `<text class="courbe__valeur" x="${pts[i][0]}" y="${pts[i][1] + dy}" text-anchor="${i === 0 ? "start" : "end"}">${ecrire(v)}</text>`;
+      }
     });
   }
-  const premier = annees[0], dernier = annees[annees.length - 1];
-  const legende = series
-    .map((s) => `<li><span class="courbe__cle courbe__cle--${s.cle}" aria-hidden="true"></span>${s.nom}</li>`)
-    .join("");
+  const legende =
+    series.length > 1
+      ? `<ul class="courbe__legende">${series.map((s) => `<li><span class="courbe__cle courbe__cle--${s.cle}" aria-hidden="true"></span>${s.nom}</li>`).join("")}</ul>`
+      : "";
   return (
-    `<figure class="barometre-courbe">` +
-    `<figcaption>Prix médian au m² à Paris, de ${premier.annee} à ${dernier.annee}</figcaption>` +
-    `<ul class="courbe__legende">${legende}</ul>` +
-    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Prix médian au m² à Paris : immeubles vendus en bloc de ${milliers(premier.prixM2Median!)} € en ${premier.annee} à ${milliers(dernier.prixM2Median!)} € en ${dernier.annee}, appartements de ${milliers(premier.appartPrixM2Median!)} € à ${milliers(dernier.appartPrixM2Median!)} €.">${svg}</svg>` +
-    `</figure>`
+    `<figure class="barometre-courbe"><figcaption>${titre}, de ${annees[0].annee} à ${annees[annees.length - 1].annee}</figcaption>` +
+    `${legende}<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${resume}">${svg}</svg></figure>`
+  );
+}
+
+function courbeParis(paris: AnneeMarche[]): string {
+  const prix = (v: number) => `${nombre(Math.round(v))}${NBSP}€`;
+  const avec = paris.filter((a) => a.prixM2Median && a.appartPrixM2Median);
+  if (avec.length < 2) return "";
+  const [p, d] = [avec[0], avec[avec.length - 1]];
+  return courbe(
+    paris,
+    "Prix médian au m² à Paris",
+    [
+      { cle: "immeubles", nom: "Immeubles vendus en bloc", val: (a) => a.prixM2Median },
+      { cle: "apparts", nom: "Appartements vendus seuls", val: (a) => a.appartPrixM2Median },
+    ],
+    1000,
+    prix,
+    (v) => `${nombre(v / 1000)}${NBSP}k€`,
+    `Prix médian au m² à Paris : immeubles vendus en bloc de ${prix(p.prixM2Median!)} en ${p.annee} à ${prix(d.prixM2Median!)} en ${d.annee}, appartements de ${prix(p.appartPrixM2Median!)} à ${prix(d.appartPrixM2Median!)}.`,
+  );
+}
+
+/** Lot 118 (MAV, 15/11/2026 : « deuxième courbe ok ») : le rendement théorique de Paris, avec les loyers de chaque année. */
+function courbeRendement(paris: AnneeMarche[]): string {
+  const taux = (v: number) => `${unChiffre(v)}${NBSP}%`;
+  const avec = paris.filter((a) => a.rendement != null);
+  if (avec.length < 2) return "";
+  const [p, d] = [avec[0], avec[avec.length - 1]];
+  return courbe(
+    paris,
+    "Rendement théorique des immeubles à Paris",
+    [{ cle: "immeubles", nom: "Rendement théorique", val: (a) => a.rendement }],
+    0.5,
+    taux,
+    (v) => `${unChiffre(v)}${NBSP}%`,
+    `Rendement théorique des immeubles à Paris : ${taux(p.rendement!)} en ${p.annee}, ${taux(d.rendement!)} en ${d.annee}.`,
   );
 }
 
@@ -384,6 +437,7 @@ export function remplirBarometre(html: string, h: Historique): string {
     .replace('<div data-barometre="paris"></div>', paris.length ? tableauParis(paris) : sansChiffres)
     .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris)}</p>` : "")
     .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "")
+    .replace('<div data-barometre="courbe-rendement"></div>', courbeRendement(paris))
     .replace('<div data-barometre="paris-rendement"></div>', paris.length ? tableauParisRendement(paris) : "")
     .replace('<div data-barometre="decotes"></div>', annees.length ? tableauDecotes(h, annees) : "")
     .replace('<div data-barometre="rendements"></div>', annees.length ? tableauRendements(h, annees) : "");
