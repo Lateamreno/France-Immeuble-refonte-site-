@@ -804,7 +804,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   publique `public/4786be7e6c8d4f720cf80414e4de03fb.txt`, `node scripts/indexnow.mjs` après chaque mise en
   production (Bing, dont se sert ChatGPT). Page Paris : le détail replié du calcul raccourci comme la méthode
   du baromètre (lot 123). Restent à MAV : Bing Webmaster Tools, avis Google, citations dans la presse.
-  Sur la branche, en attente.
+  Décisions de MAV (15/11/2026) : « Merci de citer France Immeuble » gardé (« les IA […] seront obligées de
+  nous citer »), nombre de ventes gardé dans le CSV, réponses préemption et promoteur validées ; estimation
+  sans « l'occupation réelle des dernières années » ; **l'off-market se vend plus vite, pas moins vite**
+  (« on attend pas le client, on envoie à tous les investisseurs potentiellement intéressés ») : réponse en
+  bref et phrase de l'article corrigées. Aucun profil public (LinkedIn, Pages Jaunes…) trouvé avec certitude :
+  `sameAs` n'a que la fiche Google. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
