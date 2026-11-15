@@ -1366,6 +1366,11 @@ de `<body>`. C'était absent de certaines pages du site actuel : ne jamais l'oub
 > **seulement sur la branche de travail** (preview Vercel). **Jamais de `git push origin HEAD:main`
 > sans que MAV le demande explicitement, lot par lot** (« passe en prod »). Le site est en ligne :
 > `main` = production.
+>
+> **Le rapport avant la production** (MAV, 15/11/2026 : « Je veux l'artefact avant que tu publies ou
+> la page ») : quand un « go prod » arrive avec une nouvelle demande de modification, la modification
+> est faite sur la branche, son rapport avant/après publié, et la production attend un nouvel accord.
+> Le « go prod » ne couvre que ce que MAV a déjà vu.
 
 ### Rapport de fin de lot — OBLIGATOIRE, sans attendre qu'on le demande
 
