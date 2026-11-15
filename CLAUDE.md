@@ -786,7 +786,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   télégraphiques pour être lues), **un seul bouton** vers le formulaire (MAV, 15/11/2026 : « pas de second
   bouton » ; le baromètre garde « Les prix par arrondissement », déjà validé au lot 121). Sous 700 px de
   haut, le chapeau s'efface ; sous 600 px, la date aussi : le hero tient sur un écran de 320 × 568.
-  Sur la branche, en attente.
+  **Lot 122 en production le 15/11/2026** (« Go prod », MAV).
 
 ### Garde-fous non négociables
 
