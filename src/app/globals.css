@@ -1690,6 +1690,10 @@ html[class] .hero-media h1.eyebrow{
 /* Titre d'article dans le hero : plus long qu'un titre de page, on lui
    laisse un peu plus de largeur. */
 .article__tete h1{max-width:26ch;font-size:clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem);}
+/* Hero des articles sur un écran bas (moins de 700 px de haut) : le chapeau s'efface pour que le titre
+   et les boutons tiennent sur un écran ; sous 600 px, la date aussi. */
+html.h-700 .article__tete .lead{display:none;}
+html.h-600 .article__tete .article__meta{display:none;}
 .hero-media .article__meta{color:color-mix(in srgb, var(--color-creme) 86%, var(--color-noir));}
 .article__meta{
   margin-top:14px;

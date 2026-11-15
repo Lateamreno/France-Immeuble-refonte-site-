@@ -92,6 +92,19 @@ function imagesDifferees(html: string): string {
   return html.replace(/<img(?![^>]*\bloading=)/g, '<img loading="lazy" decoding="async"');
 }
 
+/** Le titre avec ses mots importants en or (`h1Accent`), le texte du H1 restant identique. */
+function titreEnOr(titre: string, accent?: string) {
+  const i = accent ? titre.indexOf(accent) : -1;
+  if (!accent || i < 0) return titre;
+  return (
+    <>
+      {titre.slice(0, i)}
+      <span className="accent">{accent}</span>
+      {titre.slice(i + accent.length)}
+    </>
+  );
+}
+
 export default async function ArticlePage({ params }: Params) {
   const { slug } = await params;
   const a = articleParSlug(slug);
@@ -110,8 +123,8 @@ export default async function ArticlePage({ params }: Params) {
     a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
   ]);
   const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
-  const chapeau = historique ? chapeauBarometre(historique) : null;
-  const barometre = a.slug === SLUG_BAROMETRE && a.h1 === "Prix des immeubles de rapport à Paris, année par année";
+  const barometre = a.slug === SLUG_BAROMETRE;
+  const chapeau = (historique ? chapeauBarometre(historique) : null) ?? a.chapeau ?? null;
   const [avant, apres] = couperTexte(ctaVersFormulaire(boutonDansLeTexte(imagesDifferees(html), cibleArticle(a.slug))));
   const c = chiffresFaq(ventesPubliees);
   const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
@@ -165,14 +178,9 @@ export default async function ArticlePage({ params }: Params) {
               <Link href="/blog/">Blog</Link>
               {barometre && <> · Baromètre des prix</>}
             </Eyebrow>
-            {barometre ? (
-              // Le baromètre a le hero des pages (MAV, 15/11/2026 : « un hero plus fourni ») : mots en or, chapeau, deux boutons.
-              <h1>
-                Prix des <span className="accent">immeubles de rapport</span> à Paris, année par année
-              </h1>
-            ) : (
-              <h1>{a.h1}</h1>
-            )}
+            {/* Le hero des pages pour chaque article (MAV, 15/11/2026 : « c'est bien d'avoir des boutons et de
+                beaux heros ») : mots en or, une phrase sous le titre, deux boutons. Le texte du H1 ne change pas. */}
+            <h1>{titreEnOr(a.h1, a.h1Accent)}</h1>
             {chapeau && <p className="lead">{chapeau}</p>}
             <p className="article__meta">
               <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
@@ -181,9 +189,17 @@ export default async function ArticlePage({ params }: Params) {
             </p>
             <div className="btn-row">
               <Button href="#estimer">{acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"}</Button>
-              {barometre && (
+              {barometre ? (
                 <Button href="#prix-arrondissements" variant="outline" court="Par arrondissement">
                   Les prix par arrondissement
+                </Button>
+              ) : acheteur ? (
+                <Button href="/immeubles-a-vendre/" variant="outline" court="Nos immeubles">
+                  Nos immeubles à vendre
+                </Button>
+              ) : (
+                <Button href="/immeubles-vendus/" variant="outline" court="Nos ventes">
+                  Voir nos ventes
                 </Button>
               )}
             </div>

@@ -32,6 +32,10 @@ export type Article = {
   updatedAt: string;
   /** Date de la dernière relecture des chiffres et des règles (lot 97, MAV, 10/11/2026). */
   revuLe?: string;
+  /** Le hero des articles (MAV, 15/11/2026 : « c'est bien d'avoir des boutons et de beaux heros ») :
+   *  les mots du titre en or et une phrase sous le titre. Le H1 lui-même ne change pas. */
+  h1Accent?: string;
+  chapeau?: string;
   contenuHtml: string;
 };
 
