@@ -22,6 +22,15 @@ export function organisation() {
     "@id": `${SITE.url}/#organisation`,
     name: SITE.nom,
     url: SITE.url,
+    /* Lot 124 (MAV, 15/11/2026 : optimiser pour ChatGPT et Claude) : ce qu'il faut à un moteur ou à un
+       assistant pour reconnaître l'agence comme une entreprise, et pas seulement comme un nom. */
+    description:
+      "Agence spécialisée dans la vente d'immeubles de rapport en bloc et à la découpe, à Paris, en Île-de-France et en région. Estimation gratuite, vente off-market auprès d'un fichier d'acheteurs d'immeubles.",
+    logo: `${SITE.url}/logo/logo-france-immeuble-email.png`,
+    image: `${SITE.url}/og/accueil.jpg`,
+    email: SITE.email,
+    /* La fiche Google de l'agence (identifiant de l'ancien lien d'avis). */
+    sameAs: ["https://maps.google.com/?cid=16705123113272005071"],
     telephone: "+33172875222",
     areaServed: [
       { "@type": "City", name: "Paris" },
@@ -70,5 +79,18 @@ export function service(nom: string, description: string, url: string, ville?: s
     url: `${SITE.url}${url}`,
     provider: { "@id": `${SITE.url}/#organisation` },
     areaServed: ville ? { "@type": "City", name: ville } : { "@type": "Country", name: "France" },
+  };
+}
+
+/** Le site lui-même, relié à l'agence (lot 124). */
+export function siteWeb() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE.url}/#site`,
+    name: SITE.nom,
+    url: `${SITE.url}/`,
+    inLanguage: "fr-FR",
+    publisher: { "@id": `${SITE.url}/#organisation` },
   };
 }

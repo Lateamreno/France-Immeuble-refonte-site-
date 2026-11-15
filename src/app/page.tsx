@@ -18,6 +18,8 @@ import { VitrineAccueil } from "@/components/VitrineAccueil";
 import { BoutonRecherche } from "@/components/biens/BoutonRecherche";
 import { Avis } from "@/components/Avis";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
+import { JsonLd } from "@/components/JsonLd";
+import { organisation, siteWeb } from "@/lib/schema";
 
 /**
  * Page d'accueil — reprise du WordPress, RECOMPOSÉE.
@@ -39,6 +41,8 @@ export default async function Accueil() {
   ];
   return (
     <>
+      {/* Lot 124 : l'agence et le site décrits pour les moteurs et les assistants (l'accueil n'en avait aucun). */}
+      <JsonLd data={[organisation(), siteWeb()]} />
       <HeroMedia image={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt}>
         <>
           <Eyebrow>Vente en bloc &middot; Off-market</Eyebrow>

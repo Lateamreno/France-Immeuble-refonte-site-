@@ -26,7 +26,7 @@ import { chiffres as lesChiffres } from "@/lib/chiffres";
 import { chiffresFaq } from "@/lib/faq";
 import { nombre } from "@/lib/site";
 import { boutonDansLeTexte, cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
-import { SLUG_BAROMETRE, chapeauBarometre, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
+import { SLUG_BAROMETRE, chapeauBarometre, datasetBarometre, enBrefBarometre, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -79,8 +79,15 @@ function schemaArticle(a: Article) {
     dateModified: a.updatedAt,
     image: a.ogImage ? `${SITE.url}${a.ogImage}` : undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE.url}${a.chemin}` },
-    author: { "@type": "Organization", name: SITE.nom, url: SITE.url },
-    publisher: { "@type": "Organization", name: SITE.nom, url: SITE.url },
+    /* Lot 124 : l'auteur est l'agence décrite sur l'accueil (même @id), avec son logo. */
+    author: { "@type": "Organization", "@id": `${SITE.url}/#organisation`, name: SITE.nom, url: SITE.url },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE.url}/#organisation`,
+      name: SITE.nom,
+      url: SITE.url,
+      logo: { "@type": "ImageObject", url: `${SITE.url}/logo/logo-france-immeuble-email.png` },
+    },
   };
 }
 
@@ -125,6 +132,10 @@ export default async function ArticlePage({ params }: Params) {
   const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
   const barometre = a.slug === SLUG_BAROMETRE;
   const chapeau = (historique ? chapeauBarometre(historique) : null) ?? a.chapeau ?? null;
+  /* Lot 124 (MAV, 15/11/2026 : optimiser pour ChatGPT et Claude) : la réponse à la question du titre,
+     en tête du texte. Celle du baromètre est tirée de ses chiffres. */
+  const enBref = (historique ? enBrefBarometre(historique) : null) ?? a.enBref ?? null;
+  const dataset = historique ? datasetBarometre(historique, `${SITE.url}${a.chemin}`) : null;
   const [avant, apres] = couperTexte(ctaVersFormulaire(boutonDansLeTexte(imagesDifferees(html), cibleArticle(a.slug))));
   const c = chiffresFaq(ventesPubliees);
   const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
@@ -157,6 +168,7 @@ export default async function ArticlePage({ params }: Params) {
   return (
     <>
       <JsonLd data={schemaArticle(a)} />
+      {dataset && <JsonLd data={dataset} />}
       <JsonLd
         data={filAriane([
           { nom: "Accueil", url: "/" },
@@ -221,6 +233,12 @@ export default async function ArticlePage({ params }: Params) {
                 rapatriées en local, liens internes relatifs, classes retirées).
                 La source est notre propre export, pas une saisie utilisateur.
               */}
+              {enBref && (
+                <div className="article-bref">
+                  <p className="article-bref__titre">En bref</p>
+                  <p>{enBref}</p>
+                </div>
+              )}
               <div className="prose" dangerouslySetInnerHTML={{ __html: avant }} />
               {apres && (
                 <>

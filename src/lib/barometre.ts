@@ -456,3 +456,75 @@ export function remplirBarometre(html: string, h: Historique): string {
     .replace('<div data-barometre="decotes"></div>', annees.length ? tableauDecotes(h, annees) : "")
     .replace('<div data-barometre="rendements"></div>', annees.length ? tableauRendements(h, annees) : "");
 }
+
+/**
+ * La réponse en bref du baromètre, en tête de l'article (lot 124, MAV, 15/11/2026 : optimiser pour
+ * ChatGPT et Claude, « fais tout »). Deux phrases tirées des chiffres de la dernière année, que les
+ * moteurs et les assistants peuvent reprendre telles quelles. Vide sans chiffres.
+ */
+export function enBrefBarometre(h: Historique): string | null {
+  const paris = (h.get(CODE_PARIS) ?? []).filter((a) => a.prixM2Median);
+  const d = paris[paris.length - 1];
+  if (!d?.prixM2Median) return null;
+  const p = paris[0];
+  let texte = `En ${d.annee}, un immeuble de rapport vendu en bloc à Paris s’est vendu ${euros(d.prixM2Median)} le m² en médiane`;
+  texte += d.decote != null && d.decote < 0 ? `, ${Math.abs(d.decote)}${NBSP}% sous le prix au m² des appartements vendus seuls la même année.` : ".";
+  if (p !== d && p.prixM2Median) texte += ` Depuis ${p.annee}, ce prix ${evolue(p.prixM2Median, d.prixM2Median)}.`;
+  if (d.rendement != null) texte += ` Avec les loyers de marché de ${d.annee}, le rendement théorique d’un immeuble parisien est de ${unChiffre(d.rendement)}${NBSP}%.`;
+  return texte;
+}
+
+/** L'adresse du fichier des chiffres du baromètre. */
+export const CSV_BAROMETRE = "/donnees/prix-immeubles-paris.csv";
+
+/**
+ * Les chiffres du baromètre en fichier (lot 124) : une ligne par année et par zone, tout Paris puis
+ * les vingt arrondissements. Rien que des agrégats, comme l'article (conditions de réutilisation de
+ * DVF) ; un prix n'est donné qu'à partir de trois ventes. Séparateur « ; » et virgule décimale,
+ * pour qu'un tableur réglé en français l'ouvre tel quel.
+ */
+export function csvBarometre(h: Historique): string {
+  const dec = (n: number | null, chiffres = 0) =>
+    n == null ? "" : n.toLocaleString("fr-FR", { minimumFractionDigits: chiffres, maximumFractionDigits: chiffres, useGrouping: false });
+  const lignes = [
+    "zone;code_insee;annee;ventes_immeubles;prix_m2_median_immeubles;prix_m2_median_appartements;decote_pct;loyer_m2_mois;rendement_theorique_pct",
+  ];
+  for (const code of [CODE_PARIS, ...CODES_ARRONDISSEMENTS]) {
+    for (const a of h.get(code) ?? []) {
+      const ok = a.nbVentes >= VENTES_MIN_PRIX && a.prixM2Median;
+      const zone = code === CODE_PARIS ? "Paris" : `Paris ${arrondissement(code)} arrondissement`;
+      lignes.push(
+        [zone, code, a.annee, a.nbVentes, ok ? dec(a.prixM2Median) : "", dec(a.appartPrixM2Median), ok ? dec(a.decote) : "", dec(a.loyerM2, 2), ok ? dec(a.rendement, 1) : ""].join(";"),
+      );
+    }
+  }
+  lignes.push("");
+  lignes.push("Source : France Immeuble, d'après DVF (DGFiP, licence ouverte) et la carte des loyers de l'ANIL. https://www.france-immeuble.fr/prix-immeuble-de-rapport-paris/");
+  return "﻿" + lignes.join("\r\n") + "\r\n";
+}
+
+/** Le jeu de données (schema.org Dataset), pour Google et les assistants qui citent leurs sources. */
+export function datasetBarometre(h: Historique, url: string): object | null {
+  const paris = (h.get(CODE_PARIS) ?? []).filter((a) => a.prixM2Median);
+  if (!paris.length) return null;
+  const d = paris[paris.length - 1];
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Prix des immeubles de rapport vendus en bloc à Paris, par arrondissement et par année",
+    description: `Prix médian au m² des immeubles de rapport vendus en bloc à Paris et dans chacun des vingt arrondissements, de ${paris[0].annee} à ${d.annee}, comparé à celui des appartements vendus seuls, avec le loyer de marché et le rendement théorique de chaque année. Calculé par France Immeuble à partir des ventes enregistrées dans DVF.`,
+    url,
+    creator: { "@id": "https://www.france-immeuble.fr/#organisation" },
+    license: "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+    isBasedOn: [
+      "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres-geolocalisees",
+      ...paris.map((a) => `https://www.data.gouv.fr/datasets/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-${a.annee}`),
+    ],
+    temporalCoverage: `${paris[0].annee}/${d.annee}`,
+    spatialCoverage: { "@type": "Place", name: "Paris, France" },
+    inLanguage: "fr",
+    ...(d.majLe ? { dateModified: d.majLe.slice(0, 10) } : {}),
+    variableMeasured: ["Prix médian au m² des immeubles", "Prix médian au m² des appartements", "Décote", "Loyer de marché au m²", "Rendement théorique"],
+    distribution: { "@type": "DataDownload", encodingFormat: "text/csv", contentUrl: `https://www.france-immeuble.fr${CSV_BAROMETRE}` },
+  };
+}

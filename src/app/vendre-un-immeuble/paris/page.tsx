@@ -15,8 +15,7 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { filAriane, organisation, service } from "@/lib/schema";
 import { marchesDesCommunes } from "@/lib/marche";
-import { fourchetteRendement, immeublesDesCommunes, libelleRendement, rendementsTheoriques, SEUILS_FIABILITE, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
-import { PRIX_M2_MAX, PRIX_M2_MIN, VENTES_MIN_APPARTEMENTS } from "@/lib/dvf-immeubles";
+import { fourchetteRendement, immeublesDesCommunes, libelleRendement, rendementsTheoriques, type NoteFiabilite } from "@/lib/immeubles-dvf-lecture";
 import { chiffres } from "@/lib/chiffres";
 import { ventes as lesVentes } from "@/lib/biens";
 import { CarteVente } from "@/components/CarteVente";
@@ -657,43 +656,33 @@ export default async function VendreUnImmeubleParis() {
               {/* Retour #304 : le calcul et les sources repliés, sans dire que les chiffres se mettent à jour seuls. */}
               <details className="paris-prix__calcul">
                 <summary>Le détail du calcul et nos sources</summary>
+                {/* Lot 124 (MAV, 15/11/2026, sur le baromètre : « Ils ont pas besoin de savoir tout ça ») :
+                    l'essentiel du calcul, sans la liste des règles. Le calcul ne change pas. */}
                 <p>
-                  Ventes retenues dans DVF&nbsp;: plus de cinq logements, un seul prix, au moins 65&nbsp;% de
-                  logements parmi les lots, caves et parkings non comptés ({nombre(totalImmeubles)} ventes à
-                  Paris en {annee}). Sont écartés les échanges, les ventes sur plan, les adjudications, les
-                  expropriations et les ventes de terrain à bâtir, les mêmes logements présents dans plusieurs
-                  actes la même année, les ventes à cheval sur plusieurs communes et les prix au&nbsp;m²
-                  inférieurs à {nombre(PRIX_M2_MIN)}&nbsp;€ ou supérieurs à {nombre(PRIX_M2_MAX)}&nbsp;€. Prix publié à partir de
-                  trois ventes, commerces compris dans la surface.
+                  Les prix viennent de DVF, la base des ventes immobilières publiée par l’État sur
+                  data.gouv.fr. Nous n’en gardons que les ventes d’immeubles de plus de cinq logements
+                  ({nombre(totalImmeubles)} à Paris en {annee}), et nous écartons celles qui fausseraient le prix
+                  au&nbsp;m², comme les échanges ou les ventes aux enchères. Un prix n’est donné qu’à partir de
+                  trois ventes.
                 </p>
                 {avecDecote && (
                   <p>
-                    Décote&nbsp;: le prix médian au&nbsp;m² des immeubles rapporté à celui des appartements
-                    vendus seuls dans le même arrondissement, la même année, d’après DVF. Une vente
-                    d’appartement est retenue quand elle porte sur un seul appartement, avec ou sans
-                    dépendances, à un seul prix, entre {nombre(PRIX_M2_MIN)}&nbsp;€ et {nombre(PRIX_M2_MAX)}&nbsp;€ le&nbsp;m². Prix
-                    médian des appartements publié à partir de {VENTES_MIN_APPARTEMENTS} ventes.
+                    La décote compare ce prix à celui des appartements vendus seuls dans le même
+                    arrondissement, la même année.
                   </p>
                 )}
                 <p>
-                  Fiabilité&nbsp;: l’écart entre les prix au&nbsp;m², une fois écartés le quart des ventes le
-                  moins cher et le quart le plus cher, rapporté au prix médian puis divisé par la racine
-                  carrée du nombre de ventes.{" "}
-                  {SEUILS_FIABILITE.map(
-                    ([seuil, note], i) =>
-                      `${i ? "jusqu’à" : "Jusqu’à"} ${seuil.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} : ${note === 3 ? "trois étoiles" : "deux étoiles"}`,
-                  ).join(" ; ")}
-                  &nbsp;; au-delà, ou avec moins de cinq ventes&nbsp;: une étoile.
+                  Les étoiles disent si le prix est solide&nbsp;: trois quand les ventes sont nombreuses et
+                  leurs prix proches les uns des autres, une quand elles sont rares ou très dispersées.
                 </p>
                 {avecRdt && (
                   <p>
-                    Loyers de marché&nbsp;: loyers des appartements, carte des loyers de l’ANIL
-                    {millesime ? ` ${millesime}` : ""}, charges comprises.
+                    Le rendement théorique rapporte au prix médian le loyer de marché des appartements
+                    (carte des loyers de l’ANIL{millesime ? ` ${millesime}` : ""}, charges comprises).
                   </p>
                 )}
                 <p>
-                  Source&nbsp;: Demandes de valeurs foncières (DVF), direction générale des Finances
-                  publiques, data.gouv.fr. Ventes de {annee}{releveEn ? `, relevées en ${releveEn}` : ""}.
+                  Ventes de {annee}{releveEn ? `, relevées en ${releveEn}` : ""}.
                 </p>
               </details>
             </div>

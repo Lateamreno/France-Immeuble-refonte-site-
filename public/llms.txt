@@ -1,0 +1,38 @@
+# France Immeuble
+
+> Agence immobilière spécialisée dans la vente d'immeubles de rapport, en bloc ou à la découpe, à Paris, en Île-de-France et en région. Depuis 2018. 66 avenue des Champs-Élysées, 75008 Paris. 01 72 87 52 22. contact@france-immeuble.fr
+
+France Immeuble estime et vend des immeubles de rapport entiers pour leurs propriétaires. Les immeubles sont proposés d'abord hors marché (off-market), à un fichier d'acheteurs d'immeubles : investisseurs, marchands de biens et familles. L'estimation est gratuite et confidentielle.
+
+## Vendre ou faire estimer un immeuble
+
+- [Vendre un immeuble de rapport](https://www.france-immeuble.fr/vendre-un-immeuble/): la vente en bloc, notre méthode, le formulaire d'estimation
+- [Vendre un immeuble à Paris](https://www.france-immeuble.fr/vendre-un-immeuble/paris/): prix des immeubles par arrondissement, estimation, vente off-market, questions des propriétaires parisiens
+- [Vendre un immeuble à la découpe](https://www.france-immeuble.fr/vendre-un-immeuble-a-la-decoupe/): mise en copropriété et vente lot par lot
+- [Estimer un immeuble](https://www.france-immeuble.fr/estimer-un-immeuble/): comment nous estimons un immeuble de rapport
+- [Nos honoraires](https://www.france-immeuble.fr/nos-honoraires/): barème de la vente en bloc et de la découpe
+
+## Données
+
+- [Prix des immeubles de rapport à Paris](https://www.france-immeuble.fr/prix-immeuble-de-rapport-paris/): baromètre annuel du prix au m² des immeubles vendus en bloc à Paris et dans chaque arrondissement, décote face aux appartements, loyers et rendement théorique, calculés à partir de DVF
+- [Chiffres du baromètre (CSV)](https://www.france-immeuble.fr/donnees/prix-immeubles-paris.csv): les mêmes agrégats en fichier
+- [Immeubles vendus](https://www.france-immeuble.fr/immeubles-vendus/): nos ventes réalisées, avec ville, surface, loyer, rendement et prix
+
+## Acheter un immeuble
+
+- [Acheter un immeuble de rapport](https://www.france-immeuble.fr/acheter-un-immeuble/): accès aux immeubles avant leur diffusion
+- [Immeubles à vendre](https://www.france-immeuble.fr/immeubles-a-vendre/): nos immeubles en vente
+- [Immeubles off-market](https://www.france-immeuble.fr/immeubles-off-market/): les immeubles proposés sans annonce
+
+## Guides
+
+- [Comment vendre un immeuble de rapport](https://www.france-immeuble.fr/comment-vendre-un-immeuble-de-rapport/)
+- [Comment estimer un immeuble de rapport](https://www.france-immeuble.fr/comment-estimer-un-immeuble-de-rapport/)
+- [Comment vendre un immeuble à Paris](https://www.france-immeuble.fr/comment-vendre-un-immeuble-a-paris/)
+- [Vendre un immeuble avec un mauvais DPE](https://www.france-immeuble.fr/vendre-un-immeuble-avec-un-mauvais-dpe/)
+- [Droit de préemption lors de la vente d'un immeuble en bloc](https://www.france-immeuble.fr/droit-de-preemption-lors-de-la-vente-dun-immeuble-en-bloc/)
+- [Tous les articles](https://www.france-immeuble.fr/blog/)
+
+## Contact
+
+- [Contactez-nous](https://www.france-immeuble.fr/contactez-nous/)

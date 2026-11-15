@@ -36,6 +36,8 @@ export type Article = {
    *  les mots du titre en or et une phrase sous le titre. Le H1 lui-même ne change pas. */
   h1Accent?: string;
   chapeau?: string;
+  /** Lot 124 : deux ou trois phrases qui répondent à la question du titre, en tête du texte. */
+  enBref?: string;
   contenuHtml: string;
 };
 
