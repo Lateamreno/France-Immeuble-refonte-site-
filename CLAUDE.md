@@ -783,9 +783,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Lot 122** (MAV, 15/11/2026 : « c'est bien d'avoir des boutons et de beaux heros »). **Hero de chaque
   article** comme celui des pages : mots du titre en or (`h1Accent`, le texte du H1 ne change pas), une
   phrase sous le titre (`chapeau`, écrite pour chaque article : les descriptions Google sont trop
-  télégraphiques pour être lues), deux boutons (le formulaire, puis « Voir nos ventes » ou « Nos
-  immeubles à vendre » pour les articles acheteurs). Sous 700 px de haut, le chapeau s'efface ; sous
-  600 px, la date aussi : le hero tient sur un écran de 320 × 568. Sur la branche, en attente.
+  télégraphiques pour être lues), **un seul bouton** vers le formulaire (MAV, 15/11/2026 : « pas de second
+  bouton » ; le baromètre garde « Les prix par arrondissement », déjà validé au lot 121). Sous 700 px de
+  haut, le chapeau s'efface ; sous 600 px, la date aussi : le hero tient sur un écran de 320 × 568.
+  Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

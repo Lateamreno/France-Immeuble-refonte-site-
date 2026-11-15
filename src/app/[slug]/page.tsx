@@ -179,7 +179,8 @@ export default async function ArticlePage({ params }: Params) {
               {barometre && <> · Baromètre des prix</>}
             </Eyebrow>
             {/* Le hero des pages pour chaque article (MAV, 15/11/2026 : « c'est bien d'avoir des boutons et de
-                beaux heros ») : mots en or, une phrase sous le titre, deux boutons. Le texte du H1 ne change pas. */}
+                beaux heros ») : mots en or, une phrase sous le titre. Un seul bouton (MAV : « pas de second bouton »),
+                sauf sur le baromètre qui garde « Les prix par arrondissement ». Le texte du H1 ne change pas. */}
             <h1>{titreEnOr(a.h1, a.h1Accent)}</h1>
             {chapeau && <p className="lead">{chapeau}</p>}
             <p className="article__meta">
@@ -193,15 +194,7 @@ export default async function ArticlePage({ params }: Params) {
                 <Button href="#prix-arrondissements" variant="outline" court="Par arrondissement">
                   Les prix par arrondissement
                 </Button>
-              ) : acheteur ? (
-                <Button href="/immeubles-a-vendre/" variant="outline" court="Nos immeubles">
-                  Nos immeubles à vendre
-                </Button>
-              ) : (
-                <Button href="/immeubles-vendus/" variant="outline" court="Nos ventes">
-                  Voir nos ventes
-                </Button>
-              )}
+              ) : null}
             </div>
           </>
         </HeroMedia>
