@@ -735,6 +735,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   ventes »). Baromètre, tableau des prix par arrondissement : le prix et, dessous, « −12 % sur un an »,
   rien d'autre ; colonne de la période et nombre de ventes retirés, `.barometre--serre` supprimé. Sur la
   branche, en attente de l'accord de MAV.
+- **Lot 117** (MAV, 15/11/2026 : « quand je dis 2023 2025 c'est la variation entre deux ans vu qu'on a une
+  courbe normalement sur l'article »). **Courbe des prix à Paris** en tête du baromètre
+  (`data-barometre="courbe"`, `courbeParis` de `src/lib/barometre.ts`) : prix médian au m² des immeubles
+  vendus en bloc (trait bronze profond) et des appartements vendus seuls (tirets), un point par année,
+  valeurs de la première et de la dernière année, une seule échelle ; SVG calculé au serveur, 560 px au
+  plus. Valeurs des tableaux jamais coupées (« −21 / % » au téléphone). Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

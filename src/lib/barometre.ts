@@ -326,12 +326,61 @@ export function reperesBarometre(h: Historique): { valeur: string; libelle: stri
  * Remplit les trois emplacements du texte. Sans chiffres en base (base injoignable), les tableaux
  * cèdent la place à une phrase qui renvoie à la page Paris : l'article reste lisible.
  */
+/**
+ * Lot 117 (MAV, 15/11/2026 : « on a une courbe normalement sur l'article ») : la courbe du prix médian
+ * au m² à Paris, immeubles vendus en bloc et appartements vendus seuls, une année par point. SVG
+ * calculé au serveur, couleurs et polices par les classes du site. Le tableau qui suit donne les mêmes
+ * chiffres en texte. Chaque nouvelle année ajoute un point.
+ */
+function courbeParis(paris: AnneeMarche[]): string {
+  const series = [
+    { cle: "immeubles", nom: "Immeubles vendus en bloc", val: (a: AnneeMarche) => a.prixM2Median },
+    { cle: "apparts", nom: "Appartements vendus seuls", val: (a: AnneeMarche) => a.appartPrixM2Median },
+  ];
+  const annees = paris.filter((a) => series.every((s) => s.val(a)));
+  if (annees.length < 2) return "";
+  const valeurs = annees.flatMap((a) => series.map((s) => s.val(a)!));
+  const pas = Math.max(...valeurs) - Math.min(...valeurs) > 4000 ? 2000 : 1000;
+  const bas = Math.floor((Math.min(...valeurs) * 0.94) / pas) * pas;
+  const haut = Math.ceil((Math.max(...valeurs) * 1.04) / pas) * pas;
+  const [L, R, T, B, W, H] = [46, 30, 22, 30, 400, 240];
+  const x = (i: number) => L + ((W - L - R) * i) / (annees.length - 1);
+  const y = (v: number) => T + ((H - T - B) * (haut - v)) / (haut - bas);
+  const milliers = (n: number) => nombre(Math.round(n));
+  let svg = "";
+  for (let v = bas; v <= haut; v += pas)
+    svg += `<line class="courbe__grille" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="courbe__axe" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${milliers(v / 1000)}${NBSP}k€</text>`;
+  annees.forEach((a, i) => (svg += `<text class="courbe__axe" x="${x(i)}" y="${H - 8}" text-anchor="middle">${a.annee}</text>`));
+  for (const s of series) {
+    const pts = annees.map((a, i) => [x(i), y(s.val(a)!)] as const);
+    svg += `<polyline class="courbe__ligne courbe__ligne--${s.cle}" points="${pts.map((p) => p.join(",")).join(" ")}"/>`;
+    annees.forEach((a, i) => {
+      const v = s.val(a)!;
+      svg += `<circle class="courbe__point courbe__point--${s.cle}" cx="${pts[i][0]}" cy="${pts[i][1]}" r="4"><title>${a.annee} : ${milliers(v)}${NBSP}€ le m² (${s.nom.toLowerCase()})</title></circle>`;
+      if (i === 0 || i === annees.length - 1)
+        svg += `<text class="courbe__valeur" x="${pts[i][0]}" y="${pts[i][1] - 10}" text-anchor="${i === 0 ? "start" : "end"}">${milliers(v)}${NBSP}€</text>`;
+    });
+  }
+  const premier = annees[0], dernier = annees[annees.length - 1];
+  const legende = series
+    .map((s) => `<li><span class="courbe__cle courbe__cle--${s.cle}" aria-hidden="true"></span>${s.nom}</li>`)
+    .join("");
+  return (
+    `<figure class="barometre-courbe">` +
+    `<figcaption>Prix médian au m² à Paris, de ${premier.annee} à ${dernier.annee}</figcaption>` +
+    `<ul class="courbe__legende">${legende}</ul>` +
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Prix médian au m² à Paris : immeubles vendus en bloc de ${milliers(premier.prixM2Median!)} € en ${premier.annee} à ${milliers(dernier.prixM2Median!)} € en ${dernier.annee}, appartements de ${milliers(premier.appartPrixM2Median!)} € à ${milliers(dernier.appartPrixM2Median!)} €.">${svg}</svg>` +
+    `</figure>`
+  );
+}
+
 export function remplirBarometre(html: string, h: Historique): string {
   const paris = h.get(CODE_PARIS) ?? [];
   const annees = [...new Set([...h.values()].flat().map((a) => a.annee))].sort((a, b) => a - b);
   const sansChiffres =
     '<p class="barometre__note">Les chiffres de ce baromètre ne sont pas disponibles pour le moment. Le prix médian des immeubles de la dernière année, par arrondissement, est sur notre page <a href="/vendre-un-immeuble/paris/">Vendre un immeuble à Paris</a>.</p>';
   return html
+    .replace('<div data-barometre="courbe"></div>', courbeParis(paris))
     .replace('<div data-barometre="paris"></div>', paris.length ? tableauParis(paris) : sansChiffres)
     .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris)}</p>` : "")
     .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "")
