@@ -787,6 +787,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   bouton » ; le baromètre garde « Les prix par arrondissement », déjà validé au lot 121). Sous 700 px de
   haut, le chapeau s'efface ; sous 600 px, la date aussi : le hero tient sur un écran de 320 × 568.
   **Lot 122 en production le 15/11/2026** (« Go prod », MAV).
+- **Lot 123** (MAV, 15/11/2026 : « Ils ont pas besoin de savoir tout ça »). Baromètre, « Notre méthode » en trois
+  paragraphes (355 mots → 136) : source DVF et licence, immeubles de plus de cinq logements, ventes qui
+  faussent le prix écartées (échanges, enchères), vérification une à une, médiane, appartements et loyers
+  de la même année. Plus de liste des règles de calcul dans l'article ; le détail replié de la page Paris
+  ne change pas. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
