@@ -758,7 +758,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   nom au-dessous de 420 px), moyenne des notes `noteFiabilite` des années qui ont un prix publié, arrondie
   vers le bas à la demie (`etoilesArrondissement`) ; au survol ou au toucher, « Ventes : 5 en 2023, 10 en
   2024 et 22 en 2025 » ; les cases ne gardent que le prix et l'évolution. L'infobulle passe à la ligne
-  (210 px au plus) : d'une ligne, elle élargissait le tableau à 320 px. Sur la branche, en attente.
+  (210 px au plus) : d'une ligne, elle élargissait le tableau à 320 px. Arrondi vers le bas validé par MAV.
+  **Lots 118 et 119 en production le 15/11/2026** (« 1 et 2 OK », MAV).
 
 ### Garde-fous non négociables
 
