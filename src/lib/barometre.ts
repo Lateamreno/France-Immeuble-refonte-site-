@@ -195,13 +195,13 @@ function tableauArr(caption: string, colonnes: Colonne[], note: string): string 
   const cellule = (c: Colonne, code: string) => {
     const v = c.valeur(code);
     if (!v) return `<td class="barometre__vide">–</td>`;
-    return `<td${v.prudence ? ' class="barometre__prudence"' : ""}>${v.texte}${v.prudence ? "*" : ""}${v.sous ? sous(v.sous) : ""}</td>`;
+    return `<td${v.prudence ? ' class="barometre__prudence"' : ""}><span class="barometre__val">${v.texte}${v.prudence ? "*" : ""}</span>${v.sous ? sous(v.sous) : ""}</td>`;
   };
   const ligne = (code: string, libelle: string, classe = "") =>
     `<tr${classe ? ` class="${classe}"` : ""}><th scope="row">${libelle}</th>${colonnes.map((c) => cellule(c, code)).join("")}</tr>`;
   const corps = CODES_ARRONDISSEMENTS.map((c) => ligne(c, arrondissement(c))).join("") + ligne(CODE_PARIS, "Paris", "barometre__total");
   return (
-    `<div class="barometre barometre--arr"><table>` +
+    `<div class="barometre barometre--arr${colonnes.length > 3 ? " barometre--serre" : ""}"><table>` +
     `<caption>${caption}</caption>` +
     `<thead><tr><th scope="col">${tete("Arrondissement", "Arr.")}</th>${colonnes.map((c) => `<th scope="col">${c.tete}</th>`).join("")}</tr></thead>` +
     `<tbody>${corps}</tbody></table></div>` +
@@ -215,37 +215,41 @@ const publiable = (h: Historique, code: string, annee: number) => {
   return a && a.nbVentes >= VENTES_MIN_PRIX && a.prixM2Median ? a : null;
 };
 
+/**
+ * Lot 115 (MAV, 15/11/2026 : « sur chaque cellule l'évolution en % par rapport à l'an passé. Ça nous
+ * fait un seul tableau pour deux données ») : le prix et son évolution dans la même case. L'évolution
+ * n'est donnée que si l'année d'avant a aussi un prix publiable ; la dernière colonne donne l'évolution
+ * sur toute la période, comme le tableau des évolutions qu'elle remplace.
+ */
 function tableauArrondissements(h: Historique, annees: number[]): string {
-  return tableauArr(
-    "Prix médian au m² des immeubles vendus en bloc, par arrondissement",
-    annees.map((y) => ({
-      tete: String(y),
+  const colonnes: Colonne[] = annees.map((y, i) => ({
+    tete: String(y),
+    valeur: (code) => {
+      const a = (h.get(code) ?? []).find((x) => x.annee === y);
+      if (!a) return null;
+      if (a.nbVentes < VENTES_MIN_PRIX || !a.prixM2Median) return { texte: "–", prudence: false, sous: ventes(a.nbVentes) };
+      const avant = i > 0 ? publiable(h, code, annees[i - 1]) : null;
+      // Au téléphone, l'évolution passe sous le nombre de ventes (le point disparaît).
+      const evolution = avant
+        ? `<span class="barometre__sep"> · </span><span class="barometre__evo">${pct(variation(avant.prixM2Median!, a.prixM2Median))}</span>`
+        : "";
+      return { texte: euros(a.prixM2Median), prudence: a.nbVentes < VENTES_PRUDENCE, sous: `<span class="barometre__nb">${ventes(a.nbVentes)}</span>${evolution}` };
+    },
+  }));
+  const [premiere, derniere] = [annees[0], annees[annees.length - 1]];
+  if (annees.length > 2)
+    colonnes.push({
+      tete: tete(`${premiere} à ${derniere}`, `${String(premiere).slice(2)}-${String(derniere).slice(2)}`),
       valeur: (code) => {
-        const a = (h.get(code) ?? []).find((x) => x.annee === y);
-        if (!a) return null;
-        if (a.nbVentes < VENTES_MIN_PRIX || !a.prixM2Median) return { texte: "–", prudence: false, sous: ventes(a.nbVentes) };
-        return { texte: euros(a.prixM2Median), prudence: a.nbVentes < VENTES_PRUDENCE, sous: ventes(a.nbVentes) };
-      },
-    })),
-    NOTE_PRUDENCE,
-  );
-}
-
-function tableauEvolutions(h: Historique, annees: number[]): string {
-  if (annees.length < 2) return "";
-  const periodes: [number, number][] = annees.slice(1).map((y, i) => [annees[i], y]);
-  if (annees.length > 2) periodes.push([annees[0], annees[annees.length - 1]]);
-  return tableauArr(
-    "Évolution du prix médian au m² des immeubles, par arrondissement",
-    periodes.map(([de, a]) => ({
-      tete: tete(`${de} à ${a}`, `${String(de).slice(2)}-${String(a).slice(2)}`),
-      valeur: (code) => {
-        const x = publiable(h, code, de), y = publiable(h, code, a);
+        const x = publiable(h, code, premiere), y = publiable(h, code, derniere);
         if (!x || !y) return null;
         return { texte: pct(variation(x.prixM2Median!, y.prixM2Median!)), prudence: x.nbVentes < VENTES_PRUDENCE || y.nbVentes < VENTES_PRUDENCE };
       },
-    })),
-    `Écart entre les prix médians de deux années, quand chacune compte au moins trois ventes. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez ces écarts comme des ordres de grandeur. * Trois ou quatre ventes l’une des deux années.`,
+    });
+  return tableauArr(
+    "Prix médian au m² des immeubles vendus en bloc et son évolution, par arrondissement",
+    colonnes,
+    `Sous chaque prix, le nombre de ventes de l’année et l’évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins.${annees.length > 2 ? ` La dernière colonne donne l’évolution de ${premiere} à ${derniere}.` : ""} Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez ces écarts comme des ordres de grandeur. ${NOTE_PRUDENCE}`,
   );
 }
 
@@ -343,7 +347,6 @@ export function remplirBarometre(html: string, h: Historique): string {
     .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris)}</p>` : "")
     .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "")
     .replace('<div data-barometre="paris-rendement"></div>', paris.length ? tableauParisRendement(paris) : "")
-    .replace('<div data-barometre="evolutions"></div>', annees.length ? tableauEvolutions(h, annees) : "")
     .replace('<div data-barometre="decotes"></div>', annees.length ? tableauDecotes(h, annees) : "")
     .replace('<div data-barometre="rendements"></div>', annees.length ? tableauRendements(h, annees) : "");
 }

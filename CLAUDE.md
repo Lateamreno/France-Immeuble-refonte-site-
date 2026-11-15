@@ -723,6 +723,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   n'est gardé que s'il vaut au moins 80 % du premier. Recalcul indépendant en Python : 504 valeurs
   identiques. Cas discutable gardé par la règle de MAV : le 2e en 2024 (deux actes à 13 jours, 1,3 puis
   1,7 M€).
+- **Lot 115** (MAV, 15/11/2026 : « sur chaque cellule l'évolution en % par rapport à l'an passé. Ça nous
+  fait un seul tableau pour deux données »). Baromètre : le prix par arrondissement et son évolution sur un
+  an sont dans la même case (prix, puis nombre de ventes et évolution, l'évolution sous le nombre de ventes
+  au téléphone), dernière colonne « 2023 à 2025 » ; le tableau des évolutions (`evolutions`) est retiré,
+  cinq tableaux. Prix jamais coupés (`.barometre__val`), tableau resserré sous 420 px (`.barometre--serre`).
+  Reventes à quelques jours gardées par la règle du dernier acte (MAV : « garde les reventes »).
+  **Lots 113, 114 et 115 en production le 15/11/2026** (« Go prod », MAV), prix corrigés écrits en base
+  au même moment.
 
 ### Garde-fous non négociables
 
