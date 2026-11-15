@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { configSite } from "@/lib/supabase-site";
+import { loyersAnil } from "@/lib/loyers-anil";
 import { CODE_PARIS, COMMUNES_SUIVIES, derniereAnneeDvf, lireCsv, urlDvf, ventesAppartements, ventesImmeubles } from "@/lib/dvf-immeubles";
 
 /**
@@ -79,6 +80,19 @@ async function calculer(annee: number, echeance: number): Promise<Calcul> {
     const a = ventesAppartements(paris, ailleurs);
     lignes.push({ code_insee: CODE_PARIS, annee, nb_ventes: s.nbVentes, prix_m2_median: s.prixM2Median, prix_m2_bas: s.prixM2Bas, prix_m2_haut: s.prixM2Haut, prix_m2_min: s.prixM2Min, prix_m2_max: s.prixM2Max, prix_median: s.prixMedian, surface_mediane: s.surfaceMediane, appart_nb_ventes: a.nbVentes, appart_prix_m2_median: a.prixM2Median, maj_le: new Date().toISOString() });
   }
+  // Lot 114 (MAV, 15/11/2026 : « les loyers moyens de l'époque ») : le loyer de marché des
+  // appartements de la même année (carte des loyers de l'État, édition de l'année), pour le
+  // rendement théorique de chaque année. Édition pas encore publiée ou qui ne répond pas : les
+  // lignes partent sans loyer, et la base garde celui qu'elle a (aucune colonne n'est écrite à vide).
+  const delai = Math.min(DELAI_MS * 2, Math.max(1_000, echeance - Date.now()));
+  const loyers = await loyersAnil(annee, [...lignes.map((l) => String(l.code_insee))], AbortSignal.timeout(delai));
+  if (loyers) {
+    for (const l of lignes) {
+      const x = loyers.get(String(l.code_insee));
+      l.loyer_m2 = x ? Math.round(x.loyerM2 * 100) / 100 : null;
+      l.loyer_millesime = annee;
+    }
+  }
   return { lignes };
 }
 
@@ -101,11 +115,12 @@ export async function GET(req: Request) {
         body: JSON.stringify(corps),
         signal: AbortSignal.timeout(DELAI_MS),
       });
+    const sans = (prefixes: string[]) => lignes.map((l) => Object.fromEntries(Object.entries(l).filter(([cle]) => !prefixes.some((p) => cle.startsWith(p)))));
     let r = await envoyer(lignes);
-    // Une base d'avant la migration 0022 refuse les colonnes des appartements : on écrit au moins les immeubles.
-    if (r.status === 400) {
-      r = await envoyer(lignes.map((l) => Object.fromEntries(Object.entries(l).filter(([cle]) => !cle.startsWith("appart_")))));
-    }
+    // Une base d'avant la migration 0024 refuse les colonnes du loyer, d'avant la 0022 celles des
+    // appartements : on écrit au moins le reste.
+    if (r.status === 400) r = await envoyer(sans(["loyer_"]));
+    if (r.status === 400) r = await envoyer(sans(["loyer_", "appart_"]));
     return r;
   };
 

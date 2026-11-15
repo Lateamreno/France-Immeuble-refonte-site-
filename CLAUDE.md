@@ -686,6 +686,30 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   corrections du calcul détectables par programme (portefeuille mixte, vente en deux actes élargie,
   acte sans prix, garder le dernier acte d'un même immeuble vendu deux fois), à appliquer aux trois
   années à la fois ; effet sur la médiane de Paris inférieur à 1,5 %.
+- **Lot 114** (MAV, 15/11/2026 : « Pour l'immeuble en double en 2023 tu prends le dernier. […] Oui on
+  écarte quand ça prend des lots d'autres copro. Oui pour deux actes. Oui pas compter un acte sans prix
+  comme une deuxième vente, oui garder le deuxième acte. Le lien c'est un nouvel onglet. Pour le calcul
+  du rendement 2023 et 2024 il faudra prendre en base les loyers moyens de l'époque »). **Quatre
+  corrections du calcul DVF** (`ventesImmeubles`), pour toutes les années : une vente qui mêle un
+  immeuble sans numéros de lot et des lots numérotés d'une autre parcelle au-delà de 10 % de la surface
+  est écartée (`prendDesLotsDAutresCopros`, `PART_AUTRE_COPRO_MAX`) ; une vente d'un seul acte et un autre
+  acte du même jour sur la même parcelle, à lots différents, sont réunis quand aucun prix n'est rond et
+  que leur somme l'est (multiple de 10 000 €) ; un acte sans prix ne compte pas dans les séries ; une
+  série vendue exactement deux fois, à deux dates, sans numéros de lot, garde son dernier acte (reprises
+  du même jour et parts d'indivision toujours écartées). Paris : 2023 101 ventes, 8 043 € ; 2024 121,
+  7 791 € ; 2025 150, 7 009 €. **Les prix corrigés ne sont écrits en base qu'à la mise en production**
+  (la page Paris en ligne les lit) : `maj-prix-114.sql` hors dépôt, ou la tâche mensuelle. **Loyers de
+  chaque année** : colonnes `loyer_m2` et `loyer_millesime` (migration 0024, appliquée), carte des
+  loyers de l'État (ANIL, « Indicateurs de loyer appartement », édition de l'année des ventes, trouvée
+  par l'API de data.gouv.fr : `src/lib/loyers-anil.ts`) ; tout Paris = moyenne des vingt
+  arrondissements pondérée par le nombre d'annonces ; la tâche mensuelle les écrit avec chaque année
+  (sans loyer si l'édition n'est pas encore parue, rien n'est effacé) ; loyers 2023 à 2025 déjà en base.
+  Paris : 29,12, 31,34 puis 32,13 € le m² par mois. **Baromètre** : troisième tableau, rendement
+  théorique par arrondissement et par année (loyer de l'année × 12 ÷ prix médian de l'année,
+  emplacement `data-barometre="rendements"`), phrase du rendement de Paris dans le résumé (4,3 % en
+  2023, 5,5 % en 2025), section « Le rendement théorique, année par année ». **FAQ Paris** : tous les
+  liens s'ouvrent dans un nouvel onglet ; le lien vers le baromètre s'affiche enfin (son titre manquait
+  dans la réponse). « Vendre à Paris » reste dans le pied de page ; le menu est à trancher par MAV.
 
 ### Garde-fous non négociables
 

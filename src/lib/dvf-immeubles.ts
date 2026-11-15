@@ -17,6 +17,10 @@
  *    démembrements) est écartée : on ne sait pas quel prix vaut pour l'immeuble entier ;
  *  - deux actes du même jour sur une même parcelle sont une seule vente (prix et surfaces
  *    additionnés) ;
+ *  - lot 114 (MAV, 15/11/2026, après l'audit de 2023 et 2024) : un portefeuille qui prend des lots
+ *    d'une autre copropriété est écarté ; une vente payée en deux actes le même jour est réunie quand
+ *    la somme des deux prix est ronde ; un acte sans prix ne compte pas comme une deuxième vente ; un
+ *    immeuble sans numéros de lot vendu deux fois à deux dates garde son dernier acte ;
  *  - prix au m² (sur la surface bâtie hors dépendances, commerces compris) entre 3 000 et
  *    30 000 € pour écarter les valeurs aberrantes.
  * La médiane du prix au m² n'est publiée qu'à partir de trois ventes. La fourchette laisse de côté
@@ -160,19 +164,56 @@ export const quantile = (tries: number[], p: number) => {
   return tries[i] + (h - i) * ((tries[i + 1] ?? tries[i]) - tries[i]);
 };
 
+/** Part de surface au-delà de laquelle des lots d'une autre copropriété font écarter une vente (lot 114). */
+export const PART_AUTRE_COPRO_MAX = 0.1;
+/** Un prix « rond » : multiple de 10 000 €, pour reconnaître une vente payée en deux actes (lot 114). */
+const estRond = (prix: number) => prix > 0 && prix % 10_000 === 0;
+/** Un seul prix, positif, pour toute la mutation ; sinon `null`. */
+function prixUnique(rows: Ligne[]): number | null {
+  if (new Set(rows.map((r) => r.valeur_fonciere)).size !== 1 || !rows[0].valeur_fonciere) return null;
+  const prix = Number(rows[0].valeur_fonciere);
+  return Number.isFinite(prix) && prix > 0 ? prix : null;
+}
+const sansNumerosDeLot = (locaux: { r: Ligne }[]) => locaux.every((o) => !o.r.lot1_numero);
+const lotsDe = (rows: Ligne[]) => new Set(rows.filter((r) => r.lot1_numero).map((r) => `${r.id_parcelle}|${r.lot1_numero}`));
+
+/**
+ * Lot 114 (MAV, 15/11/2026, après l'audit de 2023 et 2024) : un portefeuille qui mêle un immeuble
+ * sans numéros de lot et des lots numérotés d'une autre copropriété (« oui on écarte quand ça prend
+ * des lots d'autres copro »). Une parcelle n'a que des locaux sans numéro, une autre n'a que des
+ * locaux numérotés, et cette autre part dépasse 10 % de la surface. Dix immeubles entiers bâtis sur
+ * plusieurs parcelles voisines (sans numéros partout) ne sont pas touchés.
+ */
+function prendDesLotsDAutresCopros(locaux: { r: Ligne; fois: number }[]): boolean {
+  const parParcelle = new Map<string, { r: Ligne; fois: number }[]>();
+  for (const o of locaux) {
+    const g = parParcelle.get(o.r.id_parcelle);
+    if (g) g.push(o); else parParcelle.set(o.r.id_parcelle, [o]);
+  }
+  if (parParcelle.size < 2) return false;
+  const surf = (xs: { r: Ligne; fois: number }[]) => xs.reduce((s, o) => s + o.fois * (Number(o.r.surface_reelle_bati) || 0), 0);
+  const groupes = [...parParcelle.values()];
+  const immeuble = groupes.some((g) => g.every((o) => !o.r.lot1_numero));
+  const enLots = groupes.filter((g) => g.every((o) => o.r.lot1_numero));
+  const total = surf(locaux);
+  return immeuble && enLots.length > 0 && total > 0 && surf(enLots.flat()) / total > PART_AUTRE_COPRO_MAX;
+}
+
 /**
  * @param ailleurs identifiants des mutations qui ont aussi des lignes dans le fichier d'une autre
  *   commune : leur prix couvre des locaux qu'on ne voit pas ici.
  */
 export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): StatsImmeubles {
   const parMutation = ventesParMutation(lignes);
-  type Candidate = { serie: string; date: string; parcelles: Set<string>; prix: number; surface: number };
+  type Candidate = { ids: string[]; serie: string; sansLots: boolean; date: string; parcelles: Set<string>; lots: Set<string>; prix: number; surface: number };
   const candidats: Candidate[] = [];
   // Toute vente de plus de cinq logements compte pour repérer une série vendue plusieurs fois,
-  // même si elle échoue à une autre règle (sans prix, plusieurs prix). La série, ce sont les
+  // même si elle échoue à une autre règle (plusieurs prix, par exemple). La série, ce sont les
   // logements seuls, sans leur numéro de lot : les mêmes appartements vendus une fois avec et une
   // fois sans numéros de lot sont la même série.
-  const series = new Map<string, number>();
+  // Lot 114 (MAV, 15/11/2026 : « pas compter un acte sans prix comme une deuxième vente ») : un acte
+  // sans aucun prix ne compte pas dans les séries.
+  const series = new Map<string, { n: number; dates: Set<string>; sansLots: boolean }>();
   for (const [id, rows] of parMutation) {
     const locaux = locauxDe(rows);
     const nbLocaux = locaux.reduce((s, o) => s + o.fois, 0);
@@ -185,27 +226,64 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
       parPlan.set(plan, (parPlan.get(plan) ?? 0) + o.fois);
     }
     const serie = [...parPlan].map(([plan, fois]) => `${plan}x${fois}`).sort().join(";");
-    series.set(serie, (series.get(serie) ?? 0) + 1);
-    const prixDistincts = new Set(rows.map((r) => r.valeur_fonciere));
-    if (prixDistincts.size !== 1) continue;
-    const prix = Number(rows[0].valeur_fonciere);
-    if (!rows[0].valeur_fonciere || !Number.isFinite(prix) || prix < 150_000) continue;
+    const sansLots = sansNumerosDeLot(locaux);
+    if (rows.some((r) => Number(r.valeur_fonciere) > 0)) {
+      const s = series.get(serie) ?? { n: 0, dates: new Set<string>(), sansLots: true };
+      s.n++; s.dates.add(rows[0].date_mutation); s.sansLots &&= sansLots;
+      series.set(serie, s);
+    }
+    const prix = prixUnique(rows);
+    if (prix == null || prix < 150_000) continue;
     if (nbLogements / nbLocaux < PART_HABITATION_MIN) continue;
     const surface = locaux.reduce((s, o) => s + o.fois * (Number(o.r.surface_reelle_bati) || 0), 0);
     if (!surface) continue;
     if (ailleurs?.has(id)) continue;
-    candidats.push({ serie, date: rows[0].date_mutation, parcelles: new Set(rows.map((r) => r.id_parcelle).filter(Boolean)), prix, surface });
+    if (prendDesLotsDAutresCopros(locaux)) continue;
+    candidats.push({ ids: [id], serie, sansLots, date: rows[0].date_mutation, parcelles: new Set(rows.map((r) => r.id_parcelle).filter(Boolean)), lots: lotsDe(rows), prix, surface });
   }
+  // Une série vendue plusieurs fois est écartée, sauf (lot 114, MAV, 15/11/2026 : « pour l'immeuble
+  // en double tu prends le dernier », « garder le deuxième acte ») un immeuble sans numéros de lot
+  // vendu deux fois à deux dates différentes : on garde le dernier acte. Les reprises du même jour
+  // et les parts d'indivision (plus de deux actes) restent écartées.
+  const gardee = (c: Candidate) => {
+    const s = series.get(c.serie);
+    if (!s || s.n === 1) return true;
+    if (s.n !== 2 || s.dates.size !== 2 || !s.sansLots || !c.sansLots) return false;
+    return c.date === [...s.dates].sort().at(-1);
+  };
   // Deux actes du même jour sur une même parcelle : une seule vente.
   const ventes: Candidate[] = [];
   for (const c of candidats) {
-    if (series.get(c.serie) !== 1) continue;
+    if (!gardee(c)) continue;
     const deja = ventes.find((v) => v.date === c.date && [...c.parcelles].some((p) => v.parcelles.has(p)));
     if (deja) {
+      deja.ids.push(...c.ids);
       deja.prix += c.prix;
       deja.surface += c.surface;
       for (const p of c.parcelles) deja.parcelles.add(p);
-    } else ventes.push({ ...c, parcelles: new Set(c.parcelles) });
+      for (const l of c.lots) deja.lots.add(l);
+    } else ventes.push({ ...c, ids: [...c.ids], parcelles: new Set(c.parcelles), lots: new Set(c.lots) });
+  }
+  // Lot 114 (MAV, 15/11/2026 : « oui pour deux actes ») : une vente payée en deux actes le même jour,
+  // dont l'un porte cinq logements ou moins. On réunit une vente retenue d'un seul acte et un autre
+  // acte du même jour, sur la même parcelle, à lots différents, quand aucun des deux prix n'est rond
+  // et que leur somme l'est (multiple de 10 000 €).
+  const pris = new Set(ventes.flatMap((v) => v.ids));
+  for (const v of ventes) {
+    if (v.ids.length !== 1 || estRond(v.prix)) continue;
+    for (const [id, rows] of parMutation) {
+      if (pris.has(id) || ailleurs?.has(id) || rows[0].date_mutation !== v.date) continue;
+      if (!rows.some((r) => v.parcelles.has(r.id_parcelle))) continue;
+      const lots = lotsDe(rows);
+      if ([...lots].some((l) => v.lots.has(l))) continue;
+      const prix = prixUnique(rows);
+      if (prix == null || estRond(prix) || !estRond(v.prix + prix)) continue;
+      const surface = locauxDe(rows).reduce((s, o) => s + o.fois * (Number(o.r.surface_reelle_bati) || 0), 0);
+      v.ids.push(id); pris.add(id);
+      v.prix += prix;
+      v.surface += surface;
+      break;
+    }
   }
   const pm2 = ventes
     .filter((c) => dansLesBornes(c.prix / c.surface))

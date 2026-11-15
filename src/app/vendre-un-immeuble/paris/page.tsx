@@ -479,7 +479,8 @@ export default async function VendreUnImmeubleParis() {
           q.lien && suite.length ? (
             <p>
               {insecable(avant)}
-              <Link href={q.lien.href} className="lien-texte" {...(q.lien.href === "/vendre-un-immeuble-a-la-decoupe/" ? { target: "_blank", rel: "noopener" } : {})}>{q.lien.texte}</Link>
+              {/* Lot 114 (MAV, 15/11/2026 : « le lien c'est un nouvel onglet ») : les liens de la FAQ s'ouvrent dans un nouvel onglet, le visiteur garde la page et son formulaire. */}
+              <Link href={q.lien.href} className="lien-texte" target="_blank" rel="noopener">{q.lien.texte}</Link>
               {insecable(suite.join(q.lien.texte))}
             </p>
           ) : undefined,

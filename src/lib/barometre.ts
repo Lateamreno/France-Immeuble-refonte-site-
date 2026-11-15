@@ -33,6 +33,10 @@ export type AnneeMarche = {
   appartPrixM2Median: number | null;
   /** Décote face aux appartements, en % entier signé (−28). */
   decote: number | null;
+  /** Loyer de marché des appartements de la même année (ANIL), €/m² par mois (lot 114). */
+  loyerM2: number | null;
+  /** Rendement théorique de l'année, en % : loyer de l'année × 12 ÷ prix médian au m² des immeubles. */
+  rendement: number | null;
   majLe: string | null;
 };
 
@@ -40,6 +44,8 @@ export type AnneeMarche = {
 export type Historique = Map<string, AnneeMarche[]>;
 
 const COLONNES = "code_insee,annee,nb_ventes,prix_m2_median,prix_median,surface_mediane,appart_prix_m2_median,maj_le";
+/** Lot 114 : le loyer de l'année. Une base d'avant la migration 0024 refuse la colonne : on relit sans. */
+const COLONNES_LOYER = `${COLONNES},loyer_m2`;
 const num = (v: unknown) => (v == null || v === "" ? null : Number(v));
 
 export const CODES_ARRONDISSEMENTS = Array.from({ length: 20 }, (_, i) => `751${String(i + 1).padStart(2, "0")}`);
@@ -51,16 +57,20 @@ export async function historiqueParis(): Promise<Historique> {
   if (!cfg) return out;
   const codes = [CODE_PARIS, ...CODES_ARRONDISSEMENTS];
   try {
-    const r = await fetch(
-      `${cfg.url}/rest/v1/marche_immeubles?select=${COLONNES}&code_insee=in.(${codes.join(",")})&order=annee.asc`,
-      { headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` }, next: { revalidate: 86400, tags: ["marche"] }, signal: AbortSignal.timeout(4000) },
-    );
+    const lire = (colonnes: string) =>
+      fetch(
+        `${cfg.url}/rest/v1/marche_immeubles?select=${colonnes}&code_insee=in.(${codes.join(",")})&order=annee.asc`,
+        { headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` }, next: { revalidate: 86400, tags: ["marche"] }, signal: AbortSignal.timeout(4000) },
+      );
+    let r = await lire(COLONNES_LOYER);
+    if (r.status === 400) r = await lire(COLONNES);
     if (!r.ok) return out;
     const lignes = (await r.json()) as Record<string, unknown>[];
     for (const l of lignes) {
       const code = String(l.code_insee);
       const prixM2Median = num(l.prix_m2_median);
       const appartPrixM2Median = num(l.appart_prix_m2_median);
+      const loyerM2 = num(l.loyer_m2);
       const a: AnneeMarche = {
         annee: Number(l.annee),
         nbVentes: Number(l.nb_ventes) || 0,
@@ -69,6 +79,8 @@ export async function historiqueParis(): Promise<Historique> {
         surfaceMediane: num(l.surface_mediane),
         appartPrixM2Median,
         decote: decotePct(prixM2Median, appartPrixM2Median),
+        loyerM2,
+        rendement: loyerM2 && prixM2Median ? (loyerM2 * 12 * 100) / prixM2Median : null,
         majLe: typeof l.maj_le === "string" ? l.maj_le : null,
       };
       out.set(code, [...(out.get(code) ?? []), a]);
@@ -162,6 +174,35 @@ function tableauArrondissements(h: Historique, annees: number[]): string {
   );
 }
 
+const unChiffre = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+/**
+ * Lot 114 (MAV, 15/11/2026 : « pour le calcul du rendement 2023 et 2024 il faudra prendre en base les
+ * loyers moyens de l'époque ») : le rendement théorique, année par année, chaque année avec ses loyers.
+ * Une case n'a de rendement que si elle a un prix (trois ventes au moins) et un loyer.
+ */
+function tableauRendements(h: Historique, annees: number[]): string {
+  const avecLoyer = annees.filter((y) => [...h.values()].some((xs) => xs.some((a) => a.annee === y && a.loyerM2 != null)));
+  if (!avecLoyer.length) return "";
+  const cellule = (a: AnneeMarche | undefined) => {
+    if (!a || a.nbVentes < VENTES_MIN_PRIX || a.rendement == null) return `<td class="barometre__vide">–</td>`;
+    const prudence = a.nbVentes < VENTES_PRUDENCE;
+    return `<td${prudence ? ' class="barometre__prudence"' : ""}>${unChiffre(a.rendement)}${NBSP}%${prudence ? "*" : ""}</td>`;
+  };
+  const ligne = (code: string, libelle: string, classe = "") => {
+    const parAnnee = new Map((h.get(code) ?? []).map((a) => [a.annee, a]));
+    return `<tr${classe ? ` class="${classe}"` : ""}><th scope="row">${libelle}</th>${avecLoyer.map((y) => cellule(parAnnee.get(y))).join("")}</tr>`;
+  };
+  const corps = CODES_ARRONDISSEMENTS.map((c) => ligne(c, arrondissement(c))).join("") + ligne(CODE_PARIS, "Paris", "barometre__total");
+  return (
+    `<div class="barometre barometre--arr"><table>` +
+    `<caption>Rendement théorique des immeubles, par arrondissement</caption>` +
+    `<thead><tr><th scope="col">${tete("Arrondissement", "Arr.")}</th>${avecLoyer.map((y) => `<th scope="col">${y}</th>`).join("")}</tr></thead>` +
+    `<tbody>${corps}</tbody></table></div>` +
+    `<p class="barometre__note">Loyer de marché des appartements de l’année sur douze mois, charges comprises, rapporté au prix médian au m² des immeubles vendus la même année. Pour Paris, loyer moyen des vingt arrondissements. * De trois à quatre ventes : à lire avec prudence.</p>`
+  );
+}
+
 function resume(paris: AnneeMarche[]): string {
   const premiere = paris[0];
   const derniere = paris[paris.length - 1];
@@ -180,6 +221,11 @@ function resume(paris: AnneeMarche[]): string {
     );
   }
   phrases.push(`Le nombre de ventes d’immeubles est passé de ${nombre(premiere.nbVentes)} à ${nombre(derniere.nbVentes)}.`);
+  if (premiere.rendement != null && derniere.rendement != null) {
+    phrases.push(
+      `Avec les loyers de marché de chaque année, le rendement théorique d’un immeuble est passé de ${unChiffre(premiere.rendement)}${NBSP}% en ${premiere.annee} à ${unChiffre(derniere.rendement)}${NBSP}% en ${derniere.annee}.`,
+    );
+  }
   if (premiere.prixMedian && derniere.prixMedian && premiere.surfaceMediane && derniere.surfaceMediane) {
     phrases.push(
       `La surface médiane des ventes était de ${nombre(Math.round(derniere.surfaceMediane))}${NBSP}m² et leur prix médian de ${millions(derniere.prixMedian)} en ${derniere.annee}, contre ${nombre(Math.round(premiere.surfaceMediane))}${NBSP}m² et ${millions(premiere.prixMedian)} en ${premiere.annee}.`,
@@ -216,5 +262,6 @@ export function remplirBarometre(html: string, h: Historique): string {
   return html
     .replace('<div data-barometre="paris"></div>', paris.length ? tableauParis(paris) : sansChiffres)
     .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris)}</p>` : "")
-    .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "");
+    .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "")
+    .replace('<div data-barometre="rendements"></div>', annees.length ? tableauRendements(h, annees) : "");
 }
