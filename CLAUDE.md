@@ -731,6 +731,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Reventes à quelques jours gardées par la règle du dernier acte (MAV : « garde les reventes »).
   **Lots 113, 114 et 115 en production le 15/11/2026** (« Go prod », MAV), prix corrigés écrits en base
   au même moment.
+- **Lot 116** (MAV, 15/11/2026 : « Pas besoin de 2023 à 2025 et pas besoin non plus du nombre de
+  ventes »). Baromètre, tableau des prix par arrondissement : le prix et, dessous, « −12 % sur un an »,
+  rien d'autre ; colonne de la période et nombre de ventes retirés, `.barometre--serre` supprimé. Sur la
+  branche, en attente de l'accord de MAV.
 
 ### Garde-fous non négociables
 

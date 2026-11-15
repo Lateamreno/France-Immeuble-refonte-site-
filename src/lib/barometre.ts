@@ -99,7 +99,6 @@ const euros = (n: number) => `${nombre(Math.round(n))}${NBSP}€`;
 const pct = (n: number) => `${n < 0 ? MOINS : n > 0 ? "+" : ""}${Math.abs(n)}${NBSP}%`;
 const variation = (de: number, a: number) => Math.round((a / de - 1) * 100);
 const millions = (n: number) => `${(n / 1e6).toLocaleString("fr-FR", { maximumFractionDigits: 1 })}${NBSP}M€`;
-const ventes = (n: number) => (n === 0 ? "aucune vente" : `${nombre(n)}${NBSP}vente${n > 1 ? "s" : ""}`);
 const arrondissement = (code: string) => {
   const n = Number(code.slice(3));
   return n === 1 ? "1er" : `${n}e`;
@@ -201,7 +200,7 @@ function tableauArr(caption: string, colonnes: Colonne[], note: string): string 
     `<tr${classe ? ` class="${classe}"` : ""}><th scope="row">${libelle}</th>${colonnes.map((c) => cellule(c, code)).join("")}</tr>`;
   const corps = CODES_ARRONDISSEMENTS.map((c) => ligne(c, arrondissement(c))).join("") + ligne(CODE_PARIS, "Paris", "barometre__total");
   return (
-    `<div class="barometre barometre--arr${colonnes.length > 3 ? " barometre--serre" : ""}"><table>` +
+    `<div class="barometre barometre--arr"><table>` +
     `<caption>${caption}</caption>` +
     `<thead><tr><th scope="col">${tete("Arrondissement", "Arr.")}</th>${colonnes.map((c) => `<th scope="col">${c.tete}</th>`).join("")}</tr></thead>` +
     `<tbody>${corps}</tbody></table></div>` +
@@ -222,34 +221,24 @@ const publiable = (h: Historique, code: string, annee: number) => {
  * sur toute la période, comme le tableau des évolutions qu'elle remplace.
  */
 function tableauArrondissements(h: Historique, annees: number[]): string {
-  const colonnes: Colonne[] = annees.map((y, i) => ({
-    tete: String(y),
-    valeur: (code) => {
-      const a = (h.get(code) ?? []).find((x) => x.annee === y);
-      if (!a) return null;
-      if (a.nbVentes < VENTES_MIN_PRIX || !a.prixM2Median) return { texte: "–", prudence: false, sous: ventes(a.nbVentes) };
-      const avant = i > 0 ? publiable(h, code, annees[i - 1]) : null;
-      // Au téléphone, l'évolution passe sous le nombre de ventes (le point disparaît).
-      const evolution = avant
-        ? `<span class="barometre__sep"> · </span><span class="barometre__evo">${pct(variation(avant.prixM2Median!, a.prixM2Median))}</span>`
-        : "";
-      return { texte: euros(a.prixM2Median), prudence: a.nbVentes < VENTES_PRUDENCE, sous: `<span class="barometre__nb">${ventes(a.nbVentes)}</span>${evolution}` };
-    },
-  }));
-  const [premiere, derniere] = [annees[0], annees[annees.length - 1]];
-  if (annees.length > 2)
-    colonnes.push({
-      tete: tete(`${premiere} à ${derniere}`, `${String(premiere).slice(2)}-${String(derniere).slice(2)}`),
-      valeur: (code) => {
-        const x = publiable(h, code, premiere), y = publiable(h, code, derniere);
-        if (!x || !y) return null;
-        return { texte: pct(variation(x.prixM2Median!, y.prixM2Median!)), prudence: x.nbVentes < VENTES_PRUDENCE || y.nbVentes < VENTES_PRUDENCE };
-      },
-    });
+  // Lot 116 (MAV, 15/11/2026 : « Pas besoin de 2023 à 2025 et pas besoin non plus du nombre de
+  // ventes ») : le prix et, dessous, son évolution sur un an, rien d'autre.
   return tableauArr(
     "Prix médian au m² des immeubles vendus en bloc et son évolution, par arrondissement",
-    colonnes,
-    `Sous chaque prix, le nombre de ventes de l’année et l’évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins.${annees.length > 2 ? ` La dernière colonne donne l’évolution de ${premiere} à ${derniere}.` : ""} Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez ces écarts comme des ordres de grandeur. ${NOTE_PRUDENCE}`,
+    annees.map((y, i) => ({
+      tete: String(y),
+      valeur: (code) => {
+        const a = publiable(h, code, y);
+        if (!a) return null;
+        const avant = i > 0 ? publiable(h, code, annees[i - 1]) : null;
+        return {
+          texte: euros(a.prixM2Median!),
+          prudence: a.nbVentes < VENTES_PRUDENCE,
+          sous: avant ? `${pct(variation(avant.prixM2Median!, a.prixM2Median!))} sur un an` : undefined,
+        };
+      },
+    })),
+    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez ces écarts comme des ordres de grandeur. ${NOTE_PRUDENCE}`,
   );
 }
 

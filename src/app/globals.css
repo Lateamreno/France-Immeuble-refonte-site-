@@ -1142,7 +1142,7 @@ html[class] .hero-media h1.eyebrow{
 .prose .barometre tbody th{font-weight:600;white-space:nowrap;}
 .prose .barometre td strong{font-weight:700;color:var(--color-noir);}
 .barometre__sous{display:block;margin-top:2px;font-size:.76rem;line-height:1.3;color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));white-space:nowrap;}
-.barometre__val,.barometre__nb,.barometre__evo{white-space:nowrap;}
+.barometre__val{white-space:nowrap;}
 .barometre__vide,.barometre__prudence{color:color-mix(in srgb,var(--color-noir) 58%,var(--color-creme));}
 .prose .barometre .barometre__total th,.prose .barometre .barometre__total td{font-weight:700;border-top:1px solid color-mix(in srgb,var(--color-noir) 30%,transparent);}
 .barometre__court{display:none;}
@@ -1155,25 +1155,11 @@ html[class] .hero-media h1.eyebrow{
   .prose .barometre th,.prose .barometre td{padding:.5em .4em;}
   .prose .barometre thead th{letter-spacing:.04em;}
   .barometre__sous{white-space:normal;}
-  .barometre__sep{display:none;}
-  .barometre__evo{display:block;}
 }
 @media (max-width:359px){
   .prose .barometre table{font-size:.78rem;}
   .prose .barometre th,.prose .barometre td{padding:.45em .25em;}
   .barometre__sous{font-size:.7rem;white-space:normal;}
-}
-
-/* Tableau de plus de trois colonnes d'années (prix et évolution, lot 115) : resserré au téléphone. */
-@media (max-width:419px){
-  .prose .barometre--serre table{font-size:.76rem;}
-  .prose .barometre--serre th,.prose .barometre--serre td{padding:.45em .2em;}
-  .barometre--serre .barometre__sous{font-size:.68rem;}
-}
-@media (max-width:359px){
-  .prose .barometre--serre table{font-size:.7rem;}
-  .prose .barometre--serre th,.prose .barometre--serre td{padding:.4em .12em;}
-  .barometre--serre .barometre__sous{font-size:.64rem;}
 }
 
 /* Note de datation en pied d'article. Discrete : elle informe, elle ne
