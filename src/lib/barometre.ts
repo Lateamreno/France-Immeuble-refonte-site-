@@ -194,7 +194,7 @@ function tableauParisRendement(annees: AnneeMarche[]): string {
 type Colonne = { tete: string; valeur: (code: string) => { texte: string; prudence: boolean; sous?: string } | null };
 
 /** Un tableau par arrondissement (et Paris en dernière ligne), une colonne par année ou par période. */
-function tableauArr(caption: string, colonnes: Colonne[], note: string): string {
+function tableauArr(caption: string, colonnes: Colonne[], note: string, apresLibelle: (code: string) => string = () => ""): string {
   if (!colonnes.length) return "";
   const cellule = (c: Colonne, code: string) => {
     const v = c.valeur(code);
@@ -202,7 +202,7 @@ function tableauArr(caption: string, colonnes: Colonne[], note: string): string 
     return `<td${v.prudence ? ' class="barometre__prudence"' : ""}><span class="barometre__val">${v.texte}${v.prudence ? "*" : ""}</span>${v.sous ? sous(v.sous) : ""}</td>`;
   };
   const ligne = (code: string, libelle: string, classe = "") =>
-    `<tr${classe ? ` class="${classe}"` : ""}><th scope="row">${libelle}</th>${colonnes.map((c) => cellule(c, code)).join("")}</tr>`;
+    `<tr${classe ? ` class="${classe}"` : ""}><th scope="row">${libelle}${apresLibelle(code)}</th>${colonnes.map((c) => cellule(c, code)).join("")}</tr>`;
   const corps = CODES_ARRONDISSEMENTS.map((c) => ligne(c, arrondissement(c))).join("") + ligne(CODE_PARIS, "Paris", "barometre__total");
   return (
     `<div class="barometre barometre--arr"><table>` +
@@ -226,25 +226,29 @@ const publiable = (h: Historique, code: string, annee: number) => {
  * sur toute la période, comme le tableau des évolutions qu'elle remplace.
  */
 /**
- * Trois étoiles, pleines jusqu'à la note (même dessin et même règle que la page Paris, lot 111) ; le
- * nombre de ventes s'affiche au survol ou au toucher (lot 118, MAV, 15/11/2026 : « au survol le nombre
- * de ventes, j'avoue c'est bien pour la fiabilité »).
+ * La fiabilité d'un arrondissement, une seule note pour toutes les années (lot 119, MAV, 15/11/2026 :
+ * « Y a trop d'étoiles, on peut pas les mettre juste à côté de l'arrondissement en moyenne des 3 années
+ * et au survol on met juste les ventes pour les 3 années »). Moyenne des notes des années qui ont un prix
+ * publié (règle de la page Paris, `noteFiabilite`), arrondie vers le bas à la demie ; le nombre de ventes
+ * de chaque année s'affiche au survol ou au toucher. Même dessin d'étoiles que la page Paris.
  */
-function etoiles(a: AnneeMarche): string {
-  const note = noteFiabilite(a);
-  if (!note) return "";
+function etoilesArrondissement(h: Historique, code: string, annees: number[]): string {
+  const notes = annees.map((y) => publiable(h, code, y)).filter((a): a is AnneeMarche => a != null).map((a) => noteFiabilite(a)).filter((n): n is NonNullable<typeof n> => n != null);
+  if (!notes.length) return "";
+  const note = Math.max(1, Math.ceil(notes.reduce((t, n) => t + n, 0) / notes.length - 0.5));
+  const ventesAn = annees.map((y) => `${nombre((h.get(code) ?? []).find((a) => a.annee === y)?.nbVentes ?? 0)} en ${y}`);
+  const bulle = `Ventes : ${ventesAn.slice(0, -1).join(", ")} et ${ventesAn[ventesAn.length - 1]}`;
   const etoile = (pleine: boolean) =>
-    `<svg viewBox="0 0 24 24" width="13" height="13"${pleine ? ' class="est-pleine"' : ""}><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`;
-  const nb = `${nombre(a.nbVentes)}${NBSP}vente${a.nbVentes > 1 ? "s" : ""}`;
+    `<svg viewBox="0 0 24 24" width="12" height="12"${pleine ? ' class="est-pleine"' : ""}><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`;
   return (
-    `<span class="barometre__fiab" tabindex="0" data-ventes="${nb}" aria-label="Fiabilité ${note} sur 3, ${nb}">` +
+    `<span class="barometre__fiab" tabindex="0" data-ventes="${bulle}" aria-label="Fiabilité ${note} sur 3. ${bulle}">` +
     [1, 2, 3].map((i) => etoile(i <= note)).join("") +
     `</span>`
   );
 }
 
 function tableauArrondissements(h: Historique, annees: number[]): string {
-  // Lots 116 et 118 (MAV, 15/11/2026) : le prix, puis son évolution sur un an et la fiabilité de l'année.
+  // Lots 116, 118 et 119 (MAV, 15/11/2026) : le prix et son évolution ; la fiabilité à côté de l'arrondissement.
   return tableauArr(
     "Prix médian au m² des immeubles vendus en bloc et son évolution, par arrondissement",
     annees.map((y, i) => ({
@@ -253,11 +257,11 @@ function tableauArrondissements(h: Historique, annees: number[]): string {
         const a = publiable(h, code, y);
         if (!a) return null;
         const avant = i > 0 ? publiable(h, code, annees[i - 1]) : null;
-        const evolution = avant ? `${pct(variation(avant.prixM2Median!, a.prixM2Median!))} ` : "";
-        return { texte: euros(a.prixM2Median!), prudence: false, sous: `${evolution}${etoiles(a)}` };
+        return { texte: euros(a.prixM2Median!), prudence: false, sous: avant ? pct(variation(avant.prixM2Median!, a.prixM2Median!)) : undefined };
       },
     })),
-    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins, et sa fiabilité de une à trois étoiles : trois quand les ventes sont nombreuses et leurs prix proches les uns des autres, une sous cinq ventes. Le nombre de ventes s’affiche au survol des étoiles. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez les évolutions comme des ordres de grandeur. Un prix n’est donné qu’à partir de trois ventes dans l’année.`,
+    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins. Les étoiles disent la fiabilité des prix de l’arrondissement, en moyenne sur les années publiées : trois quand les ventes sont nombreuses et leurs prix proches les uns des autres, une quand elles sont rares. Le nombre de ventes de chaque année s’affiche au survol des étoiles. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez les évolutions comme des ordres de grandeur. Un prix n’est donné qu’à partir de trois ventes dans l’année.`,
+    (code) => etoilesArrondissement(h, code, annees),
   );
 }
 

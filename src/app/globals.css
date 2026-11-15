@@ -1145,12 +1145,13 @@ html[class] .hero-media h1.eyebrow{
 .barometre__val{white-space:nowrap;}
 .prose .barometre td{white-space:nowrap;}
 /* Fiabilité de chaque année (lot 118) : trois étoiles comme sur la page Paris, le nombre de ventes au survol ou au toucher. */
-.barometre__fiab{position:relative;display:inline-flex;gap:1px;vertical-align:-2px;cursor:help;border-radius:3px;}
+.barometre__fiab{position:relative;display:inline-flex;gap:1px;margin-left:6px;vertical-align:-1px;font-weight:400;cursor:help;border-radius:3px;}
 .barometre__fiab svg{flex:none;fill:none;stroke:var(--color-bronze-profond);stroke-width:1.6;stroke-linejoin:round;}
 .barometre__fiab svg.est-pleine{fill:var(--color-bronze-profond);}
 .barometre__fiab:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:2px;}
-.barometre__fiab::after{content:attr(data-ventes);position:absolute;right:0;bottom:calc(100% + 6px);padding:4px 8px;border-radius:6px;background:var(--color-noir);color:var(--color-creme);font-size:.72rem;line-height:1.2;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:2;}
+.barometre__fiab::after{content:attr(data-ventes);position:absolute;left:0;bottom:calc(100% + 6px);padding:4px 8px;border-radius:6px;background:var(--color-noir);color:var(--color-creme);font-size:.72rem;line-height:1.3;width:max-content;max-width:210px;white-space:normal;opacity:0;pointer-events:none;transition:opacity .12s;z-index:2;}
 .barometre__fiab:hover::after,.barometre__fiab:focus::after{opacity:1;}
+@media (max-width:419px){th > .barometre__fiab{display:flex;width:max-content;margin:5px 0 0;}}
 /* Courbe des prix à Paris (lot 117) : une seule échelle, deux lignes fines, l'immeuble en bronze profond. */
 .prose .barometre-courbe{margin:1.6em 0 1.2em;max-width:560px;}
 .prose .barometre-courbe figcaption{font-family:var(--font-mono-site);font-size:.72rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--color-bronze-profond);margin:0 0 8px;}

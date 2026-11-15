@@ -752,6 +752,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   toucher** des étoiles (`.barometre__fiab`, `data-ventes`) ; l'astérisque des prix de trois ou quatre
   ventes disparaît de ce tableau (une étoile le dit). Une seule colonne de fiabilité ne convient pas :
   chaque année a la sienne. Sur la branche, en attente.
+- **Lot 119** (MAV, 15/11/2026 : « Y a trop d'étoiles, on peut pas les mettre juste à côté de
+  l'arrondissement en moyenne des 3 années et au survol on met juste les ventes pour les 3 années »).
+  Tableau des prix par arrondissement : **une seule note par arrondissement**, à côté de son nom (sous le
+  nom au-dessous de 420 px), moyenne des notes `noteFiabilite` des années qui ont un prix publié, arrondie
+  vers le bas à la demie (`etoilesArrondissement`) ; au survol ou au toucher, « Ventes : 5 en 2023, 10 en
+  2024 et 22 en 2025 » ; les cases ne gardent que le prix et l'évolution. L'infobulle passe à la ligne
+  (210 px au plus) : d'une ligne, elle élargissait le tableau à 320 px. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
