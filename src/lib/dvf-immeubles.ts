@@ -203,9 +203,15 @@ function prendDesLotsDAutresCopros(locaux: { r: Ligne; fois: number }[]): boolea
  * @param ailleurs identifiants des mutations qui ont aussi des lignes dans le fichier d'une autre
  *   commune : leur prix couvre des locaux qu'on ne voit pas ici.
  */
-export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): StatsImmeubles {
+type Candidate = { ids: string[]; serie: string; sansLots: boolean; date: string; parcelles: Set<string>; lots: Set<string>; prix: number; surface: number };
+
+/**
+ * Les ventes d'immeubles retenues, une par vente, avec leur prix au m², du moins cher au plus cher.
+ * Une seule sélection pour les chiffres (`ventesImmeubles`) et pour le détail (`detailVentesImmeubles`,
+ * lot 125) : la liste vente par vente est exactement celle qui fait les médianes.
+ */
+function retenues(lignes: Ligne[], ailleurs?: ReadonlySet<string>): { ventes: (Candidate & { pm2: number })[]; parMutation: Map<string, Ligne[]> } {
   const parMutation = ventesParMutation(lignes);
-  type Candidate = { ids: string[]; serie: string; sansLots: boolean; date: string; parcelles: Set<string>; lots: Set<string>; prix: number; surface: number };
   const candidats: Candidate[] = [];
   // Toute vente de plus de cinq logements compte pour repérer une série vendue plusieurs fois,
   // même si elle échoue à une autre règle (plusieurs prix, par exemple). La série, ce sont les
@@ -303,6 +309,11 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     .filter((c) => dansLesBornes(c.prix / c.surface))
     .map((c) => ({ ...c, pm2: c.prix / c.surface }))
     .sort((a, b) => a.pm2 - b.pm2);
+  return { ventes: pm2, parMutation };
+}
+
+export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): StatsImmeubles {
+  const pm2 = retenues(lignes, ailleurs).ventes;
   const n = pm2.length;
   // La fourchette : du premier au troisième quartile. On laisse de côté autant de ventes en bas
   // qu'en haut, la médiane n'en bouge pas.
@@ -318,6 +329,70 @@ export function ventesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>)
     prixMedian: n >= 3 ? Math.round(mediane(pm2.map((c) => c.prix))!) : null,
     surfaceMediane: n >= 3 ? Math.round(mediane(pm2.map((c) => c.surface))!) : null,
   };
+}
+
+/** Un groupe de locaux semblables d'une vente : type, surface et nombre de pièces, et combien. */
+export type LotVendu = { type: string; surface: number | null; pieces: number | null; nombre: number };
+
+/**
+ * Une vente d'immeuble retenue, telle que la page des ventes l'affiche (lot 125, MAV, 15/11/2026).
+ * La rue sans son numéro (règle de MAV du 21/10/2026 pour les ventes publiées) ; les lots par type et
+ * surface, sans loyer (DVF ne le connaît pas). Ce détail ne doit pas être indexé par les moteurs de
+ * recherche (conditions de réutilisation de DVF) : il n'est servi que par une adresse fermée aux robots.
+ */
+export type VenteImmeubleDetail = {
+  id: string;
+  date: string;
+  /** La rue telle que DVF l'écrit (« RUE BERANGER ») ; la tâche la remplace par le nom officiel. */
+  rue: string | null;
+  codePostal: string | null;
+  prix: number;
+  surface: number;
+  prixM2: number;
+  logements: number;
+  /** Au moins un local commercial ou d'activité. */
+  mixte: boolean;
+  lots: LotVendu[];
+  lat: number | null;
+  lon: number | null;
+};
+
+export function detailVentesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): VenteImmeubleDetail[] {
+  const { ventes, parMutation } = retenues(lignes, ailleurs);
+  return ventes.map((v) => {
+    const rows = v.ids.flatMap((id) => parMutation.get(id) ?? []);
+    const locaux = v.ids.flatMap((id) => locauxDe(parMutation.get(id) ?? []));
+    const groupes = new Map<string, LotVendu>();
+    for (const o of locaux) {
+      const surface = Number(o.r.surface_reelle_bati) || null;
+      const pieces = Number(o.r.nombre_pieces_principales) || null;
+      const type = o.r.type_local === "Local industriel. commercial ou assimilé" ? "Local commercial" : o.r.type_local;
+      const cle = `${type}|${surface}|${type === "Local commercial" ? "" : pieces}`;
+      const g = groupes.get(cle);
+      if (g) g.nombre += o.fois; else groupes.set(cle, { type, surface, pieces: type === "Local commercial" ? null : pieces, nombre: o.fois });
+    }
+    const lots = [...groupes.values()].sort((a, b) => a.type.localeCompare(b.type) || (a.surface ?? 0) - (b.surface ?? 0));
+    // La rue la plus présente dans les lignes de la vente.
+    const rues = new Map<string, number>();
+    for (const r of rows) if (r.adresse_nom_voie) rues.set(r.adresse_nom_voie, (rues.get(r.adresse_nom_voie) ?? 0) + 1);
+    const rue = [...rues].sort((a, b) => b[1] - a[1])[0]?.[0];
+    const coords = rows.map((r) => [Number(r.latitude), Number(r.longitude)]).filter(([la, lo]) => la && lo);
+    const moy = (i: number) => (coords.length ? coords.reduce((s, c) => s + c[i], 0) / coords.length : null);
+    return {
+      id: [...v.ids].sort()[0],
+      date: v.date,
+      rue: rue ?? null,
+      codePostal: rows.find((r) => r.code_postal)?.code_postal ?? null,
+      prix: Math.round(v.prix),
+      surface: Math.round(v.surface),
+      prixM2: Math.round(v.pm2),
+      logements: locaux.reduce((s, o) => s + (estLogement(o.r) ? o.fois : 0), 0),
+      mixte: locaux.some((o) => !estLogement(o.r)),
+      lots,
+      lat: moy(0),
+      lon: moy(1),
+    };
+  });
 }
 
 /** Sous ce nombre de ventes, le prix médian des appartements ne se publie pas : pas de décote. */

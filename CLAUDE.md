@@ -814,6 +814,23 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   annonce… ». **Lots 123 et 124 en production le 15/11/2026** (« Go prod », MAV).
   Même jour : profils publics de l'agence donnés par MAV (LinkedIn, Facebook, Pages Jaunes, MeilleursAgents,
   agenceimmo-france, Tracxn) ajoutés au `sameAs` de `organisation()`. **En production le 15/11/2026** (« Go prod », MAV).
+- **Lot 125** (MAV, 15/11/2026 : l'historique des ventes par arrondissement d'un concurrent, « nous en texte »,
+  « toutes les ventes d'immeubles de DVF je veux qu'elles soient indexées donc je veux qu'on trouve une
+  solution »). Page **`/ventes-immeubles-paris/`** (sitemap) : hero, trois repères, sommaire des vingt
+  arrondissements, une section par arrondissement avec une phrase d'agrégats (ventes, avec un commerce,
+  logements en général, prix médian de la dernière année), puis la liste vente par vente : rue sans numéro
+  (nom officiel de la BAN), mois, habitation ou mixte, prix, prix au m², surface, rendement théorique (loyer
+  ANIL de l'année), lots (type, pièces, surface ; pas de loyer, DVF ne le connaît pas), photo. **Le détail
+  ne passe jamais dans le HTML** : `VentesDvf` le charge depuis `/api/ventes-dvf/` (robots.txt l'interdit,
+  `X-Robots-Tag: noindex`, `data-nosnippet`) ; Google indexe le texte et les agrégats. Contrôlé par script :
+  aucun prix ni aucune rue de vente dans le HTML servi. Même sélection que les médianes
+  (`detailVentesImmeubles`, `retenues` partagée avec `ventesImmeubles`, chiffres inchangés : 101, 121, 150).
+  Table `ventes_immeubles_dvf` (migration 0025, RLS lecture seule), tâche mensuelle `/api/marche/ventes/`
+  (vercel.json) qui garde rue et photo déjà cherchées. **Photos** : Panoramax seulement (licence libre,
+  auteur cité, « photo recadrée ») ; Google Street View et Apple Plans refusés (leurs conditions interdisent
+  la reprise, même recadrée ou floutée) ; 360° recadrés vers l'immeuble, photo ordinaire gardée seulement si
+  elle le vise (25°), **rez-de-chaussée flouté en fondu** (numéro, enseignes, passants) par
+  `/api/ventes-dvf/photo/[id]/` (un an en cache). 167 photos pour 372 ventes. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

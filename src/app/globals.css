@@ -6046,3 +6046,42 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 /* Menu déroulant (MAV, 10/11/2026) : retour au panneau avec fond du lot 94. La version « F »
    sans fond du retour #283 ne se lisait pas au-dessus des sections claires. */
 
+
+/* Lot 125 : les ventes d'immeubles à Paris, arrondissement par arrondissement. */
+.vdvf-colonne{max-width:1120px;}
+.vdvf-intro .prose{max-width:68ch;margin:clamp(24px,3vw,36px) 0 0;padding:0;}
+.vdvf-intro .article-chiffres{margin-inline:0;padding-top:0;}
+.vdvf-sommaire{display:flex;flex-wrap:wrap;gap:8px;margin-top:clamp(24px,3vw,36px);}
+.vdvf-sommaire a,.vdvf-sommaire__vide{display:inline-flex;align-items:baseline;gap:6px;padding:8px 14px;border-radius:var(--radius-pill);
+  font-size:.9rem;font-weight:600;border:1px solid color-mix(in srgb,var(--color-noir) 18%,transparent);color:var(--color-noir);text-decoration:none;}
+.vdvf-sommaire a span{font-family:var(--font-mono-site);font-size:.74rem;font-weight:500;color:var(--color-bronze-profond);}
+.vdvf-sommaire a:hover,.vdvf-sommaire a:focus-visible{border-color:var(--color-bronze);background:color-mix(in srgb,var(--color-bronze) 14%,transparent);}
+.vdvf-sommaire__vide{opacity:.4;}
+.vdvf-sec{padding-top:0;}
+.vdvf-arr{padding-top:clamp(32px,4vw,56px);scroll-margin-top:calc(var(--header-h) + 12px);}
+.vdvf-arr + .vdvf-arr{border-top:1px solid color-mix(in srgb,var(--color-noir) 12%,transparent);margin-top:clamp(32px,4vw,56px);}
+.vdvf-arr h2{font-size:clamp(1.4rem,2.6vw,2rem);margin:0 0 10px;color:var(--color-noir);}
+.vdvf-arr h2 .accent{color:var(--color-bronze-profond);}
+.vdvf-arr__resume{max-width:72ch;margin:0 0 20px;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
+.vdvf-liste__etat{color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));font-size:.92rem;}
+.vdvf-grille{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));}
+.vdvf{display:flex;flex-direction:column;border-radius:var(--radius-card);overflow:hidden;min-width:0;
+  background:color-mix(in srgb,var(--color-noir) 4%,transparent);border:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);}
+.vdvf__photo{aspect-ratio:4/3;background:color-mix(in srgb,var(--color-noir) 8%,transparent);}
+.vdvf__photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.vdvf__sans-photo{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--color-bronze-profond);font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;}
+.vdvf__texte{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;}
+.vdvf__date{margin:0;font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze-profond);}
+.vdvf__rue{margin:2px 0 0;font-size:1.12rem;line-height:1.15;color:var(--color-noir);}
+.vdvf__prix{margin:6px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:1.35rem;letter-spacing:-.015em;color:var(--color-noir);}
+.vdvf__chiffres{margin:0;font-size:.9rem;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
+.vdvf__lots{margin-top:6px;font-size:.9rem;}
+.vdvf__lots summary{cursor:pointer;font-weight:600;color:var(--color-noir);}
+.vdvf__lots summary::marker{color:var(--color-bronze-profond);}
+.vdvf__lots ul{margin:6px 0 0;padding-left:18px;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
+.vdvf__credit{margin:8px 0 0;font-size:.72rem;color:color-mix(in srgb,var(--color-noir) 55%,var(--color-creme));}
+.vdvf__credit a{color:inherit;}
+.vdvf-liste .btn-row{margin-top:20px;justify-content:center;}
+.vdvf-lire .prose{max-width:68ch;}

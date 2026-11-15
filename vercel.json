@@ -9,6 +9,10 @@
     {
       "path": "/api/marche/immeubles/",
       "schedule": "23 5 3 * *"
+    },
+    {
+      "path": "/api/marche/ventes/",
+      "schedule": "43 5 3 * *"
     }
   ]
 }
