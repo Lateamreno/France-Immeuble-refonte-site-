@@ -5859,6 +5859,8 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   /* #258 : les textes des formulaires encore plus blancs. */
   .field label,.field .hint{color:var(--color-creme);}
   .section--creme .field label{color:var(--color-noir);}
+  /* Sur crème, un formulaire dans sa carte noire garde ses titres clairs (MAV, 15/11/2026 : « y a pas les titres sur le formulaire »). */
+  .section--creme .form-shell .field label{color:var(--color-creme);}
   .field input::placeholder,.field textarea::placeholder{color:color-mix(in srgb,var(--color-creme) 70%,var(--color-noir-2));}
 }
 /* #259 : la carte qui arrive passe au premier plan sans attendre. */

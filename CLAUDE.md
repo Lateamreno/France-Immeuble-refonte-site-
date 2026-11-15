@@ -768,7 +768,18 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (`boutonDansLeTexte` de `src/lib/article-landing.ts`) : « Estimer mon immeuble » ou « Déposer ma
   recherche » vers `#estimer`, avant le dernier intertitre (quatre ou plus), avant le deuxième (trois),
   en fin de texte sinon ; un article qui en a déjà un ne change pas. Au téléphone, la pilule fixe le
-  remplace (`double-fixe`), comme les autres boutons qui mènent au formulaire. Sur la branche, en attente.
+  remplace (`double-fixe`), comme les autres boutons qui mènent au formulaire.
+  **Lot 120 en production le 15/11/2026** (« Go prod », MAV).
+- **Lot 121** (MAV, 15/11/2026 : « très IA », « y a pas les titres sur le formulaire », « la décote face
+  aux appartements c'est bizarre de mettre ça seul », « baromètre ok pied de page », « un hero plus
+  fourni »). **Titres des formulaires au téléphone** : sur crème, `.section--creme .field label` les
+  mettait en noir, y compris dans la carte noire du formulaire (articles : noir sur noir, invisibles) ;
+  `.section--creme .form-shell .field label` les garde clairs. Baromètre : « De 2023 à 2024, le prix a peu
+  changé. C'est en 2025 qu'il a vraiment baissé. » ; plus d'intertitre H3 pour la décote, le tableau suit
+  le paragraphe sur la décote ; **hero** avec « immeubles de rapport » en or, surtitre « Blog · Baromètre
+  des prix », chapeau (`chapeauBarometre`) et second bouton « Les prix par arrondissement » vers
+  `#prix-arrondissements`. **« Prix des immeubles à Paris »** dans le pied de page (colonne Vendre). Sur
+  la branche, en attente.
 
 ### Garde-fous non négociables
 

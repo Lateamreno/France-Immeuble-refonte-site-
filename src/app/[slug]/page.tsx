@@ -26,7 +26,7 @@ import { chiffres as lesChiffres } from "@/lib/chiffres";
 import { chiffresFaq } from "@/lib/faq";
 import { nombre } from "@/lib/site";
 import { boutonDansLeTexte, cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
-import { SLUG_BAROMETRE, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
+import { SLUG_BAROMETRE, chapeauBarometre, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -110,6 +110,8 @@ export default async function ArticlePage({ params }: Params) {
     a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
   ]);
   const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
+  const chapeau = historique ? chapeauBarometre(historique) : null;
+  const barometre = a.slug === SLUG_BAROMETRE && a.h1 === "Prix des immeubles de rapport à Paris, année par année";
   const [avant, apres] = couperTexte(ctaVersFormulaire(boutonDansLeTexte(imagesDifferees(html), cibleArticle(a.slug))));
   const c = chiffresFaq(ventesPubliees);
   const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
@@ -161,8 +163,17 @@ export default async function ArticlePage({ params }: Params) {
           <>
             <Eyebrow>
               <Link href="/blog/">Blog</Link>
+              {barometre && <> · Baromètre des prix</>}
             </Eyebrow>
-            <h1>{a.h1}</h1>
+            {barometre ? (
+              // Le baromètre a le hero des pages (MAV, 15/11/2026 : « un hero plus fourni ») : mots en or, chapeau, deux boutons.
+              <h1>
+                Prix des <span className="accent">immeubles de rapport</span> à Paris, année par année
+              </h1>
+            ) : (
+              <h1>{a.h1}</h1>
+            )}
+            {chapeau && <p className="lead">{chapeau}</p>}
             <p className="article__meta">
               <time dateTime={a.publishedAt}>{dateFr(a.publishedAt)}</time>
               <span aria-hidden="true"> · </span>
@@ -170,6 +181,11 @@ export default async function ArticlePage({ params }: Params) {
             </p>
             <div className="btn-row">
               <Button href="#estimer">{acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"}</Button>
+              {barometre && (
+                <Button href="#prix-arrondissements" variant="outline" court="Par arrondissement">
+                  Les prix par arrondissement
+                </Button>
+              )}
             </div>
           </>
         </HeroMedia>

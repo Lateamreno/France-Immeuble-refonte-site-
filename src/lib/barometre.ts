@@ -346,6 +346,16 @@ export function reperesBarometre(h: Historique): { valeur: string; libelle: stri
 }
 
 /**
+ * Le chapeau du hero du baromètre (MAV, 15/11/2026 : « fais peut-être en sorte d'avoir un hero plus
+ * fourni »). Il dit ce que la page contient ; les chiffres eux-mêmes sont juste dessous.
+ */
+export function chapeauBarometre(h: Historique): string | null {
+  const paris = (h.get(CODE_PARIS) ?? []).filter((a) => a.prixM2Median);
+  if (!paris.length) return null;
+  return `Le prix au m², les loyers et le rendement des immeubles vendus en bloc, pour tout Paris et pour chaque arrondissement, depuis ${paris[0].annee}. Calculés sur les ventes enregistrées par l’État et mis à jour chaque année.`;
+}
+
+/**
  * Remplit les trois emplacements du texte. Sans chiffres en base (base injoignable), les tableaux
  * cèdent la place à une phrase qui renvoie à la page Paris : l'article reste lisible.
  */
