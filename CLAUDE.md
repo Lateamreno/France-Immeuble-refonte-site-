@@ -812,6 +812,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `sameAs` n'a que la fiche Google. Fin de l'article off-market (MAV, 15/11/2026 : « c'est plus facile de vendre en
   off market que attendre que l'acquéreur arrive ») : « Ils se vendent aussi plus facilement qu'avec une
   annonce… ». **Lots 123 et 124 en production le 15/11/2026** (« Go prod », MAV).
+  Même jour : profils publics de l'agence donnés par MAV (LinkedIn, Facebook, Pages Jaunes, MeilleursAgents,
+  agenceimmo-france, Tracxn) ajoutés au `sameAs` de `organisation()`. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

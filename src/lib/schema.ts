@@ -29,8 +29,17 @@ export function organisation() {
     logo: `${SITE.url}/logo/logo-france-immeuble-email.png`,
     image: `${SITE.url}/og/accueil.jpg`,
     email: SITE.email,
-    /* La fiche Google de l'agence (identifiant de l'ancien lien d'avis). */
-    sameAs: ["https://maps.google.com/?cid=16705123113272005071"],
+    /* La fiche Google de l'agence (identifiant de l'ancien lien d'avis) et ses pages publiques,
+       données par MAV le 15/11/2026. */
+    sameAs: [
+      "https://maps.google.com/?cid=16705123113272005071",
+      "https://fr.linkedin.com/company/franceimmeuble",
+      "https://www.facebook.com/franceimmeuble/",
+      "https://www.pagesjaunes.fr/pros/54397966",
+      "https://www.meilleursagents.com/agence-immobiliere/agence-france-immeuble-63108/",
+      "https://agenceimmo-france.fr/agence-immobiliere-paris-8e/france-immeuble/",
+      "https://tracxn.com/d/companies/france-immeuble/__Apoyr1FL7_szdpl5sMbJeCw-n57xQtPSff1uZKzs-VY",
+    ],
     telephone: "+33172875222",
     areaServed: [
       { "@type": "City", name: "Paris" },
