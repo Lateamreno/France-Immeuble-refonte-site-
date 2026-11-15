@@ -760,6 +760,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   2024 et 22 en 2025 » ; les cases ne gardent que le prix et l'évolution. L'infobulle passe à la ligne
   (210 px au plus) : d'une ligne, elle élargissait le tableau à 320 px. Arrondi vers le bas validé par MAV.
   **Lots 118 et 119 en production le 15/11/2026** (« 1 et 2 OK », MAV).
+- **Lot 120** (MAV, 15/11/2026 : « Vérifie ton article, il fait un peu IA », « un bouton sur la page
+  c'est top. On peut pas en mettre un sur tous les articles de blog »). Baromètre réécrit en phrases
+  simples : plus de « Les années précédentes restent : les tableaux s'allongent… », moins de deux-points
+  de mise en scène, plus de formule (« Un prix médian ne dit pas… », « Lisez ces chiffres comme… ») ;
+  intertitre « Faire estimer votre immeuble à Paris ». **Un bouton dans le texte de chaque article**
+  (`boutonDansLeTexte` de `src/lib/article-landing.ts`) : « Estimer mon immeuble » ou « Déposer ma
+  recherche » vers `#estimer`, avant le dernier intertitre (quatre ou plus), avant le deuxième (trois),
+  en fin de texte sinon ; un article qui en a déjà un ne change pas. Au téléphone, la pilule fixe le
+  remplace (`double-fixe`), comme les autres boutons qui mènent au formulaire. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

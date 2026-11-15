@@ -25,7 +25,7 @@ import { ventes as lesVentes } from "@/lib/biens";
 import { chiffres as lesChiffres } from "@/lib/chiffres";
 import { chiffresFaq } from "@/lib/faq";
 import { nombre } from "@/lib/site";
-import { cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
+import { boutonDansLeTexte, cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
 import { SLUG_BAROMETRE, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
 
 /**
@@ -110,7 +110,7 @@ export default async function ArticlePage({ params }: Params) {
     a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
   ]);
   const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
-  const [avant, apres] = couperTexte(ctaVersFormulaire(imagesDifferees(html)));
+  const [avant, apres] = couperTexte(ctaVersFormulaire(boutonDansLeTexte(imagesDifferees(html), cibleArticle(a.slug))));
   const c = chiffresFaq(ventesPubliees);
   const pc = (x: number) => x.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
   /** Trois repères tirés de nos ventes publiées et du BO, en tête de l'article. */

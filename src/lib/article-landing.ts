@@ -35,3 +35,18 @@ export function ctaVersFormulaire(html: string): string {
     "$1#estimer$2",
   );
 }
+
+/**
+ * Un bouton dans le texte de chaque article (MAV, 15/11/2026, sur le baromètre : « J'ai vu qu'il y avait
+ * un bouton sur la page, c'est top. On peut pas en mettre un sur tous les articles de blog »). Un article
+ * qui en a déjà un (repris du WordPress ou écrit avec lui) ne change pas. Sinon le bouton se place avant
+ * le dernier intertitre quand celui-ci vient après l'encart du milieu (quatre intertitres ou plus), avant
+ * le deuxième avec trois intertitres, et en fin de texte sinon : jamais collé à l'encart.
+ */
+export function boutonDansLeTexte(html: string, cible: Cible): string {
+  if (html.includes("prose-cta")) return html;
+  const bouton = `<p class="prose-cta"><a class="btn btn--primary" href="#estimer">${cible === "acheteur" ? "Déposer ma recherche" : "Estimer mon immeuble"}</a></p>\n\n`;
+  const positions = [...html.matchAll(/<h2[\s>]/g)].map((m) => m.index ?? 0);
+  const ou = positions.length >= 4 ? positions[positions.length - 1] : positions.length === 3 ? positions[1] : -1;
+  return ou < 0 ? `${html}\n\n${bouton.trim()}` : html.slice(0, ou) + bouton + html.slice(ou);
+}

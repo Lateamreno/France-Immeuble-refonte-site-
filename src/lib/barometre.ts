@@ -260,7 +260,7 @@ function tableauArrondissements(h: Historique, annees: number[]): string {
         return { texte: euros(a.prixM2Median!), prudence: false, sous: avant ? pct(variation(avant.prixM2Median!, a.prixM2Median!)) : undefined };
       },
     })),
-    `Sous chaque prix, son évolution par rapport à l’année précédente, quand elle compte aussi trois ventes au moins. Les étoiles disent la fiabilité des prix de l’arrondissement, en moyenne sur les années publiées : trois quand les ventes sont nombreuses et leurs prix proches les uns des autres, une quand elles sont rares. Le nombre de ventes de chaque année s’affiche au survol des étoiles. Dans un arrondissement, ce ne sont pas les mêmes immeubles d’une année à l’autre : lisez les évolutions comme des ordres de grandeur. Un prix n’est donné qu’à partir de trois ventes dans l’année.`,
+    `Sous chaque prix, son évolution par rapport à l’année précédente, quand celle-ci compte aussi trois ventes au moins. Les étoiles donnent la fiabilité des prix de l’arrondissement, en moyenne sur les années publiées. Il y en a trois quand les ventes sont nombreuses et leurs prix proches, une quand elles sont rares. Le nombre de ventes de chaque année s’affiche au survol des étoiles. Un prix n’est donné qu’à partir de trois ventes dans l’année.`,
     (code) => etoilesArrondissement(h, code, annees),
   );
 }
