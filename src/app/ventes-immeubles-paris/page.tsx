@@ -191,7 +191,8 @@ export default async function VentesImmeublesParis() {
             <p>
               Le prix est celui de l’acte, hors frais de notaire. Le prix au m² le rapporte à la surface de tous les
               locaux, commerces compris. Les lots sont ceux de l’acte, avec leur type et leur surface, sans les caves
-              ni les parkings. Le loyer de chaque lot n’est pas connu.
+              ni les parkings. Le loyer réel de chaque lot n’est pas connu : le loyer théorique du tableau lui applique le
+              loyer de marché des appartements de l’année, commerces compris.
             </p>
             <p>
               Le rendement théorique suppose tous les logements loués au loyer de marché de l’année (carte des loyers de

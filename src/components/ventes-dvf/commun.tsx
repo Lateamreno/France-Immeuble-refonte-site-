@@ -21,24 +21,65 @@ export type Vente = {
   mixte: boolean;
   lots: Lot[];
   rendement: number | null;
+  /** Loyer de marché des appartements de l'année, en € le m² par mois (carte des loyers de l'État). */
+  loyerM2: number | null;
   lat: number | null;
   lon: number | null;
   photo: { url: string; auteur: string; licence: string; date: string } | null;
 };
 
 let promesse: Promise<Vente[]> | null = null;
-/** Toutes les ventes de Paris, chargées une fois pour la page. */
+let donnees: Vente[] | null = null;
+const abonnes = new Set<(v: Vente[]) => void>();
+/** Moment du dernier saut vers une ancre (clic dans le sommaire) ; 0 = arrivée sur la page. */
+let ancreDepuis = 0;
+if (typeof window !== "undefined") window.addEventListener("hashchange", () => (ancreDepuis = performance.now()));
+
+/**
+ * Toutes les ventes de Paris, chargées une fois pour la page. Dès qu'elles arrivent, toutes les listes
+ * les affichent ensemble (`surVentes`) : chargées une à une, les listes du dessus grandissaient et
+ * repoussaient l'arrondissement choisi dans le sommaire (« 13e » menait au 7e). Si la page visait un
+ * arrondissement ou une vente (#arr-13), elle se recale dessus après l'affichage.
+ */
 export function chargerVentes(): Promise<Vente[]> {
   if (!promesse) {
     promesse = fetch("/api/ventes-dvf/?code=paris")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((d: { ventes: Vente[] }) => d.ventes)
+      .then((d: { ventes: Vente[] }) => {
+        // Un saut vers une ancre il y a moins de 4 s : la page n'y est peut-être pas encore arrivée.
+        const vise = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+        const recent = performance.now() - ancreDepuis < 4000;
+        donnees = d.ventes;
+        abonnes.forEach((f) => f(d.ventes));
+        if (vise && recent) {
+          // Même calcul qu'AncreStable : marge du haut de la page et de la cible, saut sans animation.
+          const caler = () => {
+            const ecart =
+              vise.getBoundingClientRect().top -
+              parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || "0") -
+              parseFloat(getComputedStyle(vise).scrollMarginTop || "0");
+            if (Math.abs(ecart) > 4) window.scrollTo({ top: window.scrollY + ecart, behavior: "instant" as ScrollBehavior });
+          };
+          requestAnimationFrame(() => requestAnimationFrame(caler));
+          window.setTimeout(caler, 400);
+        }
+        return d.ventes;
+      })
       .catch((e) => {
         promesse = null;
         throw e;
       });
   }
   return promesse;
+}
+
+/** Reçoit les ventes dès qu'une liste ou la carte les a chargées. */
+export function surVentes(f: (v: Vente[]) => void): () => void {
+  if (donnees) f(donnees);
+  abonnes.add(f);
+  return () => {
+    abonnes.delete(f);
+  };
 }
 
 /** Ouvre une vente dans la liste de son arrondissement (depuis la carte). */
@@ -109,10 +150,15 @@ export function typeDeLot(l: Lot): string {
  */
 const LOTS_D_ABORD = 22;
 
+/** Loyer théorique d'un lot sur un an, arrondi à la dizaine d'euros. */
+const loyerAn = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Math.round((loyerM2 * l.surface * 12) / 10) * 10 : null);
+
 /**
  * Les lots de l'acte en tableau, un lot par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans
- * l'état loc », « un tableau directement et T2, T3 à la place de appartement 3 pièces ») : deux
- * appartements identiques font deux lignes, comme dans un état locatif.
+ * l'état loc », « un tableau directement et T2, T3 à la place de appartement 3 pièces », « loyer
+ * théorique c'est bien et un total aussi ») : deux appartements identiques font deux lignes, comme
+ * dans un état locatif. Le loyer théorique applique à chaque lot le loyer de marché des appartements
+ * de l'année, comme le rendement théorique : le total rapporté au prix redonne ce rendement.
  */
 export function LotsVente({ v }: { v: Vente }) {
   const [tout, setTout] = useState(false);
@@ -122,26 +168,45 @@ export function LotsVente({ v }: { v: Vente }) {
   // les deux moitiés se suivent et ne font qu'un tableau (l'en-tête de la suite est masqué).
   const coupe = Math.ceil(montres.length / 2);
   const moities = montres.length > 10 ? [montres.slice(0, coupe), montres.slice(coupe)] : [montres];
+  const avecLoyer = v.loyerM2 != null;
+  const surfaceTotale = lots.reduce((s, l) => s + (l.surface ?? 0), 0);
+  const loyerTotal = lots.reduce((s, l) => s + (loyerAn(l, v.loyerM2) ?? 0), 0);
+  const m2 = (n: number) => `${n.toLocaleString("fr-FR")}${NBSP}m²`;
   return (
     <>
       <div className={`vdvf__lots${moities.length > 1 ? " vdvf__lots--2" : ""}`}>
         {moities.map((m, k) => (
           <table key={k} className="vdvf__lots-table">
-            {k === 0 && <caption className="sr-only">Les lots de la vente</caption>}
+            {k === 0 && <caption className="sr-only">Les lots de la vente{avecLoyer ? ", avec leur loyer théorique sur un an" : ""}</caption>}
             <thead className={k ? "vdvf__lots-tete-suite" : undefined}>
               <tr>
                 <th scope="col">Lot</th>
                 <th scope="col">Surface</th>
+                {avecLoyer && <th scope="col">Loyer / an</th>}
               </tr>
             </thead>
             <tbody>
-              {m.map((l, i) => (
-                <tr key={i}>
-                  <td>{typeDeLot(l)}</td>
-                  <td>{l.surface ? `${l.surface}${NBSP}m²` : "–"}</td>
-                </tr>
-              ))}
+              {m.map((l, i) => {
+                const loyer = loyerAn(l, v.loyerM2);
+                return (
+                  <tr key={i}>
+                    <td>{typeDeLot(l)}</td>
+                    <td>{l.surface ? m2(l.surface) : "–"}</td>
+                    {avecLoyer && <td>{loyer ? euros(loyer) : "–"}</td>}
+                  </tr>
+                );
+              })}
             </tbody>
+            {k === moities.length - 1 && (
+              <tfoot>
+                <tr>
+                  <th scope="row">Total
+                    {lots.length > montres.length && <span className="vdvf__lots-nb">des {lots.length}{NBSP}lots</span>}</th>
+                  <td>{m2(surfaceTotale)}</td>
+                  {avecLoyer && <td>{euros(loyerTotal)}</td>}
+                </tr>
+              </tfoot>
+            )}
           </table>
         ))}
       </div>
@@ -149,6 +214,13 @@ export function LotsVente({ v }: { v: Vente }) {
         <button type="button" className="btn btn--primary btn--petit vdvf__lots-plus" onClick={() => setTout(true)}>
           {lots.length - LOTS_D_ABORD > 1 ? `Voir les ${lots.length - LOTS_D_ABORD} autres lots` : "Voir le dernier lot"}
         </button>
+      )}
+      {avecLoyer && (
+        <p className="vdvf__lots-note">
+          Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.annee},{" "}
+          {v.loyerM2!.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          {NBSP}€ le m² par mois, appliqué à chaque lot, commerces compris. Le loyer réel n’est pas connu.
+        </p>
       )}
     </>
   );

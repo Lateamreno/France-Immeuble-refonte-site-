@@ -8,6 +8,7 @@ import {
   NBSP,
   PhotoVente,
   chargerVentes,
+  surVentes,
   euros,
   locauxDe,
   moisAnnee,
@@ -108,7 +109,16 @@ export function VentesDvf({ code, nom }: { code: string; nom: string }) {
     };
     const io = new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && (charger(), io.disconnect()), { rootMargin: "1200px 0px" });
     io.observe(el);
-    return () => io.disconnect();
+    // Chargées par une autre liste ou par la carte : on les affiche aussi, toutes ensemble.
+    const fin = surVentes((v) => {
+      fini = true;
+      io.disconnect();
+      setToutes(v);
+    });
+    return () => {
+      io.disconnect();
+      fin();
+    };
   }, []);
 
   const ventes = useMemo(() => (toutes ? trier(toutes.filter((v) => v.codeInsee === code), tri) : null), [toutes, code, tri]);

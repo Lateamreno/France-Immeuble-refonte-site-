@@ -853,7 +853,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Lot 128** (MAV, 16/11/2026 : « réunit pas les apparts dans l'état loc des immeubles »). Liste des ventes, détail
   d'une vente : les lots en tableau, un lot par ligne (« T2 », « Maison T4 », « Local commercial », puis la
   surface ; MAV : « un tableau directement et T2/T3 »), deux appartements identiques font deux lignes
-  (`LotsVente`, `typeDeLot`) ; au-delà de 22 lots, « Voir les N autres lots » (70 % des ventes en ont 22 ou moins ; seuil validé par MAV). Sur la branche, en attente.
+  (`LotsVente`, `typeDeLot`) ; **loyer théorique par lot** (loyer de marché des appartements de l'année ×
+  surface × 12, commerces compris, arrondi à 10 € ; `loyerM2` rendu par `/api/ventes-dvf/`) et **ligne de total**
+  (surface et loyer de tous les lots, même repliés), note sous le tableau (MAV : « loyer théorique c'est bien et
+  un total aussi ») ; deux colonnes côte à côte dès 1 200 px et au-delà de dix lots, un seul
+  tableau en dessous ; **toutes les listes se remplissent ensemble** (`surVentes`) et la page se recale sur
+  l'arrondissement choisi dans le sommaire (en production, « 13e » menait au 7e : les listes du dessus
+  grandissaient une à une) ; au-delà de 22 lots, « Voir les N autres lots » (70 % des ventes en ont 22 ou moins ; seuil validé par MAV). Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

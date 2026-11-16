@@ -6098,11 +6098,20 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .vdvf-ligne__texte{display:flex;flex-direction:column;gap:6px;min-width:0;}
 .vdvf__sous-titre{margin:4px 0 0;font-weight:600;color:var(--color-noir);}
 .vdvf__lots{display:grid;grid-template-columns:minmax(0,340px);column-gap:32px;align-items:start;}
-.vdvf__lots--2{grid-template-columns:repeat(2,minmax(0,1fr));}
-.vdvf__lots-table{width:100%;border-collapse:collapse;font-size:.88rem;line-height:1.3;font-variant-numeric:tabular-nums;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
+@media (min-width:1200px){.vdvf__lots--2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:1199px){.vdvf__lots-tete-suite{display:none;}}
+.vdvf__lots-nb{display:block;font-weight:400;font-size:.76rem;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+.vdvf__lots-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:.88rem;line-height:1.3;font-variant-numeric:tabular-nums;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
 .vdvf__lots-table th{text-align:left;padding:0 10px 6px 0;font-family:var(--font-mono-site);font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze-profond);border-bottom:1px solid color-mix(in srgb,var(--color-noir) 18%,transparent);}
 .vdvf__lots-table td{padding:4px 10px 4px 0;border-bottom:1px solid color-mix(in srgb,var(--color-noir) 8%,transparent);}
-.vdvf__lots-table th:last-child,.vdvf__lots-table td:last-child{text-align:right;padding-right:0;white-space:nowrap;}
+.vdvf__lots-table :is(th,td):nth-child(1){width:38%;}
+.vdvf__lots-table :is(th,td):nth-child(2){width:28%;}
+.vdvf__lots-table td+td,.vdvf__lots-table th+th{text-align:right;white-space:nowrap;}
+.vdvf__lots-table th:last-child,.vdvf__lots-table td:last-child{padding-right:0;}
+.vdvf__lots-table tfoot th,.vdvf__lots-table tfoot td{padding:7px 10px 0 0;vertical-align:top;border-top:1px solid color-mix(in srgb,var(--color-noir) 30%,transparent);border-bottom:0;font-family:var(--font-body);font-size:.88rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--color-noir);text-align:left;}
+.vdvf__lots-table tfoot td{text-align:right;white-space:nowrap;}
+.vdvf__lots-table tfoot td:last-child{padding-right:0;}
+.vdvf__lots-note{margin:8px 0 0;font-size:.76rem;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
 .vdvf__lots-plus{margin-top:10px;}
 .vdvf__photo{aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--color-noir) 8%,transparent);}
 .vdvf__photo img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -6118,8 +6127,7 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   .vdvf-c--type,.vdvf-c--lots,.vdvf-c--surf,.vdvf-c--rdt{display:none;}
   .vdvf-c--date{grid-area:info;}
   .vdvf-ligne__detail{grid-template-columns:minmax(0,1fr);}
-  .vdvf__lots,.vdvf__lots--2{grid-template-columns:minmax(0,1fr);}
-  .vdvf__lots-tete-suite{display:none;}
+  .vdvf__lots{grid-template-columns:minmax(0,1fr);}
 }
 .vdvf__credit{margin:6px 0 0;font-size:.72rem;color:color-mix(in srgb,var(--color-noir) 55%,var(--color-creme));}
 .vdvf__credit a{color:inherit;}

@@ -19,6 +19,8 @@ export async function GET(req: Request) {
     const l = loyer(v.codeInsee, v.annee);
     return {
       ...v,
+      // Lot 128 : le loyer de marché de l'année (€ le m² par mois), pour le loyer théorique de chaque lot.
+      loyerM2: l,
       rendement: l && v.prixM2 ? Math.round(((l * 12 * 100) / v.prixM2) * 10) / 10 : null,
       photo: v.photo ? { ...v.photo, url: `/api/ventes-dvf/photo/${v.photo.id}/?cap=${v.photo.cap}` } : null,
     };
