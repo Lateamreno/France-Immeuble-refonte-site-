@@ -103,8 +103,11 @@ export function typeDeLot(l: Lot): string {
   return t || "Appartement";
 }
 
-/** Les lots montrés d'abord quand l'acte en compte beaucoup (jusqu'à 183). */
-const LOTS_D_ABORD = 24;
+/**
+ * Les lots montrés d'abord quand l'acte en compte beaucoup (jusqu'à 183). MAV, 16/11/2026 : « on peut
+ * faire moins si 70 % des immeubles font moins » ; 70 % des ventes de 2023 à 2025 ont 22 lots ou moins.
+ */
+const LOTS_D_ABORD = 22;
 
 /**
  * Les lots de l'acte en tableau, un lot par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans
@@ -144,7 +147,7 @@ export function LotsVente({ v }: { v: Vente }) {
       </div>
       {lots.length > LOTS_D_ABORD && !tout && (
         <button type="button" className="btn btn--primary btn--petit vdvf__lots-plus" onClick={() => setTout(true)}>
-          Voir les {lots.length - LOTS_D_ABORD} autres lots
+          {lots.length - LOTS_D_ABORD > 1 ? `Voir les ${lots.length - LOTS_D_ABORD} autres lots` : "Voir le dernier lot"}
         </button>
       )}
     </>
