@@ -830,7 +830,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   auteur cité, « photo recadrée ») ; Google Street View et Apple Plans refusés (leurs conditions interdisent
   la reprise, même recadrée ou floutée) ; 360° recadrés vers l'immeuble, photo ordinaire gardée seulement si
   elle le vise (25°), **rez-de-chaussée flouté en fondu** (numéro, enseignes, passants) par
-  `/api/ventes-dvf/photo/[id]/` (un an en cache). 167 photos pour 372 ventes. Sur la branche, en attente.
+  `/api/ventes-dvf/photo/[id]/` (un an en cache). 167 photos pour 372 ventes. **En production le 16/11/2026** (« GO », MAV) : migration 0025 appliquée, 372 ventes écrites en base (enrichies), la tâche mensuelle prend la suite.
 
 ### Garde-fous non négociables
 
