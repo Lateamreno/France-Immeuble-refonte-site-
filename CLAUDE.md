@@ -871,6 +871,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   serveur) ; au téléphone, la carte à côté du surtitre et le titre sur toute la largeur. Dates en chiffres partout sur
   la page (« 12/2025 », `moisAnnee`). Lots : **un seul tableau dans un cadre de 320 px de haut au plus qui défile**, ligne
   de titres et total collés en haut et en bas (`position: sticky`), plus de bouton ni de deux colonnes.
+- **Lot 130** (MAV, 16/11/2026 : « à la place d'une photo mets juste un picto d'immeuble avec commerce quand c'est
+  mixte et avec juste de l'habitation quand ça ne l'est pas », « une astérisque sur loyer par an […] pas mettre un
+  loyer par mois pour que ce soit plus lisible ? »). Vente sans photo : un immeuble dessiné au trait (`FacadeDessin`),
+  vitrine sous un store rayé pour un immeuble mixte, porte cochère pour un immeuble d'habitation, libellé dessous ;
+  les photos Panoramax existantes restent. Tableau des lots : **« Loyer / mois* »** (loyer de marché × surface,
+  arrondi à 10 €), total par mois et « soit N € par an » calculé sur les loyers exacts (il redonne le rendement
+  théorique), note « * Loyer théorique : … ». Pour les photos que MAV fera chercher : CSV privé hors dépôt
+  (identifiant = `id` de la vente, nom de photo `<id>.jpg`, adresse avec numéro tirée de DVF, coordonnées) ;
+  ne pas publier ces adresses avec numéro.
 
 ### Garde-fous non négociables
 

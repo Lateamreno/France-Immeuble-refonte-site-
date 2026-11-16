@@ -111,7 +111,45 @@ export function CreditPhoto({ photo }: { photo: NonNullable<Vente["photo"]> }) {
   );
 }
 
-/** La photo de la façade, ou sa place vide. */
+/**
+ * Sans photo, un immeuble dessiné au trait (MAV, 16/11/2026 : « un picto d'immeuble avec commerce quand
+ * c'est mixte et avec juste de l'habitation quand ça ne l'est pas ») : façade, toit à la Mansart, fenêtres,
+ * et au rez-de-chaussée une vitrine sous son store ou une porte cochère.
+ */
+function FacadeDessin({ mixte }: { mixte: boolean }) {
+  const fenetres = [];
+  for (const y of [25, 36, 47, 58]) for (const x of [42, 56, 70]) fenetres.push(<rect key={`${x}-${y}`} x={x} y={y} width="8" height="7" rx="0.6" />);
+  return (
+    <span className="vdvf__sans-photo" role="img" aria-label={mixte ? "Immeuble avec commerce" : "Immeuble d’habitation"}>
+      <svg viewBox="0 0 120 100" aria-hidden="true" focusable="false">
+        <path d="M34 18 38 9h44l4 9" />
+        <path d="M32 18h56M32 21h56" />
+        <rect x="34" y="21" width="52" height="71" />
+        {fenetres}
+        <path d="M34 70h52" />
+        {mixte ? (
+          <>
+            {/* Store rayé au-dessus de la vitrine, vitrine et porte du commerce. */}
+            <path d="M33 73h54l-4 8H37z" />
+            <path d="M44 73l-1 8M52 73v8M60 73v8M68 73v8M76 73l1 8" />
+            <rect x="39" y="83" width="28" height="9" />
+            <rect x="71" y="82" width="10" height="10" />
+          </>
+        ) : (
+          <>
+            <path d="M54 92v-10a6 6 0 0 1 12 0v10" />
+            <rect x="40" y="77" width="8" height="8" />
+            <rect x="72" y="77" width="8" height="8" />
+          </>
+        )}
+        <path d="M18 92h84" />
+      </svg>
+      <span className="vdvf__sans-photo-lib">{mixte ? "Immeuble mixte" : "Immeuble d’habitation"}</span>
+    </span>
+  );
+}
+
+/** La photo de la façade, ou l'immeuble dessiné. */
 export function PhotoVente({ v }: { v: Vente }) {
   return (
     <div className="vdvf__photo">
@@ -127,7 +165,7 @@ export function PhotoVente({ v }: { v: Vente }) {
           height={600}
         />
       ) : (
-        <span className="vdvf__sans-photo">Pas encore de photo de la façade</span>
+        <FacadeDessin mixte={v.mixte} />
       )}
     </div>
   );
@@ -141,14 +179,15 @@ export function typeDeLot(l: Lot): string {
   return t || "Appartement";
 }
 
-/** Loyer théorique d'un lot sur un an, arrondi à la dizaine d'euros. */
-const loyerAn = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Math.round((loyerM2 * l.surface * 12) / 10) * 10 : null);
+/** Loyer théorique d'un lot par mois, arrondi à la dizaine d'euros (MAV, 16/11/2026 : « un loyer par mois pour
+ * que ce soit plus lisible »). */
+const loyerMois = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Math.round((loyerM2 * l.surface) / 10) * 10 : null);
 
 /**
  * Les lots de l'acte en tableau, un lot par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans
  * l'état loc », « un tableau directement et T2, T3 à la place de appartement 3 pièces », « loyer
  * théorique c'est bien et un total aussi ») : deux appartements identiques font deux lignes, comme
- * dans un état locatif. Un seul tableau, d'une hauteur fixe au plus, qui défile dans son cadre avec
+ * dans un état locatif ; loyer par mois marqué d'un astérisque, total par mois et par an. Un seul tableau, d'une hauteur fixe au plus, qui défile dans son cadre avec
  * sa ligne de titres et son total toujours visibles (MAV : « un défilement contenu à l'intérieur d'un
  * conteneur »). Le loyer théorique applique à chaque lot le loyer de marché des appartements de
  * l'année, comme le rendement théorique : le total rapporté au prix redonne ce rendement.
@@ -157,7 +196,9 @@ export function LotsVente({ v }: { v: Vente }) {
   const lots = v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
   const avecLoyer = v.loyerM2 != null;
   const surfaceTotale = lots.reduce((s, l) => s + (l.surface ?? 0), 0);
-  const loyerTotal = lots.reduce((s, l) => s + (loyerAn(l, v.loyerM2) ?? 0), 0);
+  // Le total par an se calcule sur les loyers exacts : rapporté au prix, il redonne le rendement théorique.
+  const totalAn = v.loyerM2 ? Math.round((v.loyerM2 * surfaceTotale * 12) / 10) * 10 : 0;
+  const totalMois = v.loyerM2 ? Math.round((v.loyerM2 * surfaceTotale) / 10) * 10 : 0;
   const m2 = (n: number) => `${n.toLocaleString("fr-FR")}${NBSP}m²`;
   return (
     <>
@@ -168,12 +209,17 @@ export function LotsVente({ v }: { v: Vente }) {
             <tr>
               <th scope="col">Lot</th>
               <th scope="col">Surface</th>
-              {avecLoyer && <th scope="col">Loyer / an</th>}
+              {avecLoyer && (
+                <th scope="col">
+                  Loyer / mois<span aria-hidden="true">*</span>
+                  <span className="sr-only"> (théorique)</span>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             {lots.map((l, i) => {
-              const loyer = loyerAn(l, v.loyerM2);
+              const loyer = loyerMois(l, v.loyerM2);
               return (
                 <tr key={i}>
                   <td>{typeDeLot(l)}</td>
@@ -190,14 +236,19 @@ export function LotsVente({ v }: { v: Vente }) {
                 {lots.length > 1 && <span className="vdvf__lots-nb">{lots.length}{NBSP}lots</span>}
               </th>
               <td>{m2(surfaceTotale)}</td>
-              {avecLoyer && <td>{euros(loyerTotal)}</td>}
+              {avecLoyer && (
+                <td>
+                  {euros(totalMois)}
+                  <span className="vdvf__lots-nb">soit {euros(totalAn)} par an</span>
+                </td>
+              )}
             </tr>
           </tfoot>
         </table>
       </div>
       {avecLoyer && (
         <p className="vdvf__lots-note">
-          Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.annee},{" "}
+          * Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.annee},{" "}
           {v.loyerM2!.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           {NBSP}€ le m² par mois, appliqué à chaque lot, commerces compris. Le loyer réel n’est pas connu.
         </p>
