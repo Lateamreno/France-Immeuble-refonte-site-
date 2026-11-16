@@ -218,7 +218,7 @@ export default async function VendreUnImmeuble() {
                 <span className="step__visuel" aria-hidden="true">
                   {/* Le chiffre manuscrit or derrière l'illustration, comme sur l'ancien site (MAV, 03/11/2026). */}
                   <span className="step__chiffre">{i + 1}</span>
-                  <Image src={e.image} alt="" width={445} height={390} sizes="(max-width: 899px) 190px, 176px" />
+                  <Image src={e.image} alt={e.titre} width={445} height={390} sizes="(max-width: 899px) 190px, 176px" />
                 </span>
                 <span className="step__num">{e.num}</span>
                 <h3>{e.titre}</h3>
@@ -247,7 +247,7 @@ export default async function VendreUnImmeuble() {
             {atouts(ch.investisseurs).map((a) => (
               <article key={a.titre} className="atout">
                 <span className="atout__photo" aria-hidden="true">
-                  <Image src={a.photo} alt="" fill sizes="(max-width: 760px) 80vw, 400px" />
+                  <Image src={a.photo} alt={a.titre} fill sizes="(max-width: 760px) 80vw, 400px" />
                 </span>
                 <Picto nom={a.picto} taille={54} className="atout__picto" />
                 <h3>{a.titre}</h3>

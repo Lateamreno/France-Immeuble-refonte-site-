@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
+import { altImage } from "@/lib/visuels";
 import type { ReactNode } from "react";
 
 /**
@@ -24,7 +25,7 @@ export function PageFond({
     <div className={`page-fond ${className}`.trim()}>
       <div className="page-fond__calque" aria-hidden="true">
         <div className="page-fond__colle">
-          <Image src={image} alt="" fill priority sizes="100vw" className="page-fond__img"
+          <Image src={image} alt={altImage(image)} fill priority sizes="100vw" className="page-fond__img"
             placeholder={typeof image === "string" ? "empty" : "blur"} />
           <span className="page-fond__voile" />
         </div>

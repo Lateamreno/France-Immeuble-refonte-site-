@@ -75,7 +75,7 @@ export default async function Accueil() {
         {/* Retour #117 (MAV, 03/11/2026) : une photo d'immeubles à peine visible
             sous le crème, pour que la section ne soit plus un aplat. */}
         <div className="fond-leger" aria-hidden="true">
-          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" placeholder="blur" />
+          <Image src={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt} fill sizes="100vw" placeholder="blur" />
         </div>
         <div className="container split">
           <Reveal>
@@ -254,7 +254,7 @@ export default async function Accueil() {
           picto en tête de chaque carte. */}
       <section className="section section--noir offres-sec">
         <span className="offres-sec__fond" aria-hidden="true">
-          <Image src={VISUELS.toitsAeriens.src} alt="" fill sizes="100vw" />
+          <Image src={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt} fill sizes="100vw" />
         </span>
         <div className="container">
           <Reveal className="section__head">

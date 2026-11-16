@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
+import { altImage } from "@/lib/visuels";
 
 /**
  * Une photo fondue dans le fond d'une section sombre (MAV, 02/11/2026 : « la
@@ -19,7 +20,7 @@ export function FondPhoto({
 }) {
   return (
     <div className={`fond-photo fond-photo--${cote}${clair ? " fond-photo--clair" : ""}`} aria-hidden="true">
-      <Image src={image} alt="" fill sizes="(max-width: 900px) 100vw, 60vw" style={{ objectPosition: position }}
+      <Image src={image} alt={altImage(image)} fill sizes="(max-width: 900px) 100vw, 60vw" style={{ objectPosition: position }}
         placeholder={typeof image === "string" ? "empty" : "blur"} />
     </div>
   );

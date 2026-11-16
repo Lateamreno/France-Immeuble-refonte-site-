@@ -112,7 +112,7 @@ export default async function ImmeublesOffMarket() {
         <Image
           className="om-principe__photo om-principe__photo--lecteur"
           src="/media/atouts/commercialisation-dossier.webp"
-          alt=""
+          alt="Acquéreur qui lit le dossier d’un immeuble de rapport"
           width={700}
           height={800}
           sizes="(max-width: 700px) 100vw, 52vw"

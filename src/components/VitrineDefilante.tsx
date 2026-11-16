@@ -173,7 +173,7 @@ export function VitrineDefilante({ items, forme }: { items: FicheVitrine[]; form
                 <span className="pola__papier" ref={(el) => { papiers.current[i] = el; }}>
                   <span className="pola__photo">
                     {it.image ? (
-                      <Image src={it.image} alt="" fill sizes="300px" draggable={false} />
+                      <Image src={it.image} alt={`Immeuble vendu à ${it.ville}`} fill sizes="300px" draggable={false} />
                     ) : (
                       <span className="pola__sansphoto" aria-hidden="true">
                         <Picto nom="immeubles" taille={40} />
@@ -196,7 +196,7 @@ export function VitrineDefilante({ items, forme }: { items: FicheVitrine[]; form
               ) : (
                 <>
                   {it.image ? (
-                    <Image className="vig__img" src={it.image} alt="" fill sizes="300px" draggable={false} />
+                    <Image className="vig__img" src={it.image} alt={`Immeuble vendu à ${it.ville}`} fill sizes="300px" draggable={false} />
                   ) : (
                     <span className="vig__sansphoto" aria-hidden="true">
                       <Picto nom="immeubles" taille={40} />

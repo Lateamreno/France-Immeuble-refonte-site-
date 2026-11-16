@@ -27,6 +27,7 @@ import { SITE } from "@/lib/site";
  */
 export const metadata: Metadata = {
   title: { absolute: "Mon compte | France Immeuble" },
+  description: "Votre espace client France Immeuble : vos immeubles, vos recherches, vos offres et vos rendez-vous avec votre agent.",
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE.url}/mon-compte/` },
 };
@@ -44,7 +45,7 @@ export default async function MonCompte({ searchParams }: { searchParams: Promis
         {/* Retour #148 (MAV, 03/11/2026) : une façade parisienne à la place des écrans,
             sur toute la hauteur de la section, fondue vers le texte à gauche. */}
         <span className="compte-entree__fond compte-entree__fond--facade" aria-hidden="true">
-          <Image src={VISUELS.facadeCoucher.src} alt="" fill sizes="(max-width: 900px) 100vw, 60vw" placeholder="blur" />
+          <Image src={VISUELS.facadeCoucher.src} alt={VISUELS.facadeCoucher.alt} fill sizes="(max-width: 900px) 100vw, 60vw" placeholder="blur" />
         </span>
         <div className="container split">
           <div>

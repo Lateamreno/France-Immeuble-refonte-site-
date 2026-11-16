@@ -90,7 +90,7 @@ export function CarteVente({
         {v.image ? (
           <Image
             src={v.image}
-            alt=""
+            alt={`${v.type ?? "Immeuble de rapport"} vendu à ${v.ville}`}
             width={1200}
             height={900}
             sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"

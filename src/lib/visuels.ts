@@ -38,3 +38,20 @@ export const VISUELS = {
     alt: "Horizon parisien au crépuscule, silhouettes d’immeubles se détachant sur une lueur bronze",
   },
 } as const;
+
+/** Photos de /public/media utilisées en fond, avec leur texte alternatif. */
+const ALT_MEDIAS: Record<string, string> = {
+  "/media/atouts/signature-dossier.webp": "Signature du dossier de vente d’un immeuble de rapport",
+  "/media/atouts/commercialisation-dossier.webp": "Acquéreur qui lit le dossier d’un immeuble de rapport",
+  "/media/dsc.webp": "Porte entrouverte sur une pièce éclairée, dans la pénombre",
+};
+
+/**
+ * Le texte alternatif d'une image de fond (lot 127, scan de Bing du 16/11/2026 : les images au `alt`
+ * vide comptaient comme « alt manquant »). Une image de `VISUELS` reprend le sien.
+ */
+export function altImage(image: unknown): string {
+  if (typeof image === "string") return ALT_MEDIAS[image] ?? "Immeuble parisien";
+  const v = Object.values(VISUELS).find((x) => x.src === image);
+  return v?.alt ?? "Immeuble parisien";
+}

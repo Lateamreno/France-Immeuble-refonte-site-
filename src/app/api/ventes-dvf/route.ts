@@ -7,14 +7,16 @@ import { ventesDvf } from "@/lib/ventes-dvf";
  * (lot 125). Fermé aux moteurs de recherche : robots.txt interdit `/api/` à tous les robots, et la
  * réponse porte `X-Robots-Tag: noindex` (conditions de réutilisation de DVF). Le rendement théorique
  * suit la règle du baromètre : loyer de marché des appartements de l'année × 12 ÷ prix au m².
+ * `?code=paris` rend les ventes des vingt arrondissements, pour la carte et les listes (lot 127).
  */
 export async function GET(req: Request) {
   const code = new URL(req.url).searchParams.get("code") ?? "";
-  if (!CODES_ARRONDISSEMENTS.includes(code)) return NextResponse.json({ ventes: [] }, { status: 404 });
-  const [ventes, h] = await Promise.all([ventesDvf([code]), historiqueParis()]);
-  const loyer = new Map((h.get(code) ?? []).map((a) => [a.annee, a.loyerM2]));
+  const codes = code === "paris" ? CODES_ARRONDISSEMENTS : CODES_ARRONDISSEMENTS.includes(code) ? [code] : [];
+  if (!codes.length) return NextResponse.json({ ventes: [] }, { status: 404 });
+  const [ventes, h] = await Promise.all([ventesDvf(codes), historiqueParis()]);
+  const loyer = (c: string, annee: number) => (h.get(c) ?? []).find((a) => a.annee === annee)?.loyerM2 ?? null;
   const sortie = ventes.map((v) => {
-    const l = loyer.get(v.annee);
+    const l = loyer(v.codeInsee, v.annee);
     return {
       ...v,
       rendement: l && v.prixM2 ? Math.round(((l * 12 * 100) / v.prixM2) * 10) / 10 : null,

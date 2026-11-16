@@ -6064,24 +6064,119 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .vdvf-arr h2 .accent{color:var(--color-bronze-profond);}
 .vdvf-arr__resume{max-width:72ch;margin:0 0 20px;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
 .vdvf-liste__etat{color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));font-size:.92rem;}
-.vdvf-grille{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));}
-.vdvf{display:flex;flex-direction:column;border-radius:var(--radius-card);overflow:hidden;min-width:0;
-  background:color-mix(in srgb,var(--color-noir) 4%,transparent);border:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);}
-.vdvf__photo{aspect-ratio:4/3;background:color-mix(in srgb,var(--color-noir) 8%,transparent);}
+/* Lot 127 : les ventes en liste (MAV : « j'aurais préféré sous forme de liste »). Une ligne par vente ;
+   sur ordinateur, des colonnes alignées ; au téléphone, deux lignes de texte. */
+.vdvf-tri{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px;}
+.vdvf-tri__lib{font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));margin-right:4px;}
+.vdvf-tri__btn,.vcarte__choix button{appearance:none;font:inherit;font-size:.82rem;font-weight:600;padding:6px 12px;border-radius:var(--radius-pill);
+  border:1px solid color-mix(in srgb,var(--color-noir) 18%,transparent);background:transparent;color:var(--color-noir);cursor:pointer;}
+.vdvf-tri__btn[aria-pressed="true"]{background:var(--color-noir);border-color:var(--color-noir);color:var(--color-bronze);}
+.vdvf-tri__btn:focus-visible,.vcarte__choix button:focus-visible,.vdvf-ligne__tete:focus-visible,.vcarte__zoom button:focus-visible,
+.vcarte__lien:focus-visible,.vcarte__fermer:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.vdvf-lignes{list-style:none;margin:0;padding:0;border-top:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);}
+.vdvf-ligne{border-bottom:1px solid color-mix(in srgb,var(--color-noir) 14%,transparent);scroll-margin-top:calc(var(--header-h) + 16px);}
+.vdvf-ligne__tete,.vdvf-entete{display:grid;align-items:baseline;column-gap:14px;width:100%;
+  grid-template-columns:72px minmax(0,1.6fr) 84px 124px 72px 112px 98px 90px 14px;}
+.vdvf-ligne__tete{appearance:none;font:inherit;text-align:left;background:transparent;border:0;padding:12px 6px;cursor:pointer;color:var(--color-noir);}
+.vdvf-ligne__tete:hover,.vdvf-ligne.is-ouverte .vdvf-ligne__tete{background:color-mix(in srgb,var(--color-bronze) 12%,transparent);}
+.vdvf-entete{padding:0 6px 8px;font-family:var(--font-mono-site);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+.vdvf-c{min-width:0;font-size:.92rem;font-variant-numeric:tabular-nums;}
+.vdvf-c--date,.vdvf-c--type,.vdvf-c--lots,.vdvf-c--surf{color:color-mix(in srgb,var(--color-noir) 70%,var(--color-creme));font-size:.86rem;}
+.vdvf-c--rue{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vdvf-c--prix,.vdvf-c--m2,.vdvf-c--rdt,.vdvf-c--surf{text-align:right;white-space:nowrap;}
+.vdvf-c--prix{font-weight:650;}
+.vdvf-c--m2{color:var(--color-bronze-profond);font-weight:600;}
+.vdvf-c--lots{white-space:nowrap;}
+.vdvf-entete .vdvf-c{color:inherit;font-size:inherit;font-weight:500;}
+.vdvf-ligne__fleche{justify-self:end;width:8px;height:8px;border-right:1.5px solid var(--color-bronze-profond);border-bottom:1.5px solid var(--color-bronze-profond);
+  transform:rotate(45deg) translateY(-3px);transition:transform .2s;}
+.vdvf-entete .vdvf-ligne__fleche{border:0;}
+.vdvf-ligne.is-ouverte .vdvf-ligne__fleche{transform:rotate(225deg) translateY(-1px);}
+.vdvf-ligne__detail{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:18px;padding:6px 6px 18px;}
+.vdvf-ligne__texte{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.vdvf__sous-titre{margin:4px 0 0;font-weight:600;color:var(--color-noir);}
+.vdvf__lots-liste{margin:0;padding-left:18px;font-size:.9rem;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));columns:2;column-gap:24px;}
+.vdvf__photo{aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--color-noir) 8%,transparent);}
 .vdvf__photo img{width:100%;height:100%;object-fit:cover;display:block;}
-.vdvf__sans-photo{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  color:var(--color-bronze-profond);font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;}
-.vdvf__texte{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;}
+.vdvf__sans-photo{height:100%;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;
+  color:var(--color-bronze-profond);font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;}
 .vdvf__date{margin:0;font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze-profond);}
-.vdvf__rue{margin:2px 0 0;font-size:1.12rem;line-height:1.15;color:var(--color-noir);}
-.vdvf__prix{margin:6px 0 0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
-  font-size:1.35rem;letter-spacing:-.015em;color:var(--color-noir);}
 .vdvf__chiffres{margin:0;font-size:.9rem;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
-.vdvf__lots{margin-top:6px;font-size:.9rem;}
-.vdvf__lots summary{cursor:pointer;font-weight:600;color:var(--color-noir);}
-.vdvf__lots summary::marker{color:var(--color-bronze-profond);}
-.vdvf__lots ul{margin:6px 0 0;padding-left:18px;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));}
-.vdvf__credit{margin:8px 0 0;font-size:.72rem;color:color-mix(in srgb,var(--color-noir) 55%,var(--color-creme));}
+@media (max-width:899px){
+  .vdvf-entete{display:none;}
+  .vdvf-ligne__tete{grid-template-columns:minmax(0,1fr) auto 14px;grid-template-areas:"rue prix f" "info m2 f";row-gap:2px;padding:12px 4px;}
+  .vdvf-c--rue{grid-area:rue;} .vdvf-c--prix{grid-area:prix;} .vdvf-c--m2{grid-area:m2;font-size:.84rem;}
+  .vdvf-ligne__fleche{grid-area:f;align-self:center;}
+  .vdvf-c--type,.vdvf-c--lots,.vdvf-c--surf,.vdvf-c--rdt{display:none;}
+  .vdvf-c--date{grid-area:info;}
+  .vdvf-ligne__detail{grid-template-columns:minmax(0,1fr);}
+  .vdvf__lots-liste{columns:1;}
+}
+.vdvf__credit{margin:6px 0 0;font-size:.72rem;color:color-mix(in srgb,var(--color-noir) 55%,var(--color-creme));}
 .vdvf__credit a{color:inherit;}
 .vdvf-liste .btn-row{margin-top:20px;justify-content:center;}
 .vdvf-lire .prose{max-width:68ch;}
+
+/* Lot 127 : la carte des ventes d'immeubles de Paris. Fond dessiné à partir de la BD TOPO de l'IGN
+   (public/carte/paris.json) ; points en bronze, du profond au clair selon le prix au m² ou le rendement. */
+.vcarte-sec .container{max-width:1240px;}
+.vcarte-sec h2{margin:0 0 12px;}
+.vcarte-sec .lead{max-width:68ch;margin:0 0 clamp(18px,2.4vw,28px);}
+.vcarte__barre{display:flex;flex-wrap:wrap;gap:10px 22px;margin-bottom:12px;}
+.vcarte__choix{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+.vcarte__lib{font-family:var(--font-mono-site);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-gris);margin-right:4px;}
+.vcarte__choix button{color:var(--color-creme);border-color:var(--color-ligne);}
+.vcarte__choix button[aria-pressed="true"]{background:var(--color-bronze);border-color:var(--color-bronze);color:var(--color-noir);}
+.vcarte__boite{position:relative;width:100%;aspect-ratio:1.75;max-height:calc(var(--h-ecran,100vh) - var(--header-h) - 150px);min-height:360px;
+  border-radius:var(--radius-card);overflow:hidden;background:var(--color-noir);border:1px solid var(--color-ligne);}
+.vcarte__svg{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;}
+.vcarte__svg:active{cursor:grabbing;}
+.vcarte__etat{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;color:var(--color-gris);font-size:.92rem;}
+.vcarte__arr path{fill:var(--color-noir-3);stroke:color-mix(in srgb,var(--color-bronze) 34%,var(--color-noir));stroke-width:1.2px;cursor:zoom-in;transition:fill .15s;}
+.vcarte__arr path.is-survol{fill:color-mix(in srgb,var(--color-bronze) 10%,var(--color-noir-3));}
+.vcarte__eau{fill:color-mix(in srgb,var(--color-bronze-profond) 28%,var(--color-noir-2));pointer-events:none;}
+.vcarte__rues{fill:none;stroke:color-mix(in srgb,var(--color-gris) 22%,var(--color-noir-3));stroke-width:.8px;pointer-events:none;}
+.vcarte__grandes{fill:none;stroke:color-mix(in srgb,var(--color-gris) 40%,var(--color-noir-3));stroke-width:1.1px;pointer-events:none;}
+.vcarte__noms text{fill:color-mix(in srgb,var(--color-gris) 80%,var(--color-noir));font-family:var(--font-mono-site);font-weight:600;pointer-events:none;}
+.vcarte__point{stroke:var(--color-noir);cursor:pointer;transition:r .12s;}
+.vcarte__point.is-vide{fill:var(--color-noir-3);stroke:var(--color-gris);}
+.vcarte__point.is-actif{stroke:var(--color-creme);}
+.vcarte__zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;}
+.vcarte__zoom button{appearance:none;width:38px;height:38px;border-radius:var(--radius-pill);border:1px solid var(--color-bronze);
+  background:var(--color-noir);color:var(--color-bronze);font:600 1.1rem/1 var(--font-body);cursor:pointer;}
+.vcarte__zoom .vcarte__tout{width:auto;height:30px;padding:0 10px;font-size:.72rem;font-family:var(--font-mono-site);letter-spacing:.06em;}
+.vcarte__aide{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:10px 16px;border-radius:var(--radius-pill);
+  background:color-mix(in srgb,var(--color-noir) 86%,transparent);color:var(--color-creme);font-size:.86rem;pointer-events:none;}
+.vcarte__fiche{position:absolute;width:300px;max-width:calc(100% - 16px);background:var(--color-noir-2);border:1px solid var(--color-ligne);
+  border-radius:14px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.45);z-index:2;}
+.vcarte__fiche .vdvf__photo{border-radius:0;aspect-ratio:16/10;background:var(--color-noir-3);}
+.vcarte__fiche .vdvf__sans-photo{color:var(--color-gris);}
+.vcarte__fiche-texte{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px;}
+.vcarte__fiche .vdvf__date{color:var(--color-bronze);}
+.vcarte__fiche .vdvf__chiffres{color:color-mix(in srgb,var(--color-creme) 82%,var(--color-noir));font-size:.86rem;}
+.vcarte__fiche .vdvf__credit{color:var(--color-gris);}
+.vcarte__rue{margin:2px 0 0;font-weight:650;color:var(--color-creme);}
+.vcarte__prix{margin:2px 0 2px;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);
+  font-size:1.25rem;letter-spacing:-.015em;color:var(--color-bronze);}
+.vcarte__lien{appearance:none;align-self:flex-start;margin-top:6px;padding:0;border:0;background:none;font:inherit;font-size:.86rem;font-weight:600;
+  color:var(--color-bronze);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.vcarte__fermer{position:absolute;right:8px;top:8px;z-index:1;width:30px;height:30px;border-radius:var(--radius-pill);border:0;
+  background:color-mix(in srgb,var(--color-noir) 80%,transparent);color:var(--color-creme);font-size:1.2rem;line-height:1;cursor:pointer;}
+.vcarte__fiche--bas{position:relative;margin-top:10px;width:auto;max-width:none;display:grid;grid-template-columns:110px minmax(0,1fr);}
+.vcarte__fiche--bas .vdvf__photo{aspect-ratio:auto;height:100%;min-height:110px;}
+.vcarte__fiche--bas .vcarte__fiche-texte{padding:10px 40px 10px 12px;}
+.vcarte__fiche--bas .vdvf__credit{display:none;}
+.vcarte__legende{margin-top:14px;}
+.vcarte__legende-titre{margin:0 0 8px;font-weight:600;color:var(--color-creme);font-size:.92rem;}
+.vcarte__legende-titre span{font-weight:400;color:var(--color-gris);}
+.vcarte__legende ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px;}
+.vcarte__legende li{display:flex;align-items:center;gap:8px;font-size:.84rem;color:color-mix(in srgb,var(--color-creme) 82%,var(--color-noir));font-variant-numeric:tabular-nums;}
+.vcarte__legende i{width:12px;height:12px;border-radius:50%;border:1px solid var(--color-noir);flex:none;}
+.vcarte__legende i.is-vide{background:var(--color-noir-3);border-color:var(--color-gris);}
+.vcarte__source{margin:10px 0 0;font-size:.76rem;color:var(--color-gris);}
+@media (max-width:759px){
+  .vcarte__boite{aspect-ratio:1.12;height:auto;max-height:none;min-height:0;}
+  .vcarte__barre{gap:8px 14px;}
+}

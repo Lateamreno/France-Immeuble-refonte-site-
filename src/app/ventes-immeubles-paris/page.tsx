@@ -9,6 +9,7 @@ import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { JsonLd } from "@/components/JsonLd";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { VentesDvf } from "@/components/VentesDvf";
+import { VentesCarte } from "@/components/ventes-dvf/VentesCarte";
 import { filAriane } from "@/lib/schema";
 import { CODES_ARRONDISSEMENTS, historiqueParis, reperesBarometre } from "@/lib/barometre";
 import { ventesDvf } from "@/lib/ventes-dvf";
@@ -139,6 +140,22 @@ export default async function VentesImmeublesParis() {
               ),
             )}
           </nav>
+        </div>
+      </section>
+
+      {/* Lot 127 (MAV, 16/11/2026) : toutes les ventes sur la carte, en couleur selon le prix au m² ou le
+          rendement ; la fiche de la vente au survol. Le détail arrive par l'API, hors HTML. */}
+      <section className="section section--noir-2 vcarte-sec" aria-labelledby="titre-carte">
+        <div className="container">
+          <Eyebrow bare>La carte des ventes</Eyebrow>
+          <h2 id="titre-carte">
+            Les immeubles vendus à Paris <span className="accent">sur la carte</span>
+          </h2>
+          <p className="lead">
+            Chaque point est un immeuble vendu {periode}. Sa couleur dit son prix au m² ou son rendement théorique,
+            du bronze foncé pour les plus bas au bronze clair pour les plus hauts.
+          </p>
+          <VentesCarte />
         </div>
       </section>
 

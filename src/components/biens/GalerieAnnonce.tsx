@@ -86,7 +86,7 @@ export function GalerieAnnonce({
           onScroll={(e) => suivre(e.currentTarget)} onKeyDown={(e) => touches(e, piste.current)}>
           {images.map((src, k) => (
             <div key={src} className="galerie-pb__diapo" aria-roledescription="diapositive" aria-label={`${k + 1} sur ${n}`}>
-              <Image src={src} alt={k === 0 ? alt : ""} fill sizes="(max-width: 899px) 100vw, 60vw"
+              <Image src={src} alt={k === 0 ? alt : `${alt}, photo ${k + 1}`} fill sizes="(max-width: 899px) 100vw, 60vw"
                 className="galerie-pb__img" priority={k === 0} />
             </div>
           ))}
@@ -133,7 +133,7 @@ export function GalerieAnnonce({
           {images.map((src, k) => (
             <button key={src} type="button" className="galerie-pb__vignette" aria-label={`Photo ${k + 1}`} aria-current={k === i ? "true" : undefined}
               onClick={() => aller(k)}>
-              <Image src={src} alt="" fill sizes="96px" className="galerie-pb__img" />
+              <Image src={src} alt={`Photo ${k + 1} de l’immeuble`} fill sizes="96px" className="galerie-pb__img" />
             </button>
           ))}
         </div>
@@ -145,7 +145,7 @@ export function GalerieAnnonce({
           onScroll={(e) => suivre(e.currentTarget)} onKeyDown={(e) => touches(e, pistePlein.current)}>
           {images.map((src, k) => (
             <div key={src} className="galerie-pb__diapo">
-              <Image src={src} alt={k === 0 ? alt : ""} fill sizes="100vw" className="galerie-plein__img" />
+              <Image src={src} alt={k === 0 ? alt : `${alt}, photo ${k + 1}`} fill sizes="100vw" className="galerie-plein__img" />
             </div>
           ))}
         </div>

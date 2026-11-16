@@ -46,6 +46,8 @@ const BAUX: Record<string, string> = {
 const ETATS: Record<string, string> = { a_rafraichir: "À rafraîchir", a_renover: "À rénover" };
 const date = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
+const titreCourt = (t: string) => (t.length + 19 > 65 ? t.replace(/ de \d+ lots?(?= )/, "") : t);
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const b = (await biensAVendre()).find((x) => x.slug === slug);
@@ -59,7 +61,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     r !== null ? `rendement brut ${pct(r)}` : null,
   ].filter(Boolean).join(", ");
   return {
-    title: { absolute: `${b.titre} | France Immeuble` },
+    // Bing (16/11/2026) : un title de plus de 70 caractères est trop long ; le nombre de lots part
+    // d'abord (« Immeuble de rapport à Montereau-Fault-Yonne »), il reste dans la description.
+    title: { absolute: `${titreCourt(b.titre)} | France Immeuble` },
     description: `${desc}. État locatif, état financier et simulation en ligne.`,
     alternates: { canonical: `${SITE.url}/immeubles-a-vendre/${b.slug}/` },
     openGraph: b.images[0] ? { images: [b.images[0]] } : undefined,

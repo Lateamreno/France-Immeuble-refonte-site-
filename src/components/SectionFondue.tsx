@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
+import { altImage } from "@/lib/visuels";
 import type { ReactNode } from "react";
 import { Eyebrow } from "@/components/Eyebrow";
 
@@ -37,11 +38,11 @@ export function SectionFondue({
     <section id={id} className={`section section--creme section--ecran sec-fondu ${className}`.trim()}>
       {coin ? (
         <div className="sec-fondu__coin" aria-hidden="true">
-          <Image src={image} alt="" width={coin.width} height={coin.height} sizes="(max-width: 760px) 95vw, 820px" />
+          <Image src={image} alt={altImage(image)} width={coin.width} height={coin.height} sizes="(max-width: 760px) 95vw, 820px" />
         </div>
       ) : (
         <div className="sec-fondu__img" aria-hidden="true">
-          <Image src={image} alt="" fill sizes="100vw" style={{ objectPosition: position }} />
+          <Image src={image} alt={altImage(image)} fill sizes="100vw" style={{ objectPosition: position }} />
         </div>
       )}
       <div className="container">

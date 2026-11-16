@@ -837,6 +837,19 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   Paris (second bouton noir « Voir les ventes une par une », « Voir les ventes » au téléphone, sous le tableau des
   prix, `porte-action`). Les 205 ventes sans photo sont listées pour MAV dans un tableau Drive avec liens Street
   View (pas de captures : les conditions de Google l'interdisent). Sur la branche, en attente.
+- **Lot 127** (MAV, 16/11/2026 : « j'aurais préféré sous forme de liste », « la carte interactive avec toutes les
+  ventes […] une légende avec des couleurs selon les prix au m² et/ou rendements […] quand on survole un lieu on a
+  la carte »). Page des ventes : **carte des ventes** (`VentesCarte`, `src/components/ventes-dvf/`) après
+  l'introduction, points en bronze du profond (bas) au clair (haut) par quintiles, prix au m² ou rendement, filtre
+  par année, fiche au survol (au toucher, sous la carte), clic sur un arrondissement pour le rapprocher, zoom aux
+  boutons, Ctrl + molette, deux doigts. **Fond de carte dessiné par nous** : BD TOPO de l'IGN (Licence ouverte),
+  `public/carte/paris.json` (237 Ko compressé, chargé à l'approche), refait par `scripts/carte-paris-telecharger.mjs`
+  puis `scripts/carte-paris-construire.mjs` ; **aucune tuile tierce**. Ventes **en liste** (`VentesDvf`) : une
+  ligne par vente, tri, ligne qui se déplie (photo, lots). Toutes les ventes chargées une fois par
+  `/api/ventes-dvf/?code=paris` (avec `lat`, `lon`), toujours hors HTML. **Scan de Bing** (16/11/2026) : descriptions
+  du plan du site, des mentions légales et du compte ; texte alternatif sur toutes les images (`altImage` de
+  `src/lib/visuels.ts` pour les photos de fond) ; title d'une annonce de plus de 65 caractères sans le nombre de
+  lots (`titreCourt`). Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

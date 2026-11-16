@@ -26,6 +26,9 @@ export type VenteDvf = {
   mixte: boolean;
   lots: LotVendu[];
   photo: PhotoRue | null;
+  /** Position de la parcelle (DVF géolocalisées), pour la carte. */
+  lat: number | null;
+  lon: number | null;
 };
 
 const num = (v: unknown) => (v == null || v === "" ? 0 : Number(v));
@@ -36,7 +39,7 @@ export async function ventesDvf(codes: readonly string[]): Promise<VenteDvf[]> {
   if (!cfg || !codes.length) return [];
   try {
     const r = await fetch(
-      `${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,code_insee,annee,date_vente,rue,prix,surface,prix_m2,logements,mixte,lots,photo&code_insee=in.(${codes.join(",")})&order=date_vente.desc`,
+      `${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,code_insee,annee,date_vente,rue,prix,surface,prix_m2,logements,mixte,lots,photo,lat,lon&code_insee=in.(${codes.join(",")})&order=date_vente.desc`,
       { headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` }, next: { revalidate: 86400, tags: ["marche"] }, signal: AbortSignal.timeout(6000) },
     );
     if (!r.ok) return [];
@@ -53,6 +56,8 @@ export async function ventesDvf(codes: readonly string[]): Promise<VenteDvf[]> {
       mixte: l.mixte === true,
       lots: Array.isArray(l.lots) ? (l.lots as LotVendu[]) : [],
       photo: l.photo && typeof l.photo === "object" ? (l.photo as PhotoRue) : null,
+      lat: l.lat == null ? null : Number(l.lat),
+      lon: l.lon == null ? null : Number(l.lon),
     }));
   } catch {
     return [];

@@ -18,7 +18,7 @@ export function CarteOffMarket({ nombre }: { nombre: number }) {
     <div className="bien-carte-cadre">
       <div className="bien-carte carte-offmarket">
         <span className="carte-offmarket__fond" aria-hidden="true">
-          <Image src={VISUELS.fenetresHeureBleue.src} alt="" fill sizes="(max-width: 699px) 100vw, 380px" className="bien-carte__img" />
+          <Image src={VISUELS.fenetresHeureBleue.src} alt={VISUELS.fenetresHeureBleue.alt} fill sizes="(max-width: 699px) 100vw, 380px" className="bien-carte__img" />
         </span>
         <span className="carte-offmarket__corps">
           <span className="carte-offmarket__surtitre">Off-market</span>
