@@ -886,6 +886,21 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   « photo de la façade » (description, hero, introduction), paragraphe sur Panoramax retiré. Question de MAV sur le
   texte par immeuble : le détail d'une vente n'est jamais indexé (conditions DVF) ; proposition d'un paragraphe
   d'agrégats par arrondissement, accepté (lot 132). **En production le 16/11/2026** (« Go prod pour les pictos », MAV).
+- **Lot 132** (MAV, 16/11/2026 : « oui pour les paragraphes et aussi un petit paragraphe par immeuble. On dit la date
+  de la vente, son adresse avec deux trois indications […], le rendement théorique avec sa surface et son loyer
+  théorique »). **Paragraphe par arrondissement** (HTML, indexé ; `paragrapheArrondissement` de la page) : compte et
+  commerces, quartiers d'au moins deux ventes (trois au plus), logements et surface médians, appartements par nombre
+  de pièces (dès 20 appartements, part de 10 % au moins), prix médian d'un immeuble et prix au m² de la dernière
+  année, rendement théorique médian (loyer de l'année de chaque vente) ; complet dès 5 ventes, sinon compte,
+  quartiers, logements et prix au m² (`VENTES_POUR_LE_DETAIL`). **Texte de chaque vente** (`texteVente` de
+  `src/components/ventes-dvf/commun.tsx`, dans le détail, servi par l'API fermée aux robots, donc non indexé) : date
+  en chiffres, rue sans numéro, quartier, métro le plus proche et sa distance (50 m près), logements et commerces,
+  surface, loyer théorique par mois et par an (`loyersTheoriques`, mêmes totaux que le tableau), rendement théorique ;
+  il remplace les deux lignes de chiffres du détail. Quartiers = IRIS de l'INSEE sans leur numéro, stations = BD TOPO,
+  tous deux de l'IGN sous Licence ouverte : `src/lib/situation-paris.json` (263 Ko, serveur seulement), `situer()` de
+  `src/lib/situation-paris.ts`, refaits par `scripts/situation-paris-telecharger.mjs` puis `-construire.mjs` (noms
+  affichés « de la Roquette », « Saint-Ambroise » dans `NOMS`). Ni angle de rue ni rue voisine : rien qui désigne
+  l'immeuble plus que sa rue. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
