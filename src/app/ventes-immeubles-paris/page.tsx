@@ -89,7 +89,8 @@ export default async function VentesImmeublesParis() {
         <>
           <Eyebrow>Ventes d’immeubles à Paris</Eyebrow>
           <h1 className="hero-titre">
-            Les immeubles de rapport <span className="accent">vendus à Paris</span>, arrondissement par arrondissement
+            {/* Lot 126 (MAV, 16/11/2026 : « Oui ou sinon pas besoin par arrondissement ») : titre court. */}
+            Les immeubles de rapport <span className="accent">vendus à Paris</span>
           </h1>
           <p className="lead">
             Chaque vente d’immeuble enregistrée par l’État {periode}&nbsp;: la rue, le prix, la surface, les lots et la

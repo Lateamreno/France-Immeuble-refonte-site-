@@ -739,7 +739,15 @@ export default async function VendreUnImmeubleParis() {
               travaux. Pour le vôtre, nous lisons chaque bail et chiffrons les travaux.
             </p>
 
-            <Relance />
+            {/* Lot 126 (MAV, 16/11/2026 : liens vers la page des ventes, « Yes ») : le détail des ventes
+                derrière le prix médian, en second bouton. Les deux restent visibles au téléphone
+                (`porte-action`), comme les deux boutons de la découpe. */}
+            <div className="btn-row paris-relance porte-action">
+              <Button href="#estimer">Estimer mon immeuble</Button>
+              <Button href="/ventes-immeubles-paris/" variant="outline" court="Voir les ventes">
+                Voir les ventes une par une
+              </Button>
+            </div>
           </div>
         </section>
       )}

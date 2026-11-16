@@ -39,6 +39,8 @@ export function Footer() {
               <li><Link href="/vendre-un-immeuble/paris/">Vendre à Paris</Link></li>
               {/* MAV, 15/11/2026 : « baromètre ok pied de page ». */}
               <li><Link href="/prix-immeuble-de-rapport-paris/">Prix des immeubles à Paris</Link></li>
+              {/* Lot 126 (MAV, 16/11/2026 : « Yes » aux liens vers la page des ventes). */}
+              <li><Link href="/ventes-immeubles-paris/">Ventes d’immeubles à Paris</Link></li>
               <li><Link href="/vendre-un-immeuble-a-la-decoupe/">Vendre à la découpe</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
               <li><Link href="/nos-honoraires/">Nos honoraires</Link></li>

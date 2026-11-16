@@ -831,6 +831,12 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   la reprise, même recadrée ou floutée) ; 360° recadrés vers l'immeuble, photo ordinaire gardée seulement si
   elle le vise (25°), **rez-de-chaussée flouté en fondu** (numéro, enseignes, passants) par
   `/api/ventes-dvf/photo/[id]/` (un an en cache). 167 photos pour 372 ventes. **En production le 16/11/2026** (« GO », MAV) : migration 0025 appliquée, 372 ventes écrites en base (enrichies), la tâche mensuelle prend la suite.
+- **Lot 126** (MAV, 16/11/2026 : « Yes » aux liens, « Oui ou sinon pas besoin par arrondissement » pour le
+  titre). Page des ventes : H1 « Les immeubles de rapport vendus à Paris ». Liens vers `/ventes-immeubles-paris/` :
+  pied de page (colonne Vendre), plan du site, baromètre (phrase sous le tableau des arrondissements) et page
+  Paris (second bouton noir « Voir les ventes une par une », « Voir les ventes » au téléphone, sous le tableau des
+  prix, `porte-action`). Les 205 ventes sans photo sont listées pour MAV dans un tableau Drive avec liens Street
+  View (pas de captures : les conditions de Google l'interdisent). Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
