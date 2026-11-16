@@ -95,32 +95,53 @@ export function PhotoVente({ v }: { v: Vente }) {
   );
 }
 
-/** Un lot seul, en clair : « Appartement de 2 pièces, 38 m² ». */
-export function unLotEnClair(l: Lot): string {
-  const s = l.surface ? `, ${l.surface}${NBSP}m²` : "";
-  if (l.type === "Local commercial") return `Local commercial${s}`;
-  const p = l.pieces ? ` de ${l.pieces}${NBSP}pièce${l.pieces > 1 ? "s" : ""}` : "";
-  return `${l.type === "Maison" ? "Maison" : "Appartement"}${p}${s}`;
+/** Le type d'un lot, comme dans un état locatif : « T2 », « Maison T4 », « Local commercial ». */
+export function typeDeLot(l: Lot): string {
+  if (l.type === "Local commercial") return "Local commercial";
+  const t = l.pieces ? `T${l.pieces}` : "";
+  if (l.type === "Maison") return t ? `Maison ${t}` : "Maison";
+  return t || "Appartement";
 }
 
 /** Les lots montrés d'abord quand l'acte en compte beaucoup (jusqu'à 183). */
 const LOTS_D_ABORD = 24;
 
 /**
- * Les lots de l'acte, un par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans l'état loc ») :
- * deux appartements identiques font deux lignes, comme dans un état locatif.
+ * Les lots de l'acte en tableau, un lot par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans
+ * l'état loc », « un tableau directement et T2, T3 à la place de appartement 3 pièces ») : deux
+ * appartements identiques font deux lignes, comme dans un état locatif.
  */
 export function LotsVente({ v }: { v: Vente }) {
   const [tout, setTout] = useState(false);
   const lots = v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
   const montres = tout ? lots : lots.slice(0, LOTS_D_ABORD);
+  // Sur ordinateur, au-delà de dix lots, le tableau se lit en deux colonnes côte à côte ; au téléphone
+  // les deux moitiés se suivent et ne font qu'un tableau (l'en-tête de la suite est masqué).
+  const coupe = Math.ceil(montres.length / 2);
+  const moities = montres.length > 10 ? [montres.slice(0, coupe), montres.slice(coupe)] : [montres];
   return (
     <>
-      <ul className="vdvf__lots-liste">
-        {montres.map((l, i) => (
-          <li key={i}>{unLotEnClair(l)}</li>
+      <div className={`vdvf__lots${moities.length > 1 ? " vdvf__lots--2" : ""}`}>
+        {moities.map((m, k) => (
+          <table key={k} className="vdvf__lots-table">
+            {k === 0 && <caption className="sr-only">Les lots de la vente</caption>}
+            <thead className={k ? "vdvf__lots-tete-suite" : undefined}>
+              <tr>
+                <th scope="col">Lot</th>
+                <th scope="col">Surface</th>
+              </tr>
+            </thead>
+            <tbody>
+              {m.map((l, i) => (
+                <tr key={i}>
+                  <td>{typeDeLot(l)}</td>
+                  <td>{l.surface ? `${l.surface}${NBSP}m²` : "–"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ))}
-      </ul>
+      </div>
       {lots.length > LOTS_D_ABORD && !tout && (
         <button type="button" className="btn btn--primary btn--petit vdvf__lots-plus" onClick={() => setTout(true)}>
           Voir les {lots.length - LOTS_D_ABORD} autres lots
