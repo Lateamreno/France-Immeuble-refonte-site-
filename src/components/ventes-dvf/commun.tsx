@@ -149,11 +149,18 @@ function FacadeDessin({ mixte }: { mixte: boolean }) {
   );
 }
 
-/** La photo de la façade, ou l'immeuble dessiné. */
+/** L'immeuble dessiné (ou sa photo, si `PHOTOS_AFFICHEES`). */
+/**
+ * Les photos Panoramax ne s'affichent plus : l'immeuble dessiné pour toutes les ventes (MAV, 16/11/2026 :
+ * « tu me mets les pictos c'est mieux »). Les photos restent en base ; repasser à `true` le jour où MAV
+ * fournit les siennes (CSV des adresses, nom de fichier `<id>.jpg`, lot 130).
+ */
+export const PHOTOS_AFFICHEES = false;
+
 export function PhotoVente({ v }: { v: Vente }) {
   return (
     <div className="vdvf__photo">
-      {v.photo ? (
+      {PHOTOS_AFFICHEES && v.photo ? (
         // Photo servie par notre domaine (route de recadrage), d'où un <img> simple.
         // eslint-disable-next-line @next/next/no-img-element
         <img

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CreditPhoto,
+  PHOTOS_AFFICHEES,
   EVT_OUVRIR,
   NBSP,
   PhotoVente,
@@ -326,7 +327,7 @@ export function VentesCarte() {
                   Voir le détail des lots
                 </button>
               )}
-              {venteActive.v.photo && <CreditPhoto photo={venteActive.v.photo} />}
+              {PHOTOS_AFFICHEES && venteActive.v.photo && <CreditPhoto photo={venteActive.v.photo} />}
             </div>
           </div>
   ) : null;

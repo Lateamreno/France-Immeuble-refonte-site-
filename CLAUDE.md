@@ -879,7 +879,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   arrondi à 10 €), total par mois et « soit N € par an » calculé sur les loyers exacts (il redonne le rendement
   théorique), note « * Loyer théorique : … ». Pour les photos que MAV fera chercher : CSV privé hors dépôt
   (identifiant = `id` de la vente, nom de photo `<id>.jpg`, adresse avec numéro tirée de DVF, coordonnées) ;
-  ne pas publier ces adresses avec numéro.
+  ne pas publier ces adresses avec numéro. **Lots 128, 129 et 130 en production le 16/11/2026** (« Go prod », MAV).
+- **Lot 131** (MAV, 16/11/2026 : « tu me mets les pictos c'est mieux »). L'immeuble dessiné pour **toutes** les
+  ventes, photos Panoramax comprises (`PHOTOS_AFFICHEES = false` dans `src/components/ventes-dvf/commun.tsx` ; les
+  photos restent en base, à rallumer quand MAV fournira les siennes) ; plus de crédit photo ; textes de la page sans
+  « photo de la façade » (description, hero, introduction), paragraphe sur Panoramax retiré. Question de MAV sur le
+  texte par immeuble : le détail d'une vente n'est jamais indexé (conditions DVF) ; proposition d'un paragraphe
+  d'agrégats par arrondissement, en attente de son accord. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

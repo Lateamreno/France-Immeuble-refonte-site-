@@ -31,7 +31,7 @@ import { SITE, nombre } from "@/lib/site";
 const URL_PAGE = "/ventes-immeubles-paris/";
 const TITRE = "Ventes d'immeubles à Paris par arrondissement | France Immeuble";
 const DESCRIPTION =
-  "Les immeubles de rapport vendus à Paris depuis 2023, arrondissement par arrondissement : rue, prix, prix au m², lots et photo de la façade.";
+  "Les immeubles de rapport vendus à Paris depuis 2023, arrondissement par arrondissement : rue, prix, prix au m², état locatif et loyers théoriques.";
 
 export const revalidate = 86400;
 
@@ -95,8 +95,8 @@ export default async function VentesImmeublesParis() {
             Les immeubles de rapport <span className="accent">vendus à Paris</span>
           </h1>
           <p className="lead">
-            Chaque vente d’immeuble enregistrée par l’État {periode}&nbsp;: la rue, le prix, la surface, les lots et la
-            façade. Choisissez votre arrondissement.
+            Chaque vente d’immeuble enregistrée par l’État {periode}&nbsp;: la rue, le prix, la surface et l’état locatif
+            lot par lot. Choisissez votre arrondissement.
           </p>
           <div className="btn-row">
             <Button href="#estimer" icone>Estimer mon immeuble</Button>
@@ -122,7 +122,7 @@ export default async function VentesImmeublesParis() {
               Un immeuble de rapport vendu en bloc à Paris, c’est en général un immeuble ancien de six à quinze
               logements, souvent avec un commerce au rez-de-chaussée. Il s’en vend de cent à cent cinquante par an.
               Voici ces ventes {periode}, arrondissement par arrondissement, avec la rue, la date, le prix, le prix
-              au m², les lots et une photo de la façade quand il en existe une.
+              au m² et le détail des lots avec leur loyer théorique.
             </p>
             <p>
               Ces ventes viennent des actes enregistrés par l’administration fiscale (DVF). Nous les avons relevées
@@ -207,10 +207,6 @@ export default async function VentesImmeublesParis() {
               Le rendement théorique suppose tous les logements loués au loyer de marché de l’année (carte des loyers de
               l’État). Beaucoup d’immeubles parisiens sont loués moins cher, et leur rendement réel se calcule avec
               leurs baux.
-            </p>
-            <p>
-              Les photos viennent de Panoramax, la banque libre de photos de rue soutenue par l’IGN. Elles ont parfois
-              plusieurs années, et la façade voisine peut entrer dans le cadre.
             </p>
           </div>
         </div>

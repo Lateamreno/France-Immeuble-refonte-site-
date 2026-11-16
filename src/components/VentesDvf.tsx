@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CreditPhoto,
+  PHOTOS_AFFICHEES,
   EVT_OUVRIR,
   LotsVente,
   NBSP,
@@ -80,7 +81,7 @@ function Ligne({ v, ouverte, basculer }: { v: Vente; ouverte: boolean; basculer:
               {locaux ? ` et ${locaux} ${locaux > 1 ? "locaux commerciaux" : "local commercial"}` : ""}
             </p>
             <LotsVente v={v} />
-            {v.photo && <CreditPhoto photo={v.photo} />}
+            {PHOTOS_AFFICHEES && v.photo && <CreditPhoto photo={v.photo} />}
           </div>
         </div>
       )}
