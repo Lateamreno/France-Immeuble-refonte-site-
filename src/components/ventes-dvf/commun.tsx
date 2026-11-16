@@ -23,6 +23,10 @@ export type Vente = {
   loyerM2: number | null;
   lat: number | null;
   lon: number | null;
+  /** Lot 132 : le quartier (« de la Roquette », « Saint-Ambroise ») et le métro le plus proche, données de l'IGN. */
+  quartier: string | null;
+  metro: string | null;
+  metroM: number | null;
   photo: { url: string; auteur: string; licence: string; date: string } | null;
 };
 
@@ -199,13 +203,67 @@ const loyerMois = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Ma
  * conteneur »). Le loyer théorique applique à chaque lot le loyer de marché des appartements de
  * l'année, comme le rendement théorique : le total rapporté au prix redonne ce rendement.
  */
+const TYPES_DE_VOIE = new Set([
+  "rue", "boulevard", "avenue", "place", "passage", "quai", "impasse", "cité", "villa", "square", "allée", "cour",
+  "cours", "galerie", "sentier", "chemin", "hameau", "rond-point", "esplanade", "port", "pont", "parvis", "carrefour",
+  "ruelle", "voie", "sente", "porte", "chaussée", "faubourg", "jardin", "promenade",
+]);
+/** « Rue Oberkampf » → « rue Oberkampf », pour l'écrire dans une phrase. */
+export function rueDansLeTexte(rue: string): string {
+  const [premier, ...reste] = rue.split(" ");
+  return TYPES_DE_VOIE.has(premier.toLowerCase()) ? [premier.toLowerCase(), ...reste].join(" ") : rue;
+}
+
+/**
+ * Le petit texte de chaque vente (lot 132, MAV, 16/11/2026 : « la date de la vente, son adresse avec deux
+ * trois indications sur l'adresse, le rendement théorique avec sa surface et son loyer théorique »). La rue
+ * sans numéro, le quartier et le métro le plus proche : rien qui désigne l'immeuble plus que sa rue. Ce texte
+ * n'arrive qu'avec le détail des ventes, fermé aux moteurs de recherche (conditions de DVF).
+ */
+export function texteVente(v: Vente): string[] {
+  const type = v.mixte ? "immeuble mixte" : "immeuble d’habitation";
+  const phrases: string[] = [];
+  phrases.push(
+    `Cet ${type}${v.rue ? ` situé ${rueDansLeTexte(v.rue)}` : ""} a été vendu en ${moisAnnee(v.date)} pour ${euros(v.prix)}, soit ${euros(v.prixM2)} le${NBSP}m².`,
+  );
+  const ou = v.quartier ? `dans le quartier ${v.quartier} du ${arrondissement(v.codeInsee)} arrondissement` : "";
+  const metro = v.metro && v.metroM ? `à ${v.metroM.toLocaleString("fr-FR")}${NBSP}m du métro ${v.metro}` : "";
+  if (ou || metro) phrases.push(`Il se trouve ${[ou, metro].filter(Boolean).join(", ")}.`);
+  const locaux = locauxDe(v);
+  phrases.push(
+    `Il compte ${v.logements} logement${v.logements > 1 ? "s" : ""}${
+      locaux ? ` et ${locaux === 1 ? "un local commercial" : `${locaux} locaux commerciaux`}` : ""
+    }, pour ${v.surface.toLocaleString("fr-FR")}${NBSP}m² au total.`,
+  );
+  const { mois, an } = loyersTheoriques(v);
+  if (v.loyerM2 && mois && v.rendement != null) {
+    phrases.push(
+      `Au loyer de marché des appartements du ${arrondissement(v.codeInsee)} en ${v.annee} (${v.loyerM2.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${NBSP}€ le${NBSP}m² par mois), ses lots rapporteraient environ ${euros(mois)} par mois, soit ${euros(an)} par an : un rendement théorique de ${pourcent(v.rendement)}.`,
+    );
+  }
+  return phrases;
+}
+
+/** Les lots un par un (deux appartements identiques font deux lots). */
+const lotsUnParUn = (v: Vente) => v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
+
+/**
+ * Le loyer théorique de tous les lots, par mois et par an, arrondi à la dizaine d'euros. Le total par an se
+ * calcule sur les loyers exacts : rapporté au prix, il redonne le rendement théorique.
+ */
+export function loyersTheoriques(v: Vente) {
+  const surface = lotsUnParUn(v).reduce((s, l) => s + (l.surface ?? 0), 0);
+  return {
+    surface,
+    mois: v.loyerM2 ? Math.round((v.loyerM2 * surface) / 10) * 10 : 0,
+    an: v.loyerM2 ? Math.round((v.loyerM2 * surface * 12) / 10) * 10 : 0,
+  };
+}
+
 export function LotsVente({ v }: { v: Vente }) {
-  const lots = v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
+  const lots = lotsUnParUn(v);
   const avecLoyer = v.loyerM2 != null;
-  const surfaceTotale = lots.reduce((s, l) => s + (l.surface ?? 0), 0);
-  // Le total par an se calcule sur les loyers exacts : rapporté au prix, il redonne le rendement théorique.
-  const totalAn = v.loyerM2 ? Math.round((v.loyerM2 * surfaceTotale * 12) / 10) * 10 : 0;
-  const totalMois = v.loyerM2 ? Math.round((v.loyerM2 * surfaceTotale) / 10) * 10 : 0;
+  const { surface: surfaceTotale, mois: totalMois, an: totalAn } = loyersTheoriques(v);
   const m2 = (n: number) => `${n.toLocaleString("fr-FR")}${NBSP}m²`;
   return (
     <>

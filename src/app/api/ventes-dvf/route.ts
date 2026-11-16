@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { CODES_ARRONDISSEMENTS, historiqueParis } from "@/lib/barometre";
 import { ventesDvf } from "@/lib/ventes-dvf";
+import { situer } from "@/lib/situation-paris";
 
 /**
  * Le détail des ventes d'immeubles d'un arrondissement, pour la page `/ventes-immeubles-paris/`
@@ -21,6 +22,8 @@ export async function GET(req: Request) {
       ...v,
       // Lot 128 : le loyer de marché de l'année (€ le m² par mois), pour le loyer théorique de chaque lot.
       loyerM2: l,
+      // Lot 132 : le quartier et le métro le plus proche, pour le petit texte de la vente.
+      ...situer(v.lat, v.lon),
       rendement: l && v.prixM2 ? Math.round(((l * 12 * 100) / v.prixM2) * 10) / 10 : null,
       photo: v.photo ? { ...v.photo, url: `/api/ventes-dvf/photo/${v.photo.id}/?cap=${v.photo.cap}` } : null,
     };

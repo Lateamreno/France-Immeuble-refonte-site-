@@ -13,7 +13,8 @@ import { VentesCarte } from "@/components/ventes-dvf/VentesCarte";
 import { CarteArrondissement } from "@/components/ventes-dvf/CarteArrondissement";
 import { filAriane } from "@/lib/schema";
 import { CODES_ARRONDISSEMENTS, historiqueParis, reperesBarometre } from "@/lib/barometre";
-import { ventesDvf } from "@/lib/ventes-dvf";
+import { ventesDvf, type VenteDvf } from "@/lib/ventes-dvf";
+import { situer } from "@/lib/situation-paris";
 import { imagesPartage } from "@/lib/partage";
 import { VISUELS } from "@/lib/visuels";
 import { SITE, nombre } from "@/lib/site";
@@ -51,6 +52,104 @@ const mediane = (xs: number[]) => {
   return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
 };
 
+const pct = (x: number) => `${Math.round(x * 100)}${NBSP}%`;
+const prixLisible = (x: number) =>
+  x >= 1_000_000
+    ? `${(Math.round(x / 100_000) / 10).toLocaleString("fr-FR")}${NBSP}M€`
+    : `${nombre(Math.round(x / 10_000) * 10_000)}${NBSP}€`;
+const PIECES: Record<number, string> = { 1: "de studios", 2: "de deux pièces", 3: "de trois pièces", 4: "de quatre pièces et plus" };
+const liste = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} et ${xs[xs.length - 1]}`);
+
+/** Sous ce nombre de ventes, l'arrondissement n'a que son compte : une médiane de trois ou quatre ventes en
+ * désigne presque une. */
+const VENTES_POUR_LE_DETAIL = 5;
+
+/**
+ * Le paragraphe de chaque arrondissement (lot 132, MAV, 16/11/2026 : « oui pour les paragraphes »). Des
+ * comptes et des médianes seulement, lus par Google : quartiers, logements, surface, appartements par
+ * nombre de pièces, prix, rendement théorique. Jamais une vente une par une (conditions de DVF).
+ */
+function paragrapheArrondissement(
+  nom: string,
+  siens: VenteDvf[],
+  periode: string,
+  loyer: (annee: number) => number | null,
+  /** Le prix médian au m² de la dernière année (baromètre, trois ventes au moins), et cette année. */
+  prixM2: { valeur: number; annee: number } | null,
+): string[] {
+  const n = siens.length;
+  const mixtes = siens.filter((v) => v.mixte).length;
+  const phrases: string[] = [];
+  // Les quartiers d'au moins deux ventes, les plus fréquents d'abord (trois au plus).
+  const parQuartier = new Map<string, number>();
+  for (const v of siens) {
+    const q = situer(v.lat, v.lon).quartier;
+    if (q) parQuartier.set(q, (parQuartier.get(q) ?? 0) + 1);
+  }
+  const quartiers = [...parQuartier.entries()]
+    .filter(([, k]) => k >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n >= 10 ? 3 : 2)
+    .map(([q]) => q);
+  const ou = quartiers.length
+    ? `, surtout dans ${quartiers.length > 1 ? "les quartiers" : "le quartier"} ${liste(quartiers)}`
+    : "";
+  phrases.push(
+    `${periode.charAt(0).toUpperCase() + periode.slice(1)}, ${nombre(n)} immeuble${n > 1 ? "s" : ""} de rapport ${
+      n > 1 ? "ont été vendus" : "a été vendu"
+    } dans le ${nom}${mixtes === n && n > 1 ? ", tous avec un commerce" : mixtes ? `, dont ${nombre(mixtes)} avec un commerce` : ""}${ou}.`,
+  );
+  if (n < 3) return phrases;
+  const logements = mediane(siens.map((v) => v.logements))!;
+  if (n < VENTES_POUR_LE_DETAIL) {
+    phrases.push(`Ils comptaient en général ${Math.round(logements)}${NBSP}logements.`);
+    if (prixM2) phrases.push(`En ${prixM2.annee}, leur prix médian était de ${nombre(prixM2.valeur)}${NBSP}€ le m².`);
+    return phrases;
+  }
+  const surface = mediane(siens.map((v) => v.surface))!;
+  phrases.push(
+    `Ils comptaient en général ${Math.round(logements)}${NBSP}logements, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
+  );
+  // Les appartements, lot par lot (deux appartements identiques comptent pour deux).
+  const apparts = siens.flatMap((v) =>
+    v.lots.filter((l) => l.type === "Appartement" && l.pieces).flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l)),
+  );
+  if (apparts.length >= 20) {
+    const parPieces = new Map<number, number>();
+    for (const l of apparts) {
+      const k = Math.min(4, l.pieces!);
+      parPieces.set(k, (parPieces.get(k) ?? 0) + 1);
+    }
+    const tri = [...parPieces.entries()].sort((a, b) => b[1] - a[1]).filter(([, k]) => k / apparts.length >= 0.1);
+    const surfaces = apparts.map((l) => l.surface).filter((x): x is number => !!x);
+    if (tri.length && surfaces.length) {
+      phrases.push(
+        `Leurs appartements font ${Math.round(mediane(surfaces)!)}${NBSP}m² en médiane : ${liste(
+          tri.map(([p, k]) => `${pct(k / apparts.length)} ${PIECES[p]}`),
+        )}.`,
+      );
+    }
+  }
+  phrases.push(
+    `Le prix médian d’un immeuble y était de ${prixLisible(mediane(siens.map((v) => v.prix))!)}${
+      prixM2 ? `, et de ${nombre(prixM2.valeur)}${NBSP}€ le m² en ${prixM2.annee}` : ""
+    }.`,
+  );
+  const rendements = siens
+    .map((v) => {
+      const l = loyer(v.annee);
+      return l && v.prixM2 ? (l * 12 * 100) / v.prixM2 : null;
+    })
+    .filter((x): x is number => x != null);
+  if (rendements.length >= VENTES_POUR_LE_DETAIL) {
+    const r = mediane(rendements)!;
+    phrases.push(
+      `Au loyer de marché des appartements de l’année de chaque vente, le rendement théorique médian ressort à ${r.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${NBSP}%.`,
+    );
+  }
+  return phrases;
+}
+
 export default async function VentesImmeublesParis() {
   const [h, ventes] = await Promise.all([historiqueParis(), ventesDvf(CODES_ARRONDISSEMENTS)]);
   const annees = [...new Set(ventes.map((v) => v.annee))].sort((a, b) => a - b);
@@ -70,10 +169,13 @@ export default async function VentesImmeublesParis() {
       n,
       nom: `${rang(n)} arrondissement`,
       total: siens.length,
-      mixtes: siens.filter((v) => v.mixte).length,
-      logementsMedian: mediane(siens.map((v) => v.logements)),
-      prixDerniere: annee && annee.nbVentes >= 3 ? annee.prixM2Median : null,
-      ventesDerniere: annee?.nbVentes ?? 0,
+      paragraphe: paragrapheArrondissement(
+        `${rang(n)} arrondissement`,
+        siens,
+        periode,
+        (an) => (h.get(code) ?? []).find((a) => a.annee === an)?.loyerM2 ?? null,
+        annee && annee.nbVentes >= 3 && annee.prixM2Median && derniere ? { valeur: annee.prixM2Median, annee: derniere } : null,
+      ),
     };
   });
 
@@ -178,11 +280,7 @@ export default async function VentesImmeublesParis() {
                   <CarteArrondissement code={a.code} />
                 </header>
                 <p className="vdvf-arr__resume">
-                  {periode.charAt(0).toUpperCase() + periode.slice(1)}, {nombre(a.total)} immeuble{a.total > 1 ? "s" : ""} de
-                  rapport {a.total > 1 ? "ont été vendus" : "a été vendu"} dans le {a.nom}
-                  {a.mixtes ? `, dont ${nombre(a.mixtes)} avec un commerce` : ""}.
-                  {a.logementsMedian != null && a.total >= 3 ? ` Ils comptaient en général ${Math.round(a.logementsMedian)}${NBSP}logements.` : ""}
-                  {a.prixDerniere ? ` En ${derniere}, leur prix médian était de ${nombre(a.prixDerniere)}${NBSP}€ le m².` : ""}
+                  {a.paragraphe.join(" ")}
                 </p>
                 <VentesDvf code={a.code} nom={a.nom} />
               </section>

@@ -15,6 +15,7 @@ import {
   moisAnnee,
   moisCourt,
   pourcent,
+  texteVente,
   type Vente,
 } from "./ventes-dvf/commun";
 
@@ -71,15 +72,9 @@ function Ligne({ v, ouverte, basculer }: { v: Vente; ouverte: boolean; basculer:
             <p className="vdvf__date">
               {moisAnnee(v.date)} · {v.mixte ? "Immeuble mixte" : "Immeuble d’habitation"}
             </p>
-            <p className="vdvf__chiffres">
-              {euros(v.prix)} · {euros(v.prixM2)} le m² · {v.surface.toLocaleString("fr-FR")}
-              {NBSP}m²
-              {v.rendement != null && <> · rendement théorique {pourcent(v.rendement)}</>}
-            </p>
-            <p className="vdvf__sous-titre">
-              {v.logements} logement{v.logements > 1 ? "s" : ""}
-              {locaux ? ` et ${locaux} ${locaux > 1 ? "locaux commerciaux" : "local commercial"}` : ""}
-            </p>
+            {/* Lot 132 (MAV, 16/11/2026 : « un petit paragraphe par immeuble ») : date, rue, quartier, métro,
+                surface, loyer et rendement théoriques. Il reprend les chiffres de la ligne, en phrases. */}
+            <p className="vdvf__texte">{texteVente(v).join(" ")}</p>
             <LotsVente v={v} />
             {PHOTOS_AFFICHEES && v.photo && <CreditPhoto photo={v.photo} />}
           </div>
