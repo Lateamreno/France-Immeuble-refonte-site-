@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Picto, type NomPicto } from "@/components/Picto";
 import { VentesDvf } from "@/components/VentesDvf";
 import { VentesCarte } from "@/components/ventes-dvf/VentesCarte";
+import { CarteArrondissement } from "@/components/ventes-dvf/CarteArrondissement";
 import { filAriane } from "@/lib/schema";
 import { CODES_ARRONDISSEMENTS, historiqueParis, reperesBarometre } from "@/lib/barometre";
 import { ventesDvf } from "@/lib/ventes-dvf";
@@ -165,9 +166,17 @@ export default async function VentesImmeublesParis() {
             .filter((a) => a.total)
             .map((a) => (
               <section key={a.code} id={`arr-${a.n}`} className="vdvf-arr">
-                <h2>
-                  Ventes d’immeubles dans le <span className="accent">{a.nom}</span>
-                </h2>
+                {/* MAV, 16/11/2026 : « un surtitre vente d'immeuble dans le x arrondissement et juste en dessous
+                    un gros titre en or avec écrit juste l'arrondissement ». Le surtitre porte le H2 (texte
+                    complet pour Google), le grand titre en or est visuel. */}
+                <header className="vdvf-arr__tete">
+                  <Eyebrow as="h2" bare>Ventes d’immeubles dans le {a.nom}</Eyebrow>
+                  <p className="vdvf-arr__titre" aria-hidden="true">{a.nom}</p>
+                  <p className="vdvf-arr__n">
+                    {nombre(a.total)} vente{a.total > 1 ? "s" : ""} {periode}
+                  </p>
+                  <CarteArrondissement code={a.code} />
+                </header>
                 <p className="vdvf-arr__resume">
                   {periode.charAt(0).toUpperCase() + periode.slice(1)}, {nombre(a.total)} immeuble{a.total > 1 ? "s" : ""} de
                   rapport {a.total > 1 ? "ont été vendus" : "a été vendu"} dans le {a.nom}

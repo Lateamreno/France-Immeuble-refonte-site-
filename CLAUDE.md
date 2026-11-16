@@ -859,7 +859,18 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   un total aussi ») ; deux colonnes côte à côte dès 1 200 px et au-delà de dix lots, un seul
   tableau en dessous ; **toutes les listes se remplissent ensemble** (`surVentes`) et la page se recale sur
   l'arrondissement choisi dans le sommaire (en production, « 13e » menait au 7e : les listes du dessus
-  grandissaient une à une) ; au-delà de 22 lots, « Voir les N autres lots » (70 % des ventes en ont 22 ou moins ; seuil validé par MAV). Sur la branche, en attente.
+  grandissaient une à une) ; au-delà de 22 lots, « Voir les N autres lots » (70 % des ventes en ont 22 ou moins ; seuil validé par MAV),
+  remplacé au lot 129. Sur la branche, en attente.
+- **Lot 129** (MAV, 16/11/2026 : « à chaque arrondissement je veux que tu mettes la carte comme pour les immeubles
+  vendus », « au lieu de décembre 2025 tu mets 12/2025 », « un surtitre vente d'immeuble dans le x arrondissement et
+  juste en dessous un gros titre en or avec écrit juste l'arrondissement », « un défilement contenu à l'intérieur d'un
+  conteneur […] un seul tableau […] toujours la même hauteur max […] le titre de la première ligne fixe »). En-tête de
+  chaque arrondissement : surtitre en H2 « Ventes d'immeubles dans le 11e arrondissement » (texte complet pour
+  Google), grand titre en or « 11e arrondissement » (visuel, `aria-hidden`), « N ventes de 2023 à 2025 », petite carte
+  de Paris, l'arrondissement en bronze (`CarteArrondissement`, mêmes contours IGN que la carte des ventes, dessinée au
+  serveur) ; au téléphone, la carte à côté du surtitre et le titre sur toute la largeur. Dates en chiffres partout sur
+  la page (« 12/2025 », `moisAnnee`). Lots : **un seul tableau dans un cadre de 320 px de haut au plus qui défile**, ligne
+  de titres et total collés en haut et en bas (`position: sticky`), plus de bouton ni de deux colonnes.
 
 ### Garde-fous non négociables
 

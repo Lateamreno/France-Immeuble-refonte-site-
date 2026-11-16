@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 /**
  * Ce que la carte et les listes des ventes d'immeubles de Paris partagent (lots 125 et 127) : les
  * ventes chargées une seule fois depuis `/api/ventes-dvf/?code=paris` (fermée aux robots, conditions
@@ -87,10 +85,9 @@ export const EVT_OUVRIR = "vdvf:ouvrir";
 
 export const NBSP = " ";
 export const euros = (n: number) => `${n.toLocaleString("fr-FR")}${NBSP}€`;
-const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-const MOIS_COURTS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
-export const moisAnnee = (d: string) => `${MOIS[Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`;
-export const moisCourt = (d: string) => `${MOIS_COURTS[Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`;
+/** La date d'une vente en chiffres : « 12/2025 » (MAV, 16/11/2026 : « au lieu de décembre 2025 tu mets 12/2025 »). */
+export const moisAnnee = (d: string) => `${d.slice(5, 7)}/${d.slice(0, 4)}`;
+export const moisCourt = moisAnnee;
 export const pourcent = (x: number) => `${x.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${NBSP}%`;
 export const arrondissement = (code: string) => {
   const n = Number(code.slice(3));
@@ -144,12 +141,6 @@ export function typeDeLot(l: Lot): string {
   return t || "Appartement";
 }
 
-/**
- * Les lots montrés d'abord quand l'acte en compte beaucoup (jusqu'à 183). MAV, 16/11/2026 : « on peut
- * faire moins si 70 % des immeubles font moins » ; 70 % des ventes de 2023 à 2025 ont 22 lots ou moins.
- */
-const LOTS_D_ABORD = 22;
-
 /** Loyer théorique d'un lot sur un an, arrondi à la dizaine d'euros. */
 const loyerAn = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Math.round((loyerM2 * l.surface * 12) / 10) * 10 : null);
 
@@ -157,64 +148,53 @@ const loyerAn = (l: Lot, loyerM2: number | null) => (loyerM2 && l.surface ? Math
  * Les lots de l'acte en tableau, un lot par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans
  * l'état loc », « un tableau directement et T2, T3 à la place de appartement 3 pièces », « loyer
  * théorique c'est bien et un total aussi ») : deux appartements identiques font deux lignes, comme
- * dans un état locatif. Le loyer théorique applique à chaque lot le loyer de marché des appartements
- * de l'année, comme le rendement théorique : le total rapporté au prix redonne ce rendement.
+ * dans un état locatif. Un seul tableau, d'une hauteur fixe au plus, qui défile dans son cadre avec
+ * sa ligne de titres et son total toujours visibles (MAV : « un défilement contenu à l'intérieur d'un
+ * conteneur »). Le loyer théorique applique à chaque lot le loyer de marché des appartements de
+ * l'année, comme le rendement théorique : le total rapporté au prix redonne ce rendement.
  */
 export function LotsVente({ v }: { v: Vente }) {
-  const [tout, setTout] = useState(false);
   const lots = v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
-  const montres = tout ? lots : lots.slice(0, LOTS_D_ABORD);
-  // Sur ordinateur, au-delà de dix lots, le tableau se lit en deux colonnes côte à côte ; au téléphone
-  // les deux moitiés se suivent et ne font qu'un tableau (l'en-tête de la suite est masqué).
-  const coupe = Math.ceil(montres.length / 2);
-  const moities = montres.length > 10 ? [montres.slice(0, coupe), montres.slice(coupe)] : [montres];
   const avecLoyer = v.loyerM2 != null;
   const surfaceTotale = lots.reduce((s, l) => s + (l.surface ?? 0), 0);
   const loyerTotal = lots.reduce((s, l) => s + (loyerAn(l, v.loyerM2) ?? 0), 0);
   const m2 = (n: number) => `${n.toLocaleString("fr-FR")}${NBSP}m²`;
   return (
     <>
-      <div className={`vdvf__lots${moities.length > 1 ? " vdvf__lots--2" : ""}`}>
-        {moities.map((m, k) => (
-          <table key={k} className="vdvf__lots-table">
-            {k === 0 && <caption className="sr-only">Les lots de la vente{avecLoyer ? ", avec leur loyer théorique sur un an" : ""}</caption>}
-            <thead className={k ? "vdvf__lots-tete-suite" : undefined}>
-              <tr>
-                <th scope="col">Lot</th>
-                <th scope="col">Surface</th>
-                {avecLoyer && <th scope="col">Loyer / an</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {m.map((l, i) => {
-                const loyer = loyerAn(l, v.loyerM2);
-                return (
-                  <tr key={i}>
-                    <td>{typeDeLot(l)}</td>
-                    <td>{l.surface ? m2(l.surface) : "–"}</td>
-                    {avecLoyer && <td>{loyer ? euros(loyer) : "–"}</td>}
-                  </tr>
-                );
-              })}
-            </tbody>
-            {k === moities.length - 1 && (
-              <tfoot>
-                <tr>
-                  <th scope="row">Total
-                    {lots.length > montres.length && <span className="vdvf__lots-nb">des {lots.length}{NBSP}lots</span>}</th>
-                  <td>{m2(surfaceTotale)}</td>
-                  {avecLoyer && <td>{euros(loyerTotal)}</td>}
+      {/* Cadre qui défile : focalisable au clavier pour défiler aux flèches. */}
+      <div className="vdvf__lots" tabIndex={0} role="region" aria-label={`Les ${lots.length} lots de la vente`}>
+        <table className="vdvf__lots-table">
+          <thead>
+            <tr>
+              <th scope="col">Lot</th>
+              <th scope="col">Surface</th>
+              {avecLoyer && <th scope="col">Loyer / an</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {lots.map((l, i) => {
+              const loyer = loyerAn(l, v.loyerM2);
+              return (
+                <tr key={i}>
+                  <td>{typeDeLot(l)}</td>
+                  <td>{l.surface ? m2(l.surface) : "–"}</td>
+                  {avecLoyer && <td>{loyer ? euros(loyer) : "–"}</td>}
                 </tr>
-              </tfoot>
-            )}
-          </table>
-        ))}
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row">
+                Total
+                {lots.length > 1 && <span className="vdvf__lots-nb">{lots.length}{NBSP}lots</span>}
+              </th>
+              <td>{m2(surfaceTotale)}</td>
+              {avecLoyer && <td>{euros(loyerTotal)}</td>}
+            </tr>
+          </tfoot>
+        </table>
       </div>
-      {lots.length > LOTS_D_ABORD && !tout && (
-        <button type="button" className="btn btn--primary btn--petit vdvf__lots-plus" onClick={() => setTout(true)}>
-          {lots.length - LOTS_D_ABORD > 1 ? `Voir les ${lots.length - LOTS_D_ABORD} autres lots` : "Voir le dernier lot"}
-        </button>
-      )}
       {avecLoyer && (
         <p className="vdvf__lots-note">
           Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.annee},{" "}
