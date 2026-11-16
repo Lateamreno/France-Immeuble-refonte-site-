@@ -885,7 +885,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   photos restent en base, à rallumer quand MAV fournira les siennes) ; plus de crédit photo ; textes de la page sans
   « photo de la façade » (description, hero, introduction), paragraphe sur Panoramax retiré. Question de MAV sur le
   texte par immeuble : le détail d'une vente n'est jamais indexé (conditions DVF) ; proposition d'un paragraphe
-  d'agrégats par arrondissement, en attente de son accord. Sur la branche, en attente.
+  d'agrégats par arrondissement, accepté (lot 132). **En production le 16/11/2026** (« Go prod pour les pictos », MAV).
 
 ### Garde-fous non négociables
 
