@@ -107,8 +107,11 @@ function paragrapheArrondissement(
     return phrases;
   }
   const surface = mediane(siens.map((v) => v.surface))!;
+  // Lot 134 : les niveaux (BD TOPO de l'IGN), dès cinq immeubles où ils sont connus.
+  const niveaux = siens.map((v) => v.niveaux).filter((x): x is number => x != null);
+  const surNiveaux = niveaux.length >= VENTES_POUR_LE_DETAIL ? ` sur ${Math.round(mediane(niveaux)!)}${NBSP}niveaux` : "";
   phrases.push(
-    `Ils comptaient en général ${Math.round(logements)}${NBSP}logements, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
+    `Ils comptaient en général ${Math.round(logements)}${NBSP}logements${surNiveaux}, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
   );
   // Les appartements, lot par lot (deux appartements identiques comptent pour deux).
   const apparts = siens.flatMap((v) =>

@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { configSite } from "@/lib/supabase-site";
 import { COMMUNES_SUIVIES, derniereAnneeDvf, detailVentesImmeubles, lireCsv, urlDvf } from "@/lib/dvf-immeubles";
 import { chercherPhoto, rueLisible, rueOfficielle } from "@/lib/panoramax";
+import { niveauxDesParcelles } from "@/lib/niveaux-batiment";
 
 /**
  * Recalcul mensuel des ventes d'immeubles de Paris une par une (lot 125), pour la page
@@ -24,6 +25,9 @@ const DELAI_MS = 20_000;
 const PAGE = "/ventes-immeubles-paris/";
 
 type Ligne = Record<string, unknown>;
+
+/** Sous trois niveaux, le rapprochement parcelle-bâtiment est douteux pour un immeuble de plus de cinq logements. */
+const gardeNiveaux = (n: number | null) => (n != null && n >= 3 ? n : null);
 
 async function ventesDeLAnnee(annee: number, echeance: number): Promise<Ligne[] | null> {
   const fichiers = new Map<string, Record<string, string>[]>();
@@ -54,7 +58,7 @@ async function ventesDeLAnnee(annee: number, echeance: number): Promise<Ligne[] 
       lignes.push({
         id: v.id, code_insee: code, annee, date_vente: v.date, rue_dvf: v.rue, code_postal: v.codePostal,
         prix: v.prix, surface: v.surface, prix_m2: v.prixM2, logements: v.logements, mixte: v.mixte, lots: v.lots,
-        lat: v.lat, lon: v.lon,
+        lat: v.lat, lon: v.lon, parcelles: v.parcelles,
       });
     }
   }
@@ -73,10 +77,10 @@ export async function GET(req: Request) {
   const entetes = { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json" };
 
   // Ce qui est déjà cherché (rue officielle, photo) n'est pas recherché.
-  const deja = new Map<string, { rue: string | null; photo: unknown }>();
+  const deja = new Map<string, { rue: string | null; photo: unknown; niveaux: number | null }>();
   try {
-    const r = await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,rue,photo&enrichi=eq.true`, { headers: entetes, signal: AbortSignal.timeout(DELAI_MS) });
-    if (r.ok) for (const l of (await r.json()) as { id: string; rue: string | null; photo: unknown }[]) deja.set(l.id, l);
+    const r = await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,rue,photo,niveaux&enrichi=eq.true`, { headers: entetes, signal: AbortSignal.timeout(DELAI_MS) });
+    if (r.ok) for (const l of (await r.json()) as { id: string; rue: string | null; photo: unknown; niveaux: number | null }[]) deja.set(l.id, l);
   } catch {
     /* table vide ou injoignable : tout sera cherché */
   }
@@ -95,19 +99,33 @@ export async function GET(req: Request) {
         for (let l = file.shift(); l; l = file.shift()) {
           const vu = deja.get(String(l.id));
           const brute = typeof l.rue_dvf === "string" ? l.rue_dvf : null;
-          if (vu) { l.rue = vu.rue; l.photo = vu.photo; l.enrichi = true; continue; }
+          const parcelles = Array.isArray(l.parcelles) ? (l.parcelles as string[]) : [];
+          if (vu) {
+            l.rue = vu.rue;
+            l.photo = vu.photo;
+            l.enrichi = true;
+            l.niveaux = vu.niveaux;
+            // Lot 134 : les ventes déjà cherchées avant les niveaux les reçoivent une fois.
+            if (vu.niveaux == null && Date.now() < echeance - 30_000) {
+              try { l.niveaux = gardeNiveaux(await niveauxDesParcelles(parcelles, AbortSignal.timeout(10_000))); } catch { /* le mois suivant */ }
+            }
+            continue;
+          }
           l.rue = brute ? rueLisible(brute) : null;
           l.photo = null;
+          l.niveaux = null;
           l.enrichi = false;
           if (Date.now() > echeance - 30_000) continue;
           try {
             const signal = AbortSignal.timeout(10_000);
-            const [rue, photo] = await Promise.all([
+            const [rue, photo, niveaux] = await Promise.all([
               brute && l.code_postal ? rueOfficielle(brute, String(l.code_postal), signal) : null,
               typeof l.lat === "number" && typeof l.lon === "number" ? chercherPhoto(l.lat, l.lon, signal) : null,
+              niveauxDesParcelles(parcelles, signal).catch(() => null),
             ]);
             if (rue) l.rue = rue;
             l.photo = photo;
+            l.niveaux = gardeNiveaux(niveaux);
             l.enrichi = true;
           } catch {
             /* le mois suivant */
@@ -116,7 +134,7 @@ export async function GET(req: Request) {
       }),
     );
     const corps = lignes.map((l) => {
-      const { rue_dvf: _brute, ...reste } = l;
+      const { rue_dvf: _brute, parcelles: _parcelles, ...reste } = l;
       return { ...reste, maj_le: new Date().toISOString() } as Ligne;
     });
     // L'année recalculée remplace ses ventes : celles que DVF a retirées disparaissent.

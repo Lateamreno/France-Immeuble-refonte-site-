@@ -905,6 +905,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris »). Pied de page : colonne « Le marché à
   Paris » (Prix des immeubles à Paris, Immeubles vendus à Paris), cinq colonnes dès 760 px ; « Immeubles vendus à
   Paris » aussi dans le plan du site et le fil d'Ariane de la page. Sur la branche, en attente.
+- **Lot 134** (MAV, 16/11/2026 : « tu peux ajouter le nombre d'étages dans la description si on l'a quelque part »).
+  **Niveaux de l'immeuble** : parcelles cadastrales de l'acte DVF (`parcelles` de `detailVentesImmeubles`), puis
+  bâtiments de la BD TOPO de l'IGN dont le centre tombe dans ces parcelles, le plus haut (`nombre_d_etages`) ;
+  `niveauxDesParcelles` de `src/lib/niveaux-batiment.ts` (Parcellaire Express et BD TOPO, Licence ouverte). Gardé
+  à partir de 3 niveaux (en dessous, rapprochement douteux). Colonne `niveaux` (migration 0026, appliquée ;
+  358 ventes sur 372 remplies le 16/11/2026), écrite par la tâche mensuelle pour les ventes nouvelles et une fois
+  pour les anciennes sans niveaux. Texte de chaque vente : « … et un local commercial sur 7 niveaux, pour 973 m² » ;
+  paragraphe d'arrondissement : « 16 logements sur 7 niveaux », médiane dès 5 immeubles où les niveaux sont connus.
+  Le site écrit « niveaux » : la BD TOPO compte le rez-de-chaussée selon l'usage des fichiers fonciers, sans que
+  sa documentation (déplacée) ait pu être relue. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

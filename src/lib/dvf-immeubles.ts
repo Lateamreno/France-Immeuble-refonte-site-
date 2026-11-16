@@ -355,6 +355,8 @@ export type VenteImmeubleDetail = {
   lots: LotVendu[];
   lat: number | null;
   lon: number | null;
+  /** Les parcelles cadastrales de l'acte (lot 134 : le nombre de niveaux de l'immeuble, BD TOPO). */
+  parcelles: string[];
 };
 
 export function detailVentesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<string>): VenteImmeubleDetail[] {
@@ -391,6 +393,7 @@ export function detailVentesImmeubles(lignes: Ligne[], ailleurs?: ReadonlySet<st
       lots,
       lat: moy(0),
       lon: moy(1),
+      parcelles: [...new Set(rows.map((r) => r.id_parcelle).filter(Boolean))].sort(),
     };
   });
 }

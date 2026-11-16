@@ -27,6 +27,8 @@ export type Vente = {
   quartier: string | null;
   metro: string | null;
   metroM: number | null;
+  /** Lot 134 : niveaux de l'immeuble (BD TOPO de l'IGN), null si inconnu. */
+  niveaux: number | null;
   photo: { url: string; auteur: string; licence: string; date: string } | null;
 };
 
@@ -233,7 +235,7 @@ export function texteVente(v: Vente): string[] {
   phrases.push(
     `Il compte ${v.logements} logement${v.logements > 1 ? "s" : ""}${
       locaux ? ` et ${locaux === 1 ? "un local commercial" : `${locaux} locaux commerciaux`}` : ""
-    }, pour ${v.surface.toLocaleString("fr-FR")}${NBSP}m² au total.`,
+    }${v.niveaux ? ` sur ${v.niveaux}${NBSP}niveaux` : ""}, pour ${v.surface.toLocaleString("fr-FR")}${NBSP}m² au total.`,
   );
   const { mois, an } = loyersTheoriques(v);
   if (v.loyerM2 && mois && v.rendement != null) {
