@@ -185,7 +185,7 @@ export default async function VentesImmeublesParis() {
         data={filAriane([
           { nom: "Accueil", url: "/" },
           { nom: "Vendre à Paris", url: "/vendre-un-immeuble/paris/" },
-          { nom: "Ventes d’immeubles à Paris", url: URL_PAGE },
+          { nom: "Immeubles vendus à Paris", url: URL_PAGE },
         ])}
       />
 

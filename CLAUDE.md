@@ -900,7 +900,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   tous deux de l'IGN sous Licence ouverte : `src/lib/situation-paris.json` (263 Ko, serveur seulement), `situer()` de
   `src/lib/situation-paris.ts`, refaits par `scripts/situation-paris-telecharger.mjs` puis `-construire.mjs` (noms
   affichés « de la Roquette », « Saint-Ambroise » dans `NOMS`). Ni angle de rue ni rue voisine : rien qui désigne
-  l'immeuble plus que sa rue. Sur la branche, en attente.
+  l'immeuble plus que sa rue. **En production le 16/11/2026** (« Parfait go prod », MAV).
+- **Lot 133** (MAV, 16/11/2026 : « Crée une section pour ces deux liens, ça n'a rien à faire dans Vendre », « vente
+  d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris »). Pied de page : colonne « Le marché à
+  Paris » (Prix des immeubles à Paris, Immeubles vendus à Paris), cinq colonnes dès 760 px ; « Immeubles vendus à
+  Paris » aussi dans le plan du site et le fil d'Ariane de la page. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

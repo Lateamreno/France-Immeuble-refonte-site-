@@ -37,10 +37,6 @@ export function Footer() {
               <li><Link href="/vendre-un-immeuble/">Vendre un immeuble</Link></li>
               {/* Lot 113 (MAV, 14/11/2026 : « la page Paris est dans le pied de page pour la retrouver ? »). */}
               <li><Link href="/vendre-un-immeuble/paris/">Vendre à Paris</Link></li>
-              {/* MAV, 15/11/2026 : « baromètre ok pied de page ». */}
-              <li><Link href="/prix-immeuble-de-rapport-paris/">Prix des immeubles à Paris</Link></li>
-              {/* Lot 126 (MAV, 16/11/2026 : « Yes » aux liens vers la page des ventes). */}
-              <li><Link href="/ventes-immeubles-paris/">Ventes d’immeubles à Paris</Link></li>
               <li><Link href="/vendre-un-immeuble-a-la-decoupe/">Vendre à la découpe</Link></li>
               <li><Link href="/estimer-un-immeuble/">Estimer un immeuble</Link></li>
               <li><Link href="/nos-honoraires/">Nos honoraires</Link></li>
@@ -57,6 +53,16 @@ export function Footer() {
                   PleinBail, biens loués
                 </a>
               </li>
+            </ul>
+          </div>
+
+          {/* Lot 133 (MAV, 16/11/2026 : « Crée une section pour ces deux liens, ça n'a rien à faire dans
+              Vendre », « vente d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris »). */}
+          <div className="footer-col">
+            <h4>Le marché à Paris</h4>
+            <ul>
+              <li><Link href="/prix-immeuble-de-rapport-paris/">Prix des immeubles à Paris</Link></li>
+              <li><Link href="/ventes-immeubles-paris/">Immeubles vendus à Paris</Link></li>
             </ul>
           </div>
 

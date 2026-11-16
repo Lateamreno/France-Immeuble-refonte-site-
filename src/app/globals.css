@@ -484,7 +484,7 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .footer-grid{display:grid;gap:24px 16px;grid-template-columns:1fr 1fr;}
 .footer-col--marque{grid-column:1 / -1;}
 .footer-coords{display:flex;flex-direction:column;gap:6px;margin-top:var(--space-s);}
-@media (min-width:760px){.footer-grid{grid-template-columns:1.3fr 1fr 1fr 1fr;gap:24px;}.footer-col--marque{grid-column:auto;}}
+@media (min-width:760px){.footer-grid{grid-template-columns:1.3fr repeat(4,1fr);gap:24px;}.footer-col--marque{grid-column:auto;}}
 .footer-col h4{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
   letter-spacing:0.15em;text-transform:uppercase;color:var(--color-bronze);
