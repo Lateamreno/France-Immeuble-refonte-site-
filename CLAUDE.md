@@ -836,7 +836,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   pied de page (colonne Vendre), plan du site, baromètre (phrase sous le tableau des arrondissements) et page
   Paris (second bouton noir « Voir les ventes une par une », « Voir les ventes » au téléphone, sous le tableau des
   prix, `porte-action`). Les 205 ventes sans photo sont listées pour MAV dans un tableau Drive avec liens Street
-  View (pas de captures : les conditions de Google l'interdisent). Sur la branche, en attente.
+  View (pas de captures : les conditions de Google l'interdisent).
 - **Lot 127** (MAV, 16/11/2026 : « j'aurais préféré sous forme de liste », « la carte interactive avec toutes les
   ventes […] une légende avec des couleurs selon les prix au m² et/ou rendements […] quand on survole un lieu on a
   la carte »). Page des ventes : **carte des ventes** (`VentesCarte`, `src/components/ventes-dvf/`) après
@@ -849,7 +849,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `/api/ventes-dvf/?code=paris` (avec `lat`, `lon`), toujours hors HTML. **Scan de Bing** (16/11/2026) : descriptions
   du plan du site, des mentions légales et du compte ; texte alternatif sur toutes les images (`altImage` de
   `src/lib/visuels.ts` pour les photos de fond) ; title d'une annonce de plus de 65 caractères sans le nombre de
-  lots (`titreCourt`). Sur la branche, en attente.
+  lots (`titreCourt`). **Lots 126 et 127 en production le 16/11/2026** (« Go prod », MAV).
+- **Lot 128** (MAV, 16/11/2026 : « réunit pas les apparts dans l'état loc des immeubles »). Liste des ventes, détail
+  d'une vente : un lot par ligne (« Appartement de 2 pièces, 38 m² »), deux appartements identiques font deux
+  lignes (`LotsVente`, `unLotEnClair`) ; au-delà de 24 lots, « Voir les N autres lots ». Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

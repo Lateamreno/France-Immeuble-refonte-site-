@@ -6098,6 +6098,7 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
 .vdvf-ligne__texte{display:flex;flex-direction:column;gap:6px;min-width:0;}
 .vdvf__sous-titre{margin:4px 0 0;font-weight:600;color:var(--color-noir);}
 .vdvf__lots-liste{margin:0;padding-left:18px;font-size:.9rem;color:color-mix(in srgb,var(--color-noir) 72%,var(--color-creme));columns:2;column-gap:24px;}
+.vdvf__lots-plus{margin-top:10px;}
 .vdvf__photo{aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--color-noir) 8%,transparent);}
 .vdvf__photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .vdvf__sans-photo{height:100%;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 /**
  * Ce que la carte et les listes des ventes d'immeubles de Paris partagent (lots 125 et 127) : les
  * ventes chargées une seule fois depuis `/api/ventes-dvf/?code=paris` (fermée aux robots, conditions
@@ -55,15 +57,6 @@ export const arrondissement = (code: string) => {
 };
 export const locauxDe = (v: Vente) => v.lots.filter((l) => l.type === "Local commercial").reduce((s, l) => s + l.nombre, 0);
 
-export function lotEnClair(l: Lot): string {
-  const n = l.nombre;
-  const s = l.surface ? ` de ${l.surface}${NBSP}m²` : "";
-  if (l.type === "Local commercial") return `${n} ${n > 1 ? "locaux commerciaux" : "local commercial"}${s}`;
-  const nom = l.type === "Maison" ? `maison${n > 1 ? "s" : ""}` : `appartement${n > 1 ? "s" : ""}`;
-  const p = l.pieces ? ` de ${l.pieces}${NBSP}pièce${l.pieces > 1 ? "s" : ""}` : "";
-  return `${n} ${nom}${p}${s}`;
-}
-
 export function CreditPhoto({ photo }: { photo: NonNullable<Vente["photo"]> }) {
   const sa = photo.licence.startsWith("CC-BY-SA");
   return (
@@ -102,13 +95,37 @@ export function PhotoVente({ v }: { v: Vente }) {
   );
 }
 
-/** Les lots de l'acte, un par ligne. */
+/** Un lot seul, en clair : « Appartement de 2 pièces, 38 m² ». */
+export function unLotEnClair(l: Lot): string {
+  const s = l.surface ? `, ${l.surface}${NBSP}m²` : "";
+  if (l.type === "Local commercial") return `Local commercial${s}`;
+  const p = l.pieces ? ` de ${l.pieces}${NBSP}pièce${l.pieces > 1 ? "s" : ""}` : "";
+  return `${l.type === "Maison" ? "Maison" : "Appartement"}${p}${s}`;
+}
+
+/** Les lots montrés d'abord quand l'acte en compte beaucoup (jusqu'à 183). */
+const LOTS_D_ABORD = 24;
+
+/**
+ * Les lots de l'acte, un par ligne (MAV, 16/11/2026 : « réunis pas les apparts dans l'état loc ») :
+ * deux appartements identiques font deux lignes, comme dans un état locatif.
+ */
 export function LotsVente({ v }: { v: Vente }) {
+  const [tout, setTout] = useState(false);
+  const lots = v.lots.flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l));
+  const montres = tout ? lots : lots.slice(0, LOTS_D_ABORD);
   return (
-    <ul className="vdvf__lots-liste">
-      {v.lots.map((l, i) => (
-        <li key={i}>{lotEnClair(l)}</li>
-      ))}
-    </ul>
+    <>
+      <ul className="vdvf__lots-liste">
+        {montres.map((l, i) => (
+          <li key={i}>{unLotEnClair(l)}</li>
+        ))}
+      </ul>
+      {lots.length > LOTS_D_ABORD && !tout && (
+        <button type="button" className="btn btn--primary btn--petit vdvf__lots-plus" onClick={() => setTout(true)}>
+          Voir les {lots.length - LOTS_D_ABORD} autres lots
+        </button>
+      )}
+    </>
   );
 }
