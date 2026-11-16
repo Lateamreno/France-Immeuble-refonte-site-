@@ -53,27 +53,43 @@ async function lire(url: string, signal?: AbortSignal): Promise<Entite[]> {
   return ((await r.json()) as { features?: Entite[] }).features ?? [];
 }
 
-/** Le nombre de niveaux du plus haut bâtiment posé sur les parcelles, ou null. Lève une erreur si l'IGN ne répond pas. */
-export async function niveauxDesParcelles(parcelles: readonly string[], signal?: AbortSignal): Promise<number | null> {
+export type Batiment = { niveaux: number | null; annee: number | null };
+
+/**
+ * Le plus haut bâtiment posé sur les parcelles : ses niveaux et son année de construction (lot 135, MAV,
+ * 16/11/2026 : « ok pour […] années de construction » ; attribut `date_d_apparition` de la BD TOPO, souvent
+ * arrondi à la décennie, d'où « construit vers 1880 »). Entre deux bâtiments aussi hauts, le plus ancien.
+ * Lève une erreur si l'IGN ne répond pas.
+ */
+export async function batimentDesParcelles(parcelles: readonly string[], signal?: AbortSignal): Promise<Batiment> {
+  const rien = { niveaux: null, annee: null };
   const ids = parcelles.filter((p) => /^[0-9A-Z]{14}$/.test(p));
-  if (!ids.length) return null;
+  if (!ids.length) return rien;
   const filtre = encodeURIComponent(`idu IN (${ids.map((p) => `'${p}'`).join(",")})`);
   const geos = (await lire(`${WFS}&TYPENAMES=CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle&COUNT=100&CQL_FILTER=${filtre}`, signal)).flatMap((f) =>
     anneauxDe(f.geometry),
   );
-  if (!geos.length) return null;
+  if (!geos.length) return rien;
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   for (const a of geos) for (const [x, y] of a) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
   const batis = await lire(
-    `${WFS}&TYPENAMES=BDTOPO_V3:batiment&COUNT=500&BBOX=${x0},${y0},${x1},${y1},urn:ogc:def:crs:OGC:1.3:CRS84&PROPERTYNAME=geometrie,nombre_d_etages`,
+    `${WFS}&TYPENAMES=BDTOPO_V3:batiment&COUNT=500&BBOX=${x0},${y0},${x1},${y1},urn:ogc:def:crs:OGC:1.3:CRS84&PROPERTYNAME=geometrie,nombre_d_etages,date_d_apparition`,
     signal,
   );
   let max: number | null = null;
+  let annee: number | null = null;
   for (const b of batis) {
     const n = Number(b.properties.nombre_d_etages);
     if (!n) continue;
     const c = centre(b.geometry);
-    if (c && geos.some((a) => dedans(c[0], c[1], a))) max = Math.max(max ?? 0, n);
+    if (!c || !geos.some((a) => dedans(c[0], c[1], a))) continue;
+    const date = typeof b.properties.date_d_apparition === "string" ? Number(b.properties.date_d_apparition.slice(0, 4)) : NaN;
+    const an = date >= 1500 && date <= 2100 ? date : null;
+    if (max == null || n > max) {
+      max = n;
+      annee = an;
+    } else if (n === max && an != null && (annee == null || an < annee)) annee = an;
   }
-  return max;
+  return { niveaux: max, annee };
 }
+

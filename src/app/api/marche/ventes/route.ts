@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { configSite } from "@/lib/supabase-site";
 import { COMMUNES_SUIVIES, derniereAnneeDvf, detailVentesImmeubles, lireCsv, urlDvf } from "@/lib/dvf-immeubles";
 import { chercherPhoto, rueLisible, rueOfficielle } from "@/lib/panoramax";
-import { niveauxDesParcelles } from "@/lib/niveaux-batiment";
+import { batimentDesParcelles } from "@/lib/niveaux-batiment";
 
 /**
  * Recalcul mensuel des ventes d'immeubles de Paris une par une (lot 125), pour la page
@@ -26,8 +26,12 @@ const PAGE = "/ventes-immeubles-paris/";
 
 type Ligne = Record<string, unknown>;
 
-/** Sous trois niveaux, le rapprochement parcelle-bâtiment est douteux pour un immeuble de plus de cinq logements. */
-const gardeNiveaux = (n: number | null) => (n != null && n >= 3 ? n : null);
+/**
+ * Sous trois niveaux, le rapprochement parcelle-bâtiment est douteux pour un immeuble de plus de cinq logements :
+ * ni niveaux ni année de construction.
+ */
+const garde = (b: { niveaux: number | null; annee: number | null }) =>
+  b.niveaux != null && b.niveaux >= 3 ? b : { niveaux: null, annee: null };
 
 async function ventesDeLAnnee(annee: number, echeance: number): Promise<Ligne[] | null> {
   const fichiers = new Map<string, Record<string, string>[]>();
@@ -77,10 +81,11 @@ export async function GET(req: Request) {
   const entetes = { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json" };
 
   // Ce qui est déjà cherché (rue officielle, photo) n'est pas recherché.
-  const deja = new Map<string, { rue: string | null; photo: unknown; niveaux: number | null }>();
+  type Deja = { id: string; rue: string | null; photo: unknown; niveaux: number | null; annee_construction: number | null };
+  const deja = new Map<string, Deja>();
   try {
-    const r = await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,rue,photo,niveaux&enrichi=eq.true`, { headers: entetes, signal: AbortSignal.timeout(DELAI_MS) });
-    if (r.ok) for (const l of (await r.json()) as { id: string; rue: string | null; photo: unknown; niveaux: number | null }[]) deja.set(l.id, l);
+    const r = await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf?select=id,rue,photo,niveaux,annee_construction&enrichi=eq.true`, { headers: entetes, signal: AbortSignal.timeout(DELAI_MS) });
+    if (r.ok) for (const l of (await r.json()) as Deja[]) deja.set(l.id, l);
   } catch {
     /* table vide ou injoignable : tout sera cherché */
   }
@@ -105,27 +110,35 @@ export async function GET(req: Request) {
             l.photo = vu.photo;
             l.enrichi = true;
             l.niveaux = vu.niveaux;
-            // Lot 134 : les ventes déjà cherchées avant les niveaux les reçoivent une fois.
-            if (vu.niveaux == null && Date.now() < echeance - 30_000) {
-              try { l.niveaux = gardeNiveaux(await niveauxDesParcelles(parcelles, AbortSignal.timeout(10_000))); } catch { /* le mois suivant */ }
+            l.annee_construction = vu.annee_construction;
+            // Lots 134 et 135 : une vente sans niveaux ni année est recherchée à l'IGN.
+            if ((vu.niveaux == null || vu.annee_construction == null) && Date.now() < echeance - 30_000) {
+              try {
+                const b = garde(await batimentDesParcelles(parcelles, AbortSignal.timeout(10_000)));
+                l.niveaux = b.niveaux;
+                l.annee_construction = b.annee;
+              } catch { /* le mois suivant */ }
             }
             continue;
           }
           l.rue = brute ? rueLisible(brute) : null;
           l.photo = null;
           l.niveaux = null;
+          l.annee_construction = null;
           l.enrichi = false;
           if (Date.now() > echeance - 30_000) continue;
           try {
             const signal = AbortSignal.timeout(10_000);
-            const [rue, photo, niveaux] = await Promise.all([
+            const [rue, photo, batiment] = await Promise.all([
               brute && l.code_postal ? rueOfficielle(brute, String(l.code_postal), signal) : null,
               typeof l.lat === "number" && typeof l.lon === "number" ? chercherPhoto(l.lat, l.lon, signal) : null,
-              niveauxDesParcelles(parcelles, signal).catch(() => null),
+              batimentDesParcelles(parcelles, signal).catch(() => ({ niveaux: null, annee: null })),
             ]);
             if (rue) l.rue = rue;
             l.photo = photo;
-            l.niveaux = gardeNiveaux(niveaux);
+            const b = garde(batiment);
+            l.niveaux = b.niveaux;
+            l.annee_construction = b.annee;
             l.enrichi = true;
           } catch {
             /* le mois suivant */

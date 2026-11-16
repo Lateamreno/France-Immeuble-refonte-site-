@@ -904,7 +904,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Lot 133** (MAV, 16/11/2026 : « Crée une section pour ces deux liens, ça n'a rien à faire dans Vendre », « vente
   d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris »). Pied de page : colonne « Le marché à
   Paris » (Prix des immeubles à Paris, Immeubles vendus à Paris), cinq colonnes dès 760 px ; « Immeubles vendus à
-  Paris » aussi dans le plan du site et le fil d'Ariane de la page. Sur la branche, en attente.
+  Paris » aussi dans le plan du site et le fil d'Ariane de la page. **En production le 16/11/2026** (« Mise en prod
+  ok », MAV).
 - **Lot 134** (MAV, 16/11/2026 : « tu peux ajouter le nombre d'étages dans la description si on l'a quelque part »).
   **Niveaux de l'immeuble** : parcelles cadastrales de l'acte DVF (`parcelles` de `detailVentesImmeubles`), puis
   bâtiments de la BD TOPO de l'IGN dont le centre tombe dans ces parcelles, le plus haut (`nombre_d_etages`) ;
@@ -914,7 +915,17 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   pour les anciennes sans niveaux. Texte de chaque vente : « … et un local commercial sur 7 niveaux, pour 973 m² » ;
   paragraphe d'arrondissement : « 16 logements sur 7 niveaux », médiane dès 5 immeubles où les niveaux sont connus.
   Le site écrit « niveaux » : la BD TOPO compte le rez-de-chaussée selon l'usage des fichiers fonciers, sans que
-  sa documentation (déplacée) ait pu être relue. Sur la branche, en attente.
+  sa documentation (déplacée) ait pu être relue. **En production le 16/11/2026** (« Ok pour étages […] Mise en prod
+  ok », MAV).
+- **Lot 135** (MAV, 16/11/2026 : « Paris en chiffres. Ok pour étages et années de construction »). Colonne du pied
+  de page renommée **« Paris en chiffres »**. **Année de construction** du bâtiment retenu pour les niveaux (le plus
+  haut ; à hauteur égale, le plus ancien), attribut `date_d_apparition` de la BD TOPO (`batimentDesParcelles` de
+  `src/lib/niveaux-batiment.ts`), colonne `annee_construction` (migration 0027, appliquée ; 338 ventes remplies),
+  gardée seulement avec des niveaux d'au moins 3. Texte d'une vente : « Construit vers 1890, il compte… » (année
+  ronde, souvent une estimation de l'IGN) ou « Construit en 1917 » ; paragraphe d'arrondissement, dès 5 années
+  connues : « La moitié d'entre eux datent de 1880 ou d'avant » (médiane arrondie à la décennie au-dessus). La
+  tâche mensuelle cherche niveaux et année des ventes nouvelles, et une fois par mois celles qui n'en ont pas.
+  Sur la branche, en attente.
 
 ### Garde-fous non négociables
 

@@ -113,6 +113,11 @@ function paragrapheArrondissement(
   phrases.push(
     `Ils comptaient en général ${Math.round(logements)}${NBSP}logements${surNiveaux}, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
   );
+  // Lot 135 : l'année de construction médiane, arrondie à la décennie au-dessus (la phrase reste vraie).
+  const annees = siens.map((v) => v.anneeConstruction).filter((x): x is number => x != null);
+  if (annees.length >= VENTES_POUR_LE_DETAIL) {
+    phrases.push(`La moitié d’entre eux datent de ${Math.ceil(mediane(annees)! / 10) * 10} ou d’avant.`);
+  }
   // Les appartements, lot par lot (deux appartements identiques comptent pour deux).
   const apparts = siens.flatMap((v) =>
     v.lots.filter((l) => l.type === "Appartement" && l.pieces).flatMap((l) => Array.from({ length: Math.max(1, l.nombre) }, () => l)),

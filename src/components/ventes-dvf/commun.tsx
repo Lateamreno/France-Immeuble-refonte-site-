@@ -29,6 +29,8 @@ export type Vente = {
   metroM: number | null;
   /** Lot 134 : niveaux de l'immeuble (BD TOPO de l'IGN), null si inconnu. */
   niveaux: number | null;
+  /** Lot 135 : année de construction (BD TOPO, souvent arrondie à la décennie), null si inconnue. */
+  anneeConstruction: number | null;
   photo: { url: string; auteur: string; licence: string; date: string } | null;
 };
 
@@ -222,6 +224,7 @@ export function rueDansLeTexte(rue: string): string {
  * sans numéro, le quartier et le métro le plus proche : rien qui désigne l'immeuble plus que sa rue. Ce texte
  * n'arrive qu'avec le détail des ventes, fermé aux moteurs de recherche (conditions de DVF).
  */
+// Lot 135 : une année ronde (1880) est souvent une estimation de l'IGN, d'où « vers 1880 » ; sinon « en 1917 ».
 export function texteVente(v: Vente): string[] {
   const type = v.mixte ? "immeuble mixte" : "immeuble d’habitation";
   const phrases: string[] = [];
@@ -233,7 +236,7 @@ export function texteVente(v: Vente): string[] {
   if (ou || metro) phrases.push(`Il se trouve ${[ou, metro].filter(Boolean).join(", ")}.`);
   const locaux = locauxDe(v);
   phrases.push(
-    `Il compte ${v.logements} logement${v.logements > 1 ? "s" : ""}${
+    `${v.anneeConstruction ? `Construit ${v.anneeConstruction % 10 ? "en" : "vers"} ${v.anneeConstruction}, il` : "Il"} compte ${v.logements} logement${v.logements > 1 ? "s" : ""}${
       locaux ? ` et ${locaux === 1 ? "un local commercial" : `${locaux} locaux commerciaux`}` : ""
     }${v.niveaux ? ` sur ${v.niveaux}${NBSP}niveaux` : ""}, pour ${v.surface.toLocaleString("fr-FR")}${NBSP}m² au total.`,
   );

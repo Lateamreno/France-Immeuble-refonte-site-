@@ -57,9 +57,10 @@ export function Footer() {
           </div>
 
           {/* Lot 133 (MAV, 16/11/2026 : « Crée une section pour ces deux liens, ça n'a rien à faire dans
-              Vendre », « vente d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris »). */}
+              Vendre », « vente d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris ») ;
+              titre « Paris en chiffres » (lot 135, MAV, 16/11/2026). */}
           <div className="footer-col">
-            <h4>Le marché à Paris</h4>
+            <h4>Paris en chiffres</h4>
             <ul>
               <li><Link href="/prix-immeuble-de-rapport-paris/">Prix des immeubles à Paris</Link></li>
               <li><Link href="/ventes-immeubles-paris/">Immeubles vendus à Paris</Link></li>
