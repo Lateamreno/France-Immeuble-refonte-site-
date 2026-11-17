@@ -931,8 +931,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   R+N** (`rPlus` de `src/components/ventes-dvf/commun.tsx` : niveaux de l'IGN moins un). Vente : « Construit vers
   1890, en R+4, il compte 19 logements… » ; arrondissement : « En général en R+6, ils comptaient 16 logements pour
   910 m² environ. » Plus aucun « niveaux » dans les textes. Pied de page : colonne « Le marché à Paris », liens
-  « Les prix au m² des immeubles à Paris » (baromètre) et « Les prix des immeubles vendus à Paris » (ventes).
-  Lots 135 et 136 sur la branche, en attente.
+  « Les prix au m² des immeubles à Paris » (baromètre) et « Les prix des immeubles vendus à Paris » (ventes),
+  remplacés au lot 137.
+- **Lot 137** (MAV, 17/11/2026 : « Prix au m² à Paris et Prix des immeubles vendus », après des propositions
+  mesurées à six largeurs). Liens de la colonne « Le marché à Paris » : **« Prix au m² à Paris »** (baromètre) et
+  **« Prix des immeubles vendus »** (ventes). Une ligne et deux lignes à 320, 390 et dès 900 px ; le second passe
+  sur trois lignes de 760 à 899 px (correction à proposer). Le nom d'un lien de pied de page pèse peu pour Google
+  (signal faible, navigation répétée) ; l'important est que les deux libellés disent deux choses différentes.
+  **Lots 135, 136 et 137 en production le 17/11/2026** (« gO PROD », MAV).
 
 ### Garde-fous non négociables
 

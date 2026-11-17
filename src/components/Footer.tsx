@@ -58,13 +58,13 @@ export function Footer() {
 
           {/* Lot 133 (MAV, 16/11/2026 : « Crée une section pour ces deux liens, ça n'a rien à faire dans
               Vendre », « vente d'immeuble à Paris ça prête à confusion, plutôt immeubles vendus à Paris ») ;
-              liens renommés (lot 136, MAV, 17/11/2026 : « Le marché à Paris » gardé, « Les prix au m2 des immeubles
-              à Paris », « Les prix des immeubles vendus à Paris »). */}
+              liens renommés (lot 137, MAV, 17/11/2026 : « Prix au m² à Paris et Prix des immeubles vendus »,
+              une ou deux lignes au plus). */}
           <div className="footer-col">
             <h4>Le marché à Paris</h4>
             <ul>
-              <li><Link href="/prix-immeuble-de-rapport-paris/">Les prix au m² des immeubles à Paris</Link></li>
-              <li><Link href="/ventes-immeubles-paris/">Les prix des immeubles vendus à Paris</Link></li>
+              <li><Link href="/prix-immeuble-de-rapport-paris/">Prix au m² à Paris</Link></li>
+              <li><Link href="/ventes-immeubles-paris/">Prix des immeubles vendus</Link></li>
             </ul>
           </div>
 
