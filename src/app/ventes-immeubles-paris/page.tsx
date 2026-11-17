@@ -109,9 +109,12 @@ function paragrapheArrondissement(
   const surface = mediane(siens.map((v) => v.surface))!;
   // Lot 134 : les niveaux (BD TOPO de l'IGN), dès cinq immeubles où ils sont connus.
   const niveaux = siens.map((v) => v.niveaux).filter((x): x is number => x != null);
-  const surNiveaux = niveaux.length >= VENTES_POUR_LE_DETAIL ? ` sur ${Math.round(mediane(niveaux)!)}${NBSP}niveaux` : "";
+  // Lot 136 (MAV, 17/11/2026) : « si c'est 7 niveaux tu écris R+6 ».
+  const enR = niveaux.length >= VENTES_POUR_LE_DETAIL ? `R+${Math.round(mediane(niveaux)!) - 1}` : null;
   phrases.push(
-    `Ils comptaient en général ${Math.round(logements)}${NBSP}logements${surNiveaux}, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
+    enR
+      ? `En général en ${enR}, ils comptaient ${Math.round(logements)}${NBSP}logements pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`
+      : `Ils comptaient en général ${Math.round(logements)}${NBSP}logements, pour ${nombre(Math.round(surface / 10) * 10)}${NBSP}m² environ.`,
   );
   // Lot 135 : l'année de construction médiane, arrondie à la décennie au-dessus (la phrase reste vraie).
   const annees = siens.map((v) => v.anneeConstruction).filter((x): x is number => x != null);

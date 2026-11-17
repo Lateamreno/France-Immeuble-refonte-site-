@@ -925,7 +925,14 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   ronde, souvent une estimation de l'IGN) ou « Construit en 1917 » ; paragraphe d'arrondissement, dès 5 années
   connues : « La moitié d'entre eux datent de 1880 ou d'avant » (médiane arrondie à la décennie au-dessus). La
   tâche mensuelle cherche niveaux et année des ventes nouvelles, et une fois par mois celles qui n'en ont pas.
-  Sur la branche, en attente.
+  Le nom « Paris en chiffres » est abandonné au lot 136.
+- **Lot 136** (MAV, 17/11/2026 : « Si c'est 7 niveaux tu écris R+6 », « L'année de construction OK », « Le marché à
+  Paris » gardé, « Les prix au m2 des immeubles à Paris » et « Les prix des immeubles vendus à Paris »). **Hauteur en
+  R+N** (`rPlus` de `src/components/ventes-dvf/commun.tsx` : niveaux de l'IGN moins un). Vente : « Construit vers
+  1890, en R+4, il compte 19 logements… » ; arrondissement : « En général en R+6, ils comptaient 16 logements pour
+  910 m² environ. » Plus aucun « niveaux » dans les textes. Pied de page : colonne « Le marché à Paris », liens
+  « Les prix au m² des immeubles à Paris » (baromètre) et « Les prix des immeubles vendus à Paris » (ventes).
+  Lots 135 et 136 sur la branche, en attente.
 
 ### Garde-fous non négociables
 
