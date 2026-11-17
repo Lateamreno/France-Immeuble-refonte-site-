@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
-import { NAV, SITE, type LienNav } from "@/lib/site";
+import { NAV, SITE, formulaireSurPlace, type LienNav } from "@/lib/site";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
 
 export function Header() {
   const pathname = usePathname();
+  const surPlace = formulaireSurPlace(pathname);
   const [ouvert, setOuvert] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   /** Le sous-menu ouvert, par `href` du parent. Un seul à la fois. */
@@ -123,18 +124,23 @@ export function Header() {
             )}
             </Fragment>
           ))}
-          {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. */}
-          <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
+          {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. Lot 140 : sur une page
+              qui porte son propre formulaire (pages des annonces, page Paris), le bouton y mène et
+              ferme le menu. */}
+          {surPlace ? (
+            <a className="btn btn--primary" href="#estimer" onClick={() => setOuvert(false)}>Estimer mon immeuble</a>
+          ) : (
+            <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
+          )}
         </nav>
 
         <div className="header-cta">
           <a className="header-tel" href={SITE.telHref}>
             {SITE.tel.replace(/ /g, " ")}
           </a>
-          {/* Sur la page Paris, le bouton reste sur la page et mène à son propre formulaire : la demande
-              est comptée là où elle naît. Le menu du téléphone garde le lien vers Estimer (il ne se
-              ferme qu'au changement de page). */}
-          <Button href={pathname === "/vendre-un-immeuble/paris/" ? "#estimer" : "/estimer-un-immeuble/#estimer"}>
+          {/* Sur la page Paris et les pages des annonces, le bouton reste sur la page et mène à son
+              propre formulaire : la demande est comptée là où elle naît. */}
+          <Button href={surPlace ? "#estimer" : "/estimer-un-immeuble/#estimer"}>
             Estimer mon immeuble
           </Button>
           <Link

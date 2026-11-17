@@ -945,6 +945,38 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
 - **Lot 139** (MAV, 17/11/2026 : « Oui pour le fil d'Ariane »). Fil d'Ariane de `/ventes-immeubles-paris/` (données
   BreadcrumbList seulement, rien à l'écran) : « Accueil > Vendre à Paris > Prix des immeubles vendus », comme le lien
   du pied de page. **En production le 17/11/2026** (« GO », MAV).
+- **Lot 140** (MAV, 17/11/2026 : « Montre-moi quatre pages que tu utiliserais pour les ads et dis-moi pourquoi :
+  entre conversion et ux/ui, faut quand même réussir à les convaincre », et le budget pour « au moins un ou deux
+  immeubles par an »). **Sur la branche, en attente de l'accord de MAV, page par page.** Quatre pages des annonces
+  Google sur Paris, hors index, hors sitemap, hors menus (`PAGES_ANNONCES` de `src/lib/site.ts`), une par question
+  du propriétaire : **A** `/estimation-immeuble-paris/` refaite (la méthode : citation, « Ce qu'il nous faut, et ce
+  qui reste confidentiel », quatre lectures) ; **B** `/vendre-immeuble-paris/` (la page Paris en version annonces :
+  acheteurs d'abord, vente sans annonce, après l'offre, honoraires, trois avis) ; **C** `/prix-immeuble-paris/` et
+  `/prix-immeuble-paris/16e/` (vingt adresses, canonique sur la première : prix médian DVF de l'arrondissement,
+  « Et le vôtre ? », le tableau de la page Paris ; `OutilPrix` change d'arrondissement sur place pour ne pas
+  effacer le formulaire) ; **D** `/confier-son-immeuble-paris/` (cinq questions à poser à toute agence, « Qui nous
+  sommes », formulaire en fin de page ; sans mot-clé : lien annexe des annonces et lien envoyé par l'agent).
+  Premier écran commun `HeroAnnonce` (`src/components/annonces/`, styles `src/app/annonces.css`, préfixe `lp-`) :
+  formulaire dans l'écran sur A et B à toutes les tailles, « Confidentiel et sans engagement de vente. » sous son
+  titre (prop `chapeau` d'`EstimationForm`), note Google sans lien. **Sur une page d'annonces : aucun délai (« en
+  24 heures » retiré de la carte de la vente, `VENTE_ANNONCES`), aucune carte de vente, aucun lien de sortie hors
+  FAQ** (un seul vers les avis Google, sur D). Briques de la page Paris sorties dans des fichiers partagés, son
+  HTML inchangé : `arguments.tsx`, `TableauPrixParis.tsx`, `src/lib/arguments-paris.ts`, `prix-paris.ts`
+  (`donneesPrixParis`, avec tout Paris), `faq-paris.tsx` (`faqParis(vivants, intitules)`). **Défaut corrigé** : le
+  bouton « Estimer mon immeuble » de la barre de menu faisait quitter la page des annonces ; il mène au formulaire
+  de la page (`formulaireSurPlace`), menu du téléphone compris. **Mesure** : `form_submit_estimation` porte `zone`
+  (`paris`, `idf`, `autre`, d'après le code postal), `form_debut_estimation` au premier champ touché,
+  `choix_arrondissement` sur C. `next dev` double les effets (page qui défile seule au téléphone, pilule) : mesurer
+  sur la construction de production, et par `localhost`, pas `127.0.0.1` (sinon la page n'est pas hydratée).
+  **Budget** (hypothèses, aucun chiffre réel du compte vu) : une vente coûte environ 16 000 € de publicité au
+  scénario central (5 € le clic, 2,5 % de contacts, un sur deux un immeuble entier, 40 contacts qualifiés par
+  vente), de 2 700 à 96 000 € selon le scénario ; plafond de ventes par an au central : 0,15 à Paris seul, 1,1 sur
+  Paris et Île-de-France ; proposition : 600 € par mois jusqu'à 2 400 € dépensés, puis 1 000 à 1 400 € si le
+  contact qualifié coûte 400 € ou moins. **À trancher par MAV** : les quatre pages ; « rien à payer tant que la
+  vente n'est pas signée » face au barème (« à la charge de l'acquéreur ») ; le titre de B ; les retraits de A ;
+  la photo et « Notre histoire » sur D ; les coupes d'avis ; la quatrième page (réassurance ou succession) ; le
+  budget et l'accès au compte ; le consentement (pas de bandeau). Non fait : réglages du compte Google Ads, page
+  d'origine dans l'e-mail d'alerte et le BO, images de partage propres.
 
 ### Garde-fous non négociables
 

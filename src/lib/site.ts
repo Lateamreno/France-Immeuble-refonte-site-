@@ -108,3 +108,17 @@ export function nombre(n: number): string {
 export function millions(n: number): string {
   return `${(n / 1_000_000).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} M€`;
 }
+
+/**
+ * Les pages des annonces Google (lot 140) : hors index, hors sitemap, hors menus. Sur ces pages et
+ * sur la page Paris, le bouton « Estimer mon immeuble » de la barre de menu mène au formulaire de la
+ * page elle-même : la demande est comptée là où elle naît (événement `form_submit_estimation`, `page`).
+ */
+export const PAGES_ANNONCES = [
+  "/estimation-immeuble-paris/",
+  "/vendre-immeuble-paris/",
+  "/prix-immeuble-paris/",
+  "/confier-son-immeuble-paris/",
+] as const;
+export const formulaireSurPlace = (chemin: string) =>
+  chemin === "/vendre-un-immeuble/paris/" || PAGES_ANNONCES.some((p) => chemin.startsWith(p));

@@ -59,7 +59,7 @@ export function BoutonFixeMobile({ href, libelle, cible, modale = false }: {
     // d'auteur se retrouvait sous la pilule quand la section s'arrêtait calée en haut de l'écran.
     const fleches = [
       ...Array.from(document.querySelectorAll<HTMLElement>("main .ligne__fleche")),
-      ...Array.from(document.querySelectorAll<HTMLElement>("main .paris-citation")).filter((c) => !c.closest(".paris-carte")),
+      ...Array.from(document.querySelectorAll<HTMLElement>("main .paris-citation")).filter((c) => !c.closest(".paris-carte, .lp-avis, .lp-question")),
     ];
     const sousPilule = new Map<Element, boolean>();
     const calcul = () => {

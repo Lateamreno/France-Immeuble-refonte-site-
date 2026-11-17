@@ -1,168 +1,156 @@
 import { imagesPartage } from "@/lib/partage";
 import type { Metadata } from "next";
-import { HeroMedia } from "@/components/HeroMedia";
 import { Eyebrow } from "@/components/Eyebrow";
-import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
-import { EstimationForm } from "@/components/EstimationForm";
-import { Picto, type NomPicto } from "@/components/Picto";
-import { Avis } from "@/components/Avis";
+import { LigneDefilante } from "@/components/LigneDefilante";
+import { TeteMedia } from "@/components/TeteMedia";
 import { SectionFaq } from "@/components/SectionFaq";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
-import { ventes as lesVentes } from "@/lib/biens";
-import { fourchetteRendement, immeublesDesCommunes, libelleRendement, rendementsTheoriques } from "@/lib/immeubles-dvf-lecture";
-import { marchesDesCommunes } from "@/lib/marche";
+import { HeroAnnonce } from "@/components/annonces/HeroAnnonce";
+import { CarteArgument, Citation, Relance, type Carte } from "@/components/annonces/arguments";
+import { CONDITIONS, ESTIMATION } from "@/lib/arguments-paris";
+import { donneesPrixParis } from "@/lib/prix-paris";
+import { faqParis, vivantsParis } from "@/lib/faq-paris";
 import { chiffres } from "@/lib/chiffres";
-import { chiffresFaq, faqVendre } from "@/lib/faq";
 import { VISUELS } from "@/lib/visuels";
-import { PREUVES, SITE, nombre } from "@/lib/site";
+import { SITE, nombre } from "@/lib/site";
 
 /**
- * /estimation-immeuble-paris/ — la page des annonces Google sur Paris (MAV, 10/11/2026 :
- * « un formulaire de transformation ++++ sur Paris et on fait du SEA à mort dessus »).
- * Le formulaire est dans le premier écran, les preuves à côté, peu de liens de sortie.
- * Hors index : les annonces n'en ont pas besoin, et elle ne concurrence pas la page
- * Paris faite pour Google (/vendre-un-immeuble/paris/). Absente du sitemap et des menus.
+ * /estimation-immeuble-paris/ : la page des annonces Google pour « estimation immeuble Paris »
+ * (MAV, 10/11/2026 : « un formulaire de transformation ++++ sur Paris et on fait du SEA à mort
+ * dessus »). Refaite au lot 140 (MAV, 17/11/2026 : « entre conversion et ux/ui faut quand même
+ * réussir à les convaincre »).
+ *
+ * Son rôle parmi les quatre pages des annonces : le propriétaire veut une valeur et craint le prix
+ * flatteur. C'est la page de la méthode. Le formulaire est dans le premier écran ; chaque section
+ * répond ensuite à une objection : gonflent-ils le prix, que dois-je donner et qui le saura,
+ * savent-ils estimer un immeuble.
+ *
+ * Hors index, hors sitemap, hors menus. Aucun délai avant l'écran de fin du formulaire, aucun lien
+ * de sortie hors FAQ (nouvel onglet), textes repris de la page Paris validée.
  */
+const URL_PAGE = "/estimation-immeuble-paris/";
+const TITRE = "Estimation immeuble Paris | France Immeuble";
+
+// Balises écrites en dur : la balise « noindex » d'une page d'annonces ne doit dépendre d'aucune lecture.
+const DESCRIPTION =
+  "Estimation gratuite et confidentielle de votre immeuble parisien, par une agence spécialisée dans la vente d’immeubles de rapport. Sans engagement de vente.";
+
 export const metadata: Metadata = {
-  title: { absolute: "Estimation immeuble Paris | France Immeuble" },
-  description:
-    "Estimez gratuitement votre immeuble parisien. Agence spécialisée dans la vente d’immeubles de rapport, 1 500 acheteurs en recherche, honoraires dus seulement à l’acte.",
-  alternates: { canonical: `${SITE.url}/estimation-immeuble-paris/` },
+  title: { absolute: TITRE },
+  description: DESCRIPTION,
+  alternates: { canonical: `${SITE.url}${URL_PAGE}` },
   robots: { index: false, follow: true },
-  openGraph: { type: "website", title: "Estimation immeuble Paris | France Immeuble", description: "Estimez gratuitement votre immeuble parisien. Agence spécialisée dans la vente d’immeubles de rapport, 1 500 acheteurs en recherche, honoraires dus seulement à l’acte.", url: "/estimation-immeuble-paris/", images: imagesPartage("/estimation-immeuble-paris/") },
+  openGraph: { type: "website", title: TITRE, description: DESCRIPTION, url: URL_PAGE, images: imagesPartage(URL_PAGE) },
 };
 
+/** Que dois-je donner, et qui le saura ? */
+const DEMANDE: Carte[] = [
+  {
+    picto: "dossier",
+    titre: "L’état locatif d’abord",
+    texte:
+      "Pour estimer, il nous faut surtout un état locatif à jour : pour chaque lot, sa surface, son loyer hors charges, son type et son DPE.",
+  },
+  {
+    picto: "detective",
+    titre: "Aucune annonce",
+    texte:
+      "Une demande d’estimation ne donne lieu à aucune annonce. Si vous vendez ensuite avec nous, vos locataires et vos voisins ne l’apprennent pas par une annonce.",
+  },
+  CONDITIONS[0],
+];
+
 export default async function EstimationImmeubleParis() {
-  const codes = Array.from({ length: 20 }, (_, i) => `751${String(i + 1).padStart(2, "0")}`);
-  const [toutes, ch, immeubles, marches] = await Promise.all([lesVentes(), chiffres(), immeublesDesCommunes(codes), marchesDesCommunes(codes)]);
-  const c = chiffresFaq(toutes);
-  const faq = faqVendre(c);
-  // Comme la page Paris : l'année la plus récente, et seulement les lignes de cette année.
-  const anneeImmeubles = immeubles.size ? Math.max(...[...immeubles.values()].map((x) => x.annee)) : null;
-  const totalImmeubles = [...immeubles.values()].reduce((s, x) => s + (x.annee === anneeImmeubles ? x.nbVentes : 0), 0);
-
-  const etapes: { picto: NomPicto; titre: string; texte: string }[] = [
-    { picto: "calculatrice", titre: "Estimation gratuite", texte: "Un agent spécialisé étudie l’immeuble, ses baux et son secteur, et vous donne un prix réaliste." },
-    { picto: "detective", titre: "Présentation off-market", texte: "Votre immeuble est proposé à nos acheteurs, sans annonce. Vos locataires et vos voisins n’en savent rien." },
-    { picto: "poignee", titre: "Offres et négociation", texte: "Nous organisons les visites, recueillons les offres et vérifions la solidité de chaque acheteur." },
-    { picto: "dossier", titre: "Signature chez le notaire", texte: "Nous suivons le dossier jusqu’à l’acte. Nos honoraires ne sont dus qu’à ce moment-là." },
-  ];
-  // Lot 113 (MAV, 14/11/2026 : « fait le même style que le reste du site ») : les repères sont des
-  // cartes à chiffre, comme les trois chiffres de la page Paris (picto en filigrane, plus de filet or).
-  const reperes: { picto: NomPicto; valeur: string; libelle: string; texte: string }[] = [
-    // MAV, 13/11/2026 : « 3,5 à 6,5 en général », la fourchette de la page Paris.
-    { picto: "stats", valeur: libelleRendement(fourchetteRendement(rendementsTheoriques(immeubles, marches))), libelle: "de rendement", texte: "en général, selon l’arrondissement" },
-    ...(totalImmeubles && anneeImmeubles ? [{ picto: "immeubles" as NomPicto, valeur: nombre(totalImmeubles), libelle: "immeubles vendus en bloc", texte: `à Paris en ${anneeImmeubles}, d’après DVF` }] : []),
-    ...(ch.traitesPar["75"] ? [{ picto: "dossier" as NomPicto, valeur: nombre(ch.traitesPar["75"]), libelle: "immeubles étudiés", texte: "à Paris par nos agents depuis 2018" }] : []),
-    ...(c.delaiMedian ? [{ picto: "agenda" as NomPicto, valeur: `${c.delaiMedian}\u00a0jours`, libelle: "avant la première offre", texte: "en médiane, sur nos ventes" }] : []),
-  ];
-
-  const preuves: { picto: NomPicto; titre: string; texte: string }[] = [
-    // Lot 110 (retour #300) : « à Paris » seulement quand le BO a déposé le nombre d'acheteurs d'immeubles parisiens.
-    {
-      picto: "reseau",
-      titre: `${nombre(ch.acheteursParis ?? ch.investisseurs)} acheteurs`,
-      texte: ch.acheteursParis != null
-        ? "investisseurs, foncières et family offices en recherche d’immeubles à Paris"
-        : "investisseurs, foncières et family offices dans notre base",
-    },
-    { picto: "detective", titre: "Off-market", texte: "votre immeuble est proposé à nos acheteurs sans annonce, en toute discrétion" },
-    { picto: "euro", titre: "Payé à l’acte", texte: "nos honoraires ne sont dus qu’à la signature chez le notaire" },
-  ];
+  const [ch, prixParis] = await Promise.all([chiffres(), donneesPrixParis()]);
+  const etudies = nombre(ch.immeublesTraites);
+  const faq = faqParis(vivantsParis(prixParis, ch), [
+    "Comment estime-t-on un immeuble de rapport à Paris ?",
+    "L’estimation d’un immeuble à Paris est-elle gratuite ?",
+    "Un mauvais DPE fait-il baisser le prix d’un immeuble à Paris ?",
+  ]);
 
   return (
     <>
-      <HeroMedia image={VISUELS.toitsAeriens.src} alt={VISUELS.toitsAeriens.alt} className="hero-sea">
-        <div className="sea-grille">
-          <div className="sea-texte">
-            <Eyebrow>Immeubles à Paris</Eyebrow>
-            <h1>
-              Estimez votre <span className="accent">immeuble parisien</span>
-            </h1>
-            <p className="lead">
-              Une estimation gratuite et confidentielle, par une agence spécialisée dans la vente
-              d’immeubles de rapport entiers.
-            </p>
-            <ul className="sea-preuves">
-              {preuves.map((p) => (
-                <li key={p.titre}>
-                  <Picto nom={p.picto} taille={26} />
-                  <span>
-                    <strong>{p.titre}</strong> {p.texte}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <a className="sea-note" href={PREUVES.avisGoogle} target="_blank" rel="noopener">
-              <span className="sea-note__val">{PREUVES.noteGoogle}/5</span>
-              <span aria-hidden="true">★★★★★</span>
-              <span>{PREUVES.nbAvis} avis Google</span>
-            </a>
-          </div>
-          <div id="estimer" className="sea-form">
-            <EstimationForm formulaire="estimer" />
-            <p className="sea-tel">
-              Vous préférez en parler ? <a href={SITE.telHref}>{SITE.tel}</a>
-            </p>
-          </div>
-        </div>
-      </HeroMedia>
+      <HeroAnnonce
+        image={VISUELS.toitsAeriens.src}
+        alt={VISUELS.toitsAeriens.alt}
+        formulaire="estimer"
+        surtitre="Estimation d’immeuble à Paris"
+        titre={<>Estimez votre <span className="accent">immeuble parisien</span></>}
+        accroche={
+          <>
+            Une estimation gratuite et confidentielle, par une agence spécialisée
+            <span className="lp-long"> dans la vente d’immeubles de rapport entiers</span>.
+          </>
+        }
+        preuves={[
+          { picto: "dossier", titre: `${etudies} immeubles étudiés`, texte: "depuis 2018" },
+          { picto: "loupeCible", titre: "Quatre lectures", texte: "le marché, le locatif, le bâti, la cible" },
+          { picto: "immeubles", titre: "Notre spécialité", texte: "la vente d’immeubles de rapport, à Paris et en Île-de-France" },
+        ]}
+        preuveMobile={`${etudies} immeubles étudiés depuis 2018`}
+      />
 
-      <section className="section section--noir-2 sea-reperes-sec">
+      {/* Gonflent-ils le prix pour avoir le mandat ? Un vendeur répond. */}
+      <section className="section section--noir-2 lp-bande lp-citation-grande" data-lp="citation">
         <div className="container">
-          <ul className="grid paris-preuves" style={{ ["--n" as string]: reperes.length }}>
-            {reperes.map((r) => (
-              <li key={r.libelle} className="card card--filigrane">
-                <span className="card__fond" aria-hidden="true">
-                  <Picto nom={r.picto} taille={96} />
-                </span>
-                <span className="stat-number">{r.valeur}</span>{" "}
-                <span className="stat-label">{r.libelle}</span>{" "}
-                <p>{r.texte}</p>
-              </li>
-            ))}
-          </ul>
+          <Citation
+            texte="… leur estimation, qui n’était pas la plus haute, mais la plus convaincante."
+            auteur="Romain VZ"
+          />
         </div>
       </section>
 
-      <section className="section section--creme sea-etapes-sec">
+      {/* Que dois-je donner, et qui le saura ? */}
+      <section className="section section--creme lp-demande-sec" data-lp="confidentiel">
         <div className="container">
-          <Reveal className="section__head">
-            <Eyebrow>Comment se passe la vente</Eyebrow>
+          <TeteMedia image={{ src: "/media/img-offres-dossier2x.webp", alt: "Un dossier de vente France Immeuble ouvert", width: 1400, height: 1328, libre: true }}>
+            <Eyebrow>Votre demande</Eyebrow>
             <h2>
-              De l’estimation à l’acte, <span className="accent">un seul interlocuteur</span>
+              Ce qu’il nous faut, et <span className="accent">ce qui reste confidentiel</span>
             </h2>
-          </Reveal>
-          <ol className="sea-etapes">
-            {etapes.map((e, i) => (
-              <Reveal key={e.titre} as="li" delayIndex={i}>
-                <Picto nom={e.picto} taille={30} />
-                <h3>{e.titre}</h3>
-                <p>{e.texte}</p>
-              </Reveal>
+          </TeteMedia>
+          <LigneDefilante marches className="paris-ligne paris-ligne--3">
+            {DEMANDE.map((x) => (
+              <CarteArgument key={x.titre} {...x} />
             ))}
-          </ol>
-          <div className="sea-decoupe">
-            <h3>En bloc ou à la découpe&nbsp;?</h3>
-            <p>
-              Vendu en bloc, un immeuble parisien se négocie sous le prix au m² des appartements&nbsp;: le
-              plus souvent de 10 à 30&nbsp;%, selon l’état de l’immeuble et le niveau de ses loyers. Vendus
-              un par un, les logements libres se vendent au prix du marché. Nous
-              chiffrons la vente en bloc, et la découpe si vous le souhaitez.
-            </p>
-          </div>
-          <div className="btn-row porte-action" style={{ marginTop: "var(--space-m)" }}>
-            <Button href="#estimer">Estimer mon immeuble</Button>
-          </div>
+          </LigneDefilante>
+          <Relance />
         </div>
       </section>
 
-      <Avis titre="Ce qu’en disent nos vendeurs" fond="noir-3" />
+      {/* Savent-ils estimer un immeuble ? La section de la page Paris, ses quatre cartes. */}
+      <section className="section section--noir paris-estimation-sec lp-methode-sec" data-lp="methode">
+        <div className="container">
+          <Reveal className="section__head tete-2col">
+            <Eyebrow>Notre méthode</Eyebrow>
+            <h2>
+              Un immeuble ne s’estime pas <span className="accent">comme un appartement</span>
+            </h2>
+            <p className="lead">
+              Le prix au&nbsp;m² du quartier ne suffit pas&nbsp;: il faut bien connaître le marché et
+              avoir de solides compétences techniques et locatives. C’est le métier de nos agents, qui
+              ont étudié {etudies} immeubles depuis 2018.
+            </p>
+          </Reveal>
+          <LigneDefilante marches className="paris-ligne">
+            {ESTIMATION.map((x) => (
+              <CarteArgument key={x.titre} {...x} />
+            ))}
+          </LigneDefilante>
+          <Citation
+            texte="C’est après une estimation de qualité et très professionnelle de notre immeuble que nous avons accepté de confier cette vente à France Immeuble."
+            auteur="Mariane Suzanne"
+          />
+          <Relance libelle="Faire estimer mon immeuble" />
+        </div>
+      </section>
 
       <SectionFaq
         items={faq}
-        titre={<>Vendre un immeuble à Paris : <span className="accent">vos questions</span></>}
+        className="section--noir-2 lp-faq-sec"
+        titre={<>Faire estimer un immeuble à Paris&nbsp;: <span className="accent">vos&nbsp;questions</span></>}
       />
 
       <BoutonFixeMobile href="#estimer" cible="estimer" libelle="Estimer mon immeuble" />

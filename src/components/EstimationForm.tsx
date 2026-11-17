@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useEtatCompte, useGarderALaConnexion } from "./biens/etat";
 import { PropositionCompte } from "./compte/PropositionCompte";
-import { SITE, CALIBRE } from "@/lib/site";
+import { SITE, CALIBRE, DEPTS_IDF } from "@/lib/site";
 import { router as routerDossier, type Verdict } from "@/lib/routage";
 import { ELEMENTS_ATTENDUS, dossierInitial, type Dossier } from "@/lib/dossier/modele";
 import { DossierForm } from "./dossier/DossierForm";
@@ -73,8 +73,11 @@ export function EstimationForm({
   initial,
   refContact,
   libelleEnvoi,
+  chapeau,
 }: {
   formulaire: "vendre" | "estimer";
+  /** La phrase sous le titre du formulaire, quand la page en veut une autre (pages des annonces, lot 140). */
+  chapeau?: ReactNode;
   /** Libellé du bouton d'envoi quand la page en veut un autre (page Paris : « Estimer mon immeuble »). */
   libelleEnvoi?: string;
   /** Depuis /mon-compte/ : la proposition de créer un compte n'a plus lieu d'être. */
@@ -215,6 +218,15 @@ export function EstimationForm({
     }
   }
 
+  /** Lot 140 : le premier champ touché, une fois par chargement (GTM : `form_debut_estimation`). */
+  const debute = useRef(false);
+  function debutSaisie() {
+    if (debute.current) return;
+    debute.current = true;
+    const w = window as unknown as { dataLayer?: { push: (o: Record<string, unknown>) => void } };
+    w.dataLayer?.push({ event: "form_debut_estimation", formulaire, page: window.location.pathname });
+  }
+
   async function envoyerSaisie(ev: React.FormEvent) {
     ev.preventDefault();
     if (!validerSaisie()) return;
@@ -234,7 +246,11 @@ export function EstimationForm({
     if (ok) {
       type DL = { push: (o: Record<string, unknown>) => void };
       const w = window as unknown as { dataLayer?: DL };
-      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname });
+      // Lot 140 : `zone` dit d'où est l'immeuble (code postal), pour ne compter comme conversion
+      // principale des annonces sur Paris que les immeubles parisiens. Aucune donnée personnelle.
+      const dept = d.codePostal.trim().slice(0, 2);
+      const zone = dept === "75" ? "paris" : (DEPTS_IDF as readonly string[]).includes(dept) ? "idf" : "autre";
+      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname, zone });
     }
 
     setPhase(ok ? "complement" : "fin");
@@ -281,10 +297,10 @@ export function EstimationForm({
   return (
     <div className="form-bloc" ref={bloc}>
       {phase === "saisie" && (
-        <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate>
+        <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate onFocus={debutSaisie}>
           <div className="step-head">
             <h3><span className="accent">Estimez</span> gratuitement votre <span className="accent">immeuble</span></h3>
-            <p>Vos coordonnées et l’adresse de l’immeuble.</p>
+            <p>{chapeau ?? "Vos coordonnées et l’adresse de l’immeuble."}</p>
           </div>
 
           <div className="fields fields--2">

@@ -11,6 +11,10 @@ const IMAGES: Record<string, { fichier: string; alt: string }> = {
   "/vendre-un-immeuble-a-la-decoupe/": { fichier: "decoupe", alt: "Vendre un immeuble à la découpe" },
   "/vendre-un-immeuble/paris/": { fichier: "paris", alt: "Vendre votre immeuble à Paris" },
   "/estimation-immeuble-paris/": { fichier: "estimation-paris", alt: "Estimez votre immeuble parisien" },
+  // Lot 140 : les trois autres pages des annonces (hors index) reprennent les images des pages Paris.
+  "/vendre-immeuble-paris/": { fichier: "paris", alt: "Vendre votre immeuble à Paris" },
+  "/prix-immeuble-paris/": { fichier: "estimation-paris", alt: "Prix des immeubles à Paris" },
+  "/confier-son-immeuble-paris/": { fichier: "paris", alt: "Vendre votre immeuble à Paris" },
   "/acheter-un-immeuble/": { fichier: "acheter", alt: "Les immeubles de rapport avant leur annonce" },
   "/immeubles-vendus/": { fichier: "vendus", alt: "Les immeubles que nous avons vendus" },
   "/immeubles-off-market/": { fichier: "off-market", alt: "Les immeubles que personne ne voit passer" },
