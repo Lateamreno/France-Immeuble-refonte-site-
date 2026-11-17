@@ -941,7 +941,10 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   **Lots 135, 136 et 137 en production le 17/11/2026** (« gO PROD », MAV).
 - **Lot 138, refusé** (MAV, 17/11/2026 : « non pour l'instant je préfère comme avant ») : le pied de page de 760 à
   899 px avec le logo sur sa rangée a été retiré de la branche ; « Prix des immeubles vendus » y reste sur trois
-  lignes. Plan du site et fil d'Ariane de la page des ventes gardent « Immeubles vendus à Paris ».
+  lignes. Le plan du site garde « Immeubles vendus à Paris ».
+- **Lot 139** (MAV, 17/11/2026 : « Oui pour le fil d'Ariane »). Fil d'Ariane de `/ventes-immeubles-paris/` (données
+  BreadcrumbList seulement, rien à l'écran) : « Accueil > Vendre à Paris > Prix des immeubles vendus », comme le lien
+  du pied de page. Sur la branche, en attente.
 
 ### Garde-fous non négociables
 
