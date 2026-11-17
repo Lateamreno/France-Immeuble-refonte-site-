@@ -944,7 +944,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   lignes. Le plan du site garde « Immeubles vendus à Paris ».
 - **Lot 139** (MAV, 17/11/2026 : « Oui pour le fil d'Ariane »). Fil d'Ariane de `/ventes-immeubles-paris/` (données
   BreadcrumbList seulement, rien à l'écran) : « Accueil > Vendre à Paris > Prix des immeubles vendus », comme le lien
-  du pied de page. Sur la branche, en attente.
+  du pied de page. **En production le 17/11/2026** (« GO », MAV).
 
 ### Garde-fous non négociables
 
