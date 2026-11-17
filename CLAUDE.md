@@ -939,10 +939,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   sur trois lignes de 760 à 899 px (correction à proposer). Le nom d'un lien de pied de page pèse peu pour Google
   (signal faible, navigation répétée) ; l'important est que les deux libellés disent deux choses différentes.
   **Lots 135, 136 et 137 en production le 17/11/2026** (« gO PROD », MAV).
-- **Lot 138** (correction proposée à MAV, 17/11/2026). Pied de page de 760 à 899 px : le logo et les coordonnées
-  sur leur propre rangée (coordonnées côte à côte), les quatre colonnes de liens dessous ; « Prix des immeubles
-  vendus » passe de trois lignes à deux. Pied de page plus haut à ces largeurs (428 → 557 px). Rien ne change
-  ailleurs. Sur la branche, en attente.
+- **Lot 138, refusé** (MAV, 17/11/2026 : « non pour l'instant je préfère comme avant ») : le pied de page de 760 à
+  899 px avec le logo sur sa rangée a été retiré de la branche ; « Prix des immeubles vendus » y reste sur trois
+  lignes. Plan du site et fil d'Ariane de la page des ventes gardent « Immeubles vendus à Paris ».
 
 ### Garde-fous non négociables
 

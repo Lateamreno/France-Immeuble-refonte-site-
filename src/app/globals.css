@@ -485,9 +485,6 @@ main > article:first-of-type > .hero-media:first-child{margin-top:calc(-1 * var(
 .footer-col--marque{grid-column:1 / -1;}
 .footer-coords{display:flex;flex-direction:column;gap:6px;margin-top:var(--space-s);}
 @media (min-width:760px){.footer-grid{grid-template-columns:1.3fr repeat(4,1fr);gap:24px;}.footer-col--marque{grid-column:auto;}}
-/* Lot 138 : de 760 à 899 px, le logo et les coordonnées sur leur rangée, les quatre colonnes de liens dessous :
-   « Prix des immeubles vendus » tenait sur trois lignes. Coordonnées côte à côte pour ne pas allonger le pied. */
-@media (min-width:760px) and (max-width:899px){.footer-grid{grid-template-columns:repeat(4,1fr);}.footer-col--marque{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 32px;}.footer-col--marque .footer-coords{flex-direction:row;flex-wrap:wrap;gap:8px 24px;margin-top:4px;}}
 .footer-col h4{
   font-family:var(--font-mono-site);font-size:var(--fs-eyebrow);
   letter-spacing:0.15em;text-transform:uppercase;color:var(--color-bronze);
