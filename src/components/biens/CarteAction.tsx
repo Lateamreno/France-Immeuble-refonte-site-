@@ -113,9 +113,9 @@ export function CarteAction({
             {numero ? (
               <a className="btn btn--outline carte-action__tel" href={telHref}>{telephone}</a>
             ) : (
-              <button type="button" className="btn btn--outline" onClick={voirNumero}>Voir le n°</button>
+              <button type="button" className="btn btn--outline" data-stat="telephone" onClick={voirNumero}>Voir le n°</button>
             )}
-            <button type="button" className="btn btn--outline" onClick={() => ouvrir("contact")}>Contacter</button>
+            <button type="button" className="btn btn--outline" data-stat="dossier" onClick={() => ouvrir("contact")}>Contacter</button>
           </div>
         </div>
 
@@ -139,9 +139,9 @@ export function CarteAction({
           {numero ? (
             <a className="btn btn--outline" href={telHref}>{telephone}</a>
           ) : (
-            <button type="button" className="btn btn--outline" onClick={voirNumero}>Voir le n°</button>
+            <button type="button" className="btn btn--outline" data-stat="telephone" onClick={voirNumero}>Voir le n°</button>
           )}
-          <button type="button" className="btn btn--outline" onClick={() => ouvrir("contact")}>Contacter</button>
+          <button type="button" className="btn btn--outline" data-stat="dossier" onClick={() => ouvrir("contact")}>Contacter</button>
         </div>
         <button type="button" className="btn btn--primary btn--wide" onClick={() => ouvrir("offre")}><Marteau />{libelleOffre}</button>
       </div>

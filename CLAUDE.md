@@ -977,6 +977,24 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   la photo et « Notre histoire » sur D ; les coupes d'avis ; la quatrième page (réassurance ou succession) ; le
   budget et l'accès au compte ; le consentement (pas de bandeau). Non fait : réglages du compte Google Ads, page
   d'origine dans l'e-mail d'alerte et le BO, images de partage propres.
+- **Lot 141** (demande du BO, contrat §19 du 19/11/2026 : « Les statistiques d'une annonce », pour le rapport
+  de commercialisation envoyé au propriétaire). **Table `annonce_stats_jour`** (migration 0028, **appliquée** le
+  19/11/2026, vide tant que le code n'est pas en production) : par annonce (`bien_id` = `biens_a_vendre.id`) et par
+  jour de Paris, `impressions` (une par chargement de liste, avec `positions_somme` pour la position moyenne),
+  `vues` (une par visiteur et par heure), `visiteurs` (distincts dans la journée), `clics_telephone` (« Voir le
+  n° » et tout lien `tel:` de la fiche), `clics_dossier` (« Contacter »), `partages`. **Le site écrit, le BO lit**
+  avec la clé de service ; RLS sans règle. Écriture par une seule fonction, `noter_stat_annonce` (service
+  seulement), appelée par `/api/stats/annonce/` (`src/lib/stats-annonces.ts`), qui écarte robots et aperçus de
+  liens (agent utilisateur), navigateurs pilotés, aperçus Vercel, préchargements, annonces inconnues et l'équipe
+  (cookie `fi_equipe`, posé par `/api/stats/equipe/`, `?retirer=1`). **Sans donnée personnelle** : dédoublonnage
+  par une empreinte HMAC du jour, de l'IP et du navigateur (secret `STATS_SECRET`, à défaut la clé secrète de la
+  base), rangée dans `annonce_stats_empreintes` et effacée chaque matin par `/api/lead/relance/`
+  (`purger_stats_annonces`) ; l'IP n'est jamais écrite ; le navigateur ne garde rien. Côté page : `MesureImpressions`
+  et `MesureFiche` (`src/components/biens/MesureAnnonces.tsx`), boutons marqués `data-stat`, envoi par
+  `sendBeacon` (`mesure.ts`). Les pages sont en cache : les impressions partent du navigateur. Réponse au BO :
+  `docs/REPONSE-BO-STATS-ANNONCES.md` (à reporter dans son contrat). Le navigateur de test Playwright se déclare
+  « HeadlessChrome » et `navigator.webdriver` : il est écarté, pour tester il faut un autre agent utilisateur et
+  effacer `webdriver`. Aucun changement à l'écran. Sur la branche, en attente de l'accord de MAV.
 
 ### Garde-fous non négociables
 

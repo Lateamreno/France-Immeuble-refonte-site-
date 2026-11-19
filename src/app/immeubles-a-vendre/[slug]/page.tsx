@@ -19,6 +19,7 @@ import { secteurDe } from "@/lib/compte/secteur";
 import { marcheDuBien, ecartPct, type Marche } from "@/lib/marche";
 import { GalerieAnnonce } from "@/components/biens/GalerieAnnonce";
 import { CarteAction } from "@/components/biens/CarteAction";
+import { MesureFiche, MesureImpressions } from "@/components/biens/MesureAnnonces";
 
 /**
  * Fiche d'un immeuble à vendre, sur le modèle de Plein Bail (spec du 30/10/2026,
@@ -387,6 +388,8 @@ export default async function FicheBien({ params }: Params) {
       <section className="section section--creme fiche-pb">
         <div className="container fiche-pb__grille">
           <div className="fiche-pb__principal">
+            {/* Lot 141 : la vue et les clics de la fiche, pour le rapport au propriétaire (contrat du BO §19). */}
+            <MesureFiche bien={b.id} />
             <GalerieAnnonce images={b.images} alt={`${b.type} à ${b.ville}`} bien={b.id} titre={b.titre}
               badges={b.statut === "sous_offre" ? ["Sous offre"] : []} />
 
@@ -525,6 +528,7 @@ export default async function FicheBien({ params }: Params) {
             <ul className="biens-liste biens-liste--resultats">
               {proches.map((x) => <li key={x.id}><CarteBien b={x} rang={9} /></li>)}
             </ul>
+            <MesureImpressions biens={proches.map((x) => x.id)} />
           </div>
         </section>
       )}

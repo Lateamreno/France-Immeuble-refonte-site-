@@ -13,6 +13,7 @@ import { filAriane } from "@/lib/schema";
 import { VISUELS } from "@/lib/visuels";
 import { SITE } from "@/lib/site";
 import { biensAVendre, offMarket } from "@/lib/biens";
+import { MesureImpressions } from "@/components/biens/MesureAnnonces";
 import { CarteOffMarket } from "@/components/biens/CarteOffMarket";
 import { RechercheForm } from "@/components/RechercheForm";
 import { EnregistrerIci } from "@/components/biens/EnregistrerIci";
@@ -123,6 +124,8 @@ export default async function ImmeublesAVendre({ searchParams }: Props) {
                   </li>
                 ))}
               </ul>
+              {/* Lot 141 : une impression par annonce affichée, dans l'ordre de la page (contrat du BO §19). */}
+              <MesureImpressions biens={[...resultats, ...(ailleurs?.biens ?? [])].map((b) => b.id)} />
               {resultats.length === 0 && (
                 <div className="vide vide--recherche">
                   <span className="vide__picto" aria-hidden="true"><Picto nom="loupe" taille={40} /></span>

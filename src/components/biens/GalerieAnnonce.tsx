@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Picto } from "@/components/Picto";
 import { BoutonFavori } from "./BoutonFavori";
+import { noterAnnonce } from "./mesure";
 
 /**
  * La galerie de la fiche, comme Plein Bail (spec §11) : un carrousel qui glisse
@@ -55,6 +56,8 @@ export function GalerieAnnonce({
   async function partager() {
     const url = window.location.href.split("#")[0];
     if (typeof navigator.share === "function" && window.matchMedia("(pointer: coarse)").matches) {
+      // Lot 141 : le partage compte quand la feuille de partage du téléphone s'ouvre.
+      noterAnnonce("partage", [bien]);
       try { await navigator.share({ title: titre, url }); } catch { /* annulé */ }
       return;
     }
@@ -104,12 +107,12 @@ export function GalerieAnnonce({
               </button>
               {partage && (
                 <span className="galerie-pb__menu" role="menu">
-                  <button type="button" role="menuitem" onClick={async () => {
+                  <button type="button" role="menuitem" data-stat="partage" onClick={async () => {
                     try { await navigator.clipboard.writeText(url); setCopie(true); setTimeout(() => setCopie(false), 1800); } catch { /* refusé */ }
                   }}>{copie ? "Lien copié" : "Copier le lien"}</button>
-                  <a role="menuitem" href={`https://wa.me/?text=${texte}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                  <a role="menuitem" href={`mailto:?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(url)}`}>E-mail</a>
-                  <a role="menuitem" href={`sms:?&body=${texte}`}>SMS</a>
+                  <a role="menuitem" data-stat="partage" href={`https://wa.me/?text=${texte}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                  <a role="menuitem" data-stat="partage" href={`mailto:?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(url)}`}>E-mail</a>
+                  <a role="menuitem" data-stat="partage" href={`sms:?&body=${texte}`}>SMS</a>
                 </span>
               )}
             </span>

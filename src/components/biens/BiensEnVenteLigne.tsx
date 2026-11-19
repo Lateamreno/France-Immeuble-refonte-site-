@@ -5,6 +5,7 @@ import { LigneDefilante } from "@/components/LigneDefilante";
 import { Picto } from "@/components/Picto";
 import { biensAVendre, offMarket } from "@/lib/biens";
 import { CarteOffMarket } from "./CarteOffMarket";
+import { MesureImpressions } from "./MesureAnnonces";
 
 /**
  * Les immeubles en vente, en une ligne qui glisse (MAV, 05/11/2026, page
@@ -41,6 +42,8 @@ export async function BiensEnVenteLigne({ id, className = "section--noir" }: { i
             <span className="btn btn--primary carte-tous__btn">Voir tous nos immeubles</span>
           </Link>
         </LigneDefilante>
+        {/* Lot 141 : une impression par annonce de la ligne (contrat du BO §19). */}
+        <MesureImpressions biens={choisis.map((b) => b.id)} />
       </div>
     </section>
   );
