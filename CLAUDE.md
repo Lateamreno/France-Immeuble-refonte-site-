@@ -994,7 +994,7 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `sendBeacon` (`mesure.ts`). Les pages sont en cache : les impressions partent du navigateur. Réponse au BO :
   `docs/REPONSE-BO-STATS-ANNONCES.md` (à reporter dans son contrat). Le navigateur de test Playwright se déclare
   « HeadlessChrome » et `navigator.webdriver` : il est écarté, pour tester il faut un autre agent utilisateur et
-  effacer `webdriver`. Aucun changement à l'écran. Sur la branche, en attente de l'accord de MAV.
+  effacer `webdriver`. Aucun changement à l'écran. **En production le 19/11/2026** (« Go prod pour le lot 141 », MAV).
 
 ### Garde-fous non négociables
 
