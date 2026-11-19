@@ -6,6 +6,7 @@ import { brouillonsATransmettre, purgerDossiers } from "@/lib/dossier/serveur";
 import { transmettreEnCours } from "@/lib/dossier/envoi";
 import { aviserClients } from "@/lib/compte/avis";
 import { purgerSaisies } from "@/lib/compte/saisies";
+import { purgerStatsAnnonces } from "@/lib/stats-annonces";
 
 /**
  * Relance de la file d'attente des leads — appelée par la tâche planifiée de
@@ -65,7 +66,14 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[avis] annonce impossible —", e);
     }
-    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, brouillonsTransmis, dossiersEffaces, avis });
+    // Lot 141 : les empreintes des visiteurs d'annonces ne survivent pas au lendemain (contrat du BO §19).
+    let empreintesEffacees = 0;
+    try {
+      empreintesEffacees = await purgerStatsAnnonces();
+    } catch (e) {
+      console.error("[stats annonce] purge impossible —", e);
+    }
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, brouillonsTransmis, dossiersEffaces, avis, empreintesEffacees });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

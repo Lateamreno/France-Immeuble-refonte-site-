@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MesureImpressions } from "@/components/biens/MesureAnnonces";
 import { CarteBien } from "@/components/CarteBien";
 import { OngletsAcheter } from "@/components/compte/OngletsAcheter";
 import { Panneau, TeteCompte, Vide } from "@/components/compte/Ecrans";
@@ -103,6 +104,7 @@ export default async function BiensProposes({ searchParams }: { searchParams: Pr
           <ul className="biens-liste compte-correspondants">
             {correspondants.map((b, i) => <li key={b.id}><CarteBien b={b} rang={i} /></li>)}
           </ul>
+          <MesureImpressions biens={correspondants.map((b) => b.id)} />
         </Panneau>
       )}
     </>
