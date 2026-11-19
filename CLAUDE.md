@@ -1006,7 +1006,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   dans les formules de rentabilité (« non déductibles » gardé comme autre nom). Index des lettres collé sous la barre
   de menu dès 900 px, filtre qui ne fait que cacher (`FiltreLexique`), une ancre par mot (`/lexique/#indivision`,
   `data-marge-ancre` pour `AncreStable`), « Voir aussi » entre mots, « Lire aussi » vers un article ou une page,
-  données `DefinedTermSet`, formulaire d'estimation et pilule en fin de page. Sur la branche, en attente de l'accord de MAV.
+  données `DefinedTermSet`, formulaire d'estimation et pilule en fin de page.
+  Retours de MAV (19/11/2026) : **« Lexique » dans le pied de page**, colonne Vendre, sous « Nos honoraires » ;
+  **mandat semi-exclusif = exclusivité temporaire** (« Exclusivité temporaire »), deux à quatre semaines, puis
+  mandat simple ; honoraires « à la charge de l'acquéreur » chez France Immeuble ; **liens « Lire aussi » gardés
+  et chaque mot mène aussi à une page qui convertit** (« faut qu'il tombe sur des pages qui convertissent ») :
+  Vendre, Estimer, Acheter, Découpe, Vendre à Paris ou le barème (`lire` est une liste). Sur la branche, en
+  attente de l'accord de MAV.
 
 ### Garde-fous non négociables
 

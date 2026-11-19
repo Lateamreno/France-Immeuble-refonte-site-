@@ -137,9 +137,15 @@ export default function Lexique() {
                             })}
                           </p>
                         )}
-                        {t.lire && (
+                        {t.lire && t.lire.length > 0 && (
                           <p className="lex-lire">
-                            Lire aussi : <a href={t.lire.href}>{t.lire.titre}</a>
+                            Lire aussi :{" "}
+                            {t.lire.map((l, i) => (
+                              <Fragment key={l.href}>
+                                {i > 0 && " · "}
+                                <a href={l.href}>{l.titre}</a>
+                              </Fragment>
+                            ))}
                           </p>
                         )}
                       </dd>
