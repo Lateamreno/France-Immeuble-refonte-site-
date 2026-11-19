@@ -1011,8 +1011,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   **mandat semi-exclusif = exclusivité temporaire** (« Exclusivité temporaire »), deux à quatre semaines, puis
   mandat simple ; honoraires « à la charge de l'acquéreur » chez France Immeuble ; **liens « Lire aussi » gardés
   et chaque mot mène aussi à une page qui convertit** (« faut qu'il tombe sur des pages qui convertissent ») :
-  Vendre, Estimer, Acheter, Découpe, Vendre à Paris ou le barème (`lire` est une liste). Sur la branche, en
-  attente de l'accord de MAV.
+  Vendre, Estimer, Acheter, Découpe, Vendre à Paris ou le barème (`lire` est une liste). **En production le
+  19/11/2026** (« Go prod », MAV).
 
 ### Garde-fous non négociables
 
