@@ -963,6 +963,18 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `docs/REPONSE-BO-STATS-ANNONCES.md` (à reporter dans son contrat). Le navigateur de test Playwright se déclare
   « HeadlessChrome » et `navigator.webdriver` : il est écarté, pour tester il faut un autre agent utilisateur et
   effacer `webdriver`. Aucun changement à l'écran. **En production le 19/11/2026** (« Go prod pour le lot 141 », MAV).
+- **Lot 142** (MAV, 19/11/2026 : « il faut qu'on créé une page lexique. D'ailleurs j'avais déjà un lexique mais tu peux
+  rajouter toi même »). Page **`/lexique/`** (sitemap, plan du site, `llms.txt` ; ni menu ni pied de page) : 87 mots,
+  les 56 du lexique de MAV réécrits et 31 ajoutés (`src/lib/lexique.ts`, `origine`), tirés de ce que le site dit déjà
+  (FAQ Paris, barème, baromètre). Corrigés en réécrivant : trêve hivernale du 1er novembre au 31 mars ; taxe sur les
+  bureaux exonérée sous 100 m² de bureaux (et non 80), 2 500 m² de commerces, 5 000 m² de stockage, parkings à part ;
+  THLV à deux ans de vacance (et non un) ; TLV et THLV remplacées le 1er janvier 2027 par la taxe sur la vacance des
+  locaux d'habitation (loi de finances pour 2026) ; délai de rétractation réservé à l'acquéreur non professionnel d'un
+  bien d'habitation ; honoraires payés par le vendeur ou l'acquéreur selon le mandat ; « charges non récupérables »
+  dans les formules de rentabilité (« non déductibles » gardé comme autre nom). Index des lettres collé sous la barre
+  de menu dès 900 px, filtre qui ne fait que cacher (`FiltreLexique`), une ancre par mot (`/lexique/#indivision`,
+  `data-marge-ancre` pour `AncreStable`), « Voir aussi » entre mots, « Lire aussi » vers un article ou une page,
+  données `DefinedTermSet`, formulaire d'estimation et pilule en fin de page. Sur la branche, en attente de l'accord de MAV.
 
 ### Garde-fous non négociables
 

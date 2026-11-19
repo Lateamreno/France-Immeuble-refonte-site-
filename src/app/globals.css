@@ -6213,3 +6213,56 @@ select:is(.field select,.compte-contenu select,.recherche-biens select,.mes-zone
   .vcarte__boite{aspect-ratio:1.12;height:auto;max-height:none;min-height:0;}
   .vcarte__barre{gap:8px 14px;}
 }
+
+/* ========================================================================
+   Lot 142 : lexique (/lexique/). Sur crème : barre des lettres et filtre, un mot par ligne,
+   le mot à gauche dès 900 px, la définition à droite. Une ancre par mot (#indivision).
+   ======================================================================== */
+.lex{max-width:1080px;}
+.lex-barre{display:flex;flex-direction:column;gap:12px;padding:0 0 16px;margin-bottom:8px;border-bottom:1px solid color-mix(in srgb, var(--color-noir) 14%, var(--color-creme));background:var(--color-creme);}
+.lex-alpha{display:flex;flex-wrap:wrap;gap:4px;}
+.lex-alpha a{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 6px;border-radius:var(--radius-pill);font-family:var(--font-mono-site);font-size:.86rem;font-weight:600;color:var(--color-noir);text-decoration:none;}
+.lex-alpha a:hover{background:color-mix(in srgb, var(--color-bronze) 22%, var(--color-creme));}
+.lex-alpha a:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:2px;}
+.lex-alpha a[aria-disabled]{color:color-mix(in srgb, var(--color-noir) 30%, var(--color-creme));pointer-events:none;}
+.lex-filtre{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.lex-filtre input{flex:1 1 260px;max-width:420px;min-height:46px;padding:10px 20px;border-radius:var(--radius-pill);border:1px solid color-mix(in srgb, var(--color-noir) 22%, var(--color-creme));background:color-mix(in srgb, var(--color-noir) 3%, var(--color-creme));color:var(--color-noir);font:inherit;font-size:16px;}
+.lex-filtre input::placeholder{color:color-mix(in srgb, var(--color-noir) 50%, var(--color-creme));}
+.lex-filtre input:focus::placeholder{color:transparent;}
+.lex-filtre input:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:2px;}
+.lex-filtre input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none;}
+.lex-filtre__effacer{border:0;background:none;padding:6px 2px;font:inherit;font-size:.86rem;color:var(--color-bronze-profond);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.lex-filtre__effacer:focus-visible{outline:2px solid var(--color-bronze-profond);outline-offset:2px;}
+.lex-filtre__n{margin:0;font-family:var(--font-mono-site);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+section.lex-groupe[id]{scroll-margin-top:12px;}
+.lex-groupe[hidden],.lex-terme[hidden]{display:none;}
+.lex-lettre{margin:28px 0 4px;font-size:clamp(2.2rem,4.4vw,3.2rem);color:var(--color-bronze-profond);}
+.lex-groupe dl{margin:0;}
+.lex-terme{padding:18px 0;border-top:1px solid color-mix(in srgb, var(--color-noir) 12%, var(--color-creme));}
+.lex-terme[id]{scroll-margin-top:12px;}
+.lex-groupe dl > .lex-terme:first-child{border-top:0;}
+.lex-terme dt{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+.lex-terme dfn{font-style:normal;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth), "wght" 800;letter-spacing:-0.01em;line-height:1.15;font-size:1.14rem;color:var(--color-noir);}
+.lex-aussi{font-family:var(--font-mono-site);font-size:.74rem;letter-spacing:.04em;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.lex-terme dd{margin:0;max-width:68ch;}
+.lex-terme dd p{margin:0 0 10px;line-height:1.6;}
+.lex-terme dd p:last-child{margin-bottom:0;}
+.lex-formule{font-family:var(--font-mono-site);font-size:.9rem;padding:8px 14px;border-left:2px solid var(--color-bronze);background:color-mix(in srgb, var(--color-bronze) 14%, var(--color-creme));}
+.lex-note{padding-left:14px;border-left:2px solid var(--color-bronze-profond);}
+.lex-voir,.lex-lire{font-size:.88rem;color:color-mix(in srgb, var(--color-noir) 62%, var(--color-creme));}
+.lex-voir a,.lex-lire a{color:var(--color-bronze-profond);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
+.lex-voir a:hover,.lex-lire a:hover{color:var(--color-noir);}
+.lex-terme:target{background:color-mix(in srgb, var(--color-bronze) 12%, var(--color-creme));box-shadow:-12px 0 0 color-mix(in srgb, var(--color-bronze) 12%, var(--color-creme)), 12px 0 0 color-mix(in srgb, var(--color-bronze) 12%, var(--color-creme));}
+@media (min-width:900px){
+  .lex{--lex-barre-h:136px;}
+  .lex-barre{position:sticky;top:var(--header-h);z-index:5;padding-top:14px;}
+  section.lex-groupe[id]{scroll-margin-top:var(--lex-barre-h,128px);}
+  .lex-terme{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:0 40px;padding:22px 0;}
+  .lex-terme[id]{scroll-margin-top:calc(var(--lex-barre-h,128px) + 4px);}
+  .lex-terme dt{margin:0;}
+}
+@media (max-width:899px){
+  .lex-alpha{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);}
+  .lex-alpha::-webkit-scrollbar{display:none;}
+  .lex-alpha a{flex:0 0 auto;}
+}

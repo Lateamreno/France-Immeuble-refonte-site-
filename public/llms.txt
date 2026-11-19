@@ -11,6 +11,7 @@ France Immeuble estime et vend des immeubles de rapport entiers pour leurs propr
 - [Vendre un immeuble à la découpe](https://www.france-immeuble.fr/vendre-un-immeuble-a-la-decoupe/): mise en copropriété et vente lot par lot
 - [Estimer un immeuble](https://www.france-immeuble.fr/estimer-un-immeuble/): comment nous estimons un immeuble de rapport
 - [Nos honoraires](https://www.france-immeuble.fr/nos-honoraires/): barème de la vente en bloc et de la découpe
+- [Lexique de l’immeuble de rapport](https://www.france-immeuble.fr/lexique/): rentabilité, préemption, état locatif, démembrement, taxes, expliqués simplement
 
 ## Données
 

@@ -23,7 +23,8 @@ export function AncreStable() {
       if (fini || !el) return;
       // Une ligne de tableau visée garde sa marge (page Paris, #arr-11) : sans elle, la ligne arrive
       // collée sous la barre de menu. Les autres cibles ne bougent pas.
-      const marge = el instanceof HTMLTableRowElement ? parseFloat(getComputedStyle(el).scrollMarginTop || "0") : 0;
+      // Même chose pour un mot du lexique (lot 142), qui doit passer sous la barre des lettres collée en haut.
+      const marge = el instanceof HTMLTableRowElement || el.hasAttribute("data-marge-ancre") ? parseFloat(getComputedStyle(el).scrollMarginTop || "0") : 0;
       const ecart = el.getBoundingClientRect().top - parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || "0") - marge;
       if (Math.abs(ecart) > 4) window.scrollTo({ top: window.scrollY + ecart, behavior: "instant" as ScrollBehavior });
     };
