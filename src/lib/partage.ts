@@ -22,6 +22,8 @@ const IMAGES: Record<string, { fichier: string; alt: string }> = {
   "/nos-honoraires/": { fichier: "honoraires", alt: "Le barème de nos honoraires" },
   "/contactez-nous/": { fichier: "contact", alt: "Parlons de votre immeuble" },
   "/blog/": { fichier: "blog", alt: "Vendre, estimer, arbitrer : ce qu’il faut savoir" },
+  // Lot 142 : le lexique reprend l'image du blog.
+  "/lexique/": { fichier: "blog", alt: "Vendre, estimer, arbitrer : ce qu’il faut savoir" },
 };
 
 /** L'image de partage d'une page, ou celle de l'accueil par défaut. */
