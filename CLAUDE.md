@@ -1008,8 +1008,8 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   `data-marge-ancre` pour `AncreStable`), « Voir aussi » entre mots, « Lire aussi » vers un article ou une page,
   données `DefinedTermSet`, formulaire d'estimation et pilule en fin de page.
   Retours de MAV (19/11/2026) : **« Lexique » dans le pied de page**, colonne Vendre, sous « Nos honoraires » ;
-  **mandat semi-exclusif = exclusivité temporaire** (« Exclusivité temporaire »), deux à quatre semaines, puis
-  mandat simple ; honoraires « à la charge de l'acquéreur » chez France Immeuble ; **liens « Lire aussi » gardés
+  **mandat semi-exclusif = exclusivité temporaire** (« Exclusivité temporaire »), deux à quatre semaines (durée
+  confirmée par MAV le 20/11/2026 : « 2 à 4 semaines c'est bon »), puis mandat simple ; honoraires « à la charge de l'acquéreur » chez France Immeuble ; **liens « Lire aussi » gardés
   et chaque mot mène aussi à une page qui convertit** (« faut qu'il tombe sur des pages qui convertissent ») :
   Vendre, Estimer, Acheter, Découpe, Vendre à Paris ou le barème (`lire` est une liste). **En production le
   19/11/2026** (« Go prod », MAV).
