@@ -50,18 +50,24 @@ export async function jetonSearchConsole(): Promise<string | null> {
  * La propriété Search Console du site parmi celles que le compte peut lire : la propriété de domaine
  * (`sc-domain:france-immeuble.fr`) si elle est partagée, sinon celle de l'adresse www.
  */
-export async function proprieteSite(jeton: string): Promise<string | null> {
+export async function proprieteSite(jeton: string): Promise<{ propriete: string | null; statut: number; vues: number }> {
   const r = await fetch(`${API}/sites`, { headers: { Authorization: `Bearer ${jeton}` }, signal: AbortSignal.timeout(DELAI_MS) });
-  if (!r.ok) return null;
+  // 403 : l'API Search Console n'est pas activée dans le projet Google Cloud du compte de service.
+  if (!r.ok) return { propriete: null, statut: r.status, vues: 0 };
   const sites = (((await r.json()) as { siteEntry?: { siteUrl: string; permissionLevel: string }[] }).siteEntry ?? [])
     .filter((s) => s.permissionLevel !== "siteUnverifiedUser")
     .map((s) => s.siteUrl);
-  return (
+  const propriete =
     sites.find((s) => s === "sc-domain:france-immeuble.fr") ??
     sites.find((s) => s === "https://www.france-immeuble.fr/") ??
     sites.find((s) => s.includes("france-immeuble.fr")) ??
-    null
-  );
+    null;
+  return { propriete, statut: r.status, vues: sites.length };
+}
+
+/** L'adresse du compte de service, à ajouter comme utilisateur « Restreint » dans la Search Console. */
+export function adresseCompteService(): string | null {
+  return lireCle()?.client_email ?? null;
 }
 
 export type LigneGsc = { keys: string[]; clicks: number; impressions: number; position: number };

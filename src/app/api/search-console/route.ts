@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { configSite } from "@/lib/supabase-site";
-import { jetonSearchConsole, lignesDuJour, proprieteSite, type LigneGsc } from "@/lib/search-console";
+import { adresseCompteService, jetonSearchConsole, lignesDuJour, proprieteSite, type LigneGsc } from "@/lib/search-console";
 
 /**
  * Relevé quotidien de la Search Console (MAV, 20/11/2026), tâche planifiée de Vercel (vercel.json),
@@ -46,8 +46,19 @@ export async function GET(req: Request) {
 
   const jeton = await jetonSearchConsole();
   if (!jeton) return NextResponse.json({ ok: false, erreur: "clé GSC_CLE absente ou refusée par Google" }, { status: 502 });
-  const propriete = await proprieteSite(jeton);
-  if (!propriete) return NextResponse.json({ ok: false, erreur: "aucune propriété Search Console partagée avec le compte de service" }, { status: 502 });
+  const { propriete, statut, vues } = await proprieteSite(jeton);
+  if (!propriete) {
+    const erreur =
+      statut === 403
+        ? "l'API Google Search Console n'est pas activée dans le projet Google Cloud"
+        : statut !== 200
+          ? `liste des propriétés refusée par Google (${statut})`
+          : vues
+            ? "le compte de service voit des propriétés, mais aucune de france-immeuble.fr"
+            : "aucune propriété Search Console partagée avec le compte de service";
+    // L'adresse du compte n'est pas un secret ; on ne la montre que sur un aperçu, protégé par Vercel.
+    return NextResponse.json({ ok: false, erreur, ...(surApercu ? { compte: adresseCompteService() } : {}) }, { status: 502 });
+  }
 
   const entetes = { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json" };
   const dernier = await fetch(`${cfg.url}/rest/v1/gsc_pages?select=jour&order=jour.desc&limit=1`, { headers: entetes, cache: "no-store" });
