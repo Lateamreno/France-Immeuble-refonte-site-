@@ -1013,6 +1013,26 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   et chaque mot mène aussi à une page qui convertit** (« faut qu'il tombe sur des pages qui convertissent ») :
   Vendre, Estimer, Acheter, Découpe, Vendre à Paris ou le barème (`lire` est une liste). **En production le
   19/11/2026** (« Go prod », MAV).
+- **Encadrement des loyers prolongé** (rappel du 21/11/2026) : l'Assemblée nationale a adopté le 19/11/2026, sans
+  modification, la prolongation de deux ans votée par le Sénat le 21/10 (dossier législatif, T.A. n° 368) ; pas encore
+  promulguée, aucune date de fin écrite tant qu'un texte officiel ne la donne pas. Article « Comment vendre un immeuble
+  à Paris » (`revuLe` 21/11) et FAQ Paris mis à jour. **En production le 21/11/2026** (« Go prod pour l'encadrement
+  des loyers », MAV). **Logements classés G** : le projet de loi relance et décentralisation du logement n'est pas
+  adopté (vote solennel de l'Assemblée le 24/11/2026, puis CMP) ; la règle actuelle tient, FAQ DPE inchangée, à
+  revoir après la CMP.
+- **Search Console** (MAV, 20/11/2026) : compte de service en lecture seule, clé `GSC_CLE` dans Vercel (production,
+  aperçus, développement). Tâche quotidienne `/api/search-console/` (`src/lib/search-console.ts`), tables `gsc_pages` et
+  `gsc_requetes` (migration 0029, appliquée, RLS sans règle). Sur la branche, en attente de mise en production.
+- **Murs commerciaux, décisions de MAV (20/11/2026)** : section `/murs-commerciaux/` vendue aux seuls investisseurs
+  (valeur locative estimée, les locaux libres vendus libres). Menu de la section : Vendre (local commercial, entrepôt,
+  retail park, immeuble), Estimer (mêmes lignes), Nos biens (vendus, à vendre), Acheter (déposer une recherche) ; pas
+  de bureaux au menu ; bouton « Estimer mes murs » ; `local-commercial` plutôt que `pied-d-immeuble`. Rien ne passe
+  par Plein Bail. Les trois anciennes fiches (Paris 11e, Soisy, Hagondange) restent où elles sont pour l'instant
+  (Hagondange est une monopropriété, côté immeubles) ; les murs seuls sont encore dans `/immeubles-vendus/`, la liste,
+  les fiches et le sitemap. Blog des murs : sujets retenus, droit de préférence du locataire, murs loués ou libres,
+  rendement (ville, emplacement, locataire, bail, local : extraction, sous-sol, linéaire de vitrine, ERP), bail
+  commercial et prix (dont la taxe foncière refacturée) ; écartés : fonds de commerce, plus-value et TVA (« trop
+  complexe »), vente au locataire (« pas rentable pour nous »).
 
 ### Garde-fous non négociables
 
