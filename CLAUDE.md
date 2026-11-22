@@ -1033,6 +1033,19 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   rendement (ville, emplacement, locataire, bail, local : extraction, sous-sol, linéaire de vitrine, ERP), bail
   commercial et prix (dont la taxe foncière refacturée) ; écartés : fonds de commerce, plus-value et TVA (« trop
   complexe »), vente au locataire (« pas rentable pour nous »).
+  Aperçu avant code (22/11/2026, https://claude.ai/artifact/U6VHPJEVqgvx2UzwdMeonT, fait sur les feuilles de style
+  du site en ligne) puis décisions de MAV : le logo mène à l'accueil de sa partie (immeubles → `/`, murs →
+  `/murs-commerciaux/`) ; « Contact » au menu des murs ; les trois badges « Nouveau » côté immeubles restent (découpe
+  compris) ; Hagondange dans les ventes des immeubles **et** des murs. Proposés, en attente : H1 de la page mère
+  « Vendre vos murs commerciaux au bon investisseur » (« murs commerciaux » sur la page mère, « local commercial » sur
+  sa page) ; photo du haut tirée de Wikimedia Commons, sans marque connue, crédit en bas du hero (A : boulangerie rue
+  d'Alésia, CC BY-SA 3.0 ; B : vitrine 5 rue Jean-Jacques-Rousseau, CC BY 2.0) ; menu du téléphone en accordéon pour
+  les murs (sept lignes), celui des immeubles inchangé (#214).
+- **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
+  déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
+  https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
+  « immeuble »** (Google montre l'accueil sur ce mot seul, presque sans clic). Redirection 301 de
+  `/droit-de-preemption-lors-de-vente-dun-immeuble-en-bloc/` (sans « la ») vers l'article, en production le même jour.
 
 ### Garde-fous non négociables
 
