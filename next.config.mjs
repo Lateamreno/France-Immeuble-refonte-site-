@@ -28,6 +28,13 @@ const nextConfig = {
       // Adresses du nouveau site renommées pour le référencement (MAV, 12/11/2026 : « l'URL pour
       // vendre à la découpe il est nul, le mieux c'est vendre un immeuble à la découpe »).
       { source: "/vendre-a-la-decoupe/", destination: "/vendre-un-immeuble-a-la-decoupe/", statusCode: 301 },
+      // Adresse sans « la » que Google a montrée en première position (Search Console, 21/11/2026) :
+      // elle répondait 404 (MAV, 22/11/2026 : « oui vazy »).
+      {
+        source: "/droit-de-preemption-lors-de-vente-dun-immeuble-en-bloc/",
+        destination: "/droit-de-preemption-lors-de-la-vente-dun-immeuble-en-bloc/",
+        statusCode: 301,
+      },
     ];
   },
   // Avant la bascule, le site répond aussi sur *.vercel.app : ces adresses ne doivent pas
