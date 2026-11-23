@@ -1050,6 +1050,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   au BO les champs d'une estimation d'immeuble (type de bien = un lot du bon type, écrit en tête de la
   description) ; le repère `murs` est retiré par `/api/lead/`, jamais de Plein Bail, pas de compte ni d'état
   locatif. Chiffre `acheteurs_murs` du BO affiché seulement s'il est déposé.
+- **Honoraires reformulés, sur la branche** (MAV, 23/11/2026 : « Ah tu veux dire qu'il paye jamais rien ? On peut
+  reformuler ») : « rien à payer tant que la vente n'est pas signée » devient « Honoraires à la charge de l'acquéreur,
+  dus à la signature » (page Paris, page B des annonces) et « en général à la charge de l'acquéreur » dans la carte,
+  les FAQ de Paris et de Vendre et le barème (exception du monolocataire). Touche des pages en ligne : en attente du
+  « go prod ». Google Ads : 600 € par mois validés ; pas de bandeau de cookies pour l'instant (MAV).
+- **Nos chiffres dans les articles, sur la branche** (MAV, 23/11/2026 : « oui tu peux me préparer cela ») : clics hors
+  accueil d'octobre 611 (2025) → 113 (2026), impressions −38 %. `src/lib/donnees-articles.ts` insère avant le dernier
+  intertitre d'« estimer » et de « vendre un immeuble de rapport » une section de chiffres sourcés et datés (DVF Paris
+  du baromètre, médianes de nos ventes par zone dès cinq ventes, recherches par profil), sans nombre de ventes.
+  Rapport : https://claude.ai/artifact/Nn9cni91QxdPfzz7xHWcGC.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
