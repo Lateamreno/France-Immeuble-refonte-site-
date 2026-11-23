@@ -1077,6 +1077,21 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   courte. On fait parfois des mandats courts ») : ne jamais écrire que nos mandats parisiens durent 2 à 4 semaines ;
   mandat de 12 mois résiliable à tout moment, idéalement une exclusivité de deux à quatre semaines. Paragraphe de
   « Comment vendre un immeuble à Paris » écrit par MAV (23/11/2026), sur la branche.
+- **Paris, 1er semestre 2026 et prix par arrondissement, sur la branche** (MAV, 23/11/2026 : « vois si t'as pas les
+  données du premier semestre 2026 », le tableau de la page Paris sur « Prix au m² à Paris » et « dans les biens vendus
+  avec un lien à chaque arrondissement […] avec écrit le nombre de vente », « le résumé de l'étude était top »). Le
+  S1 2026 n'existe que dans le fichier brut de l'État (`valeursfoncieres-2026-s1`, paru le 12/10/2026), pas dans
+  geo-dvf : conversion hors dépôt (mutation = lignes consécutives de même date, nature et prix ; position = centre de la
+  parcelle du cadastre Etalab), contrôlée sur 2025 (147 ventes sur 150 identiques, écarts dus au fichier plus récent).
+  **Tables à part** `marche_immeubles_semestre` et `ventes_immeubles_dvf_semestre` (migration 0031, appliquée, RLS
+  lecture) : le site en ligne ne les lit pas ; 64 ventes, Paris 6 706 € le m² (S1 2025 : 54 ventes, 6 852 €).
+  `ventesDvf` réunit les deux tables (`mois`, `libellePeriode`), la tâche mensuelle des ventes efface le semestre d'une
+  année qu'elle écrit entière ; loyer des ventes 2026 = dernière carte parue (`loyerAnnee`). Page des ventes : le
+  tableau de la page Paris (`TableauPrixParis` avec `ventes`) remplace les pastilles, liens `#arr-N` et colonne
+  « Ventes ». Baromètre : outil « votre arrondissement » (`OutilPrix` sans titre ni changement d'adresse) et tableau
+  avant le texte, ligne « 2026, 1er semestre, provisoire » dans le tableau de tout Paris, phrase au résumé et en bref.
+  Prix par arrondissement d'un semestre jamais publiés (0 à 11 ventes). Rapport :
+  https://claude.ai/artifact/UqApeYUw9qzz3aAnWhp1tJ. En attente du go ; les 64 ventes ne sont pas auditées une à une.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
