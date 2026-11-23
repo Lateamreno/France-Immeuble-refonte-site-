@@ -1055,7 +1055,9 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   (migration 0030, appliquée, RLS sans règle), sans alerte ni dépôt au BO, effacé après 30 jours ; si la base ne le
   prend pas, il suit le chemin normal. Le robot reçoit la même réponse qu'un humain. Testé sur l'aperçu : envoi sans
   jeton et envoi en charabia mis à part. Côté BO (suppression qui ne retire pas la fiche, liste des motifs, trois faux
-  contacts) : `docs/PROMPT-BO-SUPPRESSION-CONTACT.md`. Sur la branche, en attente de l'accord de MAV.
+  contacts) : `docs/PROMPT-BO-SUPPRESSION-CONTACT.md`. Rapport avant/après :
+  https://claude.ai/artifact/TECDHPgCTQMeSusCTJBEnk. **En production le 23/11/2026** (« Go prod pour l'antispam », MAV) :
+  jeton servi et champ piège présent en ligne, vérifiés.
 
 ### Garde-fous non négociables
 
