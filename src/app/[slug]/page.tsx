@@ -232,7 +232,7 @@ export default async function ArticlePage({ params }: Params) {
             <section id="votre-arrondissement" className="section section--noir-2 barometre-outil-sec">
               <div className="container barometre-outil">
                 <div className="barometre-outil__tete">
-                  <Eyebrow bare>Votre arrondissement</Eyebrow>
+                  <Eyebrow bare>Prix par arrondissement</Eyebrow>
                   <h2>
                     Le prix au&nbsp;m² des immeubles <span className="accent">dans votre arrondissement</span>
                   </h2>
@@ -241,6 +241,7 @@ export default async function ArticlePage({ params }: Params) {
                     l’écart avec les appartements, la fiabilité du chiffre et le rendement théorique.
                   </p>
                 </div>
+                <div className="barometre-outil__choix">
                 <OutilPrix
                   initial={null}
                   annee={prixParis.annee}
@@ -250,6 +251,7 @@ export default async function ArticlePage({ params }: Params) {
                   titre={false}
                   suivreAdresse={false}
                 />
+                </div>
               </div>
             </section>
             <TableauPrixParis donnees={prixParis} secondBouton={false} />

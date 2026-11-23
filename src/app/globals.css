@@ -6324,3 +6324,8 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 @media (min-width:900px){ .barometre-outil{grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:clamp(32px,5vw,72px);} }
 .barometre-outil .lp-prix{margin-top:0;}
 .barometre tr.barometre__provisoire th,.barometre tr.barometre__provisoire td{font-style:normal;background:color-mix(in srgb,var(--color-bronze-clair) 28%,transparent);}
+/* Sur le baromètre, l'outil a la place : fiabilité, rendement et mention restent au téléphone. */
+.barometre-outil li.lp-prix__plus{display:list-item;}
+.barometre-outil ul.lp-prix__plus{display:grid;}
+.barometre-outil .lp-prix__mention{display:block;}
+.barometre-outil .lp-long{display:inline;}
