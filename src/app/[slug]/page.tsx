@@ -24,6 +24,7 @@ import { Picto, type NomPicto } from "@/components/Picto";
 import { ventes as lesVentes } from "@/lib/biens";
 import { chiffres as lesChiffres } from "@/lib/chiffres";
 import { chiffresFaq } from "@/lib/faq";
+import { articleAvecDonnees, avecDonnees } from "@/lib/donnees-articles";
 import { nombre } from "@/lib/site";
 import { boutonDansLeTexte, cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
 import { SLUG_BAROMETRE, chapeauBarometre, datasetBarometre, enBrefBarometre, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
@@ -124,12 +125,19 @@ export default async function ArticlePage({ params }: Params) {
 
   const acheteur = cibleArticle(a.slug) === "acheteur";
   // Le baromètre des prix à Paris (lot 113) : ses tableaux viennent de la base, toutes années comprises.
-  const [ventesPubliees, ch, historique] = await Promise.all([
+  const [ventesPubliees, ch, historique, marcheParis] = await Promise.all([
     lesVentes(),
     lesChiffres(),
     a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
+    // Nos chiffres dans l'article (MAV, 23/11/2026) : le prix des immeubles à Paris vient du baromètre.
+    articleAvecDonnees(a.slug) ? historiqueParis() : Promise.resolve(null),
   ]);
-  const html = historique ? remplirBarometre(a.contenuHtml, historique) : a.contenuHtml;
+  const maj = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" });
+  const html = historique
+    ? remplirBarometre(a.contenuHtml, historique)
+    : marcheParis
+      ? avecDonnees(a.contenuHtml, a.slug, ventesPubliees, ch, marcheParis, maj)
+      : a.contenuHtml;
   const barometre = a.slug === SLUG_BAROMETRE;
   const chapeau = (historique ? chapeauBarometre(historique) : null) ?? a.chapeau ?? null;
   /* Lot 124 (MAV, 15/11/2026 : optimiser pour ChatGPT et Claude) : la réponse à la question du titre,

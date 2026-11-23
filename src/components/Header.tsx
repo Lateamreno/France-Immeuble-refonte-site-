@@ -3,12 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
-import { NAV, SITE, type LienNav } from "@/lib/site";
+import { MURS, NAV, NAV_MURS, SITE, estMurs, formulaireSurPlace, type LienNav } from "@/lib/site";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
 
 export function Header() {
   const pathname = usePathname();
+  const surPlace = formulaireSurPlace(pathname);
+  /* Section des murs commerciaux (MAV, 20 et 22/11/2026) : son menu, son bouton, et le logo mène à
+     l'accueil des murs. Au téléphone, menu en accordéon partout (murs le 23/11/2026, immeubles ensuite : « c'est un peu trop », MAV). */
+  const murs = estMurs(pathname);
+  const nav = murs ? NAV_MURS : NAV;
+  const cta = murs ? "Estimer mes murs" : "Estimer mon immeuble";
+  const ctaHref = surPlace ? "#estimer" : murs ? "/murs-commerciaux/estimation/#estimer" : "/estimer-un-immeuble/#estimer";
   const [ouvert, setOuvert] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   /** Le sous-menu ouvert, par `href` du parent. Un seul à la fois. */
@@ -74,18 +81,27 @@ export function Header() {
     /* Transparente au-dessus du hero, pleine dès qu'on défile ou que le tiroir
        est ouvert, comme sur les sites Grey Stone et La Team Reno (MAV,
        22/10/2026). */
-    <header className={`site-header${scrolled || ouvert ? " is-scrolled" : ""}`}>
+    <header className={`site-header${murs ? " site-header--murs" : ""}${scrolled || ouvert ? " is-scrolled" : ""}`}>
       <div className="container site-header__inner">
+        {murs ? (
+          <Link className="brand brand--murs" href={MURS} aria-label="France Immeuble, murs commerciaux">
+            <Logo titre={null} />
+            <span className="brand__filet" aria-hidden="true" />
+            <span className="brand__section" aria-hidden="true">Commerces</span>
+            <span className="brand__section-mob" aria-hidden="true">Murs commerciaux</span>
+          </Link>
+        ) : (
         <Link className="brand" href="/" aria-label="France Immeuble — accueil">
           {/* `titre={null}` : le nom accessible vient du lien, inutile de le
               doubler dans le SVG (le lecteur d'écran l'annoncerait deux fois). */}
           <Logo titre={null} />
         </Link>
+        )}
 
         <nav
           id="nav"
           className={`nav ${ouvert ? "is-open" : ""}`.trim()}
-          aria-label="Navigation principale"
+          aria-label={murs ? "Navigation des murs commerciaux" : "Navigation principale"}
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("a")) {
               setOuvert(false);
@@ -93,7 +109,7 @@ export function Header() {
             }
           }}
         >
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Fragment key={item.href}>
             {/* MAV, 05/11/2026 : l'espace client dans le menu du téléphone, juste avant Contact. */}
             {item.href === "/contactez-nous/" && (
@@ -123,20 +139,23 @@ export function Header() {
             )}
             </Fragment>
           ))}
-          {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. */}
-          <Button href="/estimer-un-immeuble/#estimer">Estimer mon immeuble</Button>
+          {/* Retour #204 (MAV, 04/11/2026) : droit au formulaire d'estimation. Lot 140 : sur une page
+              qui porte son propre formulaire (pages des annonces, page Paris), le bouton y mène et
+              ferme le menu. */}
+          {surPlace ? (
+            <a className="btn btn--primary" href="#estimer" onClick={() => setOuvert(false)}>{cta}</a>
+          ) : (
+            <Button href={ctaHref}>{cta}</Button>
+          )}
         </nav>
 
         <div className="header-cta">
           <a className="header-tel" href={SITE.telHref}>
             {SITE.tel.replace(/ /g, " ")}
           </a>
-          {/* Sur la page Paris, le bouton reste sur la page et mène à son propre formulaire : la demande
-              est comptée là où elle naît. Le menu du téléphone garde le lien vers Estimer (il ne se
-              ferme qu'au changement de page). */}
-          <Button href={pathname === "/vendre-un-immeuble/paris/" ? "#estimer" : "/estimer-un-immeuble/#estimer"}>
-            Estimer mon immeuble
-          </Button>
+          {/* Sur la page Paris et les pages des annonces, le bouton reste sur la page et mène à son
+              propre formulaire : la demande est comptée là où elle naît. */}
+          <Button href={ctaHref}>{cta}</Button>
           <Link
             className="header-compte"
             href="/mon-compte/"
@@ -244,8 +263,9 @@ function SousMenu({
       )}
       <div className="nav-groupe__liste" id={id}>
         {(item.enfants ?? []).map((e) => (
+          <Fragment key={e.href}>
+          {e.separe && <span className="nav-sep" aria-hidden="true">{e.separe}</span>}
           <Link
-            key={e.href}
             href={e.href}
             aria-current={pathname === e.href ? "page" : undefined}
             onClick={(ev) => {
@@ -256,6 +276,7 @@ function SousMenu({
             {e.label}
             {e.badge && <sup className="nav-badge">{e.badge}</sup>}
           </Link>
+          </Fragment>
         ))}
       </div>
     </div>

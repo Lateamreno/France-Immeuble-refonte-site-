@@ -6270,3 +6270,46 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 /* Champ piège des formulaires publics (`src/components/antiRobots.tsx`, 23/11/2026) : ni vu, ni au
    clavier, ni lu. `display:none` est évité : certains robots sautent les champs cachés ainsi. */
 .champ-piege{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;}
+
+/* ===== Section des murs commerciaux (MAV, 20, 22 et 23/11/2026) =====
+   Le logo, un filet or et « COMMERCES » ; au téléphone « MURS COMMERCIAUX » sous le logo.
+   Menu du téléphone en accordéon, pour les murs seulement : celui des immeubles déplie tout (#214). */
+.brand--murs{display:flex;align-items:center;gap:12px;}
+.brand__filet{width:1px;align-self:stretch;margin-block:2px;background:var(--color-bronze);}
+.brand__section{font-family:var(--font-mono-site);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--color-bronze);font-weight:500;}
+.brand__section-mob{display:none;}
+@media (max-width:600px){
+  .brand--murs{flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;}
+  .brand--murs svg{height:22px;}
+  .brand--murs .brand__filet,.brand--murs .brand__section{display:none;}
+  .brand__section-mob{display:block;white-space:nowrap;font-family:var(--font-mono-site);font-size:.52rem;letter-spacing:.11em;text-transform:uppercase;color:var(--color-bronze);}
+}
+.nav-sep{display:block;margin:6px 0 2px;padding:8px 14px 2px;border-top:1px solid var(--color-ligne);font-family:var(--font-mono-site);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--color-gris);}
+.site-header--murs .header-cta .btn{white-space:nowrap;}
+@media (min-width:981px){ .site-header--murs .nav{gap:clamp(12px,1.5vw,26px);} }
+/* Menu du téléphone en accordéon : murs (MAV, 23/11/2026), puis immeubles aussi (« c'est un peu trop »). */
+@media (max-width:980px){
+  .nav-sep{padding-left:0;}
+  .site-header .nav-groupe__tete,.site-header .nav-groupe > .nav-groupe__btn{display:flex;align-items:center;justify-content:space-between;width:100%;}
+  .site-header .nav-groupe__btn--fleche{display:flex;width:52px;justify-content:flex-end;}
+  .site-header .nav-groupe__chev{display:inline-block;width:18px;height:18px;color:var(--color-bronze);transition:transform var(--dur) var(--ease);}
+  .site-header .nav-groupe.is-open .nav-groupe__chev{transform:rotate(180deg);}
+  .site-header .nav-groupe__tete .nav-groupe__lien,.site-header .nav-groupe > .nav-groupe__btn{font-size:1.15rem;padding-block:18px;color:var(--color-creme);}
+  .site-header .nav-groupe__liste{display:none;}
+  .site-header .nav-groupe.is-open > .nav-groupe__liste{display:flex;border-left:2px solid var(--color-bronze-profond);padding-left:0;}
+  .site-header .nav .nav-groupe__liste a{padding:13px 0 13px 18px;font-size:1rem;}
+  .site-header .nav-groupe__liste .nav-sep{margin-left:18px;}
+  .site-header .nav > a:not(.btn){font-size:1.15rem;padding-block:18px;}
+}
+/* Le crédit de la photo du haut, quand sa licence le demande (Wikimedia Commons). */
+.hero-credit{position:absolute;right:14px;bottom:10px;z-index:2;font:400 .62rem/1.2 var(--font-body);color:color-mix(in srgb,var(--color-creme) 60%,transparent);}
+.hero-credit a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+.murs-carte .card__picto{display:block;color:var(--color-bronze);margin-bottom:14px;}
+.section--creme .murs-carte .card__picto{color:var(--color-bronze-profond);}
+.murs-carte__lien{display:inline-block;margin-top:12px;color:var(--color-bronze);font-weight:500;}
+.hero-murs .hero-media__img{object-position:50% 60%;}
+@media (max-width:980px){ .site-header .nav .nav-groupe__lien[aria-current]::after{display:none;} }
+/* Nos chiffres dans les articles (23/11/2026) : libellés qui passent à la ligne, source en petit. */
+.prose .barometre--donnees tbody th,.prose .barometre--donnees .barometre__sous{white-space:normal;}
+.prose .barometre--donnees{margin:1.4em 0;}
+.prose .article-source{font-size:.82rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}

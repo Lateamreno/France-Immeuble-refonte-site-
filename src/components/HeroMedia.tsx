@@ -17,8 +17,11 @@ export function HeroMedia({
   alt,
   className = "",
   compact = false,
+  credit,
   children,
 }: {
+  /** Crédit de la photo, en petit en bas à droite, quand sa licence le demande. */
+  credit?: ReactNode;
   /** Visuel importé (flou de chargement) ou chemin servi par le site. */
   image: StaticImageData | string;
   alt: string;
@@ -44,6 +47,7 @@ export function HeroMedia({
       />
       <span className="hero-media__voile" aria-hidden="true" />
       <div className="container">{children}</div>
+      {credit && <span className="hero-credit">{credit}</span>}
       {!compact && <a className="hero-media__suite" href="#apres-hero" aria-label="Faire défiler vers la suite">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
           strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

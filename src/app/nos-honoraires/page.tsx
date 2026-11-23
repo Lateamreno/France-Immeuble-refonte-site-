@@ -48,8 +48,8 @@ export default function NosHonoraires() {
             Le barème de nos <span className="accent">honoraires</span>
           </h1>
           <p className="lead">
-            De 3 à 5 % du prix selon la taille de l’immeuble, dus seulement à la signature de
-            l’acte définitif chez le notaire. Tant que la vente n’est pas signée, vous ne payez rien.
+            De 3 à 5 % du prix selon la taille de l’immeuble, en général à la charge de l’acquéreur,
+            et dus seulement à la signature de l’acte définitif chez le notaire.
           </p>
           <div className="btn-row">
             <Button href="/estimer-un-immeuble/#estimer" icone>Estimer mon immeuble</Button>

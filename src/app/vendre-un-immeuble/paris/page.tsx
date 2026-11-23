@@ -277,7 +277,7 @@ const CONDITIONS: Carte[] = [
     picto: "euro",
     titre: "Des honoraires dus à l’acte",
     texte:
-      "Pour une vente en bloc, nos honoraires ne sont dus qu’à la signature de l’acte définitif chez le notaire. Notre barème est public : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà.",
+      "Pour une vente en bloc, nos honoraires sont en général à la charge de l’acquéreur, et ne sont dus qu’à la signature de l’acte définitif chez le notaire. Notre barème est public : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà.",
   },
   {
     picto: "poignee",
@@ -820,7 +820,7 @@ export default async function VendreUnImmeubleParis() {
           <Reveal className="section__head">
             <Eyebrow>Honoraires et mandat</Eyebrow>
             <h2>
-              Honoraires&nbsp;: <span className="accent">rien à payer</span> tant que la vente n’est pas signée
+              Honoraires <span className="accent">à la charge de l’acquéreur</span>, dus à la signature
             </h2>
           </Reveal>
           <LigneDefilante marches className="paris-ligne paris-ligne--3">

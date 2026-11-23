@@ -34,6 +34,11 @@ export type Chiffres = {
    */
   acheteursParis: number | null;
   acheteursParisPar: { investisseur: number | null; marchand: number | null; patrimonial: number | null };
+  /**
+   * Acquéreurs de murs commerciaux (section murs, MAV, 20/11/2026), déposés par le BO sous
+   * `acheteurs_murs` : `null` tant que la clé n'est pas déposée, sans chiffre de repli.
+   */
+  acheteursMurs: number | null;
   majLe: string | null;
 };
 
@@ -50,6 +55,7 @@ const REPLI: Chiffres = {
   traitesPar: {},
   acheteursParis: null,
   acheteursParisPar: { investisseur: null, marchand: null, patrimonial: null },
+  acheteursMurs: null,
   majLe: null,
 };
 
@@ -89,6 +95,7 @@ export async function chiffres(): Promise<Chiffres> {
         marchand: depose("acheteurs_paris_marchand"),
         patrimonial: depose("acheteurs_paris_patrimonial"),
       },
+      acheteursMurs: depose("acheteurs_murs"),
       majLe: lignes.reduce((m, l) => (l.maj_le > m ? l.maj_le : m), ""),
     };
   } catch {
