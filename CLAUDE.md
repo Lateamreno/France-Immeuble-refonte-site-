@@ -1060,6 +1060,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   intertitre d'« estimer » et de « vendre un immeuble de rapport » une section de chiffres sourcés et datés (DVF Paris
   du baromètre, médianes de nos ventes par zone dès cinq ventes, recherches par profil), sans nombre de ventes.
   Rapport : https://claude.ai/artifact/Nn9cni91QxdPfzz7xHWcGC.
+  Retours de MAV (23/11/2026) : **pas d'écart entre l'offre et notre estimation** dans les articles (« ça nous fait
+  passer pour des méchants sur les estimations ») ; **ni « la seule agence », ni « l'estimation la plus précise du
+  marché », ni « n°1 »** (« un peu prétentieux/mensonger ») : fins d'« estimer » et de « vendre un immeuble de
+  rapport » réécrites, « agence spécialisée ». **Menu du téléphone en accordéon pour les immeubles aussi** (« c'est un
+  peu trop là »), même règle que les murs. Sur la branche, rapport : https://claude.ai/artifact/LV7bWCbAsij23ru8cj2qhW.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
