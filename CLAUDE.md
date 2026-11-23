@@ -1072,6 +1072,11 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   l'accueil (MAV). Sur la branche, en attente du go : le menu du téléphone s'ouvre sur le groupe de la page
   (`groupeDeLaPage` de `Header`, MAV : « pas idiot ») ; « Comment vendre un immeuble à Paris » sans « Seul un
   intermédiaire ». Rapport : https://claude.ai/artifact/82b4pbiuVC6FxV5bp7ouyL.
+  **En production le 23/11/2026** (« Go prod pour le reste », MAV). **Mandats à Paris** (MAV, 23/11/2026 : « les
+  mandats sur Paris ne sont pas courts. Ce sont des mandats traditionnels de 12 mois et c'est l'exclusivité qui est
+  courte. On fait parfois des mandats courts ») : ne jamais écrire que nos mandats parisiens durent 2 à 4 semaines ;
+  mandat de 12 mois, exclusivité de deux à quatre semaines, parfois un mandat plus court. Paragraphe de
+  « Comment vendre un immeuble à Paris » corrigé sur la branche, en attente du go.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
