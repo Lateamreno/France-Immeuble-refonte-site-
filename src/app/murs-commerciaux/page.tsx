@@ -120,7 +120,7 @@ export default async function MursCommerciaux() {
         </div>
       </section>
 
-      <section className="section section--noir paris-ventes-sec">
+      <section className="section section--noir paris-ventes-sec region-sec--noir">
         <div className="container">
           <Reveal className="section__head tete-2col">
             <Eyebrow>Comment nous vendons</Eyebrow>
