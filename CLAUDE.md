@@ -1065,6 +1065,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   marché », ni « n°1 »** (« un peu prétentieux/mensonger ») : fins d'« estimer » et de « vendre un immeuble de
   rapport » réécrites, « agence spécialisée ». **Menu du téléphone en accordéon pour les immeubles aussi** (« c'est un
   peu trop là »), même règle que les murs. Sur la branche, rapport : https://claude.ai/artifact/LV7bWCbAsij23ru8cj2qhW.
+  **En production le 23/11/2026** (« GO prod », puis « Tout, murs compris », MAV) : section murs (hors index, hors
+  sitemap) et ses lignes au menu des immeubles, menu du téléphone en accordéon, honoraires reformulés, nos chiffres
+  dans les deux articles et leurs fins corrigées. **Les quatre pages des annonces (lot 140) restent sur la branche** ;
+  en production, `formulaireSurPlace` ne compte pas `PAGES_ANNONCES`. « Agence n°1 » gardé dans la meta de
+  l'accueil (MAV). Sur la branche, en attente du go : le menu du téléphone s'ouvre sur le groupe de la page
+  (`groupeDeLaPage` de `Header`, MAV : « pas idiot ») ; « Comment vendre un immeuble à Paris » sans « Seul un
+  intermédiaire ». Rapport : https://claude.ai/artifact/82b4pbiuVC6FxV5bp7ouyL.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
