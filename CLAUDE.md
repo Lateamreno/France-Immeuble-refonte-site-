@@ -1709,6 +1709,10 @@ dans la réponse. MAV l'a rappelé le 21/10/2026 : « il faut que tu le fasses s
 - **Ce qui reste à trancher** en fin de document, explicitement.
 - **Toujours la version mobile à côté de l'ordinateur** (MAV, 26/10/2026) : rapports, maquettes
   et propositions montrent les deux formats, sans attendre qu'on le demande.
+- **Toute proposition a son rapport avant/après** (MAV, 23/11/2026 : « je veux l'artefact et que tu le
+  fasses à chaque fois que tu me proposes quelque chose avec les avant après ») : même un changement
+  invisible (protection, tâche, réglage) se présente avec ses captures avant/après, ordinateur et
+  téléphone, et ses mesures, avant de demander le feu vert.
 - Une page neuve n'a pas d'« avant » : le dire, et montrer l'état réel, y compris vide.
 
 ---
