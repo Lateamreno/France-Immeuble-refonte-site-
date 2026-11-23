@@ -86,7 +86,7 @@ function blocEstimer(ventes: Vente[], h: Historique, maj: string): string | null
   return (
     `<h2 id="nos-chiffres">Ce que montrent les ventes réelles</h2>` +
     `<p>Pour situer le prix d’un immeuble de rapport, voici les prix au m² et les rendements constatés sur des ventes réelles : les immeubles entiers vendus à Paris, d’après les actes publiés par l’État, et les immeubles que France Immeuble a vendus lui-même en Île-de-France et en région.</p>` +
-    tableau("Prix et rendements des immeubles vendus", ["Immeubles vendus", "Prix médian au m²", "Rendement brut médian"], lignes) +
+    tableau("Prix et rendements bruts, en médiane", ["Ventes", "Prix au m²", "Rendement"], lignes) +
     phrases.map((p) => `<p>${p}</p>`).join("") +
     `<p class="article-source">Sources : DVF (direction générale des Finances publiques), immeubles de plus de cinq logements vendus en un seul acte, calcul France Immeuble, détaillé dans notre <a href="/prix-immeuble-de-rapport-paris/">baromètre des prix à Paris</a> ; ventes réalisées par France Immeuble, publiées dans <a href="/immeubles-vendus/">nos immeubles vendus</a>. Rendement brut : loyer annuel hors charges divisé par le prix. Chiffres mis à jour le ${echapper(maj)}.</p>`
   );
