@@ -61,6 +61,7 @@ function blocEstimer(ventes: Vente[], h: Historique, maj: string): string | null
   const d = paris[paris.length - 1];
   const idf = zone(ventes.filter((v) => IDF_HORS_PARIS.has(v.dept)));
   const reg = zone(ventes.filter((v) => !IDF_HORS_PARIS.has(v.dept) && v.dept !== "75"));
+  const horsParis = zone(ventes.filter((v) => v.dept !== "75"));
   const ecarts = ventes.map((v) => v.ecartEstimation).filter((x): x is number => x != null && Number.isFinite(x));
   const ecart = ecarts.length >= MIN_VENTES ? mediane(ecarts) : null;
   const lignes = [
@@ -74,7 +75,9 @@ function blocEstimer(ventes: Vente[], h: Historique, maj: string): string | null
       ? `À Paris en ${d.annee}, un immeuble entier vendu en bloc s’est vendu ${euros(d.prixM2Median as number)} le m² en médiane, soit ${pct(Math.abs(d.decote))} de moins qu’un appartement vendu seul la même année. Un immeuble entier s’achète sur son rendement, pas au prix d’un appartement.`
       : null,
     idf.rdt && reg.rdt
-      ? `Hors de Paris, les immeubles de rapport que nous avons vendus l’ont été sur un rendement brut médian de ${pct(idf.rdt)} en Île-de-France et de ${pct(reg.rdt)} en région${reg.rdtMin && reg.rdtMax ? `, de ${pct(reg.rdtMin)} à ${pct(reg.rdtMax)} selon la ville, l’état et l’occupation` : ""}.`
+      ? `Hors de Paris, les immeubles de rapport que nous avons vendus l’ont été sur un rendement brut médian de ${
+          pct(idf.rdt) === pct(reg.rdt) ? `${pct(idf.rdt)}, en Île-de-France comme en région` : `${pct(idf.rdt)} en Île-de-France et de ${pct(reg.rdt)} en région`
+        }.${horsParis.rdtMin && horsParis.rdtMax ? ` Selon la ville, l’état et l’occupation, il va de ${pct(horsParis.rdtMin)} à ${pct(horsParis.rdtMax)}.` : ""}`
       : null,
     ecart != null && ecart > 0
       ? `Sur nos ventes, la meilleure offre reçue dépasse notre estimation de ${pct(ecart)} en médiane.`
