@@ -96,11 +96,18 @@ export async function POST(req: Request) {
   }
   body = sansAntiRobots as Payload;
 
-  const verdict = router({
+  // Murs commerciaux (MAV, 20/11/2026) : le BO reçoit les mêmes champs qu'une estimation d'immeuble,
+  // le type de bien en tête de la description. Le repère `murs` reste au site ; rien ne va à Plein Bail.
+  const { murs: _murs, ...sansMurs } = body;
+  const murs = typeof _murs === "string" && _murs.trim() !== "";
+  body = sansMurs as Payload;
+
+  const verdictCalcule = router({
     codePostal: String(body.codePostal ?? ""),
     valeurEstimee: nombreOuNull(body.valeurEstimee),
     loyerAnnuel: nombreOuNull(body.loyerAnnuel),
   });
+  const verdict = murs && verdictCalcule.piste === "pleinbail" ? { ...verdictCalcule, piste: "prioritaire" as const } : verdictCalcule;
 
   // Le champ `compte` (§9.4) ne vient JAMAIS du navigateur : sinon n'importe
   // qui rattacherait un formulaire au compte d'un autre. Il est pris dans la
@@ -120,7 +127,7 @@ export async function POST(req: Request) {
 
   // Connecté : l'immeuble apparaît tout de suite dans « Mes immeubles »
   // (retours #261 et #274, MAV, 05/11/2026), sans attendre le dépôt du BO.
-  if (compte && body.type === "estimation" && issue !== "perdu" && /^[0-9a-f-]{36}$/i.test(ref)) {
+  if (compte && !murs && body.type === "estimation" && issue !== "perdu" && /^[0-9a-f-]{36}$/i.test(ref)) {
     await fusionnerSaisie(compte, ref, "estimation", copieDepuisLead(body));
   }
 
@@ -147,7 +154,7 @@ export async function POST(req: Request) {
   const estimable = surface !== null && surface > 0 && loyer !== null && loyer >= 0;
   if (
     body.type === "estimation" && body.etat === "complement" && estimable &&
-    verdict.piste !== "pleinbail" && !compte && issue !== "perdu"
+    verdict.piste !== "pleinbail" && !compte && !murs && issue !== "perdu"
   ) {
     after(async () => {
       const r = await accueillirVendeur(lead);

@@ -66,6 +66,30 @@ const VIDE: Data = {
 const TRAVAUX = ["Pas de travaux", "Petits travaux", "Gros travaux", "Je ne sais pas"];
 const ECHEANCES = ["Dès maintenant", "Sous 6 mois", "Sous 12 mois", "Je me renseigne"];
 
+/**
+ * Section des murs commerciaux (MAV, 20/11/2026 : « garde le même formulaire […] type de bien = type
+ * de lot sans la quantité ; loyer, adresse et description c'est la base »). Le BO reçoit exactement
+ * les champs d'une estimation d'immeuble : le type de bien devient un lot du bon type, et il est écrit
+ * en tête de la description. `murs` ne part pas au BO : le serveur le lit, puis le retire.
+ */
+const TYPES_MURS = ["Local commercial", "Entrepôt", "Retail park", "Bureaux"] as const;
+const LOT_DU_TYPE: Record<string, "lotsCommerces" | "lotsActivite" | "lotsBureaux"> = {
+  "Local commercial": "lotsCommerces", "Retail park": "lotsCommerces", "Entrepôt": "lotsActivite", "Bureaux": "lotsBureaux",
+};
+/** `?type=entrepot` dans l'adresse (menu Estimer des murs) : le type déjà choisi. */
+const TYPE_DE_L_ADRESSE: Record<string, string> = {
+  "local-commercial": "Local commercial", entrepot: "Entrepôt", "retail-park": "Retail park", bureaux: "Bureaux",
+};
+/** Les pièces d'une vente de murs, à la place de l'état locatif d'un immeuble. */
+const ELEMENTS_MURS = [
+  "Le bail commercial et ses avenants",
+  "Le dernier avis d’échéance ou la dernière quittance de loyer",
+  "Le dernier avis de taxe foncière, et s’il est refacturé au locataire",
+  "Le titre de propriété",
+  "Le règlement de copropriété et les derniers procès-verbaux d’assemblée générale, si le local est en copropriété",
+  "Les diagnostics : amiante, DPE, et l’attestation ERP si le local reçoit du public",
+];
+
 type Phase = "saisie" | "complement" | "fin";
 
 export function EstimationForm({
@@ -75,8 +99,11 @@ export function EstimationForm({
   refContact,
   libelleEnvoi,
   chapeau,
+  murs = false,
 }: {
   formulaire: "vendre" | "estimer";
+  /** Section des murs commerciaux : type de bien, libellés du local, pas d'état locatif. */
+  murs?: boolean;
   /** La phrase sous le titre du formulaire, quand la page en veut une autre (pages des annonces, lot 140). */
   chapeau?: ReactNode;
   /** Libellé du bouton d'envoi quand la page en veut un autre (page Paris : « Estimer mon immeuble »). */
@@ -93,6 +120,12 @@ export function EstimationForm({
   const [phase, setPhase] = useState<Phase>("saisie");
   const [d, setD] = useState<Data>(() => ({ ...VIDE, ...initial }));
   const [indicatif, setIndicatif] = useState("33");
+  const [typeMurs, setTypeMurs] = useState("");
+  useEffect(() => {
+    if (!murs) return;
+    const t = new URLSearchParams(window.location.search).get("type");
+    if (t && TYPE_DE_L_ADRESSE[t]) setTypeMurs(TYPE_DE_L_ADRESSE[t]);
+  }, [murs]);
   const [adresse, setAdresse] = useState<EtatAdresse>({ saisie: "", choisie: false, manuel: false });
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [envoi, setEnvoi] = useState(false);
@@ -157,6 +190,7 @@ export function EstimationForm({
 
   function validerSaisie() {
     const e: Record<string, string> = {};
+    if (murs && !typeMurs) e.typeMurs = "Choisissez le type de bien.";
     if (!d.prenom.trim()) e.prenom = "Indiquez votre prénom.";
     if (!d.nom.trim()) e.nom = "Indiquez votre nom.";
     if (!emailValide(d.email)) e.email = "Cette adresse e-mail n’est pas valide.";
@@ -170,7 +204,7 @@ export function EstimationForm({
     } else if (!adresse.choisie) {
       e.adresse = adresse.saisie.trim()
         ? "Choisissez l’adresse dans la liste, ou saisissez-la à la main."
-        : "Indiquez l’adresse de l’immeuble.";
+        : murs ? "Indiquez l’adresse du local." : "Indiquez l’adresse de l’immeuble.";
     }
     setErreurs(e);
     return Object.keys(e).length === 0;
@@ -180,7 +214,9 @@ export function EstimationForm({
     const e: Record<string, string> = {};
     if (!(nombre(d.surface) > 0)) e.surface = "Même approximative.";
     if (!d.loyerAnnuel.trim() || !Number.isFinite(nombre(d.loyerAnnuel))) {
-      e.loyerAnnuel = "Le total encaissé sur un an, hors charges. 0 si l’immeuble est vide.";
+      e.loyerAnnuel = murs
+        ? "Le loyer sur un an, hors charges et hors taxes. 0 si le local est libre."
+        : "Le total encaissé sur un an, hors charges. 0 si l’immeuble est vide.";
     }
     setErreurs(e);
     return Object.keys(e).length === 0;
@@ -199,6 +235,11 @@ export function EstimationForm({
     // Le numéro part tel qu'il s'affiche : « 06 30 76 83 81 » en France,
     // « +41 6 30 76 83 81 » ailleurs. L'indicatif est donc toujours lisible.
     o.telephone = lireTelephone(indicatif, donnees.telephone).affiche;
+    if (murs && typeMurs) {
+      o[LOT_DU_TYPE[typeMurs]] = 1;
+      o.message = [`Murs commerciaux · ${typeMurs}`, donnees.message.trim()].filter(Boolean).join("\n");
+      o.murs = typeMurs;
+    }
     return o;
   }
 
@@ -227,7 +268,7 @@ export function EstimationForm({
     if (debute.current) return;
     debute.current = true;
     const w = window as unknown as { dataLayer?: { push: (o: Record<string, unknown>) => void } };
-    w.dataLayer?.push({ event: "form_debut_estimation", formulaire, page: window.location.pathname });
+    w.dataLayer?.push({ event: "form_debut_estimation", formulaire, page: window.location.pathname, ...(murs ? { section: "murs" } : {}) });
   }
 
   async function envoyerSaisie(ev: React.FormEvent) {
@@ -253,7 +294,7 @@ export function EstimationForm({
       // principale des annonces sur Paris que les immeubles parisiens. Aucune donnée personnelle.
       const dept = d.codePostal.trim().slice(0, 2);
       const zone = dept === "75" ? "paris" : (DEPTS_IDF as readonly string[]).includes(dept) ? "idf" : "autre";
-      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname, zone });
+      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname, zone, ...(murs ? { section: "murs", type: typeMurs } : {}) });
     }
 
     setPhase(ok ? "complement" : "fin");
@@ -265,7 +306,9 @@ export function EstimationForm({
     if (!validerComplement()) return;
     setEnvoi(true);
     await transmettre(d, "complement");
-    setVerdict(
+    // Murs : rien ne passe par Plein Bail (MAV, 20/11/2026).
+    const dept = d.codePostal.trim().slice(0, 2);
+    setVerdict(murs ? { piste: "prioritaire", rentabilite: null, idf: (DEPTS_IDF as readonly string[]).includes(dept) } :
       routerDossier({
         codePostal: d.codePostal,
         valeurEstimee: null,
@@ -303,11 +346,20 @@ export function EstimationForm({
         <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate onFocus={debutSaisie}>
           <ChampPiege refChamp={antiRobots.piege} />
           <div className="step-head">
-            <h3><span className="accent">Estimez</span> gratuitement votre <span className="accent">immeuble</span></h3>
-            <p>{chapeau ?? "Vos coordonnées et l’adresse de l’immeuble."}</p>
+            {murs ? (
+              <h3><span className="accent">Estimez</span> gratuitement vos <span className="accent">murs</span></h3>
+            ) : (
+              <h3><span className="accent">Estimez</span> gratuitement votre <span className="accent">immeuble</span></h3>
+            )}
+            <p>{chapeau ?? (murs ? "Le type de bien, vos coordonnées et l’adresse du local." : "Vos coordonnées et l’adresse de l’immeuble.")}</p>
           </div>
 
           <div className="fields fields--2">
+            {murs && (<>
+              <Choix label="Type de bien" options={[...TYPES_MURS]} valeur={typeMurs}
+                onChange={(v) => { setTypeMurs(v); setErreurs((p) => ({ ...p, typeMurs: "" })); }} />
+              {erreurs.typeMurs && <p className="field--full err" role="alert">{erreurs.typeMurs}</p>}
+            </>)}
             {identiteCachee ? (
               <p className="field--full identite-compte">
                 <span className="identite-compte__qui">
@@ -333,17 +385,19 @@ export function EstimationForm({
             </>)}
 
             <ChampAdresse uid={uid} etat={adresse} setEtat={setAdresse} d={d} set={set}
-              setPlusieurs={setPlusieurs} erreurs={erreurs} />
+              setPlusieurs={setPlusieurs} erreurs={erreurs} libelle={murs ? "Adresse du local" : undefined} />
 
-            <Champ id={`${uid}-msg`} label="Description de l’immeuble" full>
+            <Champ id={`${uid}-msg`} label={murs ? "Description du local" : "Description de l’immeuble"} full>
               <textarea id={`${uid}-msg`} value={d.message} onChange={(e) => set("message", e.target.value)}
-                placeholder="Surface Carrez, loyers hors charges, montant de la taxe foncière, destination et nombre de lots…" rows={3} />
+                placeholder={murs
+                  ? "Surface, loyer annuel hors charges, activité du locataire, fin du bail, taxe foncière…"
+                  : "Surface Carrez, loyers hors charges, montant de la taxe foncière, destination et nombre de lots…"} rows={3} />
             </Champ>
           </div>
 
           <div className="field-nav">
             <button type="submit" className="btn btn--primary" disabled={envoi}>
-              {envoi ? "Envoi…" : libelleEnvoi ?? (formulaire === "vendre" ? "Vendre mon immeuble" : "Estimer mon immeuble")}
+              {envoi ? "Envoi…" : libelleEnvoi ?? (murs ? "Estimer mes murs" : formulaire === "vendre" ? "Vendre mon immeuble" : "Estimer mon immeuble")}
             </button>
           </div>
         </form>
@@ -354,7 +408,7 @@ export function EstimationForm({
           <ChampPiege refChamp={antiRobots.piege} />
           <div className="step-head">
             <span className="outcome__badge">Demande enregistrée</span>
-            <h3 ref={titre} tabIndex={-1}>Parlons de votre immeuble.</h3>
+            <h3 ref={titre} tabIndex={-1}>{murs ? "Parlons de vos murs." : "Parlons de votre immeuble."}</h3>
             <p>
               Ces chiffres servent à calculer l’estimation. Une valeur approchée suffit.
             </p>
@@ -366,7 +420,7 @@ export function EstimationForm({
                 clé porte le même mot que l'étiquette. Seule exception, voulue :
                 les entrepôts vont dans `lotsActivite`, le champ « activité »
                 du BO, qui les range avec les locaux d'activité. */}
-            <fieldset className="field field--full lots">
+            {!murs && <fieldset className="field field--full lots">
               <legend>Nombre de lots</legend>
               <div className="lots__grille">
                 <Lot id={`${uid}-lh`} label="Habitation" valeur={d.lotsHabitation} onChange={(v) => set("lotsHabitation", v)} />
@@ -374,15 +428,15 @@ export function EstimationForm({
                 <Lot id={`${uid}-lc`} label="Commerces" valeur={d.lotsCommerces} onChange={(v) => set("lotsCommerces", v)} />
                 <Lot id={`${uid}-la`} label="Entrepôts" valeur={d.lotsActivite} onChange={(v) => set("lotsActivite", v)} />
               </div>
-            </fieldset>
+            </fieldset>}
 
-            <Champ id={`${uid}-surface`} label="Surface habitable (m²)" err={erreurs.surface}
-              hint="Tous lots confondus">
+            <Champ id={`${uid}-surface`} label={murs ? "Surface (m²)" : "Surface habitable (m²)"} err={erreurs.surface}
+              hint={murs ? "Surface totale du local, réserves et sous-sol compris" : "Tous lots confondus"}>
               <input id={`${uid}-surface`} value={d.surface} onChange={(e) => set("surface", e.target.value)}
                 placeholder="Ex. : 420" inputMode="numeric" aria-invalid={!!erreurs.surface} />
             </Champ>
             <Champ id={`${uid}-loyer`} label="Loyer annuel HC (€)" err={erreurs.loyerAnnuel}
-              hint="Tous lots, hors charges, encaissé sur un an">
+              hint={murs ? "Hors charges et hors taxes. 0 si le local est libre" : "Tous lots, hors charges, encaissé sur un an"}>
               <input id={`${uid}-loyer`} value={d.loyerAnnuel} onChange={(e) => set("loyerAnnuel", e.target.value)}
                 placeholder="Ex. : 180 000" inputMode="numeric" aria-invalid={!!erreurs.loyerAnnuel} />
             </Champ>
@@ -400,7 +454,7 @@ export function EstimationForm({
       )}
 
       {phase === "fin" && (
-        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte || connecte}
+        <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte || connecte} murs={murs}
           cible={avecCompte ? ref.current : undefined} ouvrir={ouvrirDossier} />
       )}
     </div>
@@ -638,7 +692,8 @@ function ChampTelephone({ id, indicatif, valeur, err, onIndicatif, onChange }: {
 type Suggestion = { label: string; numero: string; rue: string; codePostal: string; ville: string };
 type EtatAdresse = { saisie: string; choisie: boolean; manuel: boolean };
 
-function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
+function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs, libelle = "Adresse de l’immeuble" }: {
+  libelle?: string;
   uid: string;
   etat: EtatAdresse;
   setEtat: React.Dispatch<React.SetStateAction<EtatAdresse>>;
@@ -755,7 +810,7 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
   const idMain = `${idListe}-main`;
   return (
     <div className="field field--full adresse">
-      <label htmlFor={`${uid}-adresse`}>Adresse de l’immeuble</label>
+      <label htmlFor={`${uid}-adresse`}>{libelle}</label>
       <div className="adresse__boite">
         <input id={`${uid}-adresse`} value={etat.saisie} autoComplete="off" spellCheck={false}
           placeholder="Ex. : 12 rue de la Paix, Paris"
@@ -806,7 +861,9 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs }: {
 /* Fin du parcours                                                     */
 /* ------------------------------------------------------------------ */
 
-function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir }: {
+function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir, murs = false }: {
+  /** Murs commerciaux : la liste des pièces d'une vente de murs, sans état locatif. */
+  murs?: boolean;
   titre: React.RefObject<HTMLHeadingElement | null>;
   /** false : la demande n'a pu être enregistrée nulle part. */
   stocke: boolean;
@@ -824,7 +881,7 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir }: {
     habitation: nombre(d.lotsHabitation) || 0, bureau: nombre(d.lotsBureaux) || 0,
     commerce: nombre(d.lotsCommerces) || 0, local_activite: nombre(d.lotsActivite) || 0,
   };
-  const pret = stocke && !!verdict && verdict.piste !== "pleinbail";
+  const pret = stocke && !!verdict && verdict.piste !== "pleinbail" && !murs;
 
   /* Retour #277 (MAV, 05/11/2026) : l'état locatif s'affiche tout de suite,
      déjà prérempli avec les lots annoncés, sans bouton à cliquer avant. */
@@ -898,13 +955,15 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir }: {
             Pour préparer l’entretien avec votre agent, voici les éléments dont nous aurons besoin&nbsp;:
           </p>
           <ul>
-            {ELEMENTS_ATTENDUS.map((e) => <li key={e}>{e}</li>)}
+            {(murs ? ELEMENTS_MURS : ELEMENTS_ATTENDUS).map((e) => <li key={e}>{e}</li>)}
           </ul>
         </div>
         <p>
           Vous pouvez les envoyer à{" "}
           <a className="lien-discret" href={`mailto:${SITE.email}?subject=${objet}`}>{SITE.email}</a>
-          {cible
+          {murs
+            ? ", ou les garder pour l’appel de votre agent."
+            : cible
             ? ", ou remplir l’état locatif ci-dessous. L’immeuble est déjà dans « Mes immeubles » de votre compte : vous pourrez y revenir et y déposer vos documents."
             : dansLeCompte
               ? ", ou les remplir dès maintenant ci-dessous. Vous retrouverez ensuite votre estimation dans votre compte."

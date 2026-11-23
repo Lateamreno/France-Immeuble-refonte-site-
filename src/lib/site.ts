@@ -62,7 +62,13 @@ export type LienNav = {
   label: string;
   /** Le libellé du parent est un lien vers `href` ; la flèche seule déroule. */
   lien?: boolean;
-  enfants?: readonly { readonly href: string; readonly label: string; readonly badge?: string }[];
+  enfants?: readonly {
+    readonly href: string;
+    readonly label: string;
+    readonly badge?: string;
+    /** Un filet et ce petit titre avant l'entrée (menu des murs : « Côté immeubles »). */
+    readonly separe?: string;
+  }[];
 };
 
 /**
@@ -81,9 +87,20 @@ export const NAV: readonly LienNav[] = [
       // Lot 114 (MAV, 15/11/2026 : « oui », après l'avis donné) : la page Paris entre au menu Vendre, comme prévu au §6.
       { href: "/vendre-un-immeuble/paris/", label: "Vendre à Paris" },
       { href: "/vendre-un-immeuble-a-la-decoupe/", label: "Vendre à la découpe", badge: "nouveau" },
+      // Section murs (MAV, 20/11/2026) : l'entrée vers les murs, par le menu seulement.
+      { href: "/murs-commerciaux/", label: "Vendre des murs commerciaux", badge: "nouveau" },
     ],
   },
-  { href: "/estimer-un-immeuble/", label: "Estimer" },
+  /* Estimer devient déroulant avec la section murs : le libellé mène toujours à sa page. */
+  {
+    href: "/estimer-un-immeuble/",
+    label: "Estimer",
+    lien: true,
+    enfants: [
+      { href: "/estimer-un-immeuble/", label: "Estimer un immeuble" },
+      { href: "/murs-commerciaux/estimation/", label: "Estimer des murs commerciaux", badge: "nouveau" },
+    ],
+  },
   { href: "/acheter-un-immeuble/", label: "Acheter" },
   {
     href: "/immeubles-vendus/",
@@ -96,6 +113,62 @@ export const NAV: readonly LienNav[] = [
   },
   { href: "/contactez-nous/", label: "Contact" },
 ] as const;
+
+/**
+ * Section des murs commerciaux (MAV, 20 et 22/11/2026) : son propre en-tête sur toute adresse qui
+ * commence par `/murs-commerciaux/`. Pas de bureaux au menu. Sous un filet, le retour vers les
+ * immeubles, pour basculer d'un côté à l'autre. Le logo mène à l'accueil des murs.
+ */
+export const MURS = "/murs-commerciaux/";
+export const estMurs = (chemin: string) => chemin === "/murs-commerciaux" || chemin.startsWith(MURS);
+export const NAV_MURS: readonly LienNav[] = [
+  {
+    href: MURS,
+    label: "Vendre",
+    lien: true,
+    enfants: [
+      { href: "/murs-commerciaux/local-commercial/", label: "Vendre un local commercial" },
+      { href: "/murs-commerciaux/entrepot/", label: "Vendre un entrepôt" },
+      { href: "/murs-commerciaux/retail-park/", label: "Vendre un retail park" },
+      { href: "/vendre-un-immeuble/", label: "Vendre un immeuble", separe: "Côté immeubles" },
+    ],
+  },
+  {
+    href: "/murs-commerciaux/estimation/",
+    label: "Estimer",
+    lien: true,
+    enfants: [
+      { href: "/murs-commerciaux/estimation/?type=local-commercial#estimer", label: "Estimer un local commercial" },
+      { href: "/murs-commerciaux/estimation/?type=entrepot#estimer", label: "Estimer un entrepôt" },
+      { href: "/murs-commerciaux/estimation/?type=retail-park#estimer", label: "Estimer un retail park" },
+      { href: "/estimer-un-immeuble/", label: "Estimer un immeuble", separe: "Côté immeubles" },
+    ],
+  },
+  {
+    href: "/murs-commerciaux/biens-vendus/",
+    label: "Nos biens",
+    enfants: [
+      { href: "/murs-commerciaux/biens-vendus/", label: "Murs vendus" },
+      { href: "/murs-commerciaux/biens-a-vendre/", label: "Murs à vendre" },
+    ],
+  },
+  {
+    href: "/murs-commerciaux/acheter/",
+    label: "Acheter",
+    enfants: [{ href: "/murs-commerciaux/acheter/", label: "Déposer ma recherche" }],
+  },
+  { href: "/contactez-nous/", label: "Contact" },
+] as const;
+
+/** Les pages de la section qui ne sont pas encore écrites : une page d'attente, hors index. */
+export const MURS_A_VENIR: Record<string, { titre: string; accent: string; texte: string }> = {
+  "local-commercial": { titre: "Vendre un local commercial", accent: "local commercial", texte: "Boutique, restaurant ou agence en pied d’immeuble." },
+  entrepot: { titre: "Vendre un entrepôt", accent: "entrepôt", texte: "Entrepôt, atelier ou local d’activité." },
+  "retail-park": { titre: "Vendre un retail park", accent: "retail park", texte: "Ensemble de moyennes surfaces en périphérie." },
+  "biens-vendus": { titre: "Nos murs commerciaux vendus", accent: "vendus", texte: "Nos ventes de murs commerciaux et de locaux d’activité." },
+  "biens-a-vendre": { titre: "Nos murs commerciaux à vendre", accent: "à vendre", texte: "Les murs commerciaux que nous vendons en ce moment." },
+  acheter: { titre: "Acheter des murs commerciaux", accent: "murs commerciaux", texte: "Déposez votre recherche de murs commerciaux." },
+};
 
 /** Départements d'Île-de-France — sert au routage du tunnel d'estimation. */
 export const DEPTS_IDF = ["75", "77", "78", "91", "92", "93", "94", "95"] as const;
@@ -121,4 +194,5 @@ export const PAGES_ANNONCES = [
   "/confier-son-immeuble-paris/",
 ] as const;
 export const formulaireSurPlace = (chemin: string) =>
-  chemin === "/vendre-un-immeuble/paris/" || PAGES_ANNONCES.some((p) => chemin.startsWith(p));
+  chemin === "/vendre-un-immeuble/paris/" || PAGES_ANNONCES.some((p) => chemin.startsWith(p)) ||
+  chemin === MURS || chemin === "/murs-commerciaux/estimation/";
