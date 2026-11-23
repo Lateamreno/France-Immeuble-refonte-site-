@@ -1041,6 +1041,15 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   sa page) ; photo du haut tirée de Wikimedia Commons, sans marque connue, crédit en bas du hero (A : boulangerie rue
   d'Alésia, CC BY-SA 3.0 ; B : vitrine 5 rue Jean-Jacques-Rousseau, CC BY 2.0) ; menu du téléphone en accordéon pour
   les murs (sept lignes), celui des immeubles inchangé (#214).
+  Décisions de MAV (23/11/2026) : photo A pour avancer, dix autres à proposer ; « murs commerciaux » sur la page
+  mère et « local commercial » sur sa page ; accordéon du téléphone pour les murs seulement ; code sur la branche,
+  aperçu seulement. **Codé sur la branche** : en-tête de section (`estMurs`, `NAV_MURS` de `src/lib/site.ts`,
+  `Header`), entrées « Vendre des murs commerciaux » et Estimer déroulant côté immeubles, page mère
+  `/murs-commerciaux/`, `/murs-commerciaux/estimation/` (`?type=` choisit le type), pages d'attente pour les autres
+  entrées du menu (`MURS_A_VENIR`), tout en `noindex` et hors sitemap. Formulaire : `EstimationForm murs` envoie
+  au BO les champs d'une estimation d'immeuble (type de bien = un lot du bon type, écrit en tête de la
+  description) ; le repère `murs` est retiré par `/api/lead/`, jamais de Plein Bail, pas de compte ni d'état
+  locatif. Chiffre `acheteurs_murs` du BO affiché seulement s'il est déposé.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
