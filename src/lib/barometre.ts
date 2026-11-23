@@ -175,10 +175,10 @@ const NOTE_PRUDENCE = "Un chiffre n’est donné qu’à partir de trois ventes 
 function tableauParis(annees: AnneeMarche[], semestres: SemestreParis[] = []): string {
   const sp = semestreAPublier(annees, semestres);
   const ligneSemestre = sp
-    ? `<tr class="barometre__provisoire"><th scope="row">${sp.s.mois === 6 ? "1er sem." : `${sp.s.mois} mois`} ${sp.s.annee}<span class="barometre__sous">provisoire</span></th>` +
+    ? `<tr class="barometre__provisoire"><th scope="row">${sp.s.annee}<span class="barometre__sous">${sp.s.mois === 6 ? "1er semestre" : `${sp.s.mois} mois`}, provisoire</span></th>` +
       `<td>${nombre(sp.s.nbVentes)}</td>` +
-      `<td><strong>${euros(sp.s.prixM2Median as number)}</strong>${sp.avant?.prixM2Median ? sous(`${pct(variation(sp.avant.prixM2Median, sp.s.prixM2Median as number))} sur le ${nomPeriode(sp.s.mois, sp.s.annee - 1)}`) : ""}</td>` +
-      `<td>${sp.s.appartPrixM2Median ? euros(sp.s.appartPrixM2Median) : "–"}${sp.avant?.appartPrixM2Median && sp.s.appartPrixM2Median ? sous(`${pct(variation(sp.avant.appartPrixM2Median, sp.s.appartPrixM2Median))} sur le ${nomPeriode(sp.s.mois, sp.s.annee - 1)}`) : ""}</td>` +
+      `<td><strong>${euros(sp.s.prixM2Median as number)}</strong>${sp.avant?.prixM2Median ? sous(`${pct(variation(sp.avant.prixM2Median, sp.s.prixM2Median as number))} sur un an`) : ""}</td>` +
+      `<td>${sp.s.appartPrixM2Median ? euros(sp.s.appartPrixM2Median) : "–"}${sp.avant?.appartPrixM2Median && sp.s.appartPrixM2Median ? sous(`${pct(variation(sp.avant.appartPrixM2Median, sp.s.appartPrixM2Median))} sur un an`) : ""}</td>` +
       `<td>${sp.s.decote != null ? pct(sp.s.decote) : "–"}</td></tr>`
     : "";
   const lignes = annees
@@ -203,7 +203,7 @@ function tableauParis(annees: AnneeMarche[], semestres: SemestreParis[] = []): s
     `<th scope="col">Décote</th></tr></thead>` +
     `<tbody>${lignes}${ligneSemestre}</tbody></table></div>` +
     `<p class="barometre__note">Prix médian au m² des immeubles vendus en bloc, puis des appartements vendus seuls à Paris la même année. La décote est l’écart entre les deux.${
-      sp ? ` ${nomPeriode(sp.s.mois, sp.s.annee).replace(/^./, (c) => c.toUpperCase())}&nbsp;: ventes de janvier à ${sp.s.mois === 6 ? "juin" : "la fin du mois " + sp.s.mois}, publiées par l’État en octobre ${sp.s.annee}, comparées à la même période de ${sp.s.annee - 1}. Six mois de ventes&nbsp;: un chiffre provisoire.` : ""
+      sp ? ` ${nomPeriode(sp.s.mois, sp.s.annee).replace(/^./, (c) => c.toUpperCase())}&nbsp;: ventes de janvier à ${sp.s.mois === 6 ? "juin" : "la fin du mois " + sp.s.mois}, publiées par l’État en octobre ${sp.s.annee}&nbsp;; l’évolution sur un an les compare à la même période de ${sp.s.annee - 1}. Six mois de ventes&nbsp;: un chiffre provisoire.` : ""
     }</p>`
   );
 }
