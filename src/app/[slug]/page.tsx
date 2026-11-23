@@ -27,7 +27,10 @@ import { chiffresFaq } from "@/lib/faq";
 import { articleAvecDonnees, avecDonnees } from "@/lib/donnees-articles";
 import { nombre } from "@/lib/site";
 import { boutonDansLeTexte, cibleArticle, couperTexte, ctaVersFormulaire } from "@/lib/article-landing";
-import { SLUG_BAROMETRE, chapeauBarometre, datasetBarometre, enBrefBarometre, historiqueParis, remplirBarometre, reperesBarometre } from "@/lib/barometre";
+import { SLUG_BAROMETRE, chapeauBarometre, datasetBarometre, enBrefBarometre, historiqueParis, remplirBarometre, reperesBarometre, semestresParis } from "@/lib/barometre";
+import { donneesPrixParis } from "@/lib/prix-paris";
+import { OutilPrix } from "@/components/annonces/OutilPrix";
+import { TableauPrixParis } from "@/components/annonces/TableauPrixParis";
 
 /**
  * Les articles du blog, servis À LA RACINE du site.
@@ -125,16 +128,19 @@ export default async function ArticlePage({ params }: Params) {
 
   const acheteur = cibleArticle(a.slug) === "acheteur";
   // Le baromètre des prix à Paris (lot 113) : ses tableaux viennent de la base, toutes années comprises.
-  const [ventesPubliees, ch, historique, marcheParis] = await Promise.all([
+  const [ventesPubliees, ch, historique, marcheParis, semestres, prixParis] = await Promise.all([
     lesVentes(),
     lesChiffres(),
     a.slug === SLUG_BAROMETRE ? historiqueParis() : Promise.resolve(null),
     // Nos chiffres dans l'article (MAV, 23/11/2026) : le prix des immeubles à Paris vient du baromètre.
     articleAvecDonnees(a.slug) ? historiqueParis() : Promise.resolve(null),
+    // MAV, 23/11/2026 : le premier semestre 2026, l'outil « votre arrondissement » et le tableau de la page Paris.
+    a.slug === SLUG_BAROMETRE ? semestresParis() : Promise.resolve([]),
+    a.slug === SLUG_BAROMETRE ? donneesPrixParis() : Promise.resolve(null),
   ]);
   const maj = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" });
   const html = historique
-    ? remplirBarometre(a.contenuHtml, historique)
+    ? remplirBarometre(a.contenuHtml, historique, semestres)
     : marcheParis
       ? avecDonnees(a.contenuHtml, a.slug, ventesPubliees, ch, marcheParis, maj)
       : a.contenuHtml;
@@ -142,7 +148,7 @@ export default async function ArticlePage({ params }: Params) {
   const chapeau = (historique ? chapeauBarometre(historique) : null) ?? a.chapeau ?? null;
   /* Lot 124 (MAV, 15/11/2026 : optimiser pour ChatGPT et Claude) : la réponse à la question du titre,
      en tête du texte. Celle du baromètre est tirée de ses chiffres. */
-  const enBref = (historique ? enBrefBarometre(historique) : null) ?? a.enBref ?? null;
+  const enBref = (historique ? enBrefBarometre(historique, semestres) : null) ?? a.enBref ?? null;
   const dataset = historique ? datasetBarometre(historique, `${SITE.url}${a.chemin}`) : null;
   const [avant, apres] = couperTexte(ctaVersFormulaire(boutonDansLeTexte(imagesDifferees(html), cibleArticle(a.slug))));
   const c = chiffresFaq(ventesPubliees);
@@ -211,13 +217,44 @@ export default async function ArticlePage({ params }: Params) {
             <div className="btn-row">
               <Button href="#estimer">{acheteur ? "Déposer ma recherche" : "Estimer mon immeuble"}</Button>
               {barometre ? (
-                <Button href="#prix-arrondissements" variant="outline" court="Par arrondissement">
+                <Button href={prixParis?.tableau ? "#votre-arrondissement" : "#prix-arrondissements"} variant="outline" court="Par arrondissement">
                   Les prix par arrondissement
                 </Button>
               ) : null}
             </div>
           </>
         </HeroMedia>
+
+        {/* MAV, 23/11/2026 : « le prix au m² par arrondissement […] c'est super pratique », et « le résumé de
+            l'étude était top » : l'outil de la page des prix et le tableau de la page Paris, avant le texte. */}
+        {prixParis?.tableau && prixParis.annee != null && (
+          <>
+            <section id="votre-arrondissement" className="section section--noir-2 barometre-outil-sec">
+              <div className="container barometre-outil">
+                <div className="barometre-outil__tete">
+                  <Eyebrow bare>Votre arrondissement</Eyebrow>
+                  <h2>
+                    Le prix au&nbsp;m² des immeubles <span className="accent">dans votre arrondissement</span>
+                  </h2>
+                  <p className="lead">
+                    Choisissez votre arrondissement&nbsp;: le prix médian des immeubles vendus en bloc en {prixParis.annee},
+                    l’écart avec les appartements, la fiabilité du chiffre et le rendement théorique.
+                  </p>
+                </div>
+                <OutilPrix
+                  initial={null}
+                  annee={prixParis.annee}
+                  lignes={prixParis.lignes}
+                  paris={prixParis.paris}
+                  rendementParis={prixParis.rendementParis}
+                  titre={false}
+                  suivreAdresse={false}
+                />
+              </div>
+            </section>
+            <TableauPrixParis donnees={prixParis} secondBouton={false} />
+          </>
+        )}
 
         {/*
           Lot 97 (MAV, 10/11/2026) : l'article devient une landing. Le texte reste

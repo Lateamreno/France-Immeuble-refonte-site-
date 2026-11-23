@@ -349,11 +349,15 @@ export function VentesCarte() {
           <button type="button" aria-pressed={annee == null} onClick={() => setAnnee(null)}>
             Toutes
           </button>
-          {annees.map((a) => (
-            <button key={a} type="button" aria-pressed={annee === a} onClick={() => setAnnee(a)}>
-              {a}
-            </button>
-          ))}
+          {annees.map((a) => {
+            // Une année encore incomplète (premier semestre 2026) le dit sur son bouton.
+            const mois = (ventes ?? []).find((v) => v.annee === a)?.mois ?? null;
+            return (
+              <button key={a} type="button" aria-pressed={annee === a} onClick={() => setAnnee(a)}>
+                {mois && mois < 12 ? `1er sem. ${a}` : a}
+              </button>
+            );
+          })}
         </div>
       </div>
 

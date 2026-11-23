@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import type { LignePrix } from "@/lib/prix-paris";
+import "@/app/annonces.css";
 
 /** « 1er », « 2e » … « 20e » : l'adresse d'un arrondissement, /prix-immeuble-paris/16e/. */
 export const adresseArrondissement = (n: number | null) =>
@@ -20,8 +21,12 @@ const pc = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 1, 
  *
  * Agrégats seulement : les vingt lignes du tableau, déjà publiées plus bas dans la page.
  */
-export function OutilPrix({ initial, annee, lignes, paris, rendementParis }: {
+export function OutilPrix({ initial, annee, lignes, paris, rendementParis, titre = true, suivreAdresse = true }: {
   initial: number | null;
+  /** Le titre de la page des annonces (H1) ; ailleurs (baromètre), la section porte le sien. */
+  titre?: boolean;
+  /** Sur la page des annonces, l'adresse suit l'arrondissement choisi ; ailleurs, elle ne bouge pas. */
+  suivreAdresse?: boolean;
   annee: number;
   lignes: LignePrix[];
   paris: { prix: number; ventes: number; decote: number | null } | null;
@@ -36,9 +41,11 @@ export function OutilPrix({ initial, annee, lignes, paris, rendementParis }: {
 
   return (
     <>
-      <h1>
-        Prix au&nbsp;m² des <span className="accent">immeubles à Paris{arr ? ` ${rang(arr)}` : ""}</span>
-      </h1>
+      {titre && (
+        <h1>
+          Prix au&nbsp;m² des <span className="accent">immeubles à Paris{arr ? ` ${rang(arr)}` : ""}</span>
+        </h1>
+      )}
       <div className="lp-prix">
         <div className="lp-prix__choix">
           <label htmlFor={id}>Votre arrondissement</label>
@@ -49,7 +56,7 @@ export function OutilPrix({ initial, annee, lignes, paris, rendementParis }: {
               onChange={(e) => {
                 const n = e.target.value ? Number(e.target.value) : null;
                 setArr(n);
-                window.history.replaceState(null, "", adresseArrondissement(n) + window.location.search);
+                if (suivreAdresse) window.history.replaceState(null, "", adresseArrondissement(n) + window.location.search);
                 const w = window as unknown as { dataLayer?: { push: (o: Record<string, unknown>) => void } };
                 w.dataLayer?.push({ event: "choix_arrondissement", arrondissement: n ?? "paris" });
               }}

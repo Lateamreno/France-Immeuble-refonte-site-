@@ -15,13 +15,18 @@ export async function GET(req: Request) {
   const codes = code === "paris" ? CODES_ARRONDISSEMENTS : CODES_ARRONDISSEMENTS.includes(code) ? [code] : [];
   if (!codes.length) return NextResponse.json({ ventes: [] }, { status: 404 });
   const [ventes, h] = await Promise.all([ventesDvf(codes), historiqueParis()]);
-  const loyer = (c: string, annee: number) => (h.get(c) ?? []).find((a) => a.annee === annee)?.loyerM2 ?? null;
+  // Le loyer de marché de l'année de la vente ; pour une année dont la carte des loyers n'est pas encore
+  // parue (2026), celui de la dernière édition, et le texte dit laquelle (`loyerAnnee`).
+  const loyer = (c: string, annee: number) =>
+    (h.get(c) ?? []).filter((a) => a.annee <= annee && a.loyerM2 != null).sort((a, b) => b.annee - a.annee)[0] ?? null;
   const sortie = ventes.map((v) => {
-    const l = loyer(v.codeInsee, v.annee);
+    const trouve = loyer(v.codeInsee, v.annee);
+    const l = trouve?.loyerM2 ?? null;
     return {
       ...v,
       // Lot 128 : le loyer de marché de l'année (€ le m² par mois), pour le loyer théorique de chaque lot.
       loyerM2: l,
+      loyerAnnee: trouve?.annee ?? null,
       // Lot 132 : le quartier et le métro le plus proche, pour le petit texte de la vente.
       ...situer(v.lat, v.lon),
       rendement: l && v.prixM2 ? Math.round(((l * 12 * 100) / v.prixM2) * 10) / 10 : null,

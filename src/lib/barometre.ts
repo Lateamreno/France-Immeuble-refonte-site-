@@ -96,6 +96,41 @@ export async function historiqueParis(): Promise<Historique> {
   return out;
 }
 
+/**
+ * Les années encore incomplètes de tout Paris (MAV, 23/11/2026 : « les données du premier semestre 2026 »),
+ * tirées du fichier brut de DVF, et la même période de l'année d'avant pour comparer à mois égaux.
+ */
+export type SemestreParis = { annee: number; mois: number; nbVentes: number; prixM2Median: number | null; appartPrixM2Median: number | null; decote: number | null };
+
+export async function semestresParis(): Promise<SemestreParis[]> {
+  const cfg = configSitePublique();
+  if (!cfg) return [];
+  try {
+    const r = await fetch(
+      `${cfg.url}/rest/v1/marche_immeubles_semestre?select=annee,mois,nb_ventes,prix_m2_median,appart_prix_m2_median&code_insee=eq.${CODE_PARIS}&order=annee.asc`,
+      { headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}` }, next: { revalidate: 86400, tags: ["marche"] }, signal: AbortSignal.timeout(4000) },
+    );
+    if (!r.ok) return [];
+    return ((await r.json()) as Record<string, unknown>[]).map((l) => {
+      const prixM2Median = num(l.prix_m2_median);
+      const appartPrixM2Median = num(l.appart_prix_m2_median);
+      return { annee: Number(l.annee), mois: Number(l.mois), nbVentes: Number(l.nb_ventes) || 0, prixM2Median, appartPrixM2Median, decote: decotePct(prixM2Median, appartPrixM2Median) };
+    });
+  } catch {
+    return [];
+  }
+}
+
+/** L'année incomplète à publier (absente des années entières) et la même période un an plus tôt. */
+function semestreAPublier(paris: AnneeMarche[], semestres: SemestreParis[]) {
+  const entieres = new Set(paris.map((a) => a.annee));
+  const s = semestres.filter((x) => !entieres.has(x.annee) && x.prixM2Median && x.nbVentes >= VENTES_MIN_PRIX).sort((a, b) => b.annee - a.annee)[0];
+  if (!s) return null;
+  const avant = semestres.find((x) => x.annee === s.annee - 1 && x.mois === s.mois) ?? null;
+  return { s, avant };
+}
+const nomPeriode = (mois: number, annee: number) => `${mois === 6 ? "1er semestre" : `${mois} premiers mois de`} ${annee}`;
+
 // --- Mise en forme ---------------------------------------------------------------------------
 
 const NBSP = " ";
@@ -137,7 +172,15 @@ const NOTE_PRUDENCE = "Un chiffre n’est donné qu’à partir de trois ventes 
  * rendement. Par arrondissement, une colonne par année : le prix, son évolution, la décote face aux
  * appartements de la même année, le rendement avec les loyers de la même année.
  */
-function tableauParis(annees: AnneeMarche[]): string {
+function tableauParis(annees: AnneeMarche[], semestres: SemestreParis[] = []): string {
+  const sp = semestreAPublier(annees, semestres);
+  const ligneSemestre = sp
+    ? `<tr class="barometre__provisoire"><th scope="row">${sp.s.mois === 6 ? "1er sem." : `${sp.s.mois} mois`} ${sp.s.annee}<span class="barometre__sous">provisoire</span></th>` +
+      `<td>${nombre(sp.s.nbVentes)}</td>` +
+      `<td><strong>${euros(sp.s.prixM2Median as number)}</strong>${sp.avant?.prixM2Median ? sous(`${pct(variation(sp.avant.prixM2Median, sp.s.prixM2Median as number))} sur le ${nomPeriode(sp.s.mois, sp.s.annee - 1)}`) : ""}</td>` +
+      `<td>${sp.s.appartPrixM2Median ? euros(sp.s.appartPrixM2Median) : "–"}${sp.avant?.appartPrixM2Median && sp.s.appartPrixM2Median ? sous(`${pct(variation(sp.avant.appartPrixM2Median, sp.s.appartPrixM2Median))} sur le ${nomPeriode(sp.s.mois, sp.s.annee - 1)}`) : ""}</td>` +
+      `<td>${sp.s.decote != null ? pct(sp.s.decote) : "–"}</td></tr>`
+    : "";
   const lignes = annees
     .map((a, i) => {
       const avant = annees[i - 1];
@@ -158,8 +201,10 @@ function tableauParis(annees: AnneeMarche[]): string {
     `<th scope="col">${tete("Immeubles au m²", "Immeubles")}</th>` +
     `<th scope="col">${tete("Appartements au m²", "Appart.")}</th>` +
     `<th scope="col">Décote</th></tr></thead>` +
-    `<tbody>${lignes}</tbody></table></div>` +
-    `<p class="barometre__note">Prix médian au m² des immeubles vendus en bloc, puis des appartements vendus seuls à Paris la même année. La décote est l’écart entre les deux.</p>`
+    `<tbody>${lignes}${ligneSemestre}</tbody></table></div>` +
+    `<p class="barometre__note">Prix médian au m² des immeubles vendus en bloc, puis des appartements vendus seuls à Paris la même année. La décote est l’écart entre les deux.${
+      sp ? ` ${nomPeriode(sp.s.mois, sp.s.annee).replace(/^./, (c) => c.toUpperCase())}&nbsp;: ventes de janvier à ${sp.s.mois === 6 ? "juin" : "la fin du mois " + sp.s.mois}, publiées par l’État en octobre ${sp.s.annee}, comparées à la même période de ${sp.s.annee - 1}. Six mois de ventes&nbsp;: un chiffre provisoire.` : ""
+    }</p>`
   );
 }
 
@@ -298,7 +343,7 @@ function tableauRendements(h: Historique, annees: number[]): string {
   );
 }
 
-function resume(paris: AnneeMarche[]): string {
+function resume(paris: AnneeMarche[], semestres: SemestreParis[] = []): string {
   const premiere = paris[0];
   const derniere = paris[paris.length - 1];
   if (!premiere || !derniere || premiere === derniere || !premiere.prixM2Median || !derniere.prixM2Median) return "";
@@ -324,6 +369,14 @@ function resume(paris: AnneeMarche[]): string {
   if (premiere.prixMedian && derniere.prixMedian && premiere.surfaceMediane && derniere.surfaceMediane) {
     phrases.push(
       `La surface médiane des ventes était de ${nombre(Math.round(derniere.surfaceMediane))}${NBSP}m² et leur prix médian de ${millions(derniere.prixMedian)} en ${derniere.annee}, contre ${nombre(Math.round(premiere.surfaceMediane))}${NBSP}m² et ${millions(premiere.prixMedian)} en ${premiere.annee}.`,
+    );
+  }
+  const sp = semestreAPublier(paris, semestres);
+  if (sp) {
+    phrases.push(
+      `Au ${nomPeriode(sp.s.mois, sp.s.annee)}, sur ${nombre(sp.s.nbVentes)} ventes, le prix médian était de ${euros(sp.s.prixM2Median as number)} le m²${
+        sp.avant?.prixM2Median ? `, contre ${euros(sp.avant.prixM2Median)} au ${nomPeriode(sp.s.mois, sp.s.annee - 1)}` : ""
+      }. C’est un premier chiffre, sur six mois de ventes.`,
     );
   }
   const maj = derniere.majLe ? new Date(derniere.majLe) : null;
@@ -441,15 +494,15 @@ function courbeRendement(paris: AnneeMarche[]): string {
   );
 }
 
-export function remplirBarometre(html: string, h: Historique): string {
+export function remplirBarometre(html: string, h: Historique, semestres: SemestreParis[] = []): string {
   const paris = h.get(CODE_PARIS) ?? [];
   const annees = [...new Set([...h.values()].flat().map((a) => a.annee))].sort((a, b) => a - b);
   const sansChiffres =
     '<p class="barometre__note">Les chiffres de ce baromètre ne sont pas disponibles pour le moment. Le prix médian des immeubles de la dernière année, par arrondissement, est sur notre page <a href="/vendre-un-immeuble/paris/">Vendre un immeuble à Paris</a>.</p>';
   return html
     .replace('<div data-barometre="courbe"></div>', courbeParis(paris))
-    .replace('<div data-barometre="paris"></div>', paris.length ? tableauParis(paris) : sansChiffres)
-    .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris)}</p>` : "")
+    .replace('<div data-barometre="paris"></div>', paris.length ? tableauParis(paris, semestres) : sansChiffres)
+    .replace('<p data-barometre="resume"></p>', paris.length > 1 ? `<p>${resume(paris, semestres)}</p>` : "")
     .replace('<div data-barometre="arrondissements"></div>', annees.length ? tableauArrondissements(h, annees) : "")
     .replace('<div data-barometre="courbe-rendement"></div>', courbeRendement(paris))
     .replace('<div data-barometre="paris-rendement"></div>', paris.length ? tableauParisRendement(paris) : "")
@@ -462,7 +515,7 @@ export function remplirBarometre(html: string, h: Historique): string {
  * ChatGPT et Claude, « fais tout »). Deux phrases tirées des chiffres de la dernière année, que les
  * moteurs et les assistants peuvent reprendre telles quelles. Vide sans chiffres.
  */
-export function enBrefBarometre(h: Historique): string | null {
+export function enBrefBarometre(h: Historique, semestres: SemestreParis[] = []): string | null {
   const paris = (h.get(CODE_PARIS) ?? []).filter((a) => a.prixM2Median);
   const d = paris[paris.length - 1];
   if (!d?.prixM2Median) return null;
@@ -471,6 +524,8 @@ export function enBrefBarometre(h: Historique): string | null {
   texte += d.decote != null && d.decote < 0 ? `, ${Math.abs(d.decote)}${NBSP}% sous le prix au m² des appartements vendus seuls la même année.` : ".";
   if (p !== d && p.prixM2Median) texte += ` Depuis ${p.annee}, ce prix ${evolue(p.prixM2Median, d.prixM2Median)}.`;
   if (d.rendement != null) texte += ` Avec les loyers de marché de ${d.annee}, le rendement théorique d’un immeuble parisien est de ${unChiffre(d.rendement)}${NBSP}%.`;
+  const sp = semestreAPublier(h.get(CODE_PARIS) ?? [], semestres);
+  if (sp) texte += ` Premier chiffre du ${nomPeriode(sp.s.mois, sp.s.annee)} : ${euros(sp.s.prixM2Median as number)} le m², sur ${nombre(sp.s.nbVentes)} ventes.`;
   return texte;
 }
 

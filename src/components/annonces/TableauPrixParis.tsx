@@ -14,7 +14,20 @@ const ecartPct = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${Math.abs(n
  * (lots 108 à 112), sorti de sa page au lot 140 pour servir aussi à la page des annonces sur les
  * prix. `secondBouton` : le lien vers les ventes une par une, que les pages des annonces n'ont pas.
  */
-export function TableauPrixParis({ donnees, secondBouton = true }: { donnees: DonneesPrixParis; secondBouton?: boolean }) {
+export function TableauPrixParis({
+  donnees,
+  secondBouton = true,
+  ventes,
+}: {
+  donnees: DonneesPrixParis;
+  secondBouton?: boolean;
+  /**
+   * Page des ventes (MAV, 23/11/2026 : « un lien à chaque arrondissement qui mène à la section […] avec
+   * écrit le nombre de ventes ») : une colonne du nombre de ventes de la page, et chaque arrondissement
+   * mène à sa section (`#arr-11`). Les lignes ne portent alors pas d'ancre : la page en a déjà.
+   */
+  ventes?: { parArrondissement: Record<number, number>; periode: string };
+}) {
   const {
     annee, lignes, moinsCher, plusCher, totalImmeubles, avecRdt, avecDecote, etendueDecote,
     rendementParis, millesime, releveEn, tableau, colonnesChiffres,
@@ -55,6 +68,12 @@ export function TableauPrixParis({ donnees, secondBouton = true }: { donnees: Do
                   <span className="paris-prix__long">Arrondissement</span>{" "}
                   <span className="paris-prix__court" aria-hidden="true">Arr.</span>
                 </th>
+                {ventes && (
+                  <th scope="col" className="paris-prix__ventes">
+                    <span className="sr-only">Ventes d’immeubles {ventes.periode}</span>
+                    <span aria-hidden="true">Ventes</span>
+                  </th>
+                )}
                 {/* MAV, 14/11/2026 : « les mêmes titres sur PC que sur téléphone […] que ça tienne sur
                     une ligne ». Le libellé court s'affiche partout ; le long n'est plus que lu. */}
                 <th scope="col" className="paris-prix__tete-med">
@@ -73,12 +92,24 @@ export function TableauPrixParis({ donnees, secondBouton = true }: { donnees: Do
               </tr>
             </thead>
             <tbody>
-              {lignes.map((l) => (
-                <tr key={l.n} id={`arr-${l.n}`} className={l.prix == null ? "paris-prix__peu" : undefined}>
-                  <th scope="row">
+              {lignes.map((l) => {
+                const nb = ventes?.parArrondissement[l.n] ?? 0;
+                const nom = (
+                  <>
                     {rang(l.n)}
                     <span className="paris-prix__long"> arrondissement</span>
+                  </>
+                );
+                return (
+                <tr key={l.n} id={ventes ? undefined : `arr-${l.n}`} className={l.prix == null ? "paris-prix__peu" : undefined}>
+                  <th scope="row">
+                    {ventes && nb ? <a className="paris-prix__lien" href={`#arr-${l.n}`}>{nom}</a> : nom}
                   </th>
+                  {ventes && (
+                    <td className="paris-prix__ventes">
+                      {nb ? <a href={`#arr-${l.n}`} aria-label={`${nb} vente${nb > 1 ? "s" : ""} dans le ${rang(l.n)} arrondissement`}>{nb}</a> : "–"}
+                    </td>
+                  )}
                   {l.prix != null ? (
                     <>
                       <td className="paris-prix__med">{nombre(l.prix)}&nbsp;€</td>
@@ -92,7 +123,8 @@ export function TableauPrixParis({ donnees, secondBouton = true }: { donnees: Do
                     </td>
                   )}
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
           {/* Retour #304 : le calcul et les sources repliés, sans dire que les chiffres se mettent à jour seuls. */}
@@ -130,6 +162,12 @@ export function TableauPrixParis({ donnees, secondBouton = true }: { donnees: Do
         </div>
 
         <div className="paris-prix__notes">
+          {ventes && (
+            <p>
+              <strong>Ventes.</strong> Le nombre d’immeubles de rapport vendus dans l’arrondissement {ventes.periode}.
+              Cliquez sur un arrondissement pour voir ses ventes une par une, plus bas dans la page.
+            </p>
+          )}
           {avecDecote ? (
             <p>
               <strong>Décote.</strong> L’écart entre le prix médian au&nbsp;m² des immeubles vendus en

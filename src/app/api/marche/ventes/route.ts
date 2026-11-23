@@ -160,6 +160,8 @@ export async function GET(req: Request) {
     });
     if (!ecrite.ok) { passees.push(a); continue; }
     await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf?annee=eq.${a}&id=not.in.(${ids})`, { method: "DELETE", headers: entetes, signal: AbortSignal.timeout(DELAI_MS) });
+    // L'année entière remplace son premier semestre, tiré du fichier brut (MAV, 23/11/2026).
+    await fetch(`${cfg.url}/rest/v1/ventes_immeubles_dvf_semestre?annee=eq.${a}`, { method: "DELETE", headers: entetes, signal: AbortSignal.timeout(DELAI_MS) }).catch(() => null);
     faites.push(a);
   }
   if (faites.length) revalidatePath(PAGE);
