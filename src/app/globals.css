@@ -6308,3 +6308,7 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 .murs-carte__lien{display:inline-block;margin-top:12px;color:var(--color-bronze);font-weight:500;}
 .hero-murs .hero-media__img{object-position:50% 60%;}
 @media (max-width:980px){ .site-header--murs .nav .nav-groupe__lien[aria-current]::after{display:none;} }
+/* Nos chiffres dans les articles (23/11/2026) : libellés qui passent à la ligne, source en petit. */
+.prose .barometre--donnees tbody th,.prose .barometre--donnees .barometre__sous{white-space:normal;}
+.prose .barometre--donnees{margin:1.4em 0;}
+.prose .article-source{font-size:.82rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
