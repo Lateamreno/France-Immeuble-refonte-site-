@@ -328,7 +328,7 @@ export default async function VendreUnImmeubleParis() {
           <Reveal className="section__head">
             <Eyebrow>Honoraires et mandat</Eyebrow>
             <h2>
-              Honoraires&nbsp;: <span className="accent">rien à payer</span> tant que la vente n’est pas signée
+              Honoraires <span className="accent">à la charge de l’acquéreur</span>, dus à la signature
             </h2>
           </Reveal>
           <LigneDefilante marches className="paris-ligne paris-ligne--3">

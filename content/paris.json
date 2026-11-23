@@ -298,7 +298,7 @@
     {
       "groupe": "Vendre un immeuble à Paris avec France Immeuble",
       "question": "Combien coûte la vente d’un immeuble à Paris avec France Immeuble ?",
-      "reponse": "Nos honoraires vont de 3 à 5 % TTC du prix selon la taille de l’immeuble : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà. Ils ne sont dus qu’à la signature de l’acte définitif chez le notaire : tant que la vente n’est pas signée, vous ne payez rien. L’estimation est gratuite. Le détail est dans notre barème des honoraires.",
+      "reponse": "Nos honoraires vont de 3 à 5 % TTC du prix selon la taille de l’immeuble : 5 % TTC jusqu’à 5 M€, 4 % TTC de 5 à 10 M€, 3 % TTC au-delà. Ils sont en général à la charge de l’acquéreur et ne sont dus qu’à la signature de l’acte définitif chez le notaire. L’estimation est gratuite. Le détail est dans notre barème des honoraires.",
       "sources": [
         "Barème /nos-honoraires/ (taux exprimés TTC) et FAQ de la page Vendre",
         "MAV, retour #337 du 13/11/2026"
