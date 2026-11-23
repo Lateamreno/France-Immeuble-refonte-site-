@@ -107,9 +107,9 @@ function blocVendre(ventes: Vente[], ch: Chiffres, maj: string): string | null {
   ].join("");
   const phrases = [
     tout.delai
-      ? `Sur les immeubles de rapport vendus par France Immeuble, la première offre est arrivée ${Math.round(tout.delai)} jours après le début de la commercialisation, en médiane${proche.delai && loin.delai ? ` : ${Math.round(proche.delai)} jours à Paris et en petite couronne, ${Math.round(loin.delai)} jours en grande couronne et en région` : ""}. Il faut ensuite compter le compromis, puis l’acte chez le notaire.`
+      ? `Sur les immeubles de rapport vendus par France Immeuble, la première offre est arrivée ${Math.round(tout.delai)}${NBSP}jours après le début de la commercialisation, en médiane${proche.delai && loin.delai ? ` : ${Math.round(proche.delai)}${NBSP}jours à Paris et en petite couronne, ${Math.round(loin.delai)}${NBSP}jours en grande couronne et en région` : ""}. Il faut ensuite compter le compromis, puis l’acte chez le notaire.`
       : null,
-    `Notre base compte ${nombre(ch.investisseurs)} acheteurs d’immeubles. Un immeuble loué au prix du marché trouve le plus souvent son meilleur acheteur chez un investisseur ; un immeuble mal loué ou à gros travaux intéresse d’abord les marchands de biens.`,
+    `Notre base compte ${nombre(ch.investisseurs)} acheteurs d’immeubles. Un immeuble loué au prix du marché trouve le plus souvent son meilleur acheteur chez un investisseur${NBSP}; un immeuble mal loué ou à gros travaux intéresse d’abord les marchands de biens.`,
   ].filter(Boolean);
   return (
     `<h2 id="nos-chiffres">Combien de temps pour vendre, et à qui</h2>` +
