@@ -175,7 +175,12 @@ export function Header() {
             aria-expanded={ouvert}
             aria-controls="nav"
             aria-label={ouvert ? "Fermer le menu" : "Ouvrir le menu"}
-            onClick={() => setOuvert((v) => !v)}
+            onClick={() => {
+              /* Au téléphone, le menu s'ouvre sur le groupe de la page où l'on est (MAV, 23/11/2026 :
+                 « pas idiot d'ouvrir en déplié la page où on se trouve »). */
+              if (!ouvert) setDeroule(groupeDeLaPage(nav, pathname));
+              setOuvert((v) => !v);
+            }}
           >
             <span />
           </button>
@@ -197,6 +202,15 @@ export function Header() {
  * Avec `lien` (Vendre), le libellé est un vrai lien vers la page et seule la
  * flèche, à côté, bascule la liste.
  */
+/** Le groupe du menu qui contient la page affichée (lien du groupe ou d'un de ses enfants), sans `?` ni `#`. */
+function groupeDeLaPage(nav: readonly LienNav[], pathname: string): string | null {
+  const chemin = (h: string) => h.split(/[?#]/)[0];
+  const g = nav.find(
+    (i) => i.enfants && (chemin(i.href) === pathname || i.enfants.some((e) => chemin(e.href) === pathname)),
+  );
+  return g ? g.href : null;
+}
+
 function SousMenu({
   item,
   pathname,
