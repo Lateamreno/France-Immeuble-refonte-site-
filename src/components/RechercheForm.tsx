@@ -8,6 +8,7 @@ import { ChoixLieux } from "./biens/ChoixLieux";
 import { DoubleCurseur } from "./DoubleCurseur";
 import { CurseurMinimum } from "./CurseurMinimum";
 import { Picto } from "./Picto";
+import { ChampPiege, useAntiRobots } from "./antiRobots";
 import { ouvrirCompte, useEtatCompte, useGarderALaConnexion } from "./biens/etat";
 
 /**
@@ -105,6 +106,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
   refContact?: string;
 } = {}) {
   const uid = useId();
+  const antiRobots = useAntiRobots();
   const [c, setC] = useState<Contact>(() => ({ ...CONTACT_VIDE, ...contact }));
   const [rs, setRs] = useState<Recherche[]>(() => [{ ...RECHERCHE_VIDE, commentaire: commentaire?.trim() ?? "" }]);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
@@ -214,10 +216,12 @@ export function RechercheForm({ contact, commentaire, refContact }: {
     setEnvoi(true);
     let ok = false;
     try {
+      const ar = await antiRobots.champs();
       const r = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          ...ar,
           type: "recherche_acquereur",
           ref: globalThis.crypto?.randomUUID?.() ?? `fi-${Date.now()}-${Math.random().toString(36).slice(2)}`,
           ...(refContact ? { refContact } : {}),
@@ -322,6 +326,7 @@ export function RechercheForm({ contact, commentaire, refContact }: {
 
   return (
     <form className="form-shell form-recherche" onSubmit={envoyer} noValidate ref={refForm}>
+      <ChampPiege refChamp={antiRobots.piege} />
       <div className="step-head">
         <span className="form-recherche__etape">Étape {etape + 1} sur 3</span>
         <h3>{TITRES[etape]}</h3>

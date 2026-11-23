@@ -9,6 +9,7 @@ import { router as routerDossier, type Verdict } from "@/lib/routage";
 import { ELEMENTS_ATTENDUS, dossierInitial, type Dossier } from "@/lib/dossier/modele";
 import { DossierForm } from "./dossier/DossierForm";
 import { Picto } from "./Picto";
+import { ChampPiege, useAntiRobots } from "./antiRobots";
 
 /**
  * Tunnel d'estimation (CLAUDE.md §9, retour #60 de MAV du 27/10/2026).
@@ -88,6 +89,7 @@ export function EstimationForm({
   refContact?: string;
 }) {
   const uid = useId();
+  const antiRobots = useAntiRobots();
   const [phase, setPhase] = useState<Phase>("saisie");
   const [d, setD] = useState<Data>(() => ({ ...VIDE, ...initial }));
   const [indicatif, setIndicatif] = useState("33");
@@ -207,10 +209,11 @@ export function EstimationForm({
    */
   async function transmettre(donnees: Data, etat: "principal" | "complement") {
     try {
+      const ar = await antiRobots.champs();
       const r = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ type: "estimation", etat, ref: ref.current, formulaire, ...(refContact ? { refContact } : {}), ...pourBO(donnees) }),
+        body: JSON.stringify({ ...ar, type: "estimation", etat, ref: ref.current, formulaire, ...(refContact ? { refContact } : {}), ...pourBO(donnees) }),
       });
       return r.ok;
     } catch {
@@ -298,6 +301,7 @@ export function EstimationForm({
     <div className="form-bloc" ref={bloc}>
       {phase === "saisie" && (
         <form className="form-shell form-saisie" onSubmit={envoyerSaisie} noValidate onFocus={debutSaisie}>
+          <ChampPiege refChamp={antiRobots.piege} />
           <div className="step-head">
             <h3><span className="accent">Estimez</span> gratuitement votre <span className="accent">immeuble</span></h3>
             <p>{chapeau ?? "Vos coordonnées et l’adresse de l’immeuble."}</p>
@@ -347,6 +351,7 @@ export function EstimationForm({
 
       {phase === "complement" && (
         <form className="form-shell" onSubmit={envoyerComplement} noValidate>
+          <ChampPiege refChamp={antiRobots.piege} />
           <div className="step-head">
             <span className="outcome__badge">Demande enregistrée</span>
             <h3 ref={titre} tabIndex={-1}>Parlons de votre immeuble.</h3>

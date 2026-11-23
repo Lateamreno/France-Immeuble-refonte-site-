@@ -6266,3 +6266,7 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
   .lex-alpha::-webkit-scrollbar{display:none;}
   .lex-alpha a{flex:0 0 auto;}
 }
+
+/* Champ piège des formulaires publics (`src/components/antiRobots.tsx`, 23/11/2026) : ni vu, ni au
+   clavier, ni lu. `display:none` est évité : certains robots sautent les champs cachés ainsi. */
+.champ-piege{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;}

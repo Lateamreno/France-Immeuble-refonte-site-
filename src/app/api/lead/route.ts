@@ -5,6 +5,34 @@ import { sessionCourante } from "@/lib/compte/auth";
 import { accueillirVendeur } from "@/lib/compte/accueil";
 import { copieDepuisLead } from "@/lib/compte/immeubles";
 import { fusionnerSaisie } from "@/lib/compte/saisies";
+import { envoiSuspect, type Motif } from "@/lib/anti-robots";
+import { configSite } from "@/lib/supabase-site";
+
+/**
+ * Garde un envoi douteux dans `leads_suspects` (migration 0030). Renvoie false si la base ne l'a pas
+ * pris : l'envoi suit alors le chemin normal, pour ne jamais perdre un vrai visiteur mal classé.
+ */
+async function mettreEnQuarantaine(ref: string, type: string, motif: Motif, contenu: Record<string, unknown>): Promise<boolean> {
+  const cfg = configSite();
+  if (!cfg) return false;
+  try {
+    const r = await fetch(`${cfg.url}/rest/v1/leads_suspects?on_conflict=ref`, {
+      method: "POST",
+      headers: { apikey: cfg.cle, Authorization: `Bearer ${cfg.cle}`, "content-type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ ref, type, motif, contenu }),
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!r.ok) {
+      console.error(`[lead] quarantaine refusée (${r.status}) pour ${ref}`);
+      return false;
+    }
+    console.info(`[lead] envoi douteux gardé à part : ${motif}`);
+    return true;
+  } catch (e) {
+    console.error("[lead] quarantaine impossible —", e);
+    return false;
+  }
+}
 
 /**
  * Réception des leads — CLAUDE.md §2 et §9, contrat BO du 21/10/2026.
@@ -57,6 +85,16 @@ export async function POST(req: Request) {
 
   // Le BO est idempotent sur `ref` : un lead sans ref en reçoit un ici.
   const ref = typeof body.ref === "string" && body.ref ? body.ref : crypto.randomUUID();
+
+  // Robots (MAV, 23/11/2026) : un envoi douteux est gardé à part, sans e-mail ni dépôt au BO, et
+  // le robot reçoit la même réponse qu'un vrai visiteur (il n'apprend rien). Jamais jeté.
+  const motif = envoiSuspect(body);
+  const { jeton: _jeton, site: _site, ...sansAntiRobots } = body;
+  void _jeton; void _site;
+  if (motif && (await mettreEnQuarantaine(ref, String(body.type), motif, sansAntiRobots))) {
+    return NextResponse.json({ ok: true, piste: "prioritaire", stocke: "bo" });
+  }
+  body = sansAntiRobots as Payload;
 
   const verdict = router({
     codePostal: String(body.codePostal ?? ""),

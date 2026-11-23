@@ -7,6 +7,7 @@ import { transmettreEnCours } from "@/lib/dossier/envoi";
 import { aviserClients } from "@/lib/compte/avis";
 import { purgerSaisies } from "@/lib/compte/saisies";
 import { purgerStatsAnnonces } from "@/lib/stats-annonces";
+import { purgerSuspects } from "@/lib/anti-robots";
 
 /**
  * Relance de la file d'attente des leads — appelée par la tâche planifiée de
@@ -73,7 +74,14 @@ export async function GET(req: Request) {
     } catch (e) {
       console.error("[stats annonce] purge impossible —", e);
     }
-    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, brouillonsTransmis, dossiersEffaces, avis, empreintesEffacees });
+    // Envois de robots gardés à part (23/11/2026) : effacés au bout de 30 jours.
+    let suspectsEffaces = 0;
+    try {
+      suspectsEffaces = await purgerSuspects();
+    } catch (e) {
+      console.error("[lead] purge des envois douteux impossible —", e);
+    }
+    return NextResponse.json({ ok: true, ...r, morceauxEffaces, comptesSupprimes, brouillonsTransmis, dossiersEffaces, avis, empreintesEffacees, suspectsEffaces });
   } catch (e) {
     console.error("[lead][ALERTE] relance de la file impossible —", e);
     return NextResponse.json({ ok: false }, { status: 500 });

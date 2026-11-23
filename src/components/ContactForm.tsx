@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { SITE } from "@/lib/site";
 import { PropositionCompte } from "./compte/PropositionCompte";
+import { ChampPiege, useAntiRobots } from "./antiRobots";
 import dynamic from "next/dynamic";
 
 // La suite du message (recherche ou estimation) ne se télécharge qu'une fois le
@@ -47,6 +48,7 @@ export function ContactForm({ bien, onVendre, titre }: {
   onVendre?: () => void;
 } = {}) {
   const uid = useId();
+  const antiRobots = useAntiRobots();
   const [telephone, setTelephone] = useState("");
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
@@ -80,10 +82,12 @@ export function ContactForm({ bien, onVendre, titre }: {
     const ref = globalThis.crypto?.randomUUID?.() ?? `fi-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     setRefMessage(ref);
     try {
+      const ar = await antiRobots.champs();
       const r = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          ...ar,
           type: "contact",
           ref,
           telephone,
@@ -189,6 +193,7 @@ export function ContactForm({ bien, onVendre, titre }: {
 
   return (
     <form className="form-shell" onSubmit={envoyer} noValidate>
+      <ChampPiege refChamp={antiRobots.piege} />
       {titre && <h3 className="form-shell__titre">{titre}</h3>}
       <div className="fields">
         <div className="fields fields--2">
