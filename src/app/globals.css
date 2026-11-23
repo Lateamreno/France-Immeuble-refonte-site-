@@ -6307,3 +6307,4 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 .section--creme .murs-carte .card__picto{color:var(--color-bronze-profond);}
 .murs-carte__lien{display:inline-block;margin-top:12px;color:var(--color-bronze);font-weight:500;}
 .hero-murs .hero-media__img{object-position:50% 60%;}
+@media (max-width:980px){ .site-header--murs .nav .nav-groupe__lien[aria-current]::after{display:none;} }

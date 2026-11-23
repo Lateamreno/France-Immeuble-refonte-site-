@@ -3,6 +3,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { CarteVente } from "@/components/CarteVente";
+import { LigneDefilante } from "@/components/LigneDefilante";
 import { SectionFaq, type QR } from "@/components/SectionFaq";
 import { BoutonFixeMobile } from "@/components/BoutonFixeMobile";
 import { CarteMurs, HeroMurs, PICTOS_MURS, SectionEstimationMurs, estUneVenteDeMurs } from "@/components/murs/communs";
@@ -61,7 +62,7 @@ export default async function MursCommerciaux() {
 
       <section className="section section--noir-2">
         <div className="container">
-          <Reveal className="section__head">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>Ce que nous vendons</Eyebrow>
             <h2>Trois types de murs, <span className="accent">les mêmes investisseurs</span></h2>
             <p className="lead">
@@ -91,7 +92,7 @@ export default async function MursCommerciaux() {
 
       <section className="section section--creme">
         <div className="container">
-          <Reveal className="section__head">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>Comment nous estimons</Eyebrow>
             <h2>La valeur de vos murs, <span className="accent">lue comme un investisseur</span></h2>
             <p className="lead">
@@ -119,9 +120,9 @@ export default async function MursCommerciaux() {
         </div>
       </section>
 
-      <section className="section section--noir">
+      <section className="section section--noir paris-ventes-sec">
         <div className="container">
-          <Reveal className="section__head">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>Comment nous vendons</Eyebrow>
             <h2>Vendus <span className="accent">sans annonce</span>, à des investisseurs</h2>
             <p className="lead">
@@ -131,13 +132,13 @@ export default async function MursCommerciaux() {
             </p>
           </Reveal>
           {ventesMurs.length > 0 && (
-            <ul className="ventes">
-              {ventesMurs.map((v, i) => (
-                <Reveal key={v.id} as="li" className="vente" delayIndex={i}>
+            <LigneDefilante marches className="paris-ventes-ligne">
+              {ventesMurs.map((v) => (
+                <article key={v.id} className="vente">
                   <CarteVente v={v} />
-                </Reveal>
+                </article>
               ))}
-            </ul>
+            </LigneDefilante>
           )}
           <div className="btn-row" style={{ marginTop: "var(--space-m)" }}>
             <Button href="/murs-commerciaux/biens-vendus/" variant="outline">Voir nos murs vendus</Button>

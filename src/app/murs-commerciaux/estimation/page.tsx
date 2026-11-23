@@ -56,7 +56,7 @@ export default async function EstimerDesMurs() {
 
       <section className="section section--noir-2">
         <div className="container">
-          <Reveal className="section__head">
+          <Reveal className="section__head tete-2col">
             <Eyebrow>Ce que nous regardons</Eyebrow>
             <h2>Quatre lectures pour <span className="accent">un seul prix</span></h2>
             <p className="lead">
