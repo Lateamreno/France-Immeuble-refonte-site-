@@ -11,7 +11,7 @@ export function Header() {
   const pathname = usePathname();
   const surPlace = formulaireSurPlace(pathname);
   /* Section des murs commerciaux (MAV, 20 et 22/11/2026) : son menu, son bouton, et le logo mène à
-     l'accueil des murs. Au téléphone, menu en accordéon, pour les murs seulement (MAV, 23/11/2026). */
+     l'accueil des murs. Au téléphone, menu en accordéon partout (murs le 23/11/2026, immeubles ensuite : « c'est un peu trop », MAV). */
   const murs = estMurs(pathname);
   const nav = murs ? NAV_MURS : NAV;
   const cta = murs ? "Estimer mes murs" : "Estimer mon immeuble";

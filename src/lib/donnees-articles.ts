@@ -13,7 +13,9 @@ import { nombre } from "./site";
  * qu'un assistant peut citer telles quelles. Les chiffres se recalculent seuls à chaque vente publiée.
  *
  * Règles : pas de nombre de ventes (MAV, 09/11/2026 : « moins de 50, pas exceptionnel ») ; une ligne
- * de tableau seulement à partir de cinq ventes ; les murs commerciaux sont écartés.
+ * de tableau seulement à partir de cinq ventes ; les murs commerciaux sont écartés ; pas d'écart entre
+ * l'offre et notre estimation (MAV, 23/11/2026 : « ça nous fait passer pour des méchants sur les
+ * estimations »).
  */
 
 const NBSP = " ";
@@ -62,8 +64,6 @@ function blocEstimer(ventes: Vente[], h: Historique, maj: string): string | null
   const idf = zone(ventes.filter((v) => IDF_HORS_PARIS.has(v.dept)));
   const reg = zone(ventes.filter((v) => !IDF_HORS_PARIS.has(v.dept) && v.dept !== "75"));
   const horsParis = zone(ventes.filter((v) => v.dept !== "75"));
-  const ecarts = ventes.map((v) => v.ecartEstimation).filter((x): x is number => x != null && Number.isFinite(x));
-  const ecart = ecarts.length >= MIN_VENTES ? mediane(ecarts) : null;
   const lignes = [
     d ? ligne(`Paris, en bloc, ${d.annee}`, "Données publiques DVF, notre calcul", [euros(d.prixM2Median as number), d.rendement ? `${pct(d.rendement)}<span class="barometre__sous">théorique</span>` : null]) : "",
     idf.m2 || idf.rdt ? ligne("Île-de-France hors Paris", "Nos ventes", [idf.m2 ? euros(idf.m2) : null, idf.rdt ? pct(idf.rdt) : null]) : "",
@@ -78,9 +78,6 @@ function blocEstimer(ventes: Vente[], h: Historique, maj: string): string | null
       ? `Hors de Paris, les immeubles de rapport que nous avons vendus l’ont été sur un rendement brut médian de ${
           pct(idf.rdt) === pct(reg.rdt) ? `${pct(idf.rdt)}, en Île-de-France comme en région` : `${pct(idf.rdt)} en Île-de-France et de ${pct(reg.rdt)} en région`
         }.${horsParis.rdtMin && horsParis.rdtMax ? ` Selon la ville, l’état et l’occupation, il va de ${pct(horsParis.rdtMin)} à ${pct(horsParis.rdtMax)}.` : ""}`
-      : null,
-    ecart != null && ecart > 0
-      ? `Sur nos ventes, la meilleure offre reçue dépasse notre estimation de ${pct(ecart)} en médiane.`
       : null,
   ].filter(Boolean);
   return (
