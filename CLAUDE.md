@@ -1046,6 +1046,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
   « immeuble »** (Google montre l'accueil sur ce mot seul, presque sans clic). Redirection 301 de
   `/droit-de-preemption-lors-de-vente-dun-immeuble-en-bloc/` (sans « la ») vers l'article, en production le même jour.
+- **Faux formulaires de robots** (MAV, 23/11/2026 : « je reçois des faux formulaires », puis « je veux pas que le
+  formulaire devienne dur à remplir […] pas de code par email ») : **rien de visible pour le visiteur**, ni code, ni
+  case à cocher, ni question. Trois couches (`src/lib/anti-robots.ts`, `src/components/antiRobots.tsx`) : champ piège
+  hors de l'écran (`.champ-piege`), jeton signé demandé à l'ouverture du formulaire (`/api/lead/jeton/`, envoi refusé
+  avant 3 s ou après 24 h, redemandé s'il manque), charabia (deux indices : deux champs en lettres au hasard, ou un
+  champ et une adresse Gmail à quatre points ou plus). Un envoi douteux n'est **jamais jeté** : `leads_suspects`
+  (migration 0030, appliquée, RLS sans règle), sans alerte ni dépôt au BO, effacé après 30 jours ; si la base ne le
+  prend pas, il suit le chemin normal. Le robot reçoit la même réponse qu'un humain. Testé sur l'aperçu : envoi sans
+  jeton et envoi en charabia mis à part. Côté BO (suppression qui ne retire pas la fiche, liste des motifs, trois faux
+  contacts) : `docs/PROMPT-BO-SUPPRESSION-CONTACT.md`. Sur la branche, en attente de l'accord de MAV.
 
 ### Garde-fous non négociables
 
