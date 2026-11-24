@@ -1091,7 +1091,16 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   « Ventes ». Baromètre : outil « votre arrondissement » (`OutilPrix` sans titre ni changement d'adresse) et tableau
   avant le texte, ligne « 2026, 1er semestre, provisoire » dans le tableau de tout Paris, phrase au résumé et en bref.
   Prix par arrondissement d'un semestre jamais publiés (0 à 11 ventes). Rapport :
-  https://claude.ai/artifact/UqApeYUw9qzz3aAnWhp1tJ. En attente du go ; les 64 ventes ne sont pas auditées une à une.
+  https://claude.ai/artifact/UqApeYUw9qzz3aAnWhp1tJ. **Audit des 64 ventes** (deux relecteurs) : aucune erreur de calcul ;
+  retirées de la base sur décision de MAV (24/11/2026 : « On enlève les 7 cas ») 10 ventes : portefeuille de la rue de la
+  Harpe, rue de Crussol doublée d'un échange le même jour, et sept cas (identifiants de mutation 2026-B15200, B5346,
+  B13412, B3076, B4412, B8980, B17217, B19426, B19427). **S1 2026 : 54 ventes, Paris 6 615 € le m²** (S1 2025 : 54 ventes,
+  6 852 €, sans retraits à la main). Ces cas (portefeuille, échange le même jour, plus de la moitié de commerces) ne sont
+  pas encore des règles du calcul : à proposer avec leur effet sur 2023 à 2025. Partout « 2026 » sans « 1er semestre »
+  (MAV) ; colonne « Ventes » de la page des ventes = ventes de 2025, l'année des prix. Baromètre : **solution A** (outil
+  et tableau avant le texte, MAV, 24/11/2026). **En production le 24/11/2026** (« Go prod », MAV), sans les pages des
+  annonces (lot 140) ; résumé : https://claude.ai/artifact/VFxQrwpw4q1xyJs66wwAQL. Sur la branche, en attente du go :
+  « provisoire » qui ne se coupe plus au téléphone.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
