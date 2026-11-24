@@ -19,7 +19,7 @@ import { chiffres as lesChiffres } from "@/lib/chiffres";
 export const metadata: Metadata = {
   title: "Vendre des murs commerciaux à des investisseurs",
   description:
-    "Local commercial, entrepôt ou retail park : nous estimons vos murs commerciaux et les vendons sans annonce, loués ou libres, à des investisseurs. Estimation gratuite.",
+    "Local commercial, retail park, entrepôt ou bureaux : nous estimons vos murs et les vendons sans annonce à des investisseurs. Estimation gratuite.",
   robots: { index: false, follow: false },
 };
 
@@ -51,8 +51,8 @@ export default async function MursCommerciaux() {
         chiffres={ch}
         lead={
           <>
-            Local commercial en pied d’immeuble, entrepôt ou retail park : nous estimons la valeur
-            locative et le rendement qu’attendent les investisseurs, puis nous vendons vos murs sans
+            Local commercial, local en retail park, entrepôt ou immeuble de bureaux à Paris : nous
+            estimons la valeur locative et le rendement qu’attendent les investisseurs, puis nous vendons vos murs sans
             annonce, loués ou libres.
           </>
         }
@@ -64,27 +64,33 @@ export default async function MursCommerciaux() {
         <div className="container">
           <Reveal className="section__head tete-2col">
             <Eyebrow>Ce que nous vendons</Eyebrow>
-            <h2>Trois types de murs, <span className="accent">les mêmes investisseurs</span></h2>
+            <h2>Quatre types de murs, <span className="accent">chacun ses investisseurs</span></h2>
             <p className="lead">
               Nos acheteurs cherchent des loyers sûrs. Ils regardent l’emplacement, le locataire et la
               durée du bail avant la surface.
             </p>
           </Reveal>
-          <div className="grid grid--3 grid--ligne-mob">
+          {/* MAV, 24/11/2026 : bureaux ajoutés et centrés sur Paris ; le retail park est un ensemble, on y vend un local. */}
+          <div className="grid grid--4 grid--ligne-mob">
             <CarteMurs picto={PICTOS_MURS.boutique} titre="Local commercial"
               lien={{ href: "/murs-commerciaux/local-commercial/", libelle: "Vendre un local commercial" }}>
-              Boutique, restaurant ou agence en pied d’immeuble, à Paris et dans les centres-villes. Loué à
-              une enseigne ou à un commerçant, ou libre.
+              Boutique, restaurant ou agence en pied d’immeuble, à Paris, en Île-de-France et dans les
+              grandes villes. Nos investisseurs achètent les murs loués comme les murs libres.
+            </CarteMurs>
+            <CarteMurs picto={PICTOS_MURS.retail} titre="Local en retail park"
+              lien={{ href: "/murs-commerciaux/retail-park/", libelle: "Vendre un local en retail park" }}>
+              Une moyenne surface dans un ensemble commercial, avec parking. Nos investisseurs la veulent
+              louée, de préférence à une grande enseigne nationale.
             </CarteMurs>
             <CarteMurs picto={PICTOS_MURS.entrepot} titre="Entrepôt et local d’activité"
               lien={{ href: "/murs-commerciaux/entrepot/", libelle: "Vendre un entrepôt" }}>
-              Entrepôt, atelier ou local mixte en zone d’activité. Les acheteurs regardent l’accès poids
-              lourds, la hauteur sous plafond et le bail.
+              Entrepôt, atelier ou local mixte, loué à des artisans et des PME ou à une grande société
+              industrielle. Chaque cas a ses acheteurs.
             </CarteMurs>
-            <CarteMurs picto={PICTOS_MURS.retail} titre="Retail park"
-              lien={{ href: "/murs-commerciaux/retail-park/", libelle: "Vendre un retail park" }}>
-              Ensemble de moyennes surfaces en périphérie, avec parking. Une vente à des investisseurs
-              avertis, sur des baux longs.
+            <CarteMurs picto={PICTOS_MURS.bureaux} titre="Immeuble de bureaux"
+              lien={{ href: "/murs-commerciaux/bureaux-paris/", libelle: "Vendre un immeuble de bureaux" }}>
+              À Paris, l’immeuble entier, à garder en bureaux ou à transformer en hôtel ou en logements.
+              Ailleurs, l’immeuble loué à une grande société sur un bail ferme.
             </CarteMurs>
           </div>
         </div>

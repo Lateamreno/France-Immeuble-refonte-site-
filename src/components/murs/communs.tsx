@@ -40,6 +40,7 @@ export const PICTOS_MURS = {
   rue: trace(<><path d="M24 42s-13-12-13-22a13 13 0 0 1 26 0c0 10-13 22-13 22z" /><circle cx="24" cy="20" r="4.5" /></>),
   bail: trace(<><path d="M13 6h16l8 8v28H13z" /><path d="M29 6v8h8M18 22h14M18 28h14M18 34h9" /></>),
   local: trace(<><path d="M6 40h36M9 40V16h30v24" /><path d="M9 16l3-8h24l3 8M14 40V24h9v16M28 24h7v8h-7z" /></>),
+  bureaux: trace(<><path d="M12 42V8h24v34M6 42h36" /><path d="M17 14h4M27 14h4M17 20h4M27 20h4M17 26h4M27 26h4M17 32h4M27 32h4M21 42v-5h6v5" /></>),
   rendement: trace(<><path d="M6 40h36M10 34l9-9 7 6 12-14" /><path d="M32 17h6v6" /></>),
 };
 

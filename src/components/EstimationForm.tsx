@@ -72,13 +72,25 @@ const ECHEANCES = ["Dès maintenant", "Sous 6 mois", "Sous 12 mois", "Je me rens
  * les champs d'une estimation d'immeuble : le type de bien devient un lot du bon type, et il est écrit
  * en tête de la description. `murs` ne part pas au BO : le serveur le lit, puis le retire.
  */
-const TYPES_MURS = ["Local commercial", "Entrepôt", "Retail park", "Bureaux"] as const;
+const TYPES_MURS = ["Local commercial", "Entrepôt ou local d’activité", "Bureaux"] as const;
 const LOT_DU_TYPE: Record<string, "lotsCommerces" | "lotsActivite" | "lotsBureaux"> = {
-  "Local commercial": "lotsCommerces", "Retail park": "lotsCommerces", "Entrepôt": "lotsActivite", "Bureaux": "lotsBureaux",
+  "Local commercial": "lotsCommerces", "Entrepôt ou local d’activité": "lotsActivite", "Bureaux": "lotsBureaux",
 };
+/**
+ * MAV, 24/11/2026 : « un retail park c'est un ensemble, c'est pas un lot ». On y vend un local
+ * commercial : la question vient sous « Local commercial ». Les bureaux sont centrés sur Paris :
+ * immeuble entier ou étages, puis le locataire et le bail à la deuxième partie.
+ */
+const EMPLACEMENTS = ["En rue ou en centre-ville", "Dans un retail park"];
+const PORTEES_BUREAUX = ["Un immeuble entier", "Un ou plusieurs étages"];
+const LOCATAIRES = ["Une enseigne ou une grande société", "Un indépendant ou une PME", "Le local est libre"];
+const BAUX_BUREAUX = ["Bail ferme", "Bail 3-6-9", "Je ne sais pas"];
 /** `?type=entrepot` dans l'adresse (menu Estimer des murs) : le type déjà choisi. */
-const TYPE_DE_L_ADRESSE: Record<string, string> = {
-  "local-commercial": "Local commercial", entrepot: "Entrepôt", "retail-park": "Retail park", bureaux: "Bureaux",
+const TYPE_DE_L_ADRESSE: Record<string, { type: string; emplacement?: string }> = {
+  "local-commercial": { type: "Local commercial" },
+  "retail-park": { type: "Local commercial", emplacement: "Dans un retail park" },
+  entrepot: { type: "Entrepôt ou local d’activité" },
+  bureaux: { type: "Bureaux" },
 };
 /** Les pièces d'une vente de murs, à la place de l'état locatif d'un immeuble. */
 const ELEMENTS_MURS = [
@@ -121,10 +133,14 @@ export function EstimationForm({
   const [d, setD] = useState<Data>(() => ({ ...VIDE, ...initial }));
   const [indicatif, setIndicatif] = useState("33");
   const [typeMurs, setTypeMurs] = useState("");
+  const [emplacement, setEmplacement] = useState("");
+  const [portee, setPortee] = useState("");
+  const [locataire, setLocataire] = useState("");
+  const [bail, setBail] = useState("");
   useEffect(() => {
     if (!murs) return;
-    const t = new URLSearchParams(window.location.search).get("type");
-    if (t && TYPE_DE_L_ADRESSE[t]) setTypeMurs(TYPE_DE_L_ADRESSE[t]);
+    const t = TYPE_DE_L_ADRESSE[new URLSearchParams(window.location.search).get("type") ?? ""];
+    if (t) { setTypeMurs(t.type); setEmplacement(t.emplacement ?? ""); }
   }, [murs]);
   const [adresse, setAdresse] = useState<EtatAdresse>({ saisie: "", choisie: false, manuel: false });
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
@@ -237,7 +253,13 @@ export function EstimationForm({
     o.telephone = lireTelephone(indicatif, donnees.telephone).affiche;
     if (murs && typeMurs) {
       o[LOT_DU_TYPE[typeMurs]] = 1;
-      o.message = [`Murs commerciaux · ${typeMurs}`, donnees.message.trim()].filter(Boolean).join("\n");
+      const precision = typeMurs === "Local commercial" ? emplacement : typeMurs === "Bureaux" ? portee : "";
+      o.message = [
+        ["Murs commerciaux", typeMurs, precision].filter(Boolean).join(" · "),
+        locataire && `Locataire : ${locataire}`,
+        typeMurs === "Bureaux" && bail && `Bail : ${bail}`,
+        donnees.message.trim(),
+      ].filter(Boolean).join("\n");
       o.murs = typeMurs;
     }
     return o;
@@ -294,7 +316,7 @@ export function EstimationForm({
       // principale des annonces sur Paris que les immeubles parisiens. Aucune donnée personnelle.
       const dept = d.codePostal.trim().slice(0, 2);
       const zone = dept === "75" ? "paris" : (DEPTS_IDF as readonly string[]).includes(dept) ? "idf" : "autre";
-      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname, zone, ...(murs ? { section: "murs", type: typeMurs } : {}) });
+      w.dataLayer?.push({ event: "form_submit_estimation", formulaire, page: window.location.pathname, zone, ...(murs ? { section: "murs", type: typeMurs, ...(emplacement && typeMurs === "Local commercial" ? { emplacement } : {}) } : {}) });
     }
 
     setPhase(ok ? "complement" : "fin");
@@ -359,6 +381,12 @@ export function EstimationForm({
               <Choix label="Type de bien" options={[...TYPES_MURS]} valeur={typeMurs}
                 onChange={(v) => { setTypeMurs(v); setErreurs((p) => ({ ...p, typeMurs: "" })); }} />
               {erreurs.typeMurs && <p className="field--full err" role="alert">{erreurs.typeMurs}</p>}
+              {typeMurs === "Local commercial" && (
+                <Choix label="Où se trouve le local ?" options={EMPLACEMENTS} valeur={emplacement} onChange={setEmplacement} />
+              )}
+              {typeMurs === "Bureaux" && (
+                <Choix label="Vous vendez" options={PORTEES_BUREAUX} valeur={portee} onChange={setPortee} />
+              )}
             </>)}
             {identiteCachee ? (
               <p className="field--full identite-compte">
@@ -441,6 +469,8 @@ export function EstimationForm({
                 placeholder="Ex. : 180 000" inputMode="numeric" aria-invalid={!!erreurs.loyerAnnuel} />
             </Champ>
 
+            {murs && <Choix label="Le locataire" options={LOCATAIRES} valeur={locataire} onChange={setLocataire} />}
+            {murs && typeMurs === "Bureaux" && <Choix label="Le bail" options={BAUX_BUREAUX} valeur={bail} onChange={setBail} />}
             <Choix label="Travaux à prévoir" options={TRAVAUX} valeur={d.travaux} onChange={(v) => set("travaux", v)} />
             <Choix label="Je veux vendre" options={ECHEANCES} valeur={d.echeance} onChange={(v) => set("echeance", v)} />
           </div>
@@ -455,6 +485,7 @@ export function EstimationForm({
 
       {phase === "fin" && (
         <Fin titre={titre} stocke={stocke} verdict={verdict} d={d} dansLeCompte={dansLeCompte || connecte} murs={murs}
+          bureauxHorsParis={murs && typeMurs === "Bureaux" && !d.codePostal.trim().startsWith("75")}
           cible={avecCompte ? ref.current : undefined} ouvrir={ouvrirDossier} />
       )}
     </div>
@@ -861,9 +892,11 @@ function ChampAdresse({ uid, etat, setEtat, d, set, setPlusieurs, erreurs, libel
 /* Fin du parcours                                                     */
 /* ------------------------------------------------------------------ */
 
-function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir, murs = false }: {
+function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir, murs = false, bureauxHorsParis = false }: {
   /** Murs commerciaux : la liste des pièces d'une vente de murs, sans état locatif. */
   murs?: boolean;
+  /** Bureaux hors Paris (MAV, 24/11/2026) : nous ne les vendons que loués à une grande société sur un bail ferme. */
+  bureauxHorsParis?: boolean;
   titre: React.RefObject<HTMLHeadingElement | null>;
   /** false : la demande n'a pu être enregistrée nulle part. */
   stocke: boolean;
@@ -950,6 +983,12 @@ function Fin({ titre, stocke, verdict, d, dansLeCompte, cible, ouvrir, murs = fa
     <>
       <div className="form-shell outcome fin">
         <h3 ref={titre} tabIndex={-1}>C’est noté. Un agent vous appelle sous 48&nbsp;h.</h3>
+        {bureauxHorsParis && (
+          <p>
+            Hors de Paris, nous vendons les immeubles de bureaux loués à une grande société sur un bail
+            ferme. Votre agent vous dira si le vôtre s’y prête.
+          </p>
+        )}
         <div className="pieces-attendues">
           <p className="pieces-attendues__intro">
             Pour préparer l’entretien avec votre agent, voici les éléments dont nous aurons besoin&nbsp;:

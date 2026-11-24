@@ -116,7 +116,7 @@ export const NAV: readonly LienNav[] = [
 
 /**
  * Section des murs commerciaux (MAV, 20 et 22/11/2026) : son propre en-tête sur toute adresse qui
- * commence par `/murs-commerciaux/`. Pas de bureaux au menu. Sous un filet, le retour vers les
+ * commence par `/murs-commerciaux/`. Bureaux au menu, centrés sur Paris (MAV, 24/11/2026). Sous un filet, le retour vers les
  * immeubles, pour basculer d'un côté à l'autre. Le logo mène à l'accueil des murs.
  */
 export const MURS = "/murs-commerciaux/";
@@ -127,9 +127,11 @@ export const NAV_MURS: readonly LienNav[] = [
     label: "Vendre",
     lien: true,
     enfants: [
+      // MAV, 24/11/2026 : bureaux au menu, centrés sur Paris ; le retail park est un ensemble, on y vend un local.
       { href: "/murs-commerciaux/local-commercial/", label: "Vendre un local commercial" },
+      { href: "/murs-commerciaux/retail-park/", label: "Vendre un local en retail park" },
       { href: "/murs-commerciaux/entrepot/", label: "Vendre un entrepôt" },
-      { href: "/murs-commerciaux/retail-park/", label: "Vendre un retail park" },
+      { href: "/murs-commerciaux/bureaux-paris/", label: "Vendre un immeuble de bureaux" },
       { href: "/vendre-un-immeuble/", label: "Vendre un immeuble", separe: "Côté immeubles" },
     ],
   },
@@ -139,8 +141,9 @@ export const NAV_MURS: readonly LienNav[] = [
     lien: true,
     enfants: [
       { href: "/murs-commerciaux/estimation/?type=local-commercial#estimer", label: "Estimer un local commercial" },
+      { href: "/murs-commerciaux/estimation/?type=retail-park#estimer", label: "Estimer un local en retail park" },
       { href: "/murs-commerciaux/estimation/?type=entrepot#estimer", label: "Estimer un entrepôt" },
-      { href: "/murs-commerciaux/estimation/?type=retail-park#estimer", label: "Estimer un retail park" },
+      { href: "/murs-commerciaux/estimation/?type=bureaux#estimer", label: "Estimer un immeuble de bureaux" },
       { href: "/estimer-un-immeuble/", label: "Estimer un immeuble", separe: "Côté immeubles" },
     ],
   },
@@ -164,7 +167,8 @@ export const NAV_MURS: readonly LienNav[] = [
 export const MURS_A_VENIR: Record<string, { titre: string; accent: string; texte: string }> = {
   "local-commercial": { titre: "Vendre un local commercial", accent: "local commercial", texte: "Boutique, restaurant ou agence en pied d’immeuble." },
   entrepot: { titre: "Vendre un entrepôt", accent: "entrepôt", texte: "Entrepôt, atelier ou local d’activité." },
-  "retail-park": { titre: "Vendre un retail park", accent: "retail park", texte: "Ensemble de moyennes surfaces en périphérie." },
+  "retail-park": { titre: "Vendre un local en retail park", accent: "retail park", texte: "Un local ou plusieurs, dans un ensemble de moyennes surfaces, loué de préférence à une grande enseigne." },
+  "bureaux-paris": { titre: "Vendre un immeuble de bureaux à Paris", accent: "immeuble de bureaux", texte: "Immeuble entier à Paris, à garder en bureaux ou à transformer en hôtel ou en logements." },
   "biens-vendus": { titre: "Nos murs commerciaux vendus", accent: "vendus", texte: "Nos ventes de murs commerciaux et de locaux d’activité." },
   "biens-a-vendre": { titre: "Nos murs commerciaux à vendre", accent: "à vendre", texte: "Les murs commerciaux que nous vendons en ce moment." },
   acheter: { titre: "Acheter des murs commerciaux", accent: "murs commerciaux", texte: "Déposez votre recherche de murs commerciaux." },
