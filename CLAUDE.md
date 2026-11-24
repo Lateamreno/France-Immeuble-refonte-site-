@@ -1767,6 +1767,11 @@ dans la réponse. MAV l'a rappelé le 21/10/2026 : « il faut que tu le fasses s
   invisible (protection, tâche, réglage) se présente avec ses captures avant/après, ordinateur et
   téléphone, et ses mesures, avant de demander le feu vert.
 - Une page neuve n'a pas d'« avant » : le dire, et montrer l'état réel, y compris vide.
+- **Un résumé visuel à la fin de chaque tâche, sans exception** (MAV, 24/11/2026 : « à chaque fois que t'as fini des
+  tâches un résumé visuel comme pour les avant après […] tu le fais plus depuis quelque temps c'est pénible ») : mise
+  en production, audit, correction de données, réglage invisible compris. Un artefact publié avec captures avant/après
+  (ordinateur et téléphone), mesures, ce qui est en ligne, ce qui est sur l'aperçu, ce qui reste à trancher. Jamais
+  une fin de tâche en texte seul.
 
 ---
 
