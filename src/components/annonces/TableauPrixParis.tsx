@@ -26,7 +26,7 @@ export function TableauPrixParis({
    * écrit le nombre de ventes ») : une colonne du nombre de ventes de la page, et chaque arrondissement
    * mène à sa section (`#arr-11`). Les lignes ne portent alors pas d'ancre : la page en a déjà.
    */
-  ventes?: { parArrondissement: Record<number, number>; periode: string };
+  ventes?: { parArrondissement: Record<number, number>; sections: number[]; periode: string };
 }) {
   const {
     annee, lignes, moinsCher, plusCher, totalImmeubles, avecRdt, avecDecote, etendueDecote,
@@ -94,6 +94,7 @@ export function TableauPrixParis({
             <tbody>
               {lignes.map((l) => {
                 const nb = ventes?.parArrondissement[l.n] ?? 0;
+                const lien = !!ventes?.sections.includes(l.n);
                 const nom = (
                   <>
                     {rang(l.n)}
@@ -103,11 +104,11 @@ export function TableauPrixParis({
                 return (
                 <tr key={l.n} id={ventes ? undefined : `arr-${l.n}`} className={l.prix == null ? "paris-prix__peu" : undefined}>
                   <th scope="row">
-                    {ventes && nb ? <a className="paris-prix__lien" href={`#arr-${l.n}`}>{nom}</a> : nom}
+                    {lien ? <a className="paris-prix__lien" href={`#arr-${l.n}`}>{nom}</a> : nom}
                   </th>
                   {ventes && (
                     <td className="paris-prix__ventes">
-                      {nb ? <a href={`#arr-${l.n}`} aria-label={`${nb} vente${nb > 1 ? "s" : ""} dans le ${rang(l.n)} arrondissement`}>{nb}</a> : "–"}
+                      {lien ? <a href={`#arr-${l.n}`} aria-label={`${nb} vente${nb > 1 ? "s" : ""} ${ventes?.periode} dans le ${rang(l.n)} arrondissement`}>{nb}</a> : nb}
                     </td>
                   )}
                   {l.prix != null ? (
@@ -164,8 +165,8 @@ export function TableauPrixParis({
         <div className="paris-prix__notes">
           {ventes && (
             <p>
-              <strong>Ventes.</strong> Le nombre d’immeubles de rapport vendus dans l’arrondissement {ventes.periode}.
-              Cliquez sur un arrondissement pour voir ses ventes une par une, plus bas dans la page.
+              <strong>Ventes.</strong> Le nombre d’immeubles de rapport vendus dans l’arrondissement {ventes.periode},
+              l’année des prix. Cliquez sur un arrondissement pour voir toutes ses ventes depuis 2023, plus bas dans la page.
             </p>
           )}
           {avecDecote ? (

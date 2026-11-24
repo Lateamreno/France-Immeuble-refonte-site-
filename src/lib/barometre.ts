@@ -129,7 +129,6 @@ function semestreAPublier(paris: AnneeMarche[], semestres: SemestreParis[]) {
   const avant = semestres.find((x) => x.annee === s.annee - 1 && x.mois === s.mois) ?? null;
   return { s, avant };
 }
-const nomPeriode = (mois: number, annee: number) => `${mois === 6 ? "1er semestre" : `${mois} premiers mois de`} ${annee}`;
 
 // --- Mise en forme ---------------------------------------------------------------------------
 
@@ -175,7 +174,7 @@ const NOTE_PRUDENCE = "Un chiffre n’est donné qu’à partir de trois ventes 
 function tableauParis(annees: AnneeMarche[], semestres: SemestreParis[] = []): string {
   const sp = semestreAPublier(annees, semestres);
   const ligneSemestre = sp
-    ? `<tr class="barometre__provisoire"><th scope="row">${sp.s.annee}<span class="barometre__sous">${sp.s.mois === 6 ? "1er semestre" : `${sp.s.mois} mois`}, provisoire</span></th>` +
+    ? `<tr class="barometre__provisoire"><th scope="row">${sp.s.annee}<span class="barometre__sous">provisoire</span></th>` +
       `<td>${nombre(sp.s.nbVentes)}</td>` +
       `<td><strong>${euros(sp.s.prixM2Median as number)}</strong>${sp.avant?.prixM2Median ? sous(`${pct(variation(sp.avant.prixM2Median, sp.s.prixM2Median as number))} sur un an`) : ""}</td>` +
       `<td>${sp.s.appartPrixM2Median ? euros(sp.s.appartPrixM2Median) : "–"}${sp.avant?.appartPrixM2Median && sp.s.appartPrixM2Median ? sous(`${pct(variation(sp.avant.appartPrixM2Median, sp.s.appartPrixM2Median))} sur un an`) : ""}</td>` +
@@ -203,7 +202,7 @@ function tableauParis(annees: AnneeMarche[], semestres: SemestreParis[] = []): s
     `<th scope="col">Décote</th></tr></thead>` +
     `<tbody>${lignes}${ligneSemestre}</tbody></table></div>` +
     `<p class="barometre__note">Prix médian au m² des immeubles vendus en bloc, puis des appartements vendus seuls à Paris la même année. La décote est l’écart entre les deux.${
-      sp ? ` ${nomPeriode(sp.s.mois, sp.s.annee).replace(/^./, (c) => c.toUpperCase())}&nbsp;: ventes de janvier à ${sp.s.mois === 6 ? "juin" : "la fin du mois " + sp.s.mois}, publiées par l’État en octobre ${sp.s.annee}&nbsp;; l’évolution sur un an les compare à la même période de ${sp.s.annee - 1}. Six mois de ventes&nbsp;: un chiffre provisoire.` : ""
+      sp ? ` ${sp.s.annee}&nbsp;: ventes de janvier à ${sp.s.mois === 6 ? "juin" : "la fin du mois " + sp.s.mois}, publiées par l’État en octobre ${sp.s.annee}&nbsp;; l’évolution sur un an les compare aux mêmes mois de ${sp.s.annee - 1}. Un chiffre provisoire.` : ""
     }</p>`
   );
 }
@@ -374,9 +373,9 @@ function resume(paris: AnneeMarche[], semestres: SemestreParis[] = []): string {
   const sp = semestreAPublier(paris, semestres);
   if (sp) {
     phrases.push(
-      `Au ${nomPeriode(sp.s.mois, sp.s.annee)}, sur ${nombre(sp.s.nbVentes)} ventes, le prix médian était de ${euros(sp.s.prixM2Median as number)} le m²${
-        sp.avant?.prixM2Median ? `, contre ${euros(sp.avant.prixM2Median)} au ${nomPeriode(sp.s.mois, sp.s.annee - 1)}` : ""
-      }. C’est un premier chiffre, sur six mois de ventes.`,
+      `En ${sp.s.annee}, sur les ${nombre(sp.s.nbVentes)} ventes publiées à ce jour, le prix médian était de ${euros(sp.s.prixM2Median as number)} le m²${
+        sp.avant?.prixM2Median ? `, contre ${euros(sp.avant.prixM2Median)} sur les mêmes mois de ${sp.s.annee - 1}` : ""
+      }. C’est un premier chiffre, à confirmer avec le reste de l’année.`,
     );
   }
   const maj = derniere.majLe ? new Date(derniere.majLe) : null;
@@ -525,7 +524,7 @@ export function enBrefBarometre(h: Historique, semestres: SemestreParis[] = []):
   if (p !== d && p.prixM2Median) texte += ` Depuis ${p.annee}, ce prix ${evolue(p.prixM2Median, d.prixM2Median)}.`;
   if (d.rendement != null) texte += ` Avec les loyers de marché de ${d.annee}, le rendement théorique d’un immeuble parisien est de ${unChiffre(d.rendement)}${NBSP}%.`;
   const sp = semestreAPublier(h.get(CODE_PARIS) ?? [], semestres);
-  if (sp) texte += ` Premier chiffre du ${nomPeriode(sp.s.mois, sp.s.annee)} : ${euros(sp.s.prixM2Median as number)} le m², sur ${nombre(sp.s.nbVentes)} ventes.`;
+  if (sp) texte += ` Premier chiffre de ${sp.s.annee} : ${euros(sp.s.prixM2Median as number)} le m², sur ${nombre(sp.s.nbVentes)} ventes.`;
   return texte;
 }
 

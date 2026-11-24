@@ -84,6 +84,3 @@ export async function ventesDvf(codes: readonly string[]): Promise<VenteDvf[]> {
   return [...partielles.filter((v) => !annees.has(v.annee)), ...entieres].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
-/** « 2025 », ou « 1er semestre 2026 » pour une année incomplète. */
-export const libellePeriode = (annee: number, mois: number | null) =>
-  mois && mois < 12 ? `${mois === 6 ? "1er semestre" : `${mois} premiers mois de`} ${annee}` : String(annee);

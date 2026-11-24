@@ -13,7 +13,7 @@ import { VentesCarte } from "@/components/ventes-dvf/VentesCarte";
 import { CarteArrondissement } from "@/components/ventes-dvf/CarteArrondissement";
 import { filAriane } from "@/lib/schema";
 import { CODES_ARRONDISSEMENTS, historiqueParis, reperesBarometre } from "@/lib/barometre";
-import { ventesDvf, libellePeriode, type VenteDvf } from "@/lib/ventes-dvf";
+import { ventesDvf, type VenteDvf } from "@/lib/ventes-dvf";
 import { TableauPrixParis } from "@/components/annonces/TableauPrixParis";
 import { donneesPrixParis } from "@/lib/prix-paris";
 import { situer } from "@/lib/situation-paris";
@@ -168,13 +168,9 @@ export default async function VentesImmeublesParis() {
   const annees = [...new Set(ventes.map((v) => v.annee))].sort((a, b) => a - b);
   const premiere = annees[0];
   const derniere = annees[annees.length - 1];
-  // MAV, 23/11/2026 : le premier semestre 2026 s'ajoute ; la période le dit (« de 2023 au 1er semestre 2026 »).
-  const moisDerniere = ventes.find((v) => v.annee === derniere)?.mois ?? null;
-  const fin = moisDerniere && moisDerniere < 12 ? libellePeriode(derniere, moisDerniere) : null;
-  const periode =
-    premiere && derniere && premiere !== derniere
-      ? fin ? `de ${premiere} au ${fin}` : `de ${premiere} à ${derniere}`
-      : derniere ? (fin ? `au ${fin}` : `en ${derniere}`) : "";
+  // MAV, 23/11/2026 : les ventes de 2026 (janvier à juin) s'ajoutent ; « les gens comprennent d'emblée avec 2026 »
+  // (24/11/2026), la période s'écrit « de 2023 à 2026 ».
+  const periode = premiere && derniere && premiere !== derniere ? `de ${premiere} à ${derniere}` : derniere ? `en ${derniere}` : "";
   // Le prix médian au m² se lit sur la dernière année entière (le baromètre ne publie pas un semestre par arrondissement).
   const anneePrix = prixParis.annee;
   // Le loyer de marché de l'année ; pour 2026, dont la carte des loyers n'est pas parue, la dernière édition.
@@ -263,7 +259,12 @@ export default async function VentesImmeublesParis() {
       <TableauPrixParis
         donnees={prixParis}
         secondBouton={false}
-        ventes={{ parArrondissement: Object.fromEntries(arrondissements.map((a) => [a.n, a.total])), periode }}
+        ventes={{
+          // MAV, 24/11/2026 : « je préfère ventes de 2025 seules », l'année des prix ; le lien mène à toutes ses ventes.
+          parArrondissement: Object.fromEntries(prixParis.lignes.map((l) => [l.n, l.ventes])),
+          sections: arrondissements.filter((a) => a.total).map((a) => a.n),
+          periode: anneePrix != null ? `en ${anneePrix}` : periode,
+        }}
       />
 
       {/* Lot 127 (MAV, 16/11/2026) : toutes les ventes sur la carte, en couleur selon le prix au m² ou le
