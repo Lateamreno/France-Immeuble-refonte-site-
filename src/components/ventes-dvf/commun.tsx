@@ -10,6 +10,8 @@ export type Vente = {
   id: string;
   codeInsee: string;
   annee: number;
+  /** Mois couverts quand l'année n'est pas complète (premier semestre 2026 : 6), sinon null. */
+  mois: number | null;
   date: string;
   rue: string | null;
   prix: number;
@@ -21,6 +23,8 @@ export type Vente = {
   rendement: number | null;
   /** Loyer de marché des appartements de l'année, en € le m² par mois (carte des loyers de l'État). */
   loyerM2: number | null;
+  /** L'année de la carte des loyers utilisée : celle de la vente, ou la dernière parue (ventes de 2026). */
+  loyerAnnee: number | null;
   lat: number | null;
   lon: number | null;
   /** Lot 132 : le quartier (« de la Roquette », « Saint-Ambroise ») et le métro le plus proche, données de l'IGN. */
@@ -252,7 +256,7 @@ export function texteVente(v: Vente): string[] {
   const { mois, an } = loyersTheoriques(v);
   if (v.loyerM2 && mois && v.rendement != null) {
     phrases.push(
-      `Au loyer de marché des appartements du ${arrondissement(v.codeInsee)} en ${v.annee} (${v.loyerM2.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${NBSP}€ le${NBSP}m² par mois), ses lots rapporteraient environ ${euros(mois)} par mois, soit ${euros(an)} par an : un rendement théorique de ${pourcent(v.rendement)}.`,
+      `Au loyer de marché des appartements du ${arrondissement(v.codeInsee)} en ${v.loyerAnnee ?? v.annee} (${v.loyerM2.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${NBSP}€ le${NBSP}m² par mois), ses lots rapporteraient environ ${euros(mois)} par mois, soit ${euros(an)} par an : un rendement théorique de ${pourcent(v.rendement)}.`,
     );
   }
   return phrases;
@@ -327,7 +331,7 @@ export function LotsVente({ v }: { v: Vente }) {
       </div>
       {avecLoyer && (
         <p className="vdvf__lots-note">
-          * Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.annee},{" "}
+          * Loyer théorique : le loyer de marché des appartements du {arrondissement(v.codeInsee)} arrondissement en {v.loyerAnnee ?? v.annee},{" "}
           {v.loyerM2!.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           {NBSP}€ le m² par mois, appliqué à chaque lot, commerces compris. Le loyer réel n’est pas connu.
         </p>

@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Pages des annonces Google (lot 140, MAV, 17/11/2026 : « Montre-moi quatre pages que tu
+   utiliserais pour les ads ») : /estimation-immeuble-paris/, /vendre-immeuble-paris/,
+   /prix-immeuble-paris/ et /confier-son-immeuble-paris/. Hors index, hors sitemap, hors menus.
+   Préfixe `lp-`. Les règles `.sea-*` et `.paris-*` de globals.css ne sont pas modifiées : elles
+   servent aux pages en production. Ni `svh` ni `@media (max-height)` (lot 93) : écran bas par
+   les classes `h-600` à `h-820`, toujours bornées par la largeur.
+   ========================================================================== */
+
+/* Le premier écran : texte à gauche, formulaire à droite dès 900 px. */
+.lp-hero .sea-texte h1{max-width:18ch;}
+@media (min-width:1100px){ .lp-hero .sea-texte h1{font-size:min(3.6vw,3.25rem);} }
+@media (min-width:1024px) and (max-width:1099px){ .lp-hero .sea-texte h1{font-size:2.3rem;} }
+@media (min-width:900px) and (max-width:1023px){ .lp-hero .sea-texte h1{font-size:2rem;} }
+/* La note Google, sans lien : même dessin que `.sea-note`. */
+.lp-note{margin-bottom:0;}
+/* Au téléphone, une seule ligne de preuve, le formulaire tout de suite après. */
+.lp-preuve-mob{display:none;}
+@media (max-width:899px){
+  .lp-long{display:none;}
+  .lp-preuve-mob{display:block;margin:10px 0 0;font-family:var(--font-mono-site);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-bronze-clair);white-space:nowrap;}
+  .lp-hero .sea-texte .lead{font-size:1rem;line-height:1.5;}
+  .lp-hero .sea-grille{gap:var(--space-s);}
+  html.h-600 .lp-hero .sea-texte .lead{display:none;}
+}
+/* Ordinateur à écran bas : le formulaire du hero se resserre, son bouton d'envoi reste dans l'écran. */
+@media (min-width:900px){
+  html.h-700 .lp-hero .sea-form .form-shell{padding:14px 16px;}
+  html.h-700 .lp-hero .sea-form .form-bloc .fields{gap:8px;}
+  html.h-700 .lp-hero .sea-form .form-bloc .field input,
+  html.h-700 .lp-hero .sea-form .form-bloc .field select{min-height:44px;padding-block:6px;}
+  html.h-700 .lp-hero .sea-form .form-saisie .field textarea{min-height:52px;height:52px;}
+  html.h-700 .lp-hero .sea-form .form-bloc .step-head{margin-bottom:8px;}
+  html.h-700 .lp-hero .sea-form .form-saisie .field-nav{margin-top:10px;}
+  html.h-700 .lp-hero .sea-tel{margin-top:6px;}
+  html.h-700 .lp-hero .sea-preuves{margin-top:var(--space-s);gap:8px;}
+  html.h-700 .lp-hero .lp-note{margin-top:var(--space-s);}
+}
+
+/* Une bande courte : une seule idée, pas un écran entier. */
+.section.lp-bande{min-height:0;padding-block:var(--space-l);}
+/* Une citation seule, en grand, au centre : la première réponse sous le premier écran. */
+.lp-citation-grande .paris-citation{margin:0 auto;max-width:none;width:fit-content;}
+.lp-citation-grande .paris-citation blockquote{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.3;max-width:30ch;text-wrap:balance;}
+.lp-citation-grande .paris-citation__ouvre{font-size:clamp(3.4rem,6vw,5rem);}
+
+/* La section « Votre demande » de la page Estimation : au téléphone, le dossier détouré s'efface
+   (il passait sur le titre) et les trois cartes glissent. */
+@media (max-width:759px){ .lp-demande-sec .tete-media__visuel{display:none;} }
+.lp-demande-sec .tete-media{margin-bottom:var(--space-m);}
+
+/* Les trois profils d'acquéreurs, sans compteur : une seule ligne de texte par profil. */
+.lp-profils{border-top:0;padding-top:0;}
+.lp-profils li svg{grid-row:auto;}
+.lp-acheteurs-sec .paris-citation{margin-inline:auto;}
+
+/* Trois phrases de vendeurs, chacune dans une carte du site. */
+.lp-avis{list-style:none;margin:0;padding:0;}
+.lp-avis .card{display:flex;padding:22px 24px 24px;}
+.lp-avis .paris-citation{margin:0;}
+.lp-avis .paris-citation blockquote{font-size:1rem;}
+@media (max-width:719px){ .lp-avis{gap:10px;} .lp-avis .card{padding:16px 18px 18px;} }
+
+/* Une FAQ courte ne remplit pas un écran. */
+.section.lp-faq-sec{min-height:0;}
+
+/* La page des prix : pas d'accroche, l'outil. Une liste d'arrondissements, puis la carte du prix. */
+.lp-prix{max-width:460px;margin-top:var(--space-s);}
+.lp-prix__choix{display:grid;gap:6px;}
+.lp-prix__choix label{font-family:var(--font-mono-site);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-bronze-clair);}
+.lp-prix__select{position:relative;display:block;}
+.lp-prix__choix select{width:100%;font:inherit;font-size:16px;color:var(--color-creme);background-color:var(--color-noir-2);border:1px solid var(--color-ligne);border-radius:12px;padding:12px 40px 12px 14px;appearance:none;}
+/* La flèche de la liste : un masque, teinté par le token bronze. */
+.lp-prix__select::after{content:"";position:absolute;right:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);pointer-events:none;background-color:var(--color-bronze);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;}
+.lp-prix__choix select:focus-visible{outline:2px solid var(--color-bronze-clair);outline-offset:3px;}
+.lp-prix__carte{margin-top:12px;padding:16px 18px;border:1px solid var(--color-ligne);border-radius:var(--radius-card);background:color-mix(in srgb,var(--color-noir-3) 86%,transparent);}
+.lp-prix__val{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:clamp(2rem,3.2vw,2.7rem);line-height:1.04;letter-spacing:-.015em;color:var(--color-bronze);white-space:nowrap;}
+.lp-prix__val span{font-size:.5em;letter-spacing:0;}
+.lp-prix__quoi{margin:6px 0 0;font-size:.9rem;line-height:1.45;color:color-mix(in srgb,var(--color-creme) 82%,transparent);max-width:none;}
+.lp-prix__sans{margin:0;font-family:var(--font-display);font-variation-settings:"wdth" var(--display-wdth),"wght" var(--display-wght);font-size:1.25rem;line-height:1.15;color:var(--color-creme);}
+.lp-prix__faits{list-style:none;margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--color-ligne);display:grid;gap:6px;font-size:.92rem;color:color-mix(in srgb,var(--color-creme) 88%,transparent);}
+.lp-prix__faits strong{color:var(--color-bronze-clair);font-weight:600;}
+.lp-prix__etoiles{display:inline-flex;gap:2px;vertical-align:-2px;margin-left:6px;}
+.lp-prix__etoiles svg{fill:none;stroke:var(--color-bronze);stroke-width:1.6;stroke-linejoin:round;}
+.lp-prix__etoiles svg.est-pleine{fill:var(--color-bronze);}
+.lp-prix__prudence{margin:8px 0 0;font-size:.85rem;color:color-mix(in srgb,var(--color-creme) 78%,transparent);}
+.lp-prix__mention{margin:10px 0 0;font-size:.78rem;line-height:1.45;color:color-mix(in srgb,var(--color-creme) 66%,transparent);max-width:none;}
+/* « Et le vôtre ? » : la phrase qui mène du prix médian au formulaire. */
+.lp-pont{margin:var(--space-s) 0 0;max-width:460px;font-size:1.05rem;line-height:1.45;color:var(--color-creme);}
+.lp-pont strong{color:var(--color-bronze-clair);font-weight:700;}
+@media (max-width:899px){
+  .lp-hero--prix .eyebrow{display:none;}
+  .lp-hero--prix .sea-texte h1{max-width:none;}
+  .lp-prix{max-width:none;margin-top:12px;}
+  .lp-prix__carte{padding:14px 16px;}
+  .lp-prix__plus,.lp-prix__mention{display:none;}
+  .lp-pont{max-width:none;margin-top:12px;font-size:1rem;}
+}
+@media (min-width:900px){
+  html.h-760 .lp-prix__mention{display:none;}
+  html.h-720 .lp-hero--prix .eyebrow{display:none;}
+  html.h-720 .lp-prix__carte{padding:12px 16px;}
+  html.h-600 .lp-hero--prix .sea-texte h1{font-size:2.4rem;}
+}
+
+/* La page de la décision : cinq questions à poser, nos réponses. Sur ordinateur, six cases (la
+   sixième porte l'avis du client qui a comparé) ; questions et réponses alignées d'une case à
+   l'autre (sous-grille). Au téléphone, les questions en accordéon. La section tient sur un écran. */
+.section.lp-questions-sec{padding-block:var(--space-l);}
+.lp-questions-sec .section__head{margin-bottom:var(--space-m);}
+.lp-questions{list-style:none;margin:0;padding:0;display:none;}
+.lp-question{min-width:0;padding:18px 20px 20px;border:1px solid var(--color-ligne);border-radius:var(--radius-card);background:color-mix(in srgb,var(--color-noir-3) 72%,transparent);}
+.lp-question h3{margin:0;font-size:1.1rem;text-wrap:balance;color:var(--color-bronze-clair);}
+.lp-question p{margin:0;font-size:.94rem;line-height:1.5;color:color-mix(in srgb,var(--color-creme) 84%,var(--color-noir));max-width:none;}
+.lp-questions .lp-question--avis{display:flex;flex-direction:column;justify-content:center;gap:10px;}
+.lp-question--avis .paris-citation{margin:0;column-gap:8px;}
+.lp-question--avis .paris-citation__ouvre{font-size:2.2rem;}
+.lp-question--avis .paris-citation blockquote{font-size:.94rem;}
+.lp-questions-mob .paris-citation{margin-top:var(--space-s);}
+/* La note Google et le lien pour vérifier, sous l'avis. */
+.lp-avis-ligne{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:.88rem;color:color-mix(in srgb,var(--color-creme) 84%,transparent);max-width:none;}
+.lp-avis-ligne .stat-number{font-size:1.35rem;color:var(--color-bronze);}
+.lp-questions-mob .lp-avis-ligne{margin-top:var(--space-s);}
+.lp-questions-sec .paris-relance{margin-top:var(--space-m);}
+@media (min-width:760px){
+  .lp-questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .lp-questions-mob{display:none;}
+  .lp-question{display:grid;row-gap:8px;align-content:start;}
+}
+@media (min-width:1000px){
+  .lp-questions{grid-template-columns:repeat(3,minmax(0,1fr));}
+  @supports (grid-template-rows:subgrid){
+    .lp-questions{grid-template-rows:repeat(2,auto auto);row-gap:0;}
+    .lp-question{grid-row:span 2;grid-template-rows:subgrid;margin-bottom:14px;}
+  }
+}
+/* « Qui nous sommes » : l'adresse, pour vérifier. */
+.lp-adresse{margin:var(--space-s) 0 0;font-size:.95rem;color:color-mix(in srgb,var(--color-creme) 82%,transparent);}
+.lp-adresse a{color:var(--color-bronze);font-weight:600;white-space:nowrap;text-decoration:none;}
+/* Au téléphone, la photo de l'équipe passe en fond (comme sur l'accueil) : la citation, posée sur
+   les visages, s'efface. */
+@media (max-width:899px){ .lp-histoire-sec .paris-citation{display:none;} }
+/* Entre 900 et 1 199 px, la section « Qui nous sommes » tient sur un écran sans sa citation. */
+@media (min-width:900px) and (max-width:1199px){ .lp-histoire-sec .paris-citation{display:none;} }
+/* Sections reprises de la page Paris avec un autre titre : entre 1 100 et 1 339 px, la citation de
+   fin s'efface pour que la section tienne sur un écran (même réglage que « Après l'offre », lot 112). */
+@media (min-width:1100px) and (max-width:1339px){ .lp-methode-sec .paris-citation{display:none;} }
+/* Ordinateur à écran bas (768 px de haut et moins de 820) : les sections reprises se resserrent. */
+@media (min-width:1100px){
+  html.h-820 .lp-methode-sec{padding-block:var(--space-m);}
+  html.h-820 .lp-methode-sec .paris-citation{display:none;}
+  html.h-820 .lp-questions-sec{padding-block:var(--space-m);}
+  html.h-820 .lp-questions-sec .paris-relance{margin-top:var(--space-s);}
+}
+@media (min-width:1000px) and (max-width:1199px){
+  .section.lp-questions-sec{padding-block:var(--space-m);}
+  .lp-question{padding:14px 16px 16px;}
+  .lp-question p,.lp-question--avis .paris-citation blockquote{font-size:.9rem;line-height:1.45;}
+  .lp-questions-sec .paris-relance{margin-top:var(--space-s);}
+}
+@media (min-width:900px){
+  html.h-820 .lp-prix__mention{display:none;}
+  html.h-820 .lp-hero--prix .sea-texte h1{font-size:min(3.2vw,2.6rem);}
+  html.h-820 .lp-hero--prix .lp-prix__carte{padding:12px 16px;}
+}

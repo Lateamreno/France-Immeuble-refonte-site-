@@ -6313,3 +6313,19 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 .prose .barometre--donnees tbody th,.prose .barometre--donnees .barometre__sous{white-space:normal;}
 .prose .barometre--donnees{margin:1.4em 0;}
 .prose .article-source{font-size:.82rem;line-height:1.5;color:color-mix(in srgb,var(--color-noir) 62%,var(--color-creme));}
+/* Page des ventes (MAV, 23/11/2026) : le tableau des prix mène à chaque arrondissement, avec son nombre de ventes. */
+.paris-prix .paris-prix__lien{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--color-bronze-profond) 55%,transparent);text-underline-offset:3px;}
+.paris-prix .paris-prix__lien:hover{color:var(--color-bronze-profond);}
+.paris-prix td.paris-prix__ventes{font-family:var(--font-mono-site);font-size:.9rem;}
+.paris-prix td.paris-prix__ventes a{display:inline-block;min-width:2.2em;padding:2px 6px;border-radius:var(--radius-pill);background:color-mix(in srgb,var(--color-bronze-clair) 60%,var(--color-creme));color:var(--color-noir);text-align:center;text-decoration:none;}
+.paris-prix td.paris-prix__ventes a:hover{background:var(--color-bronze);}
+/* Baromètre (MAV, 23/11/2026) : l'outil « votre arrondissement » avant le texte, et la ligne provisoire du semestre. */
+.barometre-outil{display:grid;gap:var(--space-m);align-items:center;}
+@media (min-width:900px){ .barometre-outil{grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:clamp(32px,5vw,72px);} }
+.barometre-outil .lp-prix{margin-top:0;}
+.barometre tr.barometre__provisoire th,.barometre tr.barometre__provisoire td{font-style:normal;background:color-mix(in srgb,var(--color-bronze-clair) 28%,transparent);}
+/* Sur le baromètre, l'outil a la place : fiabilité, rendement et mention restent au téléphone. */
+.barometre-outil li.lp-prix__plus{display:list-item;}
+.barometre-outil ul.lp-prix__plus{display:grid;}
+.barometre-outil .lp-prix__mention{display:block;}
+.barometre-outil .lp-long{display:inline;}
