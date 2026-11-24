@@ -6331,3 +6331,5 @@ section.lex-groupe[id]{scroll-margin-top:12px;}
 .barometre-outil .lp-long{display:inline;}
 /* « provisoire » ne se coupe pas au milieu du mot au téléphone (.prose coupe n'importe où). */
 .prose .barometre tr.barometre__provisoire .barometre__sous{overflow-wrap:normal;word-break:normal;}
+/* Murs, quatre cartes (MAV, 24/11/2026) : un titre ne se coupe pas au milieu d'un mot. */
+.murs-carte h3{hyphens:manual;overflow-wrap:normal;}

@@ -83,7 +83,7 @@ const LOT_DU_TYPE: Record<string, "lotsCommerces" | "lotsActivite" | "lotsBureau
  */
 const EMPLACEMENTS = ["En rue ou en centre-ville", "Dans un retail park"];
 const PORTEES_BUREAUX = ["Un immeuble entier", "Un ou plusieurs étages"];
-const LOCATAIRES = ["Une enseigne ou une grande société", "Un indépendant ou une PME", "Le local est libre"];
+const LOCATAIRES = ["Une enseigne ou une grande société", "Un indépendant ou une PME", "Libre, sans locataire"];
 const BAUX_BUREAUX = ["Bail ferme", "Bail 3-6-9", "Je ne sais pas"];
 /** `?type=entrepot` dans l'adresse (menu Estimer des murs) : le type déjà choisi. */
 const TYPE_DE_L_ADRESSE: Record<string, { type: string; emplacement?: string }> = {

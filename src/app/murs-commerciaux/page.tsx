@@ -74,23 +74,23 @@ export default async function MursCommerciaux() {
           <div className="grid grid--4 grid--ligne-mob">
             <CarteMurs picto={PICTOS_MURS.boutique} titre="Local commercial"
               lien={{ href: "/murs-commerciaux/local-commercial/", libelle: "Vendre un local commercial" }}>
-              Boutique, restaurant ou agence en pied d’immeuble, à Paris, en Île-de-France et dans les
-              grandes villes. Nos investisseurs achètent les murs loués comme les murs libres.
+              Boutique ou restaurant à Paris, en Île-de-France et dans les grandes villes, loué ou
+              libre.
             </CarteMurs>
             <CarteMurs picto={PICTOS_MURS.retail} titre="Local en retail park"
               lien={{ href: "/murs-commerciaux/retail-park/", libelle: "Vendre un local en retail park" }}>
-              Une moyenne surface dans un ensemble commercial, avec parking. Nos investisseurs la veulent
-              louée, de préférence à une grande enseigne nationale.
+              Une moyenne surface dans un ensemble commercial, louée de préférence à une grande
+              enseigne.
             </CarteMurs>
             <CarteMurs picto={PICTOS_MURS.entrepot} titre="Entrepôt et local d’activité"
               lien={{ href: "/murs-commerciaux/entrepot/", libelle: "Vendre un entrepôt" }}>
-              Entrepôt, atelier ou local mixte, loué à des artisans et des PME ou à une grande société
-              industrielle. Chaque cas a ses acheteurs.
+              Loué à des artisans et des PME, ou à une grande société industrielle : chacun a ses
+              acheteurs.
             </CarteMurs>
             <CarteMurs picto={PICTOS_MURS.bureaux} titre="Immeuble de bureaux"
               lien={{ href: "/murs-commerciaux/bureaux-paris/", libelle: "Vendre un immeuble de bureaux" }}>
-              À Paris, l’immeuble entier, à garder en bureaux ou à transformer en hôtel ou en logements.
-              Ailleurs, l’immeuble loué à une grande société sur un bail ferme.
+              Entier à Paris, ou à transformer en hôtel ou en logements. Ailleurs, loué à une grande
+              société sur un bail ferme.
             </CarteMurs>
           </div>
         </div>
