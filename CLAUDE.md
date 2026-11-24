@@ -1101,6 +1101,20 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   et tableau avant le texte, MAV, 24/11/2026). **En production le 24/11/2026** (« Go prod », MAV), sans les pages des
   annonces (lot 140) ; résumé : https://claude.ai/artifact/VFxQrwpw4q1xyJs66wwAQL. Sur la branche, en attente du go :
   « provisoire » qui ne se coupe plus au téléphone.
+- **Murs, retours de MAV (24/11/2026), sur la branche** : bureaux au menu (Vendre et Estimer : local commercial, local en
+  retail park, entrepôt, immeuble de bureaux) ; **le retail park n'est plus un type** (« un ensemble, pas un lot ») :
+  « Local commercial » ouvre « Où se trouve le local ? En rue ou en centre-ville · Dans un retail park » ; « Bureaux »
+  ouvre « Vous vendez : Un immeuble entier · Un ou plusieurs étages » ; deuxième partie : « Le locataire » (enseigne ou
+  grande société, indépendant ou PME, libre) et pour les bureaux « Le bail » (ferme, 3-6-9) ; tout part au BO dans la
+  description (« Murs commerciaux · Bureaux · Un immeuble entier », « Locataire : … »). **Bureaux centrés sur Paris** :
+  immeuble entier ou à transformer en hôtel ou en logements ; hors Paris, seulement loué à une grande société sur un bail
+  ferme ; le lead hors Paris part quand même, l'écran de fin le dit. Page mère : quatre cartes « chacun ses
+  investisseurs ». Page d'attente `/murs-commerciaux/bureaux-paris/`. Proposition des quatre pages filles :
+  https://claude.ai/artifact/XkKTboSSXTYMeLQscTzAsU (à trancher : étages de bureaux, enseignes citées, adresse de la
+  page bureaux, types de recherche au BO).
+- **Pages des annonces, point du 24/11/2026** : https://claude.ai/artifact/VECUTTfriftn1fjP95kYhz. Conseil donné pour
+  600 € par mois : A (estimer) et B (vendre), D en lien annexe, C plus tard. En attente du choix de MAV, puis mise en
+  production des pages choisies, puis document des liens pour la campagne.
 - **Search Console en production le 22/11/2026** (« Oui pour quotidien », MAV) : tâche chaque matin à 7 h 37 ; 16 mois
   déjà relevés (23/07/2025 au 18/11/2026). Rapport chaque lundi à 7 h 47 (tâche planifiée de la session, mise à jour de
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
