@@ -1120,6 +1120,13 @@ ne voit que ses lignes. Toujours du dépôt, jamais de la lecture.
   https://claude.ai/artifact/SV1PFZcJe2dSPfM1AvJXK4). Le taux de clic de l'accueil se suit **sans la requête
   « immeuble »** (Google montre l'accueil sur ce mot seul, presque sans clic). Redirection 301 de
   `/droit-de-preemption-lors-de-vente-dun-immeuble-en-bloc/` (sans « la ») vers l'article, en production le même jour.
+  **Position d'une requête = notre meilleure page** (26/11/2026, un « 11 → 24 » avait inquiété MAV à tort) : comme
+  l'onglet Requêtes de Google, pour chaque jour la plus petite position parmi nos pages. Ne jamais faire la moyenne de
+  toutes nos pages qui sortent sur une requête : une page à nous montrée en 40e la fait monter sans que rien ne bouge.
+  « Vendre immeuble de rapport » : l'article est 1er ou 2e chaque jour (1,3 à 1,6). La position d'un article se lit sans
+  le mot seul « immeuble » (jusqu'à 940 impressions par semaine sans clic, presque plus montrées depuis le 16/11).
+  À suivre : l'article « Comment vendre un immeuble de rapport » sans ce mot, 7 à 9 en octobre, 11,5 du 16 au 22/11.
+  Vérification : https://claude.ai/artifact/2TQ8xQwJ6Y1VshkHrqvgPH. Le rapport du lundi applique cette méthode.
 - **Faux formulaires de robots** (MAV, 23/11/2026 : « je reçois des faux formulaires », puis « je veux pas que le
   formulaire devienne dur à remplir […] pas de code par email ») : **rien de visible pour le visiteur**, ni code, ni
   case à cocher, ni question. Trois couches (`src/lib/anti-robots.ts`, `src/components/antiRobots.tsx`) : champ piège
